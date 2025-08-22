@@ -1,9 +1,11 @@
 # Docker Build Options
 
+test
+
 You can customize the docker build process using these environment variables.
 
-> [!NOTE]  
-> All Symfony-specific environment variables are used only if no `composer.json` file is found in the project directory. 
+> [!NOTE]
+> All Symfony-specific environment variables are used only if no `composer.json` file is found in the project directory.
 
 ## Selecting a Specific Symfony Version
 
@@ -30,7 +32,7 @@ On Linux:
     STABILITY=dev docker compose up --wait
 
 On Windows:
-    
+
     set STABILITY=dev && docker compose up --wait&set STABILITY=
 
 ## Using custom HTTP ports
@@ -41,7 +43,7 @@ Use the environment variables `HTTP_PORT`, `HTTPS_PORT` and/or `HTTP3_PORT` to a
 
 to access your application on [https://localhost:4443](https://localhost:4443).
 
-> [!NOTE]  
+> [!NOTE]
 > Let's Encrypt only supports the standard HTTP and HTTPS ports. Creating a Let's Encrypt certificate for another port will not work, you have to use the standard ports or to configure Caddy to use another provider.
 
 
@@ -49,7 +51,7 @@ to access your application on [https://localhost:4443](https://localhost:4443).
 
 You can also customize the `Caddyfile` by using the following environment variables to inject options block, directive or configuration.
 
-> [!TIP]  
+> [!TIP]
 > All the following environment variables can be defined in your `.env` file at the root of the project to keep them persistent at each startup
 
 | Environment variable            | Description                                                                                                                                                                             | Default value             |
@@ -59,7 +61,7 @@ You can also customize the `Caddyfile` by using the following environment variab
 | `CADDY_SERVER_EXTRA_DIRECTIVES` | the [`Caddyfile` directives](https://caddyserver.com/docs/caddyfile/concepts#directives)                                                                                                |                           |
 | `CADDY_SERVER_LOG_OPTIONS`      | the [server log options block](https://caddyserver.com/docs/caddyfile/directives/log), one per line                                                                                     |                           |
 | `SERVER_NAME`                   | the server name or address                                                                                                                                                              | `localhost`               |
-| `FRANKENPHP_CONFIG`             | a list of extra [FrankenPHP directives](https://frankenphp.dev/docs/config/#caddyfile-config), one per line                                                                             | `import worker.Caddyfile` | 
+| `FRANKENPHP_CONFIG`             | a list of extra [FrankenPHP directives](https://frankenphp.dev/docs/config/#caddyfile-config), one per line                                                                             | `import worker.Caddyfile` |
 | `MERCURE_TRANSPORT_URL`         | the value passed to the `transport_url` directive                                                                                                                                       | `bolt:///data/mercure.db` |
 | `MERCURE_PUBLISHER_JWT_KEY`     | the JWT key to use for publishers                                                                                                                                                       |                           |
 | `MERCURE_PUBLISHER_JWT_ALG`     | the JWT algorithm to use for publishers                                                                                                                                                 | `HS256`                   |
