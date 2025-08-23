@@ -31,3 +31,24 @@
 
 
 ## Installation de la base de données
+
+1. Doctrine:
+
+    docker compose exec php composer require symfony/orm-pack
+
+    doctrine/doctrine-bundle instructions:
+
+      * Modify your DATABASE_URL config in .env
+
+      > créer les variables ici pour ne rien toucher dans le fichier config.yaml
+
+2. Creation database:
+
+    docker compose exec php php bin/console doctrine:database:create
+
+  > [!NOTE]
+  > Il faudra sûrement Build et up le docker
+
+2. Lier les explorer de Database (Postgres Explorer et TablePlus):
+
+    > The hostname : correspont à DOMAIN (et pas NAME) sur les infos Orbstack de l'image database
