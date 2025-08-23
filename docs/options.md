@@ -1,7 +1,5 @@
 # Docker Build Options
 
-test
-
 You can customize the docker build process using these environment variables.
 
 > [!NOTE]
