@@ -1,5 +1,5 @@
 <template>
-  <h2 class="text-3xl font-bold underline"> Home controller in Vue</h2>
+  <h2 class="text-7xl text-lapis font-bold underline"> Home controller in Vue</h2>
     <div>Hello {{ user_name }}!</div>
 </template>
 

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @source not "../../public";
 
-body {
-    background-color: lightgray;
+@theme {
+  --color-mint-500: oklch(0.72 0.11 178);
+  --color-lapis: #456990;
+  --text-7xl: 5rem;
 }
