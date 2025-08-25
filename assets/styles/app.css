@@ -1,8 +1,10 @@
 @import "tailwindcss";
 @source not "../../public";
 
+/* Pour avoir les valeurs des paramètres oklch, il faut aller chercher le code HSL de la couleur */
+
 @theme {
   --color-mint-500: oklch(0.72 0.11 178);
-  --color-lapis: #456990;
+  --color-lapis: oklch(0.35 0.42 211);
   --text-7xl: 5rem;
 }
