@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TruckRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TruckRepository::class)]
@@ -21,6 +23,17 @@ class Truck
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $DeliveryDate = null;
+
+    /**
+     * @var Collection<int, Pallet>
+     */
+    #[ORM\OneToMany(targetEntity: Pallet::class, mappedBy: 'truck')]
+    private Collection $pallets;
+
+    public function __construct()
+    {
+        $this->pallets = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -59,6 +72,36 @@ class Truck
     public function setDeliveryDate(?\DateTime $DeliveryDate): static
     {
         $this->DeliveryDate = $DeliveryDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pallet>
+     */
+    public function getPallets(): Collection
+    {
+        return $this->pallets;
+    }
+
+    public function addPallet(Pallet $pallet): static
+    {
+        if (!$this->pallets->contains($pallet)) {
+            $this->pallets->add($pallet);
+            $pallet->setTruck($this);
+        }
+
+        return $this;
+    }
+
+    public function removePallet(Pallet $pallet): static
+    {
+        if ($this->pallets->removeElement($pallet)) {
+            // set the owning side to null (unless already changed)
+            if ($pallet->getTruck() === $this) {
+                $pallet->setTruck(null);
+            }
+        }
 
         return $this;
     }
