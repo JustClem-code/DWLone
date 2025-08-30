@@ -16,6 +16,9 @@ class Pallet
     #[ORM\ManyToOne(inversedBy: 'pallets')]
     private ?Truck $truck = null;
 
+    #[ORM\ManyToOne(inversedBy: 'pallets')]
+    private ?associate $associate = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,6 +32,18 @@ class Pallet
     public function setTruck(?Truck $truck): static
     {
         $this->truck = $truck;
+
+        return $this;
+    }
+
+    public function getAssociate(): ?associate
+    {
+        return $this->associate;
+    }
+
+    public function setAssociate(?associate $associate): static
+    {
+        $this->associate = $associate;
 
         return $this;
     }

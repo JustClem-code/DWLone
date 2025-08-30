@@ -5,6 +5,8 @@ namespace App\DataFixtures;
 use Faker\Factory;
 use App\Entity\Product;
 use App\Entity\Customer;
+use App\Entity\Role;
+use App\Entity\Associate;
 use App\Entity\Address;
 use App\Entity\Truck;
 use App\Entity\Pallet;
@@ -85,6 +87,38 @@ class AppFixtures extends Fixture
     }
   }
 
+  private function GenerateRoles($manager): void
+  {
+    $OPS = new Role();
+    $OPS->setName('OPS');
+    $AS = new Role();
+    $AS->setName('AS');
+    $manager->persist($OPS);
+    $manager->persist($AS);
+    $manager->flush();
+  }
+
+  private function GenerateAssociates($manager): void
+  {
+    $this->faker = Factory::create();
+
+    for ($i = 0; $i < 10; $i++) {
+      $associate = new Associate();
+      $firstname = $this->faker->firstName($gender = 'male' | 'female');
+      $lastname = $this->faker->lastName();
+      $username = substr($firstname, 0, 3) . substr($lastname, 0, 3);
+
+      $RoleRepository = $manager->getRepository(Role::class);
+      $associateRole = $RoleRepository->findOneBy(['name' => 'AS']);
+
+      $associate->setUsername($username);
+      $associate->setfirstName($firstname);
+      $associate->setLastname($lastname);
+      $associate->setRole($associateRole);
+      $manager->persist($associate);
+    }
+  }
+
   public function load(ObjectManager $manager): void
   {
     /* TEST PRODUCT */
@@ -98,6 +132,8 @@ class AppFixtures extends Fixture
 
     $this->GenerateTrucks($manager);
     $this->GenerateCustomers($manager);
+    $this->GenerateRoles($manager);
+    $this->GenerateAssociates($manager);
 
     $manager->flush();
   }
