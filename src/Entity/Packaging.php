@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PackagingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PackagingRepository::class)]
@@ -30,6 +32,17 @@ class Packaging
 
     #[ORM\Column]
     private ?bool $oversize = null;
+
+    /**
+     * @var Collection<int, Package>
+     */
+    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'packaging')]
+    private Collection $packages;
+
+    public function __construct()
+    {
+        $this->packages = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +117,36 @@ class Packaging
     public function setOversize(bool $oversize): static
     {
         $this->oversize = $oversize;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Package>
+     */
+    public function getPackages(): Collection
+    {
+        return $this->packages;
+    }
+
+    public function addPackage(Package $package): static
+    {
+        if (!$this->packages->contains($package)) {
+            $this->packages->add($package);
+            $package->setPackaging($this);
+        }
+
+        return $this;
+    }
+
+    public function removePackage(Package $package): static
+    {
+        if ($this->packages->removeElement($package)) {
+            // set the owning side to null (unless already changed)
+            if ($package->getPackaging() === $this) {
+                $package->setPackaging(null);
+            }
+        }
 
         return $this;
     }

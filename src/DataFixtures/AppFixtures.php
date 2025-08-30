@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Product;
+use App\Entity\Packaging;
 use App\Entity\Customer;
 use App\Entity\Role;
 use App\Entity\Associate;
@@ -18,7 +19,7 @@ class AppFixtures extends Fixture
 {
   protected $faker;
 
-  private function GenerateWrid()
+  private function GenerateWrid(): string
   {
 
     $number = '0123456789';
@@ -42,7 +43,7 @@ class AppFixtures extends Fixture
     return $part1 . $part2 . $part3;
   }
 
-  private  function GeneratePallets($manager, $truck): void
+  private  function GeneratePallets(mixed $manager, mixed $truck): void
   {
     for ($i = 0; $i < 5; $i++) {
       $pallet = new Pallet();
@@ -51,7 +52,7 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function GenerateTrucks($manager): void
+  private function GenerateTrucks(mixed $manager): void
   {
     for ($i = 0; $i < 3; $i++) {
       $truck = new Truck();
@@ -62,7 +63,7 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function GenerateAddresses($manager, $customer): void
+  private function GenerateAddresses(mixed $manager, mixed $customer): void
   {
     $this->faker = Factory::create();
 
@@ -74,7 +75,7 @@ class AppFixtures extends Fixture
     $manager->persist($address);
   }
 
-  private function GenerateCustomers($manager): void
+  private function GenerateCustomers(mixed $manager): void
   {
     $this->faker = Factory::create();
 
@@ -87,7 +88,7 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function GenerateRoles($manager): void
+  private function GenerateRoles(mixed $manager): void
   {
     $OPS = new Role();
     $OPS->setName('OPS');
@@ -98,7 +99,7 @@ class AppFixtures extends Fixture
     $manager->flush();
   }
 
-  private function GenerateAssociates($manager): void
+  private function GenerateAssociates(mixed $manager): void
   {
     $this->faker = Factory::create();
 
@@ -119,6 +120,50 @@ class AppFixtures extends Fixture
     }
   }
 
+  private function GeneratePackagings(mixed $manager): void
+  {
+
+    $packs = [
+      [
+        'name' => 'A2',
+        'weight' => 500,
+        'lenght' => 30,
+        'width' => 40,
+        'height' => 20,
+        'oversize' => false
+      ],
+      [
+        'name' => 'B5',
+        'weight' => 200,
+        'lenght' => 20,
+        'width' => 30,
+        'height' => 15,
+        'oversize' => false
+      ],
+      [
+        'name' => 'C6',
+        'weight' => 50,
+        'lenght' => 50,
+        'width' => 45,
+        'height' => 5,
+        'oversize' => false
+      ]
+    ];
+
+    foreach ($packs as $pack) {
+      $packaging = new Packaging();
+      $packaging->setName($pack['name']);
+      $packaging->setWeight($pack['weight']);
+      $packaging->setLenght($pack['lenght']);
+      $packaging->setWidth($pack['width']);
+      $packaging->setHeight($pack['height']);
+      $packaging->setOversize($pack['oversize']);
+      $manager->persist($packaging);
+    }
+  }
+
+  /* TODO: Fixtures Orders and packages */
+
   public function load(ObjectManager $manager): void
   {
     /* TEST PRODUCT */
@@ -134,6 +179,7 @@ class AppFixtures extends Fixture
     $this->GenerateCustomers($manager);
     $this->GenerateRoles($manager);
     $this->GenerateAssociates($manager);
+    $this->GeneratePackagings($manager);
 
     $manager->flush();
   }
