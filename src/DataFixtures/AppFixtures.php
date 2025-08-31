@@ -4,6 +4,8 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Product;
+use App\Entity\Package;
+use App\Entity\Order;
 use App\Entity\Packaging;
 use App\Entity\Customer;
 use App\Entity\Role;
@@ -79,7 +81,7 @@ class AppFixtures extends Fixture
   {
     $this->faker = Factory::create();
 
-    for ($i = 0; $i < 1500; $i++) {
+    for ($i = 0; $i < 500; $i++) {
       $customer = new Customer();
       $customer->setfirstName($this->faker->firstName($gender = 'male' | 'female'));
       $customer->setLastname($this->faker->lastName());
@@ -96,6 +98,7 @@ class AppFixtures extends Fixture
     $AS->setName('AS');
     $manager->persist($OPS);
     $manager->persist($AS);
+
     $manager->flush();
   }
 
@@ -160,6 +163,46 @@ class AppFixtures extends Fixture
       $packaging->setOversize($pack['oversize']);
       $manager->persist($packaging);
     }
+
+    $manager->flush();
+  }
+
+  private function GeneratePackages(mixed $manager, mixed $order)
+  {
+
+    $PackagingRepository = $manager->getRepository(Packaging::class);
+    $packagings = $PackagingRepository->findAll();
+    shuffle($packagings);
+
+    $package = new Package();
+    $package->setWeight(mt_rand(50, 2000));
+    $package->setPackaging($packagings[0]);
+    $package->setOrderId($order);
+    $manager->persist($package);
+  }
+
+  private function GenerateOrders(mixed $manager): void
+  {
+    $CustomerRepository = $manager->getRepository(Customer::class);
+    $AddressRepository = $manager->getRepository(Address::class);
+
+    $customers = $CustomerRepository->findAll();
+
+    foreach ($customers as $customer) {
+      $order = new Order();
+      $order->setCustomer($customer);
+
+      $customerId = $customer->getId();
+
+      $address = $AddressRepository->findOneBy(['customer' => $customerId]);
+
+      /* $customerAddresses = $customer->getAddresses(); */
+
+      $order->setAddress($address);
+      $manager->persist($order);
+
+      $this->GeneratePackages($manager, $order);
+    }
   }
 
   /* TODO: Fixtures Orders and packages */
@@ -180,6 +223,7 @@ class AppFixtures extends Fixture
     $this->GenerateRoles($manager);
     $this->GenerateAssociates($manager);
     $this->GeneratePackagings($manager);
+    $this->GenerateOrders($manager);
 
     $manager->flush();
   }
