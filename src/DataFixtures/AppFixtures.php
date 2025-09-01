@@ -4,6 +4,8 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Product;
+use App\Entity\Bag;
+use App\Entity\Location;
 use App\Entity\Stagging;
 use App\Entity\DeliveryPerson;
 use App\Entity\DeliveryCompany;
@@ -84,7 +86,7 @@ class AppFixtures extends Fixture
   {
     $this->faker = Factory::create();
 
-    for ($i = 0; $i < 500; $i++) {
+    for ($i = 0; $i < 250; $i++) {
       $customer = new Customer();
       $customer->setfirstName($this->faker->firstName($gender = 'male' | 'female'));
       $customer->setLastname($this->faker->lastName());
@@ -243,17 +245,45 @@ class AppFixtures extends Fixture
 
   private function GenerateStaggings(mixed $manager): void
   {
-    $letters = ['A', 'B','C', 'D', 'E', 'G'];
+    $letters = ['A', 'B', 'C', 'D', 'E', 'G'];
 
     foreach ($letters as $letter) {
       $staggingNumber = 1;
-      for ($i=0; $i < 6; $i++) {
-        $stagging = New Stagging();
+      for ($i = 0; $i < 6; $i++) {
+        $stagging = new Stagging();
         $stagging->setName($letter . '-' . $staggingNumber);
         $staggingNumber++;
         $manager->persist($stagging);
       }
     }
+  }
+
+  private function GenerateLocations(mixed $manager): void
+  {
+    $alleys = ['B', 'C'];
+    $letters = ['A', 'B', 'C'];
+
+    foreach ($alleys as $alley) {
+      $alleyNumber = 1;
+      for ($i = 0; $i < 52; $i++) {
+        $alleyName = $alley . '-' . $alleyNumber;
+        foreach ($letters as $letter) {
+          $locationNumber = 1;
+          for ($j = 0; $j < 2; $j++) {
+            $location = new Location();
+            $location->setName($alleyName . '-' . $letter . '-' . $locationNumber);
+            $locationNumber++;
+            $manager->persist($location);
+          }
+        }
+        $alleyNumber++;
+      }
+    }
+  }
+
+  private function GenerateBags(mixed $manager): void
+  {
+    /* TODO: */
   }
 
   public function load(ObjectManager $manager): void
@@ -275,6 +305,8 @@ class AppFixtures extends Fixture
     $this->GenerateOrders($manager);
     $this->GenerateDeliveryCompany($manager);
     $this->GenerateStaggings($manager);
+    $this->GenerateLocations($manager);
+    $this->GenerateBags($manager);
 
     $manager->flush();
   }
