@@ -26,6 +26,12 @@ class Package
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $OrderId = null;
 
+    #[ORM\ManyToOne(inversedBy: 'packages')]
+    private ?Location $location = null;
+
+    #[ORM\ManyToOne(inversedBy: 'packages')]
+    private ?Bag $bag = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +81,30 @@ class Package
     public function setOrderId(?Order $OrderId): static
     {
         $this->OrderId = $OrderId;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function getBag(): ?Bag
+    {
+        return $this->bag;
+    }
+
+    public function setBag(?Bag $bag): static
+    {
+        $this->bag = $bag;
 
         return $this;
     }
