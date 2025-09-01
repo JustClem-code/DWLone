@@ -4,6 +4,8 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Product;
+use App\Entity\DeliveryPerson;
+use App\Entity\DeliveryCompany;
 use App\Entity\Package;
 use App\Entity\Order;
 use App\Entity\Packaging;
@@ -205,7 +207,38 @@ class AppFixtures extends Fixture
     }
   }
 
-  /* TODO: Fixtures Orders and packages */
+  private function GenerateDeliveryPeople(mixed $manager, $DeliveryCompany): void
+  {
+    $this->faker = Factory::create();
+
+    for ($i = 0; $i < 5; $i++) {
+      $deliveryPerson = new DeliveryPerson();
+      $firstname = $this->faker->firstName($gender = 'male' | 'female');
+      $lastname = $this->faker->lastName();
+      $username = substr($firstname, 0, 3) . substr($lastname, 0, 3);
+
+      $deliveryPerson->setUsername($username);
+      $deliveryPerson->setfirstName($firstname);
+      $deliveryPerson->setLastname($lastname);
+      $deliveryPerson->setCompany($DeliveryCompany);
+
+      $manager->persist($deliveryPerson);
+    }
+  }
+
+  private function GenerateDeliveryCompany(mixed $manager): void
+  {
+    $companiyNames = ['ATA', 'CNPS', 'Coliwest', 'HTDS', 'RAIZ'];
+
+    foreach ($companiyNames as $companiyName) {
+      $DeliveryCompany = new DeliveryCompany();
+      $DeliveryCompany->setName($companiyName);
+
+      $manager->persist($DeliveryCompany);
+
+      $this->GenerateDeliveryPeople($manager, $DeliveryCompany);
+    }
+  }
 
   public function load(ObjectManager $manager): void
   {
@@ -224,6 +257,7 @@ class AppFixtures extends Fixture
     $this->GenerateAssociates($manager);
     $this->GeneratePackagings($manager);
     $this->GenerateOrders($manager);
+    $this->GenerateDeliveryCompany($manager);
 
     $manager->flush();
   }
