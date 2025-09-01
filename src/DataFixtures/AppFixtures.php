@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Product;
+use App\Entity\Stagging;
 use App\Entity\DeliveryPerson;
 use App\Entity\DeliveryCompany;
 use App\Entity\Package;
@@ -240,6 +241,21 @@ class AppFixtures extends Fixture
     }
   }
 
+  private function GenerateStaggings(mixed $manager): void
+  {
+    $letters = ['A', 'B','C', 'D', 'E', 'G'];
+
+    foreach ($letters as $letter) {
+      $staggingNumber = 1;
+      for ($i=0; $i < 6; $i++) {
+        $stagging = New Stagging();
+        $stagging->setName($letter . '-' . $staggingNumber);
+        $staggingNumber++;
+        $manager->persist($stagging);
+      }
+    }
+  }
+
   public function load(ObjectManager $manager): void
   {
     /* TEST PRODUCT */
@@ -258,6 +274,7 @@ class AppFixtures extends Fixture
     $this->GeneratePackagings($manager);
     $this->GenerateOrders($manager);
     $this->GenerateDeliveryCompany($manager);
+    $this->GenerateStaggings($manager);
 
     $manager->flush();
   }

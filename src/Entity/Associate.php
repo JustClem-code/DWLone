@@ -40,10 +40,17 @@ class Associate
     #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'Associate')]
     private Collection $packages;
 
+    /**
+     * @var Collection<int, Cart>
+     */
+    #[ORM\OneToMany(targetEntity: Cart::class, mappedBy: 'associate')]
+    private Collection $carts;
+
     public function __construct()
     {
         $this->pallets = new ArrayCollection();
         $this->packages = new ArrayCollection();
+        $this->carts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -153,6 +160,36 @@ class Associate
             // set the owning side to null (unless already changed)
             if ($package->getAssociate() === $this) {
                 $package->setAssociate(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCarts(): Collection
+    {
+        return $this->carts;
+    }
+
+    public function addCart(Cart $cart): static
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts->add($cart);
+            $cart->setAssociate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): static
+    {
+        if ($this->carts->removeElement($cart)) {
+            // set the owning side to null (unless already changed)
+            if ($cart->getAssociate() === $this) {
+                $cart->setAssociate(null);
             }
         }
 
