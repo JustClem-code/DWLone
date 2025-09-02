@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
-use App\Entity\Product;
 use App\Entity\Bag;
 use App\Entity\Location;
 use App\Entity\Stagging;
@@ -26,7 +25,7 @@ class AppFixtures extends Fixture
 {
   protected $faker;
 
-  private function GenerateWrid(): string
+  private function generateWrid(): string
   {
 
     $number = '0123456789';
@@ -63,26 +62,97 @@ class AppFixtures extends Fixture
   {
     for ($i = 0; $i < 3; $i++) {
       $truck = new Truck();
-      $truck->setWrid($this->GenerateWrid());
+      $truck->setWrid($this->generateWrid());
       $truck->setExpectedDate(new \DateTime());
       $manager->persist($truck);
-      $this->GeneratePallets($manager, $truck);
+      $this->generatePallets($manager, $truck);
     }
   }
 
-  private function GenerateAddresses(mixed $manager, mixed $customer): void
+  private function generateAddress(mixed $manager, mixed $customer): void
   {
     $this->faker = Factory::create();
 
+    $postCodes = [
+      "Abbaretz" => "44170",
+      "Aigrefeuille-sur-Maine" => "44140",
+      "Ancenis" => "44150",
+      "Anetz" => "44150",
+      "Arthon-en-Retz" => "44320",
+      "Assérac" => "44410",
+      "Avessac" => "44460",
+      "Barbechat" => "44450",
+      "Basse-Goulaine" => "44115",
+      "Batz-sur-Mer" => "44740",
+      "Besné" => "44160",
+      "Blain" => "44130",
+      "Bonnoeuvre" => "44540",
+      "Bouaye" => "44830",
+      "Bouguenais" => "44340",
+      "Bourgneuf-en-Retz" => "44580",
+      "Boussay" => "44190",
+      "Bouvron" => "44130",
+      "Brains" => "44830",
+      "Campbon" => "44750",
+      "Carquefou" => "44470",
+      "Casson" => "44390",
+      "Château-Thébaud" => "44690",
+      "Châteaubriant" => "44110",
+      "Cheix-en-Retz" => "44640",
+      "Clisson" => "44190",
+      "Cordemais" => "44360",
+      "Couëron" => "44220",
+      "Donges" => "44480",
+      "Frossay" => "44320",
+      "Guenrouet" => "44530",
+      "Guérande" => "44350",
+      "Haute-Goulaine" => "44115",
+      "Indre" => "44610",
+      "La Baule-Escoublac" => "44500",
+      "La Chapelle-sur-Erdre" => "44240",
+      "La Chevrolière" => "44118",
+      "La Montagne" => "44620",
+      "La Planche" => "44140",
+      "La Turballe" => "44420",
+      "Le Croisic" => "44490",
+      "Le Loroux-Bottereau" => "44430",
+      "Le Pallet" => "44330",
+      "Le Pellerin" => "44640",
+      "Le Pin" => "44540",
+      "Le Pouliguen" => "44510",
+      "Les Moutiers-en-Retz" => "44760",
+      "Ligné" => "44850",
+      "Loireauxence" => "44370",
+      "Louisfert" => "44110",
+      "Lusanger" => "44590",
+      "Machecoul" => "44270",
+      "Malville" => "44260",
+      "Mauves-sur-Loire" => "44470",
+      "Mesquer" => "44420",
+      "Missillac" => "44780",
+      "Monnières" => "44690",
+      "Montoir-de-Bretagne" => "44550",
+      "Montoir-sur-Loire" => "44310",
+      "Mouzillon" => "44330",
+      "Nantes" => "44000",
+      "Saint-Herblain" => "4480"
+    ];
+
+    $randomPostcode = new \Random\Randomizer();
+
+    $city = $randomPostcode->pickArrayKeys($postCodes, 1)[0];
+
+    $postcode = $postCodes[$city];
+
     $address = new Address();
     $address->setStreetAddress($this->faker->streetAddress());
-    $address->setCity($this->faker->city());
-    $address->setPostcode($this->faker->postcode());
+    $address->setCity($city);
+    $address->setPostcode($postcode);
     $address->setCustomer($customer);
     $manager->persist($address);
   }
 
-  private function GenerateCustomers(mixed $manager): void
+  private function generateCustomers(mixed $manager): void
   {
     $this->faker = Factory::create();
 
@@ -91,11 +161,11 @@ class AppFixtures extends Fixture
       $customer->setfirstName($this->faker->firstName($gender = 'male' | 'female'));
       $customer->setLastname($this->faker->lastName());
       $manager->persist($customer);
-      $this->GenerateAddresses($manager, $customer);
+      $this->generateAddress($manager, $customer);
     }
   }
 
-  private function GenerateRoles(mixed $manager): void
+  private function generateRoles(mixed $manager): void
   {
     $OPS = new Role();
     $OPS->setName('OPS');
@@ -107,7 +177,7 @@ class AppFixtures extends Fixture
     $manager->flush();
   }
 
-  private function GenerateAssociates(mixed $manager): void
+  private function generateAssociates(mixed $manager): void
   {
     $this->faker = Factory::create();
 
@@ -128,7 +198,7 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function GeneratePackagings(mixed $manager): void
+  private function generatePackagings(mixed $manager): void
   {
 
     $packs = [
@@ -172,7 +242,7 @@ class AppFixtures extends Fixture
     $manager->flush();
   }
 
-  private function GeneratePackages(mixed $manager, mixed $order)
+  private function generatePackages(mixed $manager, mixed $order)
   {
 
     $PackagingRepository = $manager->getRepository(Packaging::class);
@@ -180,13 +250,13 @@ class AppFixtures extends Fixture
     shuffle($packagings);
 
     $package = new Package();
-    $package->setWeight(mt_rand(50, 2000));
+    $package->setWeight(random_int(50, 2000));
     $package->setPackaging($packagings[0]);
     $package->setOrderId($order);
     $manager->persist($package);
   }
 
-  private function GenerateOrders(mixed $manager): void
+  private function generateOrders(mixed $manager): void
   {
     $CustomerRepository = $manager->getRepository(Customer::class);
     $AddressRepository = $manager->getRepository(Address::class);
@@ -201,16 +271,14 @@ class AppFixtures extends Fixture
 
       $address = $AddressRepository->findOneBy(['customer' => $customerId]);
 
-      /* $customerAddresses = $customer->getAddresses(); */
-
       $order->setAddress($address);
       $manager->persist($order);
 
-      $this->GeneratePackages($manager, $order);
+      $this->generatePackages($manager, $order);
     }
   }
 
-  private function GenerateDeliveryPeople(mixed $manager, $DeliveryCompany): void
+  private function generateDeliveryPeople(mixed $manager, $DeliveryCompany): void
   {
     $this->faker = Factory::create();
 
@@ -229,7 +297,7 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function GenerateDeliveryCompany(mixed $manager): void
+  private function generateDeliveryCompany(mixed $manager): void
   {
     $companiyNames = ['ATA', 'CNPS', 'Coliwest', 'HTDS', 'RAIZ'];
 
@@ -239,11 +307,11 @@ class AppFixtures extends Fixture
 
       $manager->persist($DeliveryCompany);
 
-      $this->GenerateDeliveryPeople($manager, $DeliveryCompany);
+      $this->generateDeliveryPeople($manager, $DeliveryCompany);
     }
   }
 
-  private function GenerateStaggings(mixed $manager): void
+  private function generateStaggings(mixed $manager): void
   {
     $letters = ['A', 'B', 'C', 'D', 'E', 'G'];
 
@@ -258,10 +326,10 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function GenerateLocations(mixed $manager): void
+  private function generateLocations(mixed $manager): void
   {
     $alleys = ['B', 'C'];
-    $letters = ['A', 'B', 'C'];
+    $letters = ['A', 'B', 'C', 'D', 'E', 'G'];
 
     foreach ($alleys as $alley) {
       $alleyNumber = 1;
@@ -281,32 +349,35 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function GenerateBags(mixed $manager): void
+  private function generateBags(mixed $manager): void
   {
-    /* TODO: */
+    $colors = ['BLK', 'NVY', 'ORG', 'YLO', 'GRN'];
+
+    foreach ($colors as $color) {
+      $randomizer = new \Random\Randomizer();
+      for ($i = 0; $i < 130; $i++) {
+        $colorNumber = random_int(1, 9999);
+        $bag = new Bag();
+        $colorNumber_format = sprintf("%04d", $colorNumber);
+        $bag->setName($color . '-' . $colorNumber_format);
+        $bag->setDamaged($randomizer->nextFloat() < 0.1);
+        $manager->persist($bag);
+      }
+    }
   }
 
   public function load(ObjectManager $manager): void
   {
-    /* TEST PRODUCT */
-    /* $this->faker = Factory::create();
-    for ($i = 0; $i < 20; $i++) {
-      $product = new Product();
-      $product->setName($this->faker->words(4, true));
-      $product->setPrice(mt_rand(10, 100));
-      $manager->persist($product);
-    } */
-
-    $this->GenerateTrucks($manager);
-    $this->GenerateCustomers($manager);
-    $this->GenerateRoles($manager);
-    $this->GenerateAssociates($manager);
-    $this->GeneratePackagings($manager);
-    $this->GenerateOrders($manager);
-    $this->GenerateDeliveryCompany($manager);
-    $this->GenerateStaggings($manager);
-    $this->GenerateLocations($manager);
-    $this->GenerateBags($manager);
+    $this->generateTrucks($manager);
+    $this->generateCustomers($manager);
+    $this->generateRoles($manager);
+    $this->generateAssociates($manager);
+    $this->generatePackagings($manager);
+    $this->generateOrders($manager);
+    $this->generateDeliveryCompany($manager);
+    $this->generateStaggings($manager);
+    $this->generateLocations($manager);
+    $this->generateBags($manager);
 
     $manager->flush();
   }
