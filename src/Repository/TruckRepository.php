@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Truck;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -43,7 +42,7 @@ class TruckRepository extends ServiceEntityRepository
     ];
   }
 
-  public function transformAll()
+  public function transformAll(): array
   {
 
     $entities = $this->findAll();
