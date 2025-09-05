@@ -8,8 +8,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 use App\Repository\TruckRepository;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-
 final class YardTruckController extends AbstractController
 {
   #[Route('/yard/truck', name: 'app_yard_truck')]
@@ -23,21 +21,7 @@ final class YardTruckController extends AbstractController
   #[Route('/gettrucks', name: 'get_trucks_list', methods: ['GET'])]
   public function getTrucks(TruckRepository $repository): Response
   {
-    /* $repository = $entityManager->getRepository(Truck::class); */
-
-    /* $products = $repository->transformAll(); */
-
     $datas = $repository->transformAll();
-
-    return $this->json($datas); // Sérialisation automatique
+    return $this->json($datas);
   }
-
-  /* public function toArray(): array
-  {
-    return [
-      'id' => $this->getId(),
-      'nom' => $this->getNom(),
-      // autres champs nécessaires…
-    ];
-  } */
 }

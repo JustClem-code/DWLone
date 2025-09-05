@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Truck;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,7 +17,7 @@ class TruckRepository extends ServiceEntityRepository
     parent::__construct($registry, Truck::class);
   }
 
-  public function getSubCollection($entities)
+  private function getPalletCollection($entities)
   {
 
     $collection = [];
@@ -24,7 +25,6 @@ class TruckRepository extends ServiceEntityRepository
     foreach ($entities as $entity) {
       $collection[] = [
         'id' => $entity->getId(),
-        'truck' => $entity->getTruck(),
         'associate' => $entity->getAssociate(),
       ];
     }
@@ -32,21 +32,20 @@ class TruckRepository extends ServiceEntityRepository
     return $collection;
   }
 
-
-
-  public function toArray(Truck $truck): array
+  private function toArray(Truck $truck): array
   {
     return [
       'id' => $truck->getId(),
       'wrid' => $truck->getWrid(),
       'expectedDate' => $truck->getExpectedDate(),
       'deliveryDate' => $truck->getDeliveryDate(),
-      'pallets' => $this->getSubCollection($truck->getPallets()),
+      'pallets' => $this->getPalletCollection($truck->getPallets()),
     ];
   }
 
   public function transformAll()
   {
+
     $entities = $this->findAll();
 
     $collection = [];
