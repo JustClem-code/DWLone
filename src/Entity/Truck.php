@@ -30,6 +30,9 @@ class Truck
     #[ORM\OneToMany(targetEntity: Pallet::class, mappedBy: 'truck')]
     private Collection $pallets;
 
+    #[ORM\OneToOne(mappedBy: 'truck', cascade: ['persist', 'remove'])]
+    private ?Dock $dock = null;
+
     public function __construct()
     {
         $this->pallets = new ArrayCollection();
@@ -102,6 +105,28 @@ class Truck
                 $pallet->setTruck(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDock(): ?Dock
+    {
+        return $this->dock;
+    }
+
+    public function setDock(?Dock $dock): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($dock === null && $this->dock !== null) {
+            $this->dock->setTruck(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($dock !== null && $dock->getTruck() !== $this) {
+            $dock->setTruck($this);
+        }
+
+        $this->dock = $dock;
 
         return $this;
     }

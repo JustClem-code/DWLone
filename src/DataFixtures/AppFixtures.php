@@ -15,8 +15,9 @@ use App\Entity\Customer;
 use App\Entity\Role;
 use App\Entity\Associate;
 use App\Entity\Address;
-use App\Entity\Truck;
 use App\Entity\Pallet;
+use App\Entity\Truck;
+use App\Entity\Dock;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\Persistence\ObjectManager;
@@ -47,6 +48,17 @@ class AppFixtures extends Fixture
     }
 
     return $part1 . $part2 . $part3;
+  }
+
+  private function GenerateDocks(mixed $manager): void
+  {
+    $dockNumber = 1;
+    for ($i = 0; $i < 11; $i++) {
+      $dock = New Dock();
+      $dock->setName('OB_' . $dockNumber);
+      $manager->persist($dock);
+      $dockNumber++;
+    }
   }
 
   private  function GeneratePallets(mixed $manager, mixed $truck): void
@@ -368,6 +380,7 @@ class AppFixtures extends Fixture
 
   public function load(ObjectManager $manager): void
   {
+    $this->generateDocks($manager);
     $this->generateTrucks($manager);
     $this->generateCustomers($manager);
     $this->generateRoles($manager);
