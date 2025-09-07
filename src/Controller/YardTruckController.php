@@ -38,17 +38,24 @@ final class YardTruckController extends AbstractController
     return $this->json($datas);
   }
 
+  private function findOrNull(object $repository, ?int $id): ?object {
+    if ($id === null) {
+        return null;
+    }
+    return $repository->find($id);
+}
+
+
   #[Route('/dockingTruck/{id}', name: 'docking_truck')]
   public function dockingTruck(
     Request $request,
     EntityManagerInterface $entityManager,
     int $id,
   ): Response {
-    /* $formData = $request->getPayload()->all('formData'); */
     $formData = $request->getPayload()->get('id');
 
     $truck = $entityManager->getRepository(Truck::class)->find($id);
-    $dock = $entityManager->getRepository(Dock::class)->find($formData);
+    $dock = $this->findOrNull($entityManager->getRepository(Dock::class), $formData);
 
     if (!$truck) {
       throw $this->createNotFoundException(
@@ -56,10 +63,10 @@ final class YardTruckController extends AbstractController
       );
     }
 
-    $dock->setTruck($truck);
+    $truck->setDock($dock);
 
     $entityManager->flush();
 
-    return new Response('Dock:' . $dock->getName() . ' ' . 'Truck:' . $truck->getWrid());
+    return new Response('Dock:' . $dock?->getName() . ' ' . 'Truck:' . $truck->getWrid());
   }
 }
