@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Controller\Trait\RepositoryTrait;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +18,8 @@ use App\Entity\Truck;
 
 final class YardTruckController extends AbstractController
 {
+  use RepositoryTrait;
+
   #[Route('/yard/truck', name: 'app_yard_truck')]
   public function index(): Response
   {
@@ -37,14 +41,6 @@ final class YardTruckController extends AbstractController
     $datas = $repository->transformAll();
     return $this->json($datas);
   }
-
-  private function findOrNull(object $repository, ?int $id): ?object {
-    if ($id === null) {
-        return null;
-    }
-    return $repository->find($id);
-}
-
 
   #[Route('/dockingTruck/{id}', name: 'docking_truck')]
   public function dockingTruck(
