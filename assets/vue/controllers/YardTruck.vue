@@ -1,11 +1,9 @@
 <template>
-  <h1 class="text-7xl text-lapis font-bold underline"> Home controller in Vue</h1>
-  <div>Hello {{ user_name }}!</div>
-
+  <h1 class="text-4xl text-lapis font-bold"> Yard truck</h1>
   <div>
     <div v-if="docks">
       <div v-for="dock in docks" key="dock.id">
-        <p>{{ dock.name }} {{ dock.truckId }}</p>
+        <p>{{ dock.name }} - {{ dock.truckId ?? 'non défini' }}</p>
       </div>
     </div>
     <div v-else-if="errorDock">Error: {{ errorDock }}</div>
@@ -15,18 +13,7 @@
 
 <script setup>
 import { useFetch } from './fetch.js'
-import { onMounted, ref } from 'vue'
-defineProps({
-  user_name: String
-});
 
 const { data: docks, error: errorDock } = useFetch('/getdocks')
-
-onMounted(() => {
-  console.log(`the component is now mounted.`)
-  /* fetchData(); */
-  console.log(docks);
-
-})
 
 </script>
