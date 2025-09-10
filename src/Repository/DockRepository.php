@@ -43,6 +43,10 @@ class DockRepository extends ServiceEntityRepository
       $collection[] = $this->toArray($entity);
     }
 
+    usort($collection, function ($a, $b) {
+      return $a['id'] <=> $b['id'];
+    });
+
     return $collection;
   }
 
