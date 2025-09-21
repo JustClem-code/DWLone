@@ -16,19 +16,13 @@ class DockRepository extends ServiceEntityRepository
     parent::__construct($registry, Dock::class);
   }
 
-  /* private function getTruckId($entity)
-  {
-    return [
-      'id' => $entity->getId(),
-    ];
-  } */
-
   private function toArray(Dock $dock): array
   {
     return [
       'id' => $dock->getId(),
       'name' => $dock->getName(),
       'truckId' => $dock->getTruck()?->getId(),
+      'truckWrid' => $dock->getTruck()?->getWrid(),
     ];
   }
 
