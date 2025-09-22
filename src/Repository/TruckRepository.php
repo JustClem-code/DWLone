@@ -39,6 +39,7 @@ class TruckRepository extends ServiceEntityRepository
       'expectedDate' => $truck->getExpectedDate(),
       'deliveryDate' => $truck->getDeliveryDate(),
       'pallets' => $this->getPalletCollection($truck->getPallets()),
+      'dock' => $truck->getDock()?->getName(),
     ];
   }
 
