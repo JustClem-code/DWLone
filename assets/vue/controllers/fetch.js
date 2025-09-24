@@ -13,7 +13,8 @@ export function useFetch(url) {
 }
 
 export function usePostFetch(url, body) {
-
+  const data = ref(null)
+  const error = ref(null)
   fetch(url, {
     method: 'POST',
     headers: {
@@ -21,11 +22,16 @@ export function usePostFetch(url, body) {
     },
     body: JSON.stringify(body),
   })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Erreur :', error);
-  });
+    .then(async res => {
+      const resData = await res.json();
+      if (!res.ok) {
+        throw new Error(resData.message || 'Error');
+      }
+      return resData
+    })
+    .then((json) => (data.value = json))
+    .catch((err) => (error.value = err.message))
+
+  return { data, error }
+
 }
