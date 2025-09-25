@@ -12,10 +12,11 @@ export function useFetch(url) {
   return { data, error }
 }
 
-export function usePostFetch(url, body) {
+export async function usePostFetch(url, body) {
   const data = ref(null)
   const error = ref(null)
-  fetch(url, {
+
+  await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,5 +34,4 @@ export function usePostFetch(url, body) {
     .catch((err) => (error.value = err.message))
 
   return { data, error }
-
 }

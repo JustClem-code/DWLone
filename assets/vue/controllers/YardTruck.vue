@@ -13,7 +13,6 @@
     </div>
     <div class="w-full">
       <ul v-if="trucks" class="flex flex-col gap-4">
-        <!-- <li v-if="errorDocking"></li> -->
         <li v-for="truck in trucks" :key=truck.id class="border border-solid border-white rounded-md">
           <p>{{ truck.wrid }} - {{ truck.dock ?? 'non défini' }}</p>
           <select @change="submitOption($event, truck)"
@@ -27,10 +26,15 @@
       <div v-else>Loading...</div>
     </div>
   </div>
-  <!-- <div v-if="dockingError">testets</div> -->
+  <div v-if="dockingData">{{ dockingData }}</div>
+  <div v-if="dockingError">{{ dockingError }}</div>
 </template>
 
 <script setup>
+
+//TODO: -gérer la réponse de docking côté front
+//      -compartimenter les composants
+//.     -revoir les couleurs et l'UI (beurk)
 
 import { ref, watch, onMounted } from 'vue'
 
@@ -39,18 +43,26 @@ import { useFetch, usePostFetch } from './fetch.js'
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')
 
-const dockingError2 = ref(null)
-
-let errorDocking = null;
+const dockingData = ref(null)
+const dockingError = ref(null)
 
 console.log("trucks", trucks);
 console.log("docks", docks);
 
-function dockingTruck(truckId, dockId) {
- const { data: dockingData, error: dockingError2 } = usePostFetch(`/dockingTruck/${truckId}`, { id: dockId })
- console.log('dockingData', dockingData);
 
- console.log('dockingError', dockingError2.value);
+
+async function dockingTruck(truckId, dockId) {
+
+  dockingData.value = null;
+  dockingError.value = null;
+
+  const { data, error } = await usePostFetch(`/dockingTruck/${truckId}`, { id: dockId })
+
+  dockingData.value = data.value;
+  dockingError.value = error.value;
+
+  console.log('dockingData', dockingData.value);
+  console.log('dockingErrorValue', dockingError.value);
 
 }
 
@@ -58,11 +70,6 @@ function submitOption(event, item) {
   const selected = event.target.value
 
   dockingTruck(item.id, selected)
-  console.log("selected", selected);
+  console.log("dock selected", selected);
 }
-
-watch(dockingError2, () => {
-  console.log('Docking error change:', dockingError2.value)
-})
-
 </script>

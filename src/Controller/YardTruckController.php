@@ -52,22 +52,25 @@ final class YardTruckController extends AbstractController
 
     $truck = $entityManager->getRepository(Truck::class)->find($id);
     $dock = $this->findOrNull($entityManager->getRepository(Dock::class), $formData);
+    $previousDock = '';
 
     if (!$truck) {
       throw $this->createNotFoundException(
         'No truck found for id ' . $id
       );
     }
-    if ($dock->getTruck() !== null) {
-      /* throw $this->createNotFoundException('Dock is not available'); */
-
+    if ($dock->getTruck()) {
       return $this->json(['status' => 'error', 'message' => 'Dock is not available'], 400);
+    }
+
+    if ($truck->getDock()) {
+      $previousDock = $truck->getDock();
     }
 
     $truck->setDock($dock);
 
     $entityManager->flush();
 
-    return $this->json('Dock:' . $dock?->getName() . ' ' . 'Truck:' . $truck->getWrid());
+    return $this->json(['Dock:' => $dock?->getName(), 'Previous dock:' => $previousDock->getName(), 'Truck:' => $truck->getWrid()]);
   }
 }
