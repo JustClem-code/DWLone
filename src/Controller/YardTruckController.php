@@ -71,6 +71,6 @@ final class YardTruckController extends AbstractController
 
     $entityManager->flush();
 
-    return $this->json(['Dock:' => $dock?->getName(), 'Previous dock:' => $previousDock->getName(), 'Truck:' => $truck->getWrid()]);
+    return $this->json(['dockId' => $dock?->getId(), 'dockName' => $dock?->getName(), 'previousDockId' => $previousDock?->getId(), 'truckId' => $truck->getId(), 'truckWrid' => $truck->getWrid()]);
   }
 }

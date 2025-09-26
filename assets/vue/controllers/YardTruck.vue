@@ -4,7 +4,7 @@
     <div class="w-full">
       <ul v-if="docks" class="flex flex-col gap-4">
         <li v-for="dock in docks" :key=dock.id class="border border-solid border-white rounded-md">
-          <p>{{ dock.name }} - {{ dock.truckWrid ?? 'non défini' }}</p>
+          <p>{{ dock.name }} - {{ dock.truckWrid ?? 'No truck' }}</p>
           <button @click="dockingTruck(dock.id)">Click Me</button>
         </li>
       </ul>
@@ -14,7 +14,7 @@
     <div class="w-full">
       <ul v-if="trucks" class="flex flex-col gap-4">
         <li v-for="truck in trucks" :key=truck.id class="border border-solid border-white rounded-md">
-          <p>{{ truck.wrid }} - {{ truck.dock ?? 'non défini' }}</p>
+          <p>{{ truck.wrid }} - {{ truck.dock ?? 'Waiting dock' }}</p>
           <select @change="submitOption($event, truck)"
             class="form-select block w-full mt-1 rounded border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
             <option disabled value="">Choisir…</option>
@@ -26,7 +26,7 @@
       <div v-else>Loading...</div>
     </div>
   </div>
-  <div v-if="dockingData">{{ dockingData }}</div>
+  <div v-if="dockingData">{{ dockingData.dockId }}</div>
   <div v-if="dockingError">{{ dockingError }}</div>
 </template>
 
@@ -49,19 +49,28 @@ const dockingError = ref(null)
 console.log("trucks", trucks);
 console.log("docks", docks);
 
-
+function updateListElements() {
+  const truck = trucks.value.find(item => item.id === dockingData.value.truckId);
+  const newDock = docks.value.find(item => item.id === dockingData.value.dockId);
+  const previousDock = docks.value.find(item => item.id === dockingData.value.previousDockId);
+  truck.dock = dockingData.value.dockName
+  newDock.truckWrid = dockingData.value.truckWrid
+  previousDock.truckWrid = null
+}
 
 async function dockingTruck(truckId, dockId) {
-
+  const { data, error } = await usePostFetch(`/dockingTruck/${truckId}`, { id: dockId })
   dockingData.value = null;
   dockingError.value = null;
-
-  const { data, error } = await usePostFetch(`/dockingTruck/${truckId}`, { id: dockId })
 
   dockingData.value = data.value;
   dockingError.value = error.value;
 
-  console.log('dockingData', dockingData.value);
+  if (dockingData.value) {
+    console.log('dockingData', dockingData.value);
+    updateListElements()
+  }
+
   console.log('dockingErrorValue', dockingError.value);
 
 }
