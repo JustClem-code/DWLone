@@ -5,7 +5,8 @@
       <ul v-if="docks" class="flex flex-col gap-4">
         <li v-for="dock in docks" :key=dock.id class="border border-solid border-white rounded-md">
           <p>{{ dock.name }} - {{ dock.truckWrid ?? 'No truck' }}</p>
-          <button @click="dockingTruck(dock.id)">Click Me</button>
+          <SelectComponant :options="trucks" @submitOption="val => dockingTruck(val.selected, dock)">
+          </SelectComponant>
         </li>
       </ul>
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
@@ -15,11 +16,8 @@
       <ul v-if="trucks" class="flex flex-col gap-4">
         <li v-for="truck in trucks" :key=truck.id class="border border-solid border-white rounded-md">
           <p>{{ truck.wrid }} - {{ truck.dock ?? 'Waiting dock' }}</p>
-          <select @change="submitOption($event, truck)"
-            class="form-select block w-full mt-1 rounded border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
-            <option disabled value="">Choisir…</option>
-            <option v-for="dock in docks" :value="dock.id">{{ dock.name }}</option>
-          </select>
+          <SelectComponant :options="docks" @submitOption="val => dockingTruck(truck, val.selected)">
+          </SelectComponant>
         </li>
       </ul>
       <div v-else-if="errorTruck">Error: {{ errorTruck }}</div>
@@ -33,12 +31,14 @@
 <script setup>
 
 //TODO: -gérer la réponse de docking côté front
+//.     - truck name au lieu de truck wrid ?
 //      -compartimenter les composants
 //.     -revoir les couleurs et l'UI (beurk)
 
 import { ref, watch, onMounted } from 'vue'
-
 import { useFetch, usePostFetch } from './fetch.js'
+import SelectComponant from './UI/SelectComponant.vue'
+
 
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')
@@ -48,6 +48,7 @@ const dockingError = ref(null)
 
 console.log("trucks", trucks);
 console.log("docks", docks);
+
 
 function updateListElements() {
   const truck = trucks.value.find(item => item.id === dockingData.value.truckId);
@@ -59,7 +60,8 @@ function updateListElements() {
 }
 
 async function dockingTruck(truckId, dockId) {
-  const { data, error } = await usePostFetch(`/dockingTruck/${truckId}`, { id: dockId })
+
+  const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId.id })
   dockingData.value = null;
   dockingError.value = null;
 
@@ -75,10 +77,4 @@ async function dockingTruck(truckId, dockId) {
 
 }
 
-function submitOption(event, item) {
-  const selected = event.target.value
-
-  dockingTruck(item.id, selected)
-  console.log("dock selected", selected);
-}
 </script>
