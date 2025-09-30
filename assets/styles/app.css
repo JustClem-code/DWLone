@@ -8,3 +8,8 @@
   --color-lapis: oklch(0.35 0.42 211);
   --text-7xl: 5rem;
 }
+
+[role=button], button {
+    cursor: pointer;
+}
+
