@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="openDialog">{{ title ?? "Option" }}</button>
+    <button @click="openDialog" class="w-full p-2">{{ title ?? "Option" }}</button>
     <dialog ref="myDialog"
       class="p-8 rounded-2xl shadow-2xl max-w-[90vw] max-h-[90vh] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       <div class="flex justify-center items-center w-50">
