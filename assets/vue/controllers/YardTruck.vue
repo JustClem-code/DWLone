@@ -10,7 +10,8 @@
             <h3 class="text-base font-semibold">{{ dock.name }}</h3>
             <p class="text-sm font-light">{{ dock.truckWrid ?? 'No truck' }}</p>
           </div>
-          <SelectDialogComponant title="Trucks" :options="trucks" @submitOption="val => dockingTruck(val.selected, dock)"/>
+          <SelectDialogComponant title="Trucks" :options="trucks"
+            @submitOption="val => dockingTruck(val.selected, dock)" />
         </li>
       </ul>
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
@@ -21,7 +22,8 @@
       <ul v-if="trucks" class="flex flex-col gap-4">
         <li v-for="truck in trucks" :key=truck.id class="border border-solid border-white rounded-md">
           <p>{{ truck.wrid }} - {{ truck.dock ?? 'Waiting dock' }}</p>
-          <SelectDialogComponant title="Docks" :options="docks" @submitOption="val => dockingTruck(truck, val.selected)"/>
+          <SelectDialogComponant title="Docks" :options="docks"
+            @submitOption="val => dockingTruck(truck, val.selected)" />
         </li>
       </ul>
       <div v-else-if="errorTruck">Error: {{ errorTruck }}</div>
@@ -35,7 +37,7 @@
 <script setup>
 
 //TODO:
-// - terminer la modal de dialog, fermer avec un clic externe, bloquer le fond
+// - terminer la modal de dialog, select item and valid button
 // - créer une chips d'état "free" et "occupe" et désactiver le bouton
 // - gérer la réponse de docking côté front
 // - truck name au lieu de truck wrid ?
@@ -68,8 +70,8 @@ function updateListElements() {
 
 async function dockingTruck(truckId, dockId) {
 
-console.log('debug truckId', truckId);
-console.log('debug dockId', dockId);
+  console.log('debug truckId', truckId);
+  console.log('debug dockId', dockId);
 
 
   const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId.id })

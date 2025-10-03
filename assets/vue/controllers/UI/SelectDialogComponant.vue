@@ -9,7 +9,7 @@
           <div v-for="option in options" :key="option.id">
             <button @click="selectOption(option)">{{ option.name ?? (option.wrid ?? 'option') }}</button>
           </div>
-          <button @click="closeDialog">Fermer</button>
+          <button class="rounded-md bg-white py-2 px-3 hover:bg-gray-50 border border-solid border-gray-300 text-sm font-semibold" @click="closeDialog">Cancel</button>
         </form>
       </div>
     </div>
