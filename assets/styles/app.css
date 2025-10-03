@@ -22,3 +22,8 @@
     scrollbar-width: none;    /* Firefox */
   }
 }
+
+body:has(dialog:open) {
+  overflow: hidden;
+}
+
