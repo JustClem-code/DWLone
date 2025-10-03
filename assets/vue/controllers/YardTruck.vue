@@ -5,8 +5,8 @@
 
     <div class="w-full border border-solid border-slate-300 rounded-xl overflow-auto no-scrollbar p-8">
       <ul v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-2">
-        <li v-for="dock in docks" :key=dock.id class="w-full bg-white border border-0 rounded-md">
-          <div class="border-b border-slate-50 p-4">
+        <li v-for="dock in docks" :key=dock.id class="w-full bg-white border border-0 rounded-md shadow-sm">
+          <div class="border-b border-slate-200 p-4">
             <h3 class="text-base font-semibold">{{ dock.name }}</h3>
             <p class="text-sm font-light">{{ dock.truckWrid ?? 'No truck' }}</p>
           </div>
