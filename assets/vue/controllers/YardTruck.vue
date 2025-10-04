@@ -7,10 +7,17 @@
       <ul v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-2">
         <li v-for="dock in docks" :key=dock.id class="w-full bg-white border border-0 rounded-md shadow-sm">
           <div class="border-b border-slate-200 p-4">
-            <h3 class="text-base font-semibold">{{ dock.name }}</h3>
-            <p class="text-sm font-light">{{ dock.truckWrid ?? 'No truck' }}</p>
+            <div class="flex justify-between">
+              <h3 class="text-base font-semibold">{{ dock.name }}</h3>
+              <span v-if="!dock.truckWrid"
+                class="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 inset-ring inset-ring-green-500/20">Free</span>
+              <span v-else
+                class="inline-flex items-center rounded-md bg-yellow-400/10 px-2 py-1 text-xs font-medium text-yellow-500 inset-ring inset-ring-yellow-400/20">Used</span>
+            </div>
+            <p class="text-sm font-light" :class="{ 'opacity-25': !dock.truckWrid }">{{ dock.truckWrid ?? 'No truck' }}
+            </p>
           </div>
-          <SelectDialogComponant title="Trucks" :options="trucks"
+          <SelectDialogComponant title="Trucks" :options="trucks" :disabled="dock.truckWrid"
             @submitOption="val => dockingTruck(val.selected, dock)" />
         </li>
       </ul>

@@ -12,6 +12,9 @@
 [role=button], button {
     cursor: pointer;
 }
+[role=button]:disabled, button:disabled {
+    cursor: not-allowed;
+}
 
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
@@ -26,4 +29,3 @@
 body:has(dialog:open) {
   overflow: hidden;
 }
-

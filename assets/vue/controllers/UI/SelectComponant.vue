@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps({
   options: Array
