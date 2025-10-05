@@ -4,23 +4,9 @@
   <div class="flex flex-col p-8 gap-4">
 
     <div class="w-full border border-solid border-slate-300 rounded-xl overflow-auto no-scrollbar p-8">
-      <ul v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-2">
-        <li v-for="dock in docks" :key=dock.id class="w-full bg-white border border-0 rounded-md shadow-sm">
-          <div class="border-b border-slate-200 p-4">
-            <div class="flex justify-between">
-              <h3 class="text-base font-semibold">{{ dock.name }}</h3>
-              <span v-if="!dock.truckWrid"
-                class="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 inset-ring inset-ring-green-500/20">Free</span>
-              <span v-else
-                class="inline-flex items-center rounded-md bg-yellow-400/10 px-2 py-1 text-xs font-medium text-yellow-500 inset-ring inset-ring-yellow-400/20">Used</span>
-            </div>
-            <p class="text-sm font-light" :class="{ 'opacity-25': !dock.truckWrid }">{{ dock.truckWrid ?? 'No truck' }}
-            </p>
-          </div>
-          <SelectDialogComponant title="Trucks" :options="trucks" :disabled="dock.truckWrid"
-            @submitOption="val => dockingTruck(val.selected, dock)" />
-        </li>
-      </ul>
+      <div v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-2">
+        <DockCardComponent v-for="dock in docks" :key=dock.id :dock="dock" />
+      </div>
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
       <div v-else>Loading...</div>
     </div>
@@ -30,7 +16,7 @@
         <li v-for="truck in trucks" :key=truck.id class="border border-solid border-white rounded-md">
           <p>{{ truck.wrid }} - {{ truck.dock ?? 'Waiting dock' }}</p>
           <SelectDialogComponant title="Docks" :options="docks"
-            @submitOption="val => dockingTruck(truck, val.selected)" />
+            @submitOption="val => dockingTruck(truck, val.selected)" :disabled="true" />
         </li>
       </ul>
       <div v-else-if="errorTruck">Error: {{ errorTruck }}</div>
@@ -51,13 +37,16 @@
 // - compartimenter les composants
 // - revoir les couleurs et l'UI (beurk)
 
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 import { useFetch, usePostFetch } from './fetch.js'
-import SelectDialogComponant from './UI/SelectDialogComponant.vue'
+import SelectDialogComponant from './UI/SelectDialogComponent.vue'
+import BadgeComponent from './UI/BadgeComponent.vue'
+import DockCardComponent from './UI/DockCardComponent.vue'
 
 
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')
+provide('yardTruck', { trucks, dockingTruck })
 
 const dockingData = ref(null)
 const dockingError = ref(null)

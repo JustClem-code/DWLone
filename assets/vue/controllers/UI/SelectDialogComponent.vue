@@ -1,5 +1,5 @@
 <template>
-  <button @click="openDialog" class="w-full p-2 disabled:opacity-25" :disabled="disabled">{{ title ?? "Option" }}</button>
+  <button @click="openDialog" class="w-full p-2 disabled:opacity-25" :disabled="!disabled">{{ title ?? "Option" }}</button>
   <dialog ref="myDialog">
     <div class="fixed h-full w-full" @click="closeDialog"></div>
     <div
