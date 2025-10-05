@@ -1,6 +1,4 @@
 <template>
-  <h1 class="text-4xl text-blue-500 font-bold"> Yard truck</h1>
-
   <div class="flex flex-col p-8 gap-4">
 
     <div class="w-full border border-solid border-slate-300 rounded-xl overflow-auto no-scrollbar p-8">
@@ -29,18 +27,9 @@
 
 <script setup>
 
-//TODO:
-// - terminer la modal de dialog, select item and valid button
-// - créer une chips d'état "free" et "occupe" et désactiver le bouton
-// - gérer la réponse de docking côté front
-// - truck name au lieu de truck wrid ?
-// - compartimenter les composants
-// - revoir les couleurs et l'UI (beurk)
-
 import { ref, provide } from 'vue'
 import { useFetch, usePostFetch } from './fetch.js'
 import SelectDialogComponant from './UI/SelectDialogComponent.vue'
-import BadgeComponent from './UI/BadgeComponent.vue'
 import DockCardComponent from './UI/DockCardComponent.vue'
 
 

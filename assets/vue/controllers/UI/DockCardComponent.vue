@@ -19,10 +19,9 @@ import { inject } from 'vue'
 import BadgeComponent from './BadgeComponent.vue';
 import SelectDialogComponent from './SelectDialogComponent.vue';
 
+const { trucks, dockingTruck } = inject('yardTruck')
 const props = defineProps({
   dock: Object,
 })
-
-const { trucks, dockingTruck } = inject('yardTruck')
 
 </script>
