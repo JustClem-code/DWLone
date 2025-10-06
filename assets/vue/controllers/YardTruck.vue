@@ -1,20 +1,20 @@
 <template>
   <div class="flex flex-col gap-4">
 
-    <div class="w-full border border-solid border-slate-300 rounded-xl overflow-auto no-scrollbar p-8">
-      <div v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-2">
+    <BorderedContent title="Docks">
+      <div v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <DockCardComponent v-for="dock in docks" :key=dock.id :dock="dock" />
       </div>
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
       <div v-else>Loading...</div>
-    </div>
+    </BorderedContent>
 
     <div class="w-full">
       <ul v-if="trucks" class="flex flex-col gap-4">
         <li v-for="truck in trucks" :key=truck.id class="border border-solid border-white rounded-md">
           <p>{{ truck.wrid }} - {{ truck.dock ?? 'Waiting dock' }}</p>
-          <SelectDialogComponant title="Docks" :options="docks"
-            @submitOption="val => dockingTruck(truck, val.selected)" :disabled="true" />
+          <SelectDialogComponant title="Docks" :options="docks" @submitOption="val => dockingTruck(truck, val.selected)"
+            :disabled="true" />
         </li>
       </ul>
       <div v-else-if="errorTruck">Error: {{ errorTruck }}</div>
@@ -31,6 +31,7 @@ import { ref, provide } from 'vue'
 import { useFetch, usePostFetch } from './fetch.js'
 import SelectDialogComponant from './UI/SelectDialogComponent.vue'
 import DockCardComponent from './UI/DockCardComponent.vue'
+import BorderedContent from './partials/BorderedContent.vue'
 
 
 const { data: docks, error: errorDock } = useFetch('/getdocks')
