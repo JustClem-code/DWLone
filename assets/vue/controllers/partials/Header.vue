@@ -15,6 +15,7 @@
       <div class="w-full flex-grow md:flex md:items-center md:w-auto hidden md:block">
         <NavContent />
       </div>
+      <DarkTheme/>
     </div>
   </nav>
   <header class="relative bg-gray-50">
@@ -30,6 +31,7 @@ import { ref, provide } from 'vue'
 import NavContent from './NavContent.vue';
 import LogoTitle from './LogoTitle.vue';
 import SideBar from './SideBar.vue';
+import DarkTheme from './DarkTheme.vue';
 
 const open = ref(false)
 

@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @source not "../../public";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+
 /* Pour avoir les valeurs des paramètres oklch, il faut aller chercher le code HSL de la couleur */
 
 @theme {

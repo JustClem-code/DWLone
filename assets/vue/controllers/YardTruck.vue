@@ -28,7 +28,7 @@
 <script setup>
 
 import { ref, provide } from 'vue'
-import { useFetch, usePostFetch } from './fetch.js'
+import { useFetch, usePostFetch } from '../composables/fetch.js'
 import SelectDialogComponant from './UI/SelectDialogComponent.vue'
 import DockCardComponent from './UI/DockCardComponent.vue'
 import BorderedContent from './partials/BorderedContent.vue'

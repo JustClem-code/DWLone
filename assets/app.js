@@ -11,3 +11,11 @@ import './bootstrap.js';
 import './styles/app.css';
 
 registerVueControllerComponents(require.context('./vue/controllers', true, /\.vue$/));
+
+
+const ls = localStorage.getItem('theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const shouldDark = ls === 'dark' || (ls == null && prefersDark);
+document.documentElement.classList.toggle('dark', shouldDark);
+// Variante data-attr: document.documentElement.setAttribute('data-theme', shouldDark ? 'dark' : 'light');
+
