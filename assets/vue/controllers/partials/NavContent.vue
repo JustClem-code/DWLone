@@ -1,6 +1,6 @@
 <template>
-  <div class="text-sm md:flex-grow">
-    <a v-for="item in navigation" :key="item.name" :href="item.href"
+  <div class="flex flex-col md:flex-row text-sm md:flex-grow">
+    <a v-for="item in navigations" :key="item.name" :href="item.href"
       :class="[item === currentItem ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-white/5 hover:text-gray-800', 'rounded-md px-3 py-2 text-sm font-medium']"
       :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
 
@@ -12,9 +12,8 @@
 
 <script setup>
 
-const props = defineProps({
-  navigation: Array,
-  currentItem: Object
-})
+import { inject } from 'vue'
+
+const { navigations, currentItem } = inject('navigation')
 
 </script>

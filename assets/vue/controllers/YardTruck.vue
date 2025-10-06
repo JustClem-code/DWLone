@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col p-8 gap-4">
+  <div class="flex flex-col gap-4">
 
     <div class="w-full border border-solid border-slate-300 rounded-xl overflow-auto no-scrollbar p-8">
       <div v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-2">
