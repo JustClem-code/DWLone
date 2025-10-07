@@ -9,7 +9,7 @@
 //TODO:
 // ajouter des loader
 // animate-pulse pour les skeleton loader
-// dark mode
+// dark mode -> finir la modal de dialog, gestion de variables global
 // gestion des dates...
 // slot component pour les bordures en contour (je me comprends) ?
 // terminer la modal de dialog, select item and valid button
@@ -17,7 +17,7 @@
 // truck name au lieu de truck wrid ?
 
 import { onMounted } from 'vue'
-import BorderedContent from './partials/BorderedContent.vue';
+import BorderedContent from './UI/BorderedContent.vue';
 defineProps({
   user_name: String
 });

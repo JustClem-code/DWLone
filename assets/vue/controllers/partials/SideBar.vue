@@ -1,6 +1,6 @@
 <template>
-  <aside class="fixed w-full h-screen top-0 bg-white shadow-lg z-50" :class="open ? 'left-0' : '-left-full'">
-    <div class="flex items-center justify-between flex-wrap border-b border-solid border-gray-200 p-6">
+  <aside class="fixed w-full h-screen top-0 bg-gray-100 dark:bg-gray-900 shadow-lg z-50" :class="open ? 'left-0' : '-left-full'">
+    <div class="flex items-center justify-between flex-wrap border-b border-solid bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700/90 p-6">
       <LogoTitle />
       <div class="block md:hidden">
         <button class="flex items-center p-3 hover:text-gray-700" :class="open ? 'left-0' : '-left-full'"

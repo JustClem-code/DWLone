@@ -1,6 +1,6 @@
 <template>
   <!-- <Sidebar bind:open bind:is_user /> -->
-  <nav class="bg-white border-b border-solid border-gray-200">
+  <nav class="bg-white dark:bg-gray-800/50 border-b border-solid border-gray-200 dark:border-gray-700/90">
     <div class="flex items-center justify-between gap-8 flex-wrap mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 ">
       <LogoTitle />
       <div class="block md:hidden">
@@ -18,9 +18,9 @@
       <DarkTheme/>
     </div>
   </nav>
-  <header class="relative bg-gray-50">
+  <header class="relative bg-gray-100 dark:bg-gray-900">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ currentItem.name }}</h1>
+      <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">{{ currentItem.name }}</h1>
     </div>
   </header>
   <SideBar class="md:hidden lg:hidden" :open="open" @open="val => toggleSideBar(val)" />

@@ -1,9 +1,9 @@
 <template>
-  <button @click="openDialog" class="w-full p-2 disabled:opacity-25" :disabled="!disabled">{{ title ?? "Option" }}</button>
+  <button @click="openDialog" class="w-full p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25" :disabled="!disabled">{{ title ?? "Option" }}</button>
   <dialog ref="myDialog">
     <div class="fixed h-full w-full" @click="closeDialog"></div>
     <div
-      class="bg-white max-w-[90vw] max-h-[90vh] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-8 rounded-2xl shadow-2xl">
+      class="bg-white dark:bg-gray-800 border border-0 dark:border-1 dark:border-gray-700/90 max-w-[90vw] max-h-[90vh] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-8 rounded-2xl shadow-2xl">
       <div class="flex w-full">
         <form @submit.prevent="submitOp" class="flex flex-col gap-2">
           <button v-for="option in options" :key="option.id" type="button" @click="selectOption(option)"
