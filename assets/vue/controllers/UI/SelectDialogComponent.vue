@@ -7,7 +7,7 @@
       <div class="flex w-full">
         <form @submit.prevent="submitOp" class="flex flex-col gap-2">
           <button v-for="option in options" :key="option.id" type="button" @click="selectOption(option)"
-            class="w-full text-base border border-solid border-gray-100 hover:border-gray-300 hover:text-blue-500 p-2 rounded-md"
+            class="w-full text-base border border-solid border-gray-100 hover:border-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
             :class="{ 'border-2 border-slate-500 text-blue-700 hover:border-slate-500 hover:text-blue-700': selected?.id === option.id }">
             {{ option.name ?? (option.wrid ?? 'option') }}
           </button>

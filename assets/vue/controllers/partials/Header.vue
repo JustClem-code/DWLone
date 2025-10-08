@@ -20,7 +20,7 @@
   </nav>
   <header class="relative bg-gray-100 dark:bg-gray-900">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">{{ currentItem.name }}</h1>
+      <h1 class="text-3xl font-bold tracking-tight">{{ currentItem.name }}</h1>
     </div>
   </header>
   <SideBar class="md:hidden lg:hidden" :open="open" @open="val => toggleSideBar(val)" />

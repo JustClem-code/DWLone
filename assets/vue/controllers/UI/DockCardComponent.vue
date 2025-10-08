@@ -2,7 +2,7 @@
   <div class="w-full bg-white dark:bg-gray-800/50 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
     <div class="border-b border-gray-300 dark:border-gray-700/90 p-4">
       <div class="flex justify-between">
-        <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ dock.name }}</h3>
+        <h3 class="text-base font-semibold">{{ dock.name }}</h3>
         <BadgeComponent :type="!dock.truckWrid ? 'valid' : 'warning'" :title="!dock.truckWrid ? 'Free' : 'Used'" />
       </div>
       <p class="text-sm font-light text-gray-800 dark:text-gray-400" :class="{ 'opacity-25': !dock.truckWrid }">
