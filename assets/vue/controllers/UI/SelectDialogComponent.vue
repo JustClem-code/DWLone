@@ -1,5 +1,6 @@
 <template>
-  <button @click="openDialog" class="w-full p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25" :disabled="!disabled">{{ title ?? "Option" }}</button>
+  <button @click="openDialog" class="w-full p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25"
+    :disabled="!disabled">{{ title ?? "Option" }}</button>
   <dialog ref="myDialog">
     <div class="fixed h-full w-full" @click="closeDialog"></div>
     <div
@@ -12,11 +13,8 @@
             {{ option.name ?? (option.wrid ?? 'option') }}
           </button>
           <div class="flex gap-2">
-            <button type="button"
-              class="bg-white hover:bg-gray-50 border border-solid border-gray-300 text-sm font-semibold py-2 px-3 rounded-md"
-              @click="closeDialog">Cancel</button>
-            <button type="submit" :disabled="!selected"
-              class="text-white bg-blue-500 hover:bg-blue-700 disabled:bg-blue-100 text-sm font-semibold py-2 px-3 rounded-md">Submit</button>
+            <BaseButton title="Cancel" styleColor="empty" @click="closeDialog" />
+            <BaseButton buttonType="submit" title="Submit" styleColor="primary" :isDisabled="!selected" />
           </div>
         </form>
       </div>
@@ -26,6 +24,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import BaseButton from './BaseButton.vue';
 
 const props = defineProps({
   title: String,
