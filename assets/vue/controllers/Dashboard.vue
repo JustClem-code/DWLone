@@ -7,7 +7,7 @@
 <script setup>
 
 //TODO:
-// ajouter des loader
+// ajouter des loader -> finir le bouton
 // animate-pulse pour les skeleton loader
 // dark mode -> finir la modal de dialog
 // gestion des dates...

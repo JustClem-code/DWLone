@@ -33,13 +33,14 @@ import SelectDialogComponant from './UI/SelectDialogComponent.vue'
 import DockCardComponent from './UI/DockCardComponent.vue'
 import BorderedContent from './UI/BorderedContent.vue'
 
-
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')
-provide('yardTruck', { trucks, dockingTruck })
 
 const dockingData = ref(null)
 const dockingError = ref(null)
+const dockingIsLoading = ref(false)
+
+provide('yardTruck', { trucks, dockingTruck, dockingIsLoading })
 
 console.log("trucks", trucks);
 console.log("docks", docks);
@@ -58,7 +59,7 @@ async function dockingTruck(truckId, dockId) {
 
   console.log('debug truckId', truckId);
   console.log('debug dockId', dockId);
-
+  dockingIsLoading.value = true;
 
   const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId.id })
   dockingData.value = null;
@@ -70,6 +71,7 @@ async function dockingTruck(truckId, dockId) {
   if (dockingData.value) {
     console.log('dockingData', dockingData.value);
     updateListElements()
+    dockingIsLoading.value = false;
   }
 
   console.log('dockingErrorValue', dockingError.value);

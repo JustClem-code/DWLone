@@ -2,7 +2,7 @@
   <button :type="buttonType ?? 'button'"
     class="text-sm font-semibold py-2 px-3 rounded-md shadow-xs inset-ring inset-shadow-sm" :class="computedColor"
     @click="emit('click')" :disabled="isDisabled">
-    {{ title }}
+    {{ isLoading ? 'loading ' : title }}
   </button>
 </template>
 
@@ -14,6 +14,7 @@ const props = defineProps({
   styleColor: String,
   title: String,
   isDisabled: Boolean,
+  isLoading: Boolean
 })
 
 const emit = defineEmits(['click'])

@@ -14,7 +14,8 @@
           </button>
           <div class="flex gap-2">
             <BaseButton title="Cancel" styleColor="empty" @click="closeDialog" />
-            <BaseButton buttonType="submit" title="Submit" styleColor="primary" :isDisabled="!selected" />
+            <BaseButton buttonType="submit" title="Submit" styleColor="primary" :isDisabled="!selected || dockingIsLoading"
+              :isLoading="dockingIsLoading" />
           </div>
         </form>
       </div>
@@ -23,8 +24,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject, watch } from 'vue'
 import BaseButton from './BaseButton.vue';
+
+const { dockingIsLoading } = inject('yardTruck')
 
 const props = defineProps({
   title: String,
@@ -35,6 +38,8 @@ const props = defineProps({
 const emit = defineEmits(['submitOption'])
 
 const myDialog = ref(null);
+
+const shouldCloseOnLoad = ref(false)
 
 const openDialog = () => {
   myDialog.value?.showModal();
@@ -52,6 +57,14 @@ function selectOption(option) {
 
 function submitOp() {
   emit('submitOption', { selected: selected.value })
-  closeDialog()
+  shouldCloseOnLoad.value = true
 }
+
+watch(dockingIsLoading, (val) => {
+  if (val === false && shouldCloseOnLoad.value) {
+    closeDialog()
+    shouldCloseOnLoad.value = false
+  }
+})
+
 </script>
