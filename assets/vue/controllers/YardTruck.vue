@@ -8,7 +8,6 @@
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
       <div v-else>Loading...</div>
     </BorderedContent>
-
     <div class="w-full">
       <ul v-if="trucks" class="flex flex-col gap-4">
         <li v-for="truck in trucks" :key=truck.id class="border border-solid border-white rounded-md">

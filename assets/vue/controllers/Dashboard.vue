@@ -7,13 +7,10 @@
 <script setup>
 
 //TODO:
-// ajouter des loader -> finir le bouton
 // animate-pulse pour les skeleton loader
-// dark mode -> finir la modal de dialog
 // gestion des dates...
-// terminer la modal de dialog, select item and valid button
-// gérer la réponse de docking côté front
 // truck name au lieu de truck wrid ?
+// Faut s'attaquer aux trucks maintenant...
 
 import { onMounted } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue';

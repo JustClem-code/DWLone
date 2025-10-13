@@ -1,13 +1,15 @@
 <template>
   <button :type="buttonType ?? 'button'"
-    class="text-sm font-semibold py-2 px-3 rounded-md shadow-xs inset-ring inset-shadow-sm" :class="computedColor"
+    class="inline-flex w-full justify-center items-center text-sm font-semibold leading-6 py-2 px-3 rounded-md shadow-xs inset-ring inset-shadow-sm transition duration-150 ease-in-out" :class="computedColor"
     @click="emit('click')" :disabled="isDisabled">
-    {{ isLoading ? 'loading ' : title }}
+    <AnimateSpin v-if="isLoading"></AnimateSpin>
+    <span v-else>{{ title }}</span>
   </button>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import AnimateSpin from './AnimateSpin.vue';
 
 const props = defineProps({
   buttonType: String,
