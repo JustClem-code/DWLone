@@ -7,7 +7,6 @@
 <script setup>
 
 //TODO:
-// animate-pulse pour les skeleton loader
 // gestion des dates...
 // truck name au lieu de truck wrid ?
 // Faut s'attaquer aux trucks maintenant...

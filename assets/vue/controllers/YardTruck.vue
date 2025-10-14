@@ -6,7 +6,9 @@
         <DockCardComponent v-for="dock in docks" :key=dock.id :dock="dock" />
       </div>
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
-      <div v-else>Loading...</div>
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <DockCardComponent v-for="i in 12"/>
+      </div>
     </BorderedContent>
     <div class="w-full">
       <ul v-if="trucks" class="flex flex-col gap-4">
