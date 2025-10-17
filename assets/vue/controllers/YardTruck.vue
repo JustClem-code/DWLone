@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-8">
 
     <BorderedContent title="Docks">
       <div v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -7,23 +7,15 @@
       </div>
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <DockCardComponent v-for="i in 12"/>
+        <DockCardComponent v-for="i in 12" />
       </div>
     </BorderedContent>
-    <div class="w-full">
-      <ul v-if="trucks" class="flex flex-col gap-4">
-        <li v-for="truck in trucks" :key=truck.id class="border border-solid border-white rounded-md">
-          <p>{{ truck.wrid }} - {{ truck.dock ?? 'Waiting dock' }}</p>
-          <SelectDialogComponant title="Docks" :options="docks" @submitOption="val => dockingTruck(truck, val.selected)"
-            :disabled="true" />
-        </li>
-      </ul>
+    <BorderedContent title="Trucks">
+      <TruckListComponent v-if="trucks" :trucks="trucks" :docks="docks" />
       <div v-else-if="errorTruck">Error: {{ errorTruck }}</div>
       <div v-else>Loading...</div>
-    </div>
+    </BorderedContent>
   </div>
-  <div v-if="dockingData">{{ dockingData.dockId }}</div>
-  <div v-if="dockingError">{{ dockingError }}</div>
 </template>
 
 <script setup>
@@ -33,6 +25,7 @@ import { useFetch, usePostFetch } from '../composables/fetch.js'
 import SelectDialogComponant from './UI/SelectDialogComponent.vue'
 import DockCardComponent from './UI/DockCardComponent.vue'
 import BorderedContent from './UI/BorderedContent.vue'
+import TruckListComponent from './UI/TruckListComponent.vue'
 
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')
