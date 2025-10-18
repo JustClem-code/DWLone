@@ -5,7 +5,7 @@
       <div class="">
         <div class="flex items-center gap-4 text-base font-semibold">
           <p>{{ truck.wrid }} - {{ truck.dock ?? 'Waiting dock' }}</p>
-          <BadgeComponent type="warning" title="badgeTitle" />
+          <BadgeComponent :type="badgeType(truck)" title="badgeTitle" />
         </div>
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">date</p>
       </div>
@@ -28,7 +28,12 @@ const props = defineProps({
   docks: Array,
 })
 
-/* const badgeType = computed(() => {
+function badgeType (truck) {
+  /* if (!truck.dock) return null; */
+  return truck.dock ? 'valid' : 'warning';
+}
+/*
+const badgeType = computed(() => {
   if (!props.dock) return null;
   return !props.dock.truckWrid ? 'valid' : 'warning';
 })

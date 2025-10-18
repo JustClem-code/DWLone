@@ -42,7 +42,9 @@ console.log("docks", docks);
 
 function updateListElements() {
   const truck = trucks.value.find(item => item.id === dockingData.value.truckId);
+
   const newDock = docks.value.find(item => item.id === dockingData.value.dockId);
+
   const previousDock = docks.value.find(item => item.id === dockingData.value.previousDockId);
   truck.dock = dockingData.value.dockName
   newDock.truckWrid = dockingData.value.truckWrid
@@ -55,7 +57,7 @@ async function dockingTruck(truckId, dockId) {
   console.log('debug dockId', dockId);
   dockingIsLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId.id })
+  const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId?.id ?? null })
   dockingData.value = null;
   dockingError.value = null;
 

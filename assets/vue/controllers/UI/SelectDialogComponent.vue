@@ -12,9 +12,14 @@
             :class="{ 'border-2 border-slate-500 text-blue-700 hover:border-slate-500 hover:text-blue-700': selected?.id === option.id }">
             {{ option.name ?? (option.wrid ?? 'option') }}
           </button>
+          <button type="button" @click="unDocking()"
+            class="w-full text-base border border-solid border-gray-100 hover:border-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
+            :class="{ 'border-2 border-slate-500 text-blue-700 hover:border-slate-500 hover:text-blue-700': unDocked }">
+            To go
+          </button>
           <div class="flex gap-2">
             <BaseButton title="Cancel" styleColor="empty" @click="closeDialog" />
-            <BaseButton buttonType="submit" title="Submit" styleColor="primary" :isDisabled="!selected || dockingIsLoading"
+            <BaseButton buttonType="submit" title="Submit" styleColor="primary" :isDisabled="!selected && !unDocked || dockingIsLoading"
               :isLoading="dockingIsLoading" />
           </div>
         </form>
@@ -50,6 +55,12 @@ const closeDialog = () => {
 };
 
 const selected = ref(null)
+const unDocked = ref(null)
+
+function unDocking() {
+unDocked.value = true
+selected.value = null
+}
 
 function selectOption(option) {
   selected.value = option
