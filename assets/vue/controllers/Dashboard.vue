@@ -7,8 +7,7 @@
 <script setup>
 
 //TODO:
-// gèrer updateListElements au niveau des retours de data null
-// Ne pas proposer un dock si occupé
+// Ne pas proposer un dock si occupé et rendre la computed reactive
 // gestion du bouton select en contexte list (pfiou)
 // gestion du animate pulse si chargement de la list
 // gestion des dates...

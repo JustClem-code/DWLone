@@ -11,7 +11,7 @@
       </div>
     </BorderedContent>
     <BorderedContent title="Trucks">
-      <TruckListComponent v-if="trucks" :trucks="trucks" :docks="docks" />
+      <TruckListComponent v-if="trucks" :trucks="trucks" :docks="freeDocks" />
       <div v-else-if="errorTruck">Error: {{ errorTruck }}</div>
       <div v-else>Loading...</div>
     </BorderedContent>
@@ -20,9 +20,8 @@
 
 <script setup>
 
-import { ref, provide } from 'vue'
+import { ref, provide, computed } from 'vue'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
-import SelectDialogComponant from './UI/SelectDialogComponent.vue'
 import DockCardComponent from './UI/DockCardComponent.vue'
 import BorderedContent from './UI/BorderedContent.vue'
 import TruckListComponent from './UI/TruckListComponent.vue'
@@ -39,22 +38,38 @@ provide('yardTruck', { trucks, dockingTruck, dockingIsLoading })
 console.log("trucks", trucks);
 console.log("docks", docks);
 
+const freeDocks = computed(() => {
+  if (!docks.value) return
+  return docks.value.filter(dock => dock.truckId === null);
+})
 
 function updateListElements() {
-  const truck = trucks.value.find(item => item.id === dockingData.value.truckId);
+  const { truckId, previousDockId, dockId, dockName, truckWrid } = dockingData.value
 
-  const newDock = docks.value.find(item => item.id === dockingData.value.dockId);
+  const truck = trucks.value.find(t => t.id === truckId)
 
-  const previousDock = docks.value.find(item => item.id === dockingData.value.previousDockId);
-  truck.dock = dockingData.value.dockName
-  newDock.truckWrid = dockingData.value.truckWrid
-  previousDock.truckWrid = null
+  if (!truck) return
+
+  if (previousDockId) {
+    const previousDock = docks.value.find(d => d.id === previousDockId)
+    if (previousDock) {
+      previousDock.truckWrid = null
+      console.log('previousDock', previousDock)
+    }
+  }
+
+  if (dockId) {
+    const newDock = docks.value.find(d => d.id === dockId)
+    if (newDock) {
+      newDock.truckWrid = truckWrid
+      console.log('newDock', newDock)
+    }
+  }
+
+  truck.dock = dockName || null
 }
 
 async function dockingTruck(truckId, dockId) {
-
-  console.log('debug truckId', truckId);
-  console.log('debug dockId', dockId);
   dockingIsLoading.value = true;
 
   const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId?.id ?? null })
