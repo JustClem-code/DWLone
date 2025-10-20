@@ -1,26 +1,31 @@
 <template>
-  <button @click="openDialog" class="w-full p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25"
-    :disabled="!disabled">{{ title ?? "Option" }}</button>
+  <FlatButton :title="title ?? 'Option'" @click="openDialog" :isDisabled="!disabled" />
+  <!-- <BaseButton :title="title ?? 'Option'" styleColor="primary" @click="openDialog" :isDisabled="!disabled" /> -->
+  <!-- <button @click="openDialog" class="w-full p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25"
+    :disabled="!disabled">{{ title ?? "Option" }}</button> -->
   <dialog ref="myDialog">
     <div class="fixed h-full w-full" @click="closeDialog"></div>
     <div
       class="bg-white dark:bg-gray-800 border border-0 dark:border-1 dark:border-gray-700/90 max-w-[95vw] max-h-[95vh] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-8 rounded-2xl shadow-2xl">
       <div class="flex">
         <form @submit.prevent="submitOp" class="flex flex-col gap-2 min-w-60">
-          <button v-for="option in options" :key="option.id" type="button" @click="selectOption(option)"
-            class="w-full text-base border border-solid border-gray-100 hover:border-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
-            :class="{ 'border-2 border-slate-500 text-blue-700 hover:border-slate-500 hover:text-blue-700': selected?.id === option.id }">
-            {{ option.name ?? (option.wrid ?? 'option') }}
-          </button>
-          <button type="button" @click="unDocking()"
-            class="w-full text-base border border-solid border-gray-100 hover:border-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
-            :class="{ 'border-2 border-slate-500 text-blue-700 hover:border-slate-500 hover:text-blue-700': unDocked }">
-            To go
-          </button>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+
+            <button v-for="option in options" :key="option.id" type="button" @click="selectOption(option)"
+              class="w-full text-base inset-ring inset-shadow-sm transition duration-150 ease-in-out inset-ring-gray-100 hover:inset-ring-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
+              :class="{ 'inset-ring-2 inset-ring-slate-500 text-blue-700 hover:inset-ring-slate-500 hover:text-blue-700': selected?.id === option.id }">
+              {{ option.name ?? (option.wrid ?? 'option') }}
+            </button>
+            <button type="button" @click="unDocking()"
+              class="w-full text-base inset-ring inset-shadow-sm transition duration-150 ease-in-out inset-ring-gray-100 hover:inset-ring-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
+              :class="{ 'inset-ring-2 inset-ring-slate-500 text-blue-700 hover:inset-ring-slate-500 hover:text-blue-700': unDocked && !selected }">
+              To go
+            </button>
+          </div>
           <div class="flex gap-2">
             <BaseButton title="Cancel" styleColor="empty" @click="closeDialog" />
-            <BaseButton buttonType="submit" title="Submit" styleColor="primary" :isDisabled="!selected && !unDocked || dockingIsLoading"
-              :isLoading="dockingIsLoading" />
+            <BaseButton buttonType="submit" title="Submit" styleColor="primary"
+              :isDisabled="!selected && !unDocked || dockingIsLoading" :isLoading="dockingIsLoading" />
           </div>
         </form>
       </div>
@@ -31,6 +36,7 @@
 <script setup>
 import { ref, inject, watch } from 'vue'
 import BaseButton from './BaseButton.vue';
+import FlatButton from './FlatButton.vue';
 
 const { dockingIsLoading } = inject('yardTruck')
 
@@ -58,8 +64,8 @@ const selected = ref(null)
 const unDocked = ref(null)
 
 function unDocking() {
-unDocked.value = true
-selected.value = null
+  unDocked.value = true
+  selected.value = null
 }
 
 function selectOption(option) {

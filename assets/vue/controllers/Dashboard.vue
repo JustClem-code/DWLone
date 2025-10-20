@@ -7,8 +7,8 @@
 <script setup>
 
 //TODO:
-// Ne pas proposer un dock si occupé et rendre la computed reactive
 // gestion du bouton select en contexte list (pfiou)
+// Bouger le bouton unDocking
 // gestion du animate pulse si chargement de la list
 // gestion des dates...
 // truck name au lieu de truck wrid ?

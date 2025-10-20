@@ -38,6 +38,7 @@ provide('yardTruck', { trucks, dockingTruck, dockingIsLoading })
 console.log("trucks", trucks);
 console.log("docks", docks);
 
+
 const freeDocks = computed(() => {
   if (!docks.value) return
   return docks.value.filter(dock => dock.truckId === null);
@@ -54,6 +55,7 @@ function updateListElements() {
     const previousDock = docks.value.find(d => d.id === previousDockId)
     if (previousDock) {
       previousDock.truckWrid = null
+      previousDock.truckId = null
       console.log('previousDock', previousDock)
     }
   }
@@ -62,6 +64,7 @@ function updateListElements() {
     const newDock = docks.value.find(d => d.id === dockId)
     if (newDock) {
       newDock.truckWrid = truckWrid
+      newDock.truckId = truckId
       console.log('newDock', newDock)
     }
   }

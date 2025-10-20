@@ -23,6 +23,7 @@ const emit = defineEmits(['click'])
 
 const computedColor = computed(() => {
   const map = {
+    flat: "text-base font-medium text-gray-800 dark:text-gray-400 disabled:opacity-25",
     empty: "bg-white hover:bg-gray-50 inset-ring-gray-300",
     primary: "text-white bg-blue-500 hover:bg-blue-700 disabled:bg-blue-100 inset-ring-transparent",
     warning: "text-white bg-yellow-500 hover:bg-yellow-700 disabled:bg-yellow-100 inset-ring-transparent",
