@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col gap-8">
-
     <BorderedContent title="Docks">
       <div v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <DockCardComponent v-for="dock in docks" :key=dock.id :dock="dock" />

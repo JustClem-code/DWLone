@@ -1,8 +1,5 @@
 <template>
-  <FlatButton :title="title ?? 'Option'" @click="openDialog" :isDisabled="!disabled" />
-  <!-- <BaseButton :title="title ?? 'Option'" styleColor="primary" @click="openDialog" :isDisabled="!disabled" /> -->
-  <!-- <button @click="openDialog" class="w-full p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25"
-    :disabled="!disabled">{{ title ?? "Option" }}</button> -->
+  <BaseButton :title="title ?? 'Option'" :styleColor="styleColorButton" @click="openDialog" :isDisabled="!disabled" />
   <dialog ref="myDialog">
     <div class="fixed h-full w-full" @click="closeDialog"></div>
     <div
@@ -16,7 +13,7 @@
               :class="{ 'inset-ring-2 inset-ring-slate-500 text-blue-700 hover:inset-ring-slate-500 hover:text-blue-700': selected?.id === option.id }">
               {{ option.name ?? (option.wrid ?? 'option') }}
             </button>
-            <button type="button" @click="unDocking()"
+            <button v-if="!isNotDocked" type="button" @click="unDocking()"
               class="w-full text-base inset-ring inset-shadow-sm transition duration-150 ease-in-out inset-ring-gray-100 hover:inset-ring-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
               :class="{ 'inset-ring-2 inset-ring-slate-500 text-blue-700 hover:inset-ring-slate-500 hover:text-blue-700': unDocked && !selected }">
               To go
@@ -36,14 +33,15 @@
 <script setup>
 import { ref, inject, watch } from 'vue'
 import BaseButton from './BaseButton.vue';
-import FlatButton from './FlatButton.vue';
 
 const { dockingIsLoading } = inject('yardTruck')
 
 const props = defineProps({
   title: String,
   options: Array,
-  disabled: Boolean
+  disabled: Boolean,
+  styleColorButton: String,
+  isNotDocked: Boolean
 })
 
 const emit = defineEmits(['submitOption'])

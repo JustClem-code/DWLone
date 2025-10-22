@@ -1,6 +1,6 @@
 <template>
   <button :type="buttonType ?? 'button'"
-    class="inline-flex w-full justify-center items-center text-sm font-semibold leading-6 py-2 px-3 rounded-md shadow-xs inset-ring inset-shadow-sm transition duration-150 ease-in-out" :class="computedColor"
+    class="inline-flex w-full justify-center items-center leading-6 py-2 px-3 transition duration-150 ease-in-out" :class="[computedShape, computedColor]"
     @click="emit('click')" :disabled="isDisabled">
     <AnimateSpin v-if="isLoading"></AnimateSpin>
     <span v-else>{{ title }}</span>
@@ -21,9 +21,13 @@ const props = defineProps({
 
 const emit = defineEmits(['click'])
 
+const computedShape = computed(() => {
+  return props.styleColor == "flat" ? "text-base" : "text-sm font-semibold rounded-md shadow-xs inset-ring inset-shadow-sm"
+})
+
 const computedColor = computed(() => {
   const map = {
-    flat: "text-base font-medium text-gray-800 dark:text-gray-400 disabled:opacity-25",
+    flat: "text-gray-800 dark:text-gray-400 disabled:opacity-25",
     empty: "bg-white hover:bg-gray-50 inset-ring-gray-300",
     primary: "text-white bg-blue-500 hover:bg-blue-700 disabled:bg-blue-100 inset-ring-transparent",
     warning: "text-white bg-yellow-500 hover:bg-yellow-700 disabled:bg-yellow-100 inset-ring-transparent",

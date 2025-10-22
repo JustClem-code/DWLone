@@ -10,8 +10,8 @@
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">date</p>
       </div>
       <div>
-        <SelectDialogComponent title="Docks" :options="docks" @submitOption="val => dockingTruck(truck, val.selected)"
-          :disabled="true" />
+        <SelectDialogComponent title="Docks" :options="docks" :isNotDocked="!truck.dock"
+          :disabled="true" styleColorButton="primary" @submitOption="val => dockingTruck(truck, val.selected)" />
       </div>
     </li>
   </ul>
@@ -29,7 +29,6 @@ const props = defineProps({
 })
 
 function badgeType (truck) {
-  /* if (!truck.dock) return null; */
   return truck.dock ? 'valid' : 'warning';
 }
 /*

@@ -15,7 +15,7 @@
     <div v-if="!dock" class="w-full flex justify-center p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25">
       <span>Select</span>
     </div>
-    <SelectDialogComponent v-else title="Trucks" :options="trucks" :disabled="!dock.truckWrid"
+    <SelectDialogComponent v-else title="Trucks" :options="trucks" :disabled="!dock.truckWrid" styleColorButton="flat"
       @submitOption="val => dockingTruck(val.selected, dock)" />
   </div>
 </template>
