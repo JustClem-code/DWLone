@@ -7,8 +7,9 @@
 <script setup>
 
 //TODO:
-// gestion du bouton select en contexte list (pfiou)
+// Finir le toggle minimal menu
 // Bouger le bouton unDocking
+// Faire un bouton sm
 // gestion du animate pulse si chargement de la list
 // gestion des dates...
 // truck name au lieu de truck wrid ?

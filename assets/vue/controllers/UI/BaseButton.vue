@@ -28,7 +28,7 @@ const computedShape = computed(() => {
 const computedColor = computed(() => {
   const map = {
     flat: "text-gray-800 dark:text-gray-400 disabled:opacity-25",
-    empty: "bg-white hover:bg-gray-50 inset-ring-gray-300",
+    empty: "hover:bg-gray-200/50 dark:text-white dark:bg-gray-700/50 dark:hover:bg-gray-700/70 inset-ring-gray-300 dark:inset-ring-gray-600/50",
     primary: "text-white bg-blue-500 hover:bg-blue-700 disabled:bg-blue-100 inset-ring-transparent",
     warning: "text-white bg-yellow-500 hover:bg-yellow-700 disabled:bg-yellow-100 inset-ring-transparent",
     danger: "text-white bg-red-500 hover:bg-red-700 disabled:bg-red-100 inset-ring-transparent"

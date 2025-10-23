@@ -9,9 +9,10 @@
         </div>
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">date</p>
       </div>
-      <div>
-        <SelectDialogComponent title="Docks" :options="docks" :isNotDocked="!truck.dock"
-          :disabled="true" styleColorButton="primary" @submitOption="val => dockingTruck(truck, val.selected)" />
+      <div class="flex items-center gap-2">
+        <SelectDialogComponent title="Docks" :options="docks" :isNotDocked="!truck.dock" :disabled="true"
+          styleColorButton="empty" @submitOption="val => dockingTruck(truck, val.selected)" />
+        <MinimalToggleMenu :items="['edit', 'delete']"/>
       </div>
     </li>
   </ul>
@@ -21,6 +22,7 @@
 import { inject, computed } from 'vue'
 import BadgeComponent from './BadgeComponent.vue';
 import SelectDialogComponent from './SelectDialogComponent.vue';
+import MinimalToggleMenu from './MinimalToggleMenu.vue';
 
 const { trucks, dockingTruck, dockingIsLoading } = inject('yardTruck')
 const props = defineProps({
@@ -28,8 +30,8 @@ const props = defineProps({
   docks: Array,
 })
 
-function badgeType (truck) {
-  return truck.dock ? 'valid' : 'warning';
+function badgeType(truck) {
+  return truck.dock ? 'warning' : 'valid';
 }
 /*
 const badgeType = computed(() => {
