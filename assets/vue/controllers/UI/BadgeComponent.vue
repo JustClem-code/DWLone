@@ -1,5 +1,5 @@
 <template>
-  <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium inset-ring" :class="computedColor">
+  <span class="inline-flex items-center rounded-md text-xs font-medium inset-ring" :class="[computedColor, computedSize]">
     {{ title ?? 'State' }}
   </span>
 </template>
@@ -10,6 +10,7 @@ import { computed } from 'vue'
 const props = defineProps({
   type: String,
   title: String,
+  size: String,
 })
 
 const computedColor = computed(() => {
@@ -21,5 +22,8 @@ const computedColor = computed(() => {
   return map[props.type] ?? "bg-gray-400/10 text-gray-400 inset-ring-gray-500/20";
 });
 
+const computedSize = computed(() => {
+  return props.size === "sm" ? "py-[2px] px-[6px]" : "px-2 py-1"
+})
 
 </script>

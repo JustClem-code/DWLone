@@ -1,6 +1,6 @@
 <template>
   <button :type="buttonType ?? 'button'"
-    class="inline-flex w-full justify-center items-center leading-6 py-2 px-3 transition duration-150 ease-in-out" :class="[computedShape, computedColor]"
+    class="inline-flex w-full justify-center items-center leading-6 transition duration-150 ease-in-out" :class="[computedShape, computedColor, computedSize]"
     @click="emit('click')" :disabled="isDisabled">
     <AnimateSpin v-if="isLoading"></AnimateSpin>
     <span v-else>{{ title }}</span>
@@ -14,6 +14,7 @@ import AnimateSpin from './AnimateSpin.vue';
 const props = defineProps({
   buttonType: String,
   styleColor: String,
+  size: String,
   title: String,
   isDisabled: Boolean,
   isLoading: Boolean
@@ -22,7 +23,7 @@ const props = defineProps({
 const emit = defineEmits(['click'])
 
 const computedShape = computed(() => {
-  return props.styleColor == "flat" ? "text-base" : "text-sm font-semibold rounded-md shadow-xs inset-ring inset-shadow-sm"
+  return props.styleColor === "flat" ? "text-base" : "text-sm font-semibold rounded-md shadow-xs inset-ring inset-shadow-sm"
 })
 
 const computedColor = computed(() => {
@@ -36,5 +37,8 @@ const computedColor = computed(() => {
   return map[props.styleColor] ?? "bg-gray-400/10 text-gray-400 inset-ring-gray-500/20";
 });
 
+const computedSize = computed(() => {
+  return props.size === "sm" ? "py-1 px-2" : "py-2 px-3"
+})
 
 </script>

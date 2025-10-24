@@ -1,7 +1,21 @@
 <template>
-  <BaseButton :title="title ?? 'Option'" :styleColor="styleColorButton" :size="sizeButton" @click="openDialog" :isDisabled="!disabled" />
-  <dialog ref="myDialog">
-    <OverlayInvisible  @click="closeDialog"/>
+  <!-- Slot activator : l'élément cliquable fourni par le parent -->
+  <div @click="openDialog">
+    <slot name="activator">
+      <!-- Bouton par défaut si aucun slot n'est fourni -->
+      <BaseButton :title="title ?? 'Option'" :styleColor="styleColorButton" :size="sizeButton"
+        :isDisabled="!disabled" />
+    </slot>
+  </div>
+
+  <!-- Dans le composant parent -->
+  <!-- <MyDialog :options="myOptions" v-slot:activator>
+    <button class="btn" type="button">Ouvrir le dialog</button>
+  </MyDialog> -->
+
+
+  <dialog ref="myDialog" @click.self="closeDialog">
+    <OverlayInvisible @click="closeDialog" />
     <div
       class="bg-white dark:bg-gray-800 border border-0 dark:border-1 dark:border-gray-700/90 max-w-[95vw] max-h-[95vh] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-8 rounded-2xl shadow-2xl">
       <div class="flex">
@@ -30,11 +44,11 @@
 </template>
 
 <script setup>
-import { ref, inject, watch } from 'vue'
+import { ref, inject, watch } from 'vue';
 import BaseButton from './BaseButton.vue';
 import OverlayInvisible from './OverlayInvisible.vue';
 
-const { dockingIsLoading } = inject('yardTruck')
+const { dockingIsLoading } = inject('yardTruck');
 
 const props = defineProps({
   title: String,
@@ -43,44 +57,43 @@ const props = defineProps({
   styleColorButton: String,
   sizeButton: String,
   isNotDocked: Boolean
-})
+});
 
-const emit = defineEmits(['submitOption'])
+const emit = defineEmits(['submitOption']);
 
 const myDialog = ref(null);
-
-const shouldCloseOnLoad = ref(false)
+const shouldCloseOnLoad = ref(false);
 
 const openDialog = () => {
   myDialog.value?.showModal();
 };
+
 const closeDialog = () => {
   myDialog.value?.close();
-  selected.value = null
+  selected.value = null;
 };
 
-const selected = ref(null)
-const unDocked = ref(null)
+const selected = ref(null);
+const unDocked = ref(null);
 
 function unDocking() {
-  unDocked.value = true
-  selected.value = null
+  unDocked.value = true;
+  selected.value = null;
 }
 
 function selectOption(option) {
-  selected.value = option
+  selected.value = option;
 }
 
 function submitOp() {
-  emit('submitOption', { selected: selected.value })
-  shouldCloseOnLoad.value = true
+  emit('submitOption', { selected: selected.value });
+  shouldCloseOnLoad.value = true;
 }
 
 watch(dockingIsLoading, (val) => {
   if (val === false && shouldCloseOnLoad.value) {
-    closeDialog()
-    shouldCloseOnLoad.value = false
+    closeDialog();
+    shouldCloseOnLoad.value = false;
   }
-})
-
+});
 </script>

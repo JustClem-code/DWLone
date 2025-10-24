@@ -7,10 +7,9 @@
 <script setup>
 
 //TODO:
-// Finir le toggle minimal menu
 // Bouger le bouton unDocking
-// Faire un bouton sm
 // gestion du animate pulse si chargement de la list
+// Modifier le selectDialogComponent pour y mettre un slot
 // gestion des dates...
 // truck name au lieu de truck wrid ?
 
