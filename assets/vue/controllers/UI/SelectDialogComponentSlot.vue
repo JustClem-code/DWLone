@@ -26,16 +26,11 @@
               :class="{ 'inset-ring-2 inset-ring-slate-500 text-blue-700 hover:inset-ring-slate-500 hover:text-blue-700': selected?.id === option.id }">
               {{ option.name ?? (option.wrid ?? 'option') }}
             </button>
-            <button v-if="!isNotDocked" type="button" @click="unDocking()"
-              class="w-full text-base inset-ring inset-shadow-sm transition duration-150 ease-in-out inset-ring-gray-100 hover:inset-ring-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
-              :class="{ 'inset-ring-2 inset-ring-slate-500 text-blue-700 hover:inset-ring-slate-500 hover:text-blue-700': unDocked && !selected }">
-              To go
-            </button>
           </div>
           <div class="flex gap-2">
             <BaseButton title="Cancel" styleColor="empty" @click="closeDialog" />
             <BaseButton buttonType="submit" title="Submit" styleColor="primary"
-              :isDisabled="!selected && !unDocked || dockingIsLoading" :isLoading="dockingIsLoading" />
+              :isDisabled="!selected || isLoading" :isLoading="isLoading" />
           </div>
         </form>
       </div>
@@ -44,11 +39,9 @@
 </template>
 
 <script setup>
-import { ref, inject, watch } from 'vue';
+import { ref, watch } from 'vue';
 import BaseButton from './BaseButton.vue';
 import OverlayInvisible from './OverlayInvisible.vue';
-
-const { dockingIsLoading } = inject('yardTruck');
 
 const props = defineProps({
   title: String,
@@ -56,7 +49,8 @@ const props = defineProps({
   disabled: Boolean,
   styleColorButton: String,
   sizeButton: String,
-  isNotDocked: Boolean
+  isNotDocked: Boolean,
+  isLoading: Boolean
 });
 
 const emit = defineEmits(['submitOption']);
@@ -74,12 +68,6 @@ const closeDialog = () => {
 };
 
 const selected = ref(null);
-const unDocked = ref(null);
-
-function unDocking() {
-  unDocked.value = true;
-  selected.value = null;
-}
 
 function selectOption(option) {
   selected.value = option;
@@ -90,7 +78,7 @@ function submitOp() {
   shouldCloseOnLoad.value = true;
 }
 
-watch(dockingIsLoading, (val) => {
+watch(() => props.isLoading, (val) => {
   if (val === false && shouldCloseOnLoad.value) {
     closeDialog();
     shouldCloseOnLoad.value = false;

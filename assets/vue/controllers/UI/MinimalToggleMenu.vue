@@ -9,12 +9,15 @@
       </svg>
     </button>
 
-    <OverlayInvisible v-show="isOpen" @click="toggleMenu"/>
+    <OverlayInvisible v-show="isOpen" @click="toggleMenu" />
     <div v-show="isOpen"
       class="absolute right-0 mt-2 w-44 origin-top-right z-10 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-0 dark:border-1 dark:border-gray-700/90"
       role="menu">
       <ul>
-        <li v-for="item in items" :key="item" class="block px-4 py-2 text-sm hover:bg-gray-50 dark:bg-gray-700/50 dark:hover:bg-gray-700/70 first:rounded-t-md last:rounded-b-md">{{ item }}</li>
+        <li v-for="item in items" :key="item.label" @click="onSelect(item)"
+          class="block px-4 py-2 text-sm hover:bg-gray-50 dark:bg-gray-700/50 dark:hover:bg-gray-700/70 first:rounded-t-md last:rounded-b-md">
+          {{ item.label }}
+        </li>
       </ul>
     </div>
   </div>
@@ -27,9 +30,13 @@ import OverlayInvisible from './OverlayInvisible.vue'
 const props = defineProps({
   items: Array,
 })
+const emit = defineEmits(['select'])
 
 const isOpen = ref(false)
-const toggleMenu = () => {
-  isOpen.value = !isOpen.value
+const toggleMenu = () => (isOpen.value = !isOpen.value)
+
+const onSelect = (item) => {
+  emit('select', item.action)
+  toggleMenu()
 }
 </script>
