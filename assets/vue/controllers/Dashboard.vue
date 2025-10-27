@@ -7,11 +7,10 @@
 <script setup>
 
 //TODO:
-// Bouger le bouton unDocking
 // gestion du animate pulse si chargement de la list
-// Modifier le selectDialogComponent pour y mettre un slot
 // gestion des dates...
 // truck name au lieu de truck wrid ?
+// ça serait cool de passer à la reception avant induction 
 
 import { onMounted } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue';

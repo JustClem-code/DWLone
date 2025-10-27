@@ -1,17 +1,16 @@
 <template>
-  <!-- Slot activator : l'élément cliquable fourni par le parent -->
+  <!-- Slot activator -->
   <div @click="openDialog">
     <slot name="activator">
-      <!-- Bouton par défaut si aucun slot n'est fourni -->
-      <BaseButton :title="title ?? 'Option'" :styleColor="styleColorButton" :size="sizeButton"
-        :isDisabled="!disabled" />
+      <!-- Default Button if slot is empty -->
+      <BaseButton title="Option" styleColor="empty" :isDisabled="true" />
     </slot>
   </div>
 
-  <!-- Dans le composant parent -->
-  <!-- <MyDialog :options="myOptions" v-slot:activator>
+  <!-- In parent component -->
+  <!-- <SelectDialogComponentSlot :options="myOptions" v-slot:activator>
     <button class="btn" type="button">Ouvrir le dialog</button>
-  </MyDialog> -->
+  </SelectDialogComponentSlot> -->
 
 
   <dialog ref="myDialog" @click.self="closeDialog">
@@ -29,8 +28,8 @@
           </div>
           <div class="flex gap-2">
             <BaseButton title="Cancel" styleColor="empty" @click="closeDialog" />
-            <BaseButton buttonType="submit" title="Submit" styleColor="primary"
-              :isDisabled="!selected || isLoading" :isLoading="isLoading" />
+            <BaseButton buttonType="submit" title="Submit" styleColor="primary" :isDisabled="!selected || isLoading"
+              :isLoading="isLoading" />
           </div>
         </form>
       </div>
@@ -44,12 +43,7 @@ import BaseButton from './BaseButton.vue';
 import OverlayInvisible from './OverlayInvisible.vue';
 
 const props = defineProps({
-  title: String,
   options: Array,
-  disabled: Boolean,
-  styleColorButton: String,
-  sizeButton: String,
-  isNotDocked: Boolean,
   isLoading: Boolean
 });
 

@@ -7,23 +7,25 @@
         <h3 class="text-base font-semibold">{{ dock?.name || 'Dock name' }}</h3>
         <BadgeComponent :type="badgeType" :title="badgeTitle" />
       </div>
-      <p class="text-sm font-light text-gray-800 dark:text-gray-400"
-        :class="{ 'opacity-25': !dock?.truckWrid }">
+      <p class="text-sm font-light text-gray-800 dark:text-gray-400" :class="{ 'opacity-25': !dock?.truckWrid }">
         {{ dock?.truckWrid ?? 'No truck' }}
       </p>
     </div>
     <div v-if="!dock" class="w-full flex justify-center p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25">
       <span>Select</span>
     </div>
-    <SelectDialogComponent v-else title="Trucks" :options="trucks" :disabled="!dock.truckWrid" styleColorButton="flat"
-      @submitOption="val => dockingTruck(val.selected, dock)" />
+    <SelectDialogComponentSlot v-else v-slot:activator :options="trucks" :isLoading="dockingIsLoading"
+      @submitOption="val => dockingTruck(val.selected, dock)">
+      <BaseButton title="Trucks" styleColor="flat" :isDisabled="!!dock.truckWrid" />
+    </SelectDialogComponentSlot>
   </div>
 </template>
 
 <script setup>
 import { inject, computed } from 'vue'
 import BadgeComponent from './BadgeComponent.vue';
-import SelectDialogComponent from './SelectDialogComponent.vue';
+import SelectDialogComponentSlot from './SelectDialogComponentSlot.vue';
+import BaseButton from './BaseButton.vue';
 
 const { trucks, dockingTruck, dockingIsLoading } = inject('yardTruck')
 const props = defineProps({

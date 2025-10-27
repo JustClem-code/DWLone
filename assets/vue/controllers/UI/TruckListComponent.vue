@@ -10,8 +10,10 @@
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">date</p>
       </div>
       <div class="flex items-center gap-2">
-        <SelectDialogComponent title="Docks" :options="docks" :isNotDocked="!truck.dock" :isLoading="dockingIsLoading" :disabled="true"
-          styleColorButton="empty" sizeButton="sm" @submitOption="val => dockingTruck(truck, val.selected)" />
+        <SelectDialogComponentSlot v-slot:activator :options="docks" :isLoading="dockingIsLoading"
+          @submitOption="val => dockingTruck(truck, val.selected)">
+          <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="false" />
+        </SelectDialogComponentSlot>
         <MinimalToggleMenu :items="menuItems" @click="defineCurrentTruck(truck)" @select="handleMenuAction" />
       </div>
     </li>
@@ -21,8 +23,9 @@
 <script setup>
 import { inject, ref, toRef, computed } from 'vue'
 import BadgeComponent from './BadgeComponent.vue';
-import SelectDialogComponent from './SelectDialogComponent.vue';
 import MinimalToggleMenu from './MinimalToggleMenu.vue';
+import SelectDialogComponentSlot from './SelectDialogComponentSlot.vue';
+import BaseButton from './BaseButton.vue';
 
 const { trucks, dockingTruck } = inject('yardTruck')
 
@@ -40,14 +43,27 @@ function badgeType(truck) {
   return truck.dock ? 'warning' : 'valid';
 }
 
-function defineCurrentTruck(truck) { currentTruck.value = truck }
+function defineCurrentTruck(truck) {
+  currentTruck.value = truck
+  console.log("current", currentTruck);
 
-const menuItems = [
-  { label: 'Undocking', action: 'unDocking' },
-  /* { label: 'Editer', action: 'editItem' },
-  { label: 'Partager', action: 'shareItem' } */
-]
+}
 
+const menuItems = computed(() => [
+  {
+    label: 'Undocking',
+    action: 'unDocking',
+    isDisabled: !currentTruck.value?.dock
+  },
+  /* {
+    label: 'Edit',
+    action: 'edit',
+  },
+  {
+    label: 'Save',
+    action: 'save',
+  }, */
+])
 
 const unDocking = () => dockingTruck(currentTruck.value, null)
 const editItem = () => console.log('Édition')
