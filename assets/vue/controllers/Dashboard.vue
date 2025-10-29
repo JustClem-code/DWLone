@@ -9,7 +9,6 @@
 //TODO:
 // gestion des dates...
 // ajouter une date de inbound à truck !!!
-// truck name au lieu de truck wrid ?
 
 // gestion du animate pulse si chargement de la list
 // ça serait cool de passer à la reception avant induction

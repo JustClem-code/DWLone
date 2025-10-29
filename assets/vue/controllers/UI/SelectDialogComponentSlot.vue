@@ -23,7 +23,7 @@
             <button v-for="option in options" :key="option.id" type="button" @click="selectOption(option)"
               class="w-full text-base inset-ring inset-shadow-sm transition duration-150 ease-in-out inset-ring-gray-100 hover:inset-ring-gray-300 text-gray-900 dark:text-white hover:text-blue-500 p-2 rounded-md"
               :class="{ 'inset-ring-2 inset-ring-slate-500 text-blue-700 hover:inset-ring-slate-500 hover:text-blue-700': selected?.id === option.id }">
-              {{ option.name ?? (option.wrid ?? 'option') }}
+              {{ option.name ?? 'option' }}
             </button>
           </div>
           <div class="flex gap-2">

@@ -26,7 +26,7 @@ class AppFixtures extends Fixture
 {
   protected $faker;
 
-  private function generateWrid(): string
+  private function generateVrid(): string
   {
 
     $number = '0123456789';
@@ -74,7 +74,7 @@ class AppFixtures extends Fixture
   {
     for ($i = 0; $i < 3; $i++) {
       $truck = new Truck();
-      $truck->setWrid($this->generateWrid());
+      $truck->setName($this->generateVrid());
       $truck->setExpectedDate(new \DateTime());
       $manager->persist($truck);
       $this->generatePallets($manager, $truck);

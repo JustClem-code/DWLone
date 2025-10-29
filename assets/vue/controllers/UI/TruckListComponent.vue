@@ -4,7 +4,7 @@
       class="flex items-center justify-between py-4 border-gray-200 dark:border-gray-700/90">
       <div class="">
         <div class="flex items-center gap-4 text-base font-semibold">
-          <p>{{ truck.wrid }}</p>
+          <p>{{ truck.name }}</p>
           <BadgeComponent :type="badgeType(truck)" :title="badgeTitle(truck)" size="sm" />
         </div>
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ formattedDateFr(truck.deliveryDate ?? truck.expectedDate) }}</p>
