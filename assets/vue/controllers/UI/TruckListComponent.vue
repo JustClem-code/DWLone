@@ -5,9 +5,9 @@
       <div class="">
         <div class="flex items-center gap-4 text-base font-semibold">
           <p>{{ truck.wrid }}</p>
-          <BadgeComponent :type="badgeType(truck)" :title="truck.dock ?? 'Waiting dock'" size="sm" />
+          <BadgeComponent :type="badgeType(truck)" :title="badgeTitle(truck)" size="sm" />
         </div>
-        <p class="text-sm font-light text-gray-800 dark:text-gray-400">date</p>
+        <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ formattedDateFr(truck.deliveryDate ?? truck.expectedDate) }}</p>
       </div>
       <div class="flex items-center gap-2">
         <SelectDialogComponentSlot v-slot:activator :options="docks" :isLoading="dockingIsLoading"
@@ -27,6 +27,8 @@ import MinimalToggleMenu from './MinimalToggleMenu.vue';
 import SelectDialogComponentSlot from './SelectDialogComponentSlot.vue';
 import BaseButton from './BaseButton.vue';
 
+import { formattedDateFr } from '../../composables/dateFormat.js'
+
 const { trucks, dockingTruck } = inject('yardTruck')
 
 const yardTruck = inject('yardTruck')
@@ -40,8 +42,20 @@ const props = defineProps({
 const currentTruck = ref(null)
 
 function badgeType(truck) {
+  if (truck.deliveryDate && !truck.dock ) {
+    return 'danger'
+  }
   return truck.dock ? 'warning' : 'valid';
 }
+
+function badgeTitle(truck) {
+  if (truck.deliveryDate && !truck.dock ) {
+    return 'finish'
+  }
+  return truck.dock ?? 'Waiting dock'
+}
+
+
 
 function defineCurrentTruck(truck) {
   currentTruck.value = truck

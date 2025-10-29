@@ -44,7 +44,7 @@ const freeDocks = computed(() => {
 })
 
 function updateListElements() {
-  const { truckId, previousDockId, dockId, dockName, truckWrid } = dockingData.value
+  const { truckId, previousDockId, dockId, dockName, truckName, deliveryDate } = dockingData.value
 
   const truck = trucks.value.find(t => t.id === truckId)
 

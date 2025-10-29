@@ -70,8 +70,12 @@ final class YardTruckController extends AbstractController
 
     $truck->setDock($dock);
 
+    if ($truck->getDock()) {
+      $truck->setDeliveryDate(new \DateTime());
+    }
+
     $entityManager->flush();
 
-    return $this->json(['dockId' => $dock?->getId() ?? null, 'dockName' => $dock?->getName() ?? null, 'previousDockId' => $previousDock?->getId() ?? null, 'truckId' => $truck->getId(), 'truckWrid' => $truck->getWrid()]);
+    return $this->json(['dockId' => $dock?->getId() ?? null, 'dockName' => $dock?->getName() ?? null, 'previousDockId' => $previousDock?->getId() ?? null, 'truckId' => $truck->getId(), 'truckName' => $truck->getName(), 'deliveryDate' => $truck->getDeliveryDate()]);
   }
 }
