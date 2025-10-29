@@ -15,7 +15,7 @@
       <div class="w-full flex-grow md:flex md:items-center md:w-auto hidden md:block">
         <NavContent />
       </div>
-      <DarkTheme/>
+      <DarkTheme class="hidden md:block"/>
     </div>
   </nav>
   <header class="relative bg-gray-100 dark:bg-gray-900">
