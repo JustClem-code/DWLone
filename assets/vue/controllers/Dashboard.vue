@@ -7,9 +7,7 @@
 <script setup>
 
 //TODO:
-// gestion des dates...
-// ajouter une date de inbound à truck !!!
-
+// travailler le toggleButton du dark mode
 // gestion du animate pulse si chargement de la list
 // ça serait cool de passer à la reception avant induction
 

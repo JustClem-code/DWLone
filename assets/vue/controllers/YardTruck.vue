@@ -44,7 +44,7 @@ const freeDocks = computed(() => {
 })
 
 function updateListElements() {
-  const { truckId, previousDockId, dockId, dockName, truckName, deliveryDate } = dockingData.value
+  const { truckId, previousDockId, dockId, dockName, truckName, deliveryDate, departureDate } = dockingData.value
 
   const truck = trucks.value.find(t => t.id === truckId)
 
@@ -55,7 +55,6 @@ function updateListElements() {
     if (previousDock) {
       previousDock.truckName = null
       previousDock.truckId = null
-      console.log('previousDock', previousDock)
     }
   }
 
@@ -64,18 +63,18 @@ function updateListElements() {
     if (newDock) {
       newDock.truckName = truckName
       newDock.truckId = truckId
-      console.log('newDock', newDock)
     }
   }
 
   truck.dock = dockName || null
   truck.deliveryDate = deliveryDate || null
+  truck.departureDate = departureDate || null
 }
 
-async function dockingTruck(truckId, dockId) {
+async function dockingTruck(truckId, dockId, reset) {
   dockingIsLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId?.id ?? null })
+  const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId?.id ?? null, reset: reset ?? false })
   dockingData.value = null;
   dockingError.value = null;
 
@@ -83,13 +82,9 @@ async function dockingTruck(truckId, dockId) {
   dockingError.value = error.value;
 
   if (dockingData.value) {
-    console.log('dockingData', dockingData.value);
     updateListElements()
     dockingIsLoading.value = false;
   }
-
-  console.log('dockingErrorValue', dockingError.value);
-
 }
 
 </script>

@@ -49,6 +49,7 @@ final class YardTruckController extends AbstractController
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('id');
+    $reset = $request->getPayload()->get('reset');
 
     $truck = $entityManager->getRepository(Truck::class)->find($id);
     $dock = $this->findOrNull($entityManager->getRepository(Dock::class), $formData);
@@ -70,12 +71,21 @@ final class YardTruckController extends AbstractController
 
     $truck->setDock($dock);
 
-    if ($truck->getDock()) {
-      $truck->setDeliveryDate(new \DateTime());
+    if ($reset) {
+      $truck->setDeliveryDate(null);
+      $truck->setDepartureDate(null);
+    } else {
+      $date = new \DateTime();
+      if ($truck->getDock()) {
+        $truck->setDeliveryDate($date);
+      } else {
+        $truck->setDepartureDate($date);
+      }
     }
+
 
     $entityManager->flush();
 
-    return $this->json(['dockId' => $dock?->getId() ?? null, 'dockName' => $dock?->getName() ?? null, 'previousDockId' => $previousDock?->getId() ?? null, 'truckId' => $truck->getId(), 'truckName' => $truck->getName(), 'deliveryDate' => $truck->getDeliveryDate()]);
+    return $this->json(['dockId' => $dock?->getId() ?? null, 'dockName' => $dock?->getName() ?? null, 'previousDockId' => $previousDock?->getId() ?? null, 'truckId' => $truck->getId(), 'truckName' => $truck->getName(), 'deliveryDate' => $truck->getDeliveryDate(), 'departureDate' => $truck->getDepartureDate()]);
   }
 }

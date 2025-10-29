@@ -7,7 +7,7 @@
           <p>{{ truck.name }}</p>
           <BadgeComponent :type="badgeType(truck)" :title="badgeTitle(truck)" size="sm" />
         </div>
-        <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ formattedDateFr(truck.deliveryDate ?? truck.expectedDate) }}</p>
+        <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ dateInfo(truck) }}</p>
       </div>
       <div class="flex items-center gap-2">
         <SelectDialogComponentSlot v-slot:activator :options="docks" :isLoading="dockingIsLoading"
@@ -42,25 +42,30 @@ const props = defineProps({
 const currentTruck = ref(null)
 
 function badgeType(truck) {
-  if (truck.deliveryDate && !truck.dock ) {
+  if (truck.departureDate ) {
     return 'danger'
   }
   return truck.dock ? 'warning' : 'valid';
 }
 
 function badgeTitle(truck) {
-  if (truck.deliveryDate && !truck.dock ) {
+  if (truck.departureDate ) {
     return 'finish'
   }
   return truck.dock ?? 'Waiting dock'
+}
+
+function dateInfo(truck) {
+  if (truck.departureDate) {
+    return formattedDateFr(truck.departureDate)
+  }
+  return formattedDateFr(truck.deliveryDate ?? truck.expectedDate)
 }
 
 
 
 function defineCurrentTruck(truck) {
   currentTruck.value = truck
-  console.log("current", currentTruck);
-
 }
 
 const menuItems = computed(() => [
@@ -69,36 +74,19 @@ const menuItems = computed(() => [
     action: 'unDocking',
     isDisabled: !currentTruck.value?.dock
   },
-  /* {
-    label: 'Edit',
-    action: 'edit',
-  },
   {
-    label: 'Save',
-    action: 'save',
-  }, */
+    label: 'Reset',
+    action: 'resetItem',
+  },
 ])
 
 const unDocking = () => dockingTruck(currentTruck.value, null)
-const editItem = () => console.log('Édition')
-const shareItem = () => console.log('Partage')
+const resetItem = () => dockingTruck(currentTruck.value, null, true)
 
 
 const handleMenuAction = (action) => {
-  const actions = { unDocking, editItem, shareItem }
-  if (actions[action]) actions[action]() // Appelle dynamiquement la méthode correspondante
+  const actions = { unDocking, resetItem, shareItem }
+  if (actions[action]) actions[action]()
 }
-
-
-/*
-const badgeType = computed(() => {
-  if (!props.dock) return null;
-  return !props.dock.truckName ? 'valid' : 'warning';
-})
-
-const badgeTitle = computed(() => {
-  if (!props.dock) return null;
-  return !props.dock.truckName ? 'Free' : 'Used';
-}) */
 
 </script>

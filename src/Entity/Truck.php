@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\TruckRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TruckRepository::class)]
@@ -32,6 +33,9 @@ class Truck
 
   #[ORM\OneToOne(mappedBy: 'truck', cascade: ['persist', 'remove'])]
   private ?Dock $dock = null;
+
+  #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+  private ?\DateTime $DepartureDate = null;
 
   public function __construct()
   {
@@ -129,5 +133,17 @@ class Truck
     $this->dock = $dock;
 
     return $this;
+  }
+
+  public function getDepartureDate(): ?\DateTime
+  {
+      return $this->DepartureDate;
+  }
+
+  public function setDepartureDate(?\DateTime $DepartureDate): static
+  {
+      $this->DepartureDate = $DepartureDate;
+
+      return $this;
   }
 }
