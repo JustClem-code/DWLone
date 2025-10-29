@@ -85,7 +85,7 @@ const resetItem = () => dockingTruck(currentTruck.value, null, true)
 
 
 const handleMenuAction = (action) => {
-  const actions = { unDocking, resetItem, shareItem }
+  const actions = { unDocking, resetItem }
   if (actions[action]) actions[action]()
 }
 
