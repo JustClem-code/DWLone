@@ -93,12 +93,12 @@ const handleMenuAction = (action) => {
 /*
 const badgeType = computed(() => {
   if (!props.dock) return null;
-  return !props.dock.truckWrid ? 'valid' : 'warning';
+  return !props.dock.truckName ? 'valid' : 'warning';
 })
 
 const badgeTitle = computed(() => {
   if (!props.dock) return null;
-  return !props.dock.truckWrid ? 'Free' : 'Used';
+  return !props.dock.truckName ? 'Free' : 'Used';
 }) */
 
 </script>

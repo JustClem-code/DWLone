@@ -15,8 +15,8 @@ class Truck
   #[ORM\Column]
   private ?int $id = null;
 
-  #[ORM\Column(length: 7)]
-  private ?string $Wrid = null;
+  #[ORM\Column(name: "name", length: 7)]
+  private ?string $name = null;
 
   #[ORM\Column]
   private ?\DateTime $ExpectedDate = null;
@@ -43,14 +43,14 @@ class Truck
     return $this->id;
   }
 
-  public function getWrid(): ?string
+  public function getName(): ?string
   {
-    return $this->Wrid;
+    return $this->name;
   }
 
-  public function setWrid(string $Wrid): static
+  public function setName(string $name): static
   {
-    $this->Wrid = $Wrid;
+    $this->name = $name;
 
     return $this;
   }

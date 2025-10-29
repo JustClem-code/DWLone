@@ -7,8 +7,8 @@
         <h3 class="text-base font-semibold">{{ dock?.name || 'Dock name' }}</h3>
         <BadgeComponent :type="badgeType" :title="badgeTitle" />
       </div>
-      <p class="text-sm font-light text-gray-800 dark:text-gray-400" :class="{ 'opacity-25': !dock?.truckWrid }">
-        {{ dock?.truckWrid ?? 'No truck' }}
+      <p class="text-sm font-light text-gray-800 dark:text-gray-400" :class="{ 'opacity-25': !dock?.truckName }">
+        {{ dock?.truckName ?? 'No truck' }}
       </p>
     </div>
     <div v-if="!dock" class="w-full flex justify-center p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25">
@@ -16,7 +16,7 @@
     </div>
     <SelectDialogComponentSlot v-else v-slot:activator :options="trucks" :isLoading="dockingIsLoading"
       @submitOption="val => dockingTruck(val.selected, dock)">
-      <BaseButton title="Trucks" styleColor="flat" :isDisabled="!!dock.truckWrid" />
+      <BaseButton title="Trucks" styleColor="flat" :isDisabled="!!dock.truckName" />
     </SelectDialogComponentSlot>
   </div>
 </template>
@@ -34,12 +34,12 @@ const props = defineProps({
 
 const badgeType = computed(() => {
   if (!props.dock) return null;
-  return !props.dock.truckWrid ? 'valid' : 'warning';
+  return !props.dock.truckName ? 'valid' : 'warning';
 })
 
 const badgeTitle = computed(() => {
   if (!props.dock) return null;
-  return !props.dock.truckWrid ? 'Free' : 'Used';
+  return !props.dock.truckName ? 'Free' : 'Used';
 })
 
 

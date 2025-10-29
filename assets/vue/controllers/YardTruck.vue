@@ -53,7 +53,7 @@ function updateListElements() {
   if (previousDockId) {
     const previousDock = docks.value.find(d => d.id === previousDockId)
     if (previousDock) {
-      previousDock.truckWrid = null
+      previousDock.truckName = null
       previousDock.truckId = null
       console.log('previousDock', previousDock)
     }
@@ -62,13 +62,14 @@ function updateListElements() {
   if (dockId) {
     const newDock = docks.value.find(d => d.id === dockId)
     if (newDock) {
-      newDock.truckWrid = truckWrid
+      newDock.truckName = truckName
       newDock.truckId = truckId
       console.log('newDock', newDock)
     }
   }
 
   truck.dock = dockName || null
+  truck.deliveryDate = deliveryDate || null
 }
 
 async function dockingTruck(truckId, dockId) {

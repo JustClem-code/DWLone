@@ -7,10 +7,12 @@
 <script setup>
 
 //TODO:
-// gestion du animate pulse si chargement de la list
 // gestion des dates...
+// ajouter une date de inbound à truck !!!
 // truck name au lieu de truck wrid ?
-// ça serait cool de passer à la reception avant induction 
+
+// gestion du animate pulse si chargement de la list
+// ça serait cool de passer à la reception avant induction
 
 import { onMounted } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue';

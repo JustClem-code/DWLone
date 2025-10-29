@@ -22,7 +22,7 @@ class DockRepository extends ServiceEntityRepository
       'id' => $dock->getId(),
       'name' => $dock->getName(),
       'truckId' => $dock->getTruck()?->getId(),
-      'truckWrid' => $dock->getTruck()?->getWrid(),
+      'truckName' => $dock->getTruck()?->getName(),
     ];
   }
 
