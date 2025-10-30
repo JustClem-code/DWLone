@@ -17,6 +17,7 @@
         <MinimalToggleMenu :items="menuItems" @click="defineCurrentTruck(truck)" @select="handleMenuAction" />
       </div>
     </li>
+    <InfoDialogComponentSlot ref="infoDialogRef" :truck="currentTruck"/>
   </ul>
 </template>
 
@@ -28,6 +29,7 @@ import SelectDialogComponentSlot from './SelectDialogComponentSlot.vue';
 import BaseButton from './BaseButton.vue';
 
 import { formattedDateFr } from '../../composables/dateFormat.js'
+import InfoDialogComponentSlot from './InfoDialogComponentSlot.vue';
 
 const { trucks, dockingTruck } = inject('yardTruck')
 
@@ -41,15 +43,17 @@ const props = defineProps({
 
 const currentTruck = ref(null)
 
+const infoDialogRef = ref(null);
+
 function badgeType(truck) {
-  if (truck.departureDate ) {
+  if (truck.departureDate) {
     return 'danger'
   }
   return truck.dock ? 'warning' : 'valid';
 }
 
 function badgeTitle(truck) {
-  if (truck.departureDate ) {
+  if (truck.departureDate) {
     return 'finish'
   }
   return truck.dock ?? 'Waiting dock'
@@ -66,6 +70,8 @@ function dateInfo(truck) {
 
 function defineCurrentTruck(truck) {
   currentTruck.value = truck
+  console.log(currentTruck.value);
+  
 }
 
 const menuItems = computed(() => [
@@ -78,14 +84,18 @@ const menuItems = computed(() => [
     label: 'Reset',
     action: 'resetItem',
   },
+  {
+    label: 'Infos',
+    action: 'openInfos',
+  },
 ])
 
 const unDocking = () => dockingTruck(currentTruck.value, null)
 const resetItem = () => dockingTruck(currentTruck.value, null, true)
-
+const openInfos = () => infoDialogRef.value?.openDialog()
 
 const handleMenuAction = (action) => {
-  const actions = { unDocking, resetItem }
+  const actions = { unDocking, resetItem, openInfos }
   if (actions[action]) actions[action]()
 }
 

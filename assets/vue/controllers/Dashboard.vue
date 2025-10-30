@@ -7,6 +7,8 @@
 <script setup>
 
 //TODO:
+// possibilité de voir les infos du truc dans le minimal toggle => finir
+// Ajouter un Slot ppour les le css des modal (on s'est compris)
 // gestion du animate pulse si chargement de la list
 // ça serait cool de passer à la reception avant induction
 
