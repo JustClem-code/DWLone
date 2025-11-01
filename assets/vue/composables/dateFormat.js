@@ -1,4 +1,7 @@
 export function formattedDateFr(d) {
+  if (!d) {
+    return
+  }
   const date = new Date(d.date);
   return date.toLocaleString('fr-FR');
   // const date = new Date(d.date.replace(' ', 'T') + 'Z');

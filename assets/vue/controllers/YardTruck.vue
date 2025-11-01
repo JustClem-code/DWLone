@@ -21,9 +21,9 @@
 
 import { ref, provide, computed } from 'vue'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
-import DockCardComponent from './UI/DockCardComponent.vue'
+import DockCardComponent from './YardTruckComponents/DockCardComponent.vue'
 import BorderedContent from './UI/BorderedContent.vue'
-import TruckListComponent from './UI/TruckListComponent.vue'
+import TruckListComponent from './YardTruckComponents/TruckListComponent.vue'
 
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')

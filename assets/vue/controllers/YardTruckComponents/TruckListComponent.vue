@@ -17,19 +17,37 @@
         <MinimalToggleMenu :items="menuItems" @click="defineCurrentTruck(truck)" @select="handleMenuAction" />
       </div>
     </li>
-    <InfoDialogComponentSlot ref="infoDialogRef" :truck="currentTruck"/>
+    <InfoDialogComponentSlot ref="infoDialogRef">
+
+      <li class="relative flex gap-1 mb-6 items-center">
+        <div class="absolute top-0 left-0 -bottom-6 flex w-6 justify-center">
+          <div class="w-[1px] bg-gray-700/90 h-full"></div>
+        </div>
+        <div class="relative flex size-6 flex-none items-center justify-center bg-gray-800">
+          <div class="size-2 rounded-full bg-gray-700/50 inset-ring inset-ring-gray-700/90"></div>
+        </div>
+        <p class="text-xs py-1"><span class="text-gray-800 dark:text-gray-400">Chelsea Hagon</span></p>
+      </li>
+
+      <p>{{ currentTruck?.name }}</p>
+      <p>{{ currentTruck?.dock }}</p>
+      <p>{{ formattedDateFr(currentTruck?.expectedDate) ?? 'No date' }}</p>
+      <p>{{ formattedDateFr(currentTruck?.deliveryDate) ?? 'No date' }}</p>
+      <p>{{ formattedDateFr(currentTruck?.departureDate) ?? 'No date' }}</p>
+      <p>{{ currentTruck?.pallets.length }}</p>
+    </InfoDialogComponentSlot>
   </ul>
 </template>
 
 <script setup>
 import { inject, ref, toRef, computed } from 'vue'
-import BadgeComponent from './BadgeComponent.vue';
-import MinimalToggleMenu from './MinimalToggleMenu.vue';
-import SelectDialogComponentSlot from './SelectDialogComponentSlot.vue';
-import BaseButton from './BaseButton.vue';
+import BadgeComponent from '../UI/BadgeComponent.vue';
+import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
+import SelectDialogComponentSlot from '../UI/SelectDialogComponentSlot.vue';
+import BaseButton from '../UI/BaseButton.vue';
 
 import { formattedDateFr } from '../../composables/dateFormat.js'
-import InfoDialogComponentSlot from './InfoDialogComponentSlot.vue';
+import InfoDialogComponentSlot from '../UI/InfoDialogComponentSlot.vue';
 
 const { trucks, dockingTruck } = inject('yardTruck')
 
@@ -71,7 +89,7 @@ function dateInfo(truck) {
 function defineCurrentTruck(truck) {
   currentTruck.value = truck
   console.log(currentTruck.value);
-  
+
 }
 
 const menuItems = computed(() => [

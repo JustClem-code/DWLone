@@ -8,8 +8,10 @@
 
 //TODO:
 // possibilité de voir les infos du truc dans le minimal toggle => finir
+// finir la timeline
 // Ajouter un Slot ppour les le css des modal (on s'est compris)
 // gestion du animate pulse si chargement de la list
+// ajout d'un système de notification
 // ça serait cool de passer à la reception avant induction
 
 import { onMounted } from 'vue'
