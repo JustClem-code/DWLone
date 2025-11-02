@@ -1,7 +1,7 @@
 <template>
   <div class="relative inline-block text-left">
     <button type="button" id="menu-button-1"
-      class="inline-flex w-8 h-8 items-center justify-center rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white"
+      class="inline-flex w-8 h-8 items-center justify-center rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
       aria-haspopup="true" :aria-expanded="isOpen.toString()" @click="toggleMenu">
       <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
         <path
