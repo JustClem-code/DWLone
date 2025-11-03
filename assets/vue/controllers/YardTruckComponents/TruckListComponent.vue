@@ -2,7 +2,7 @@
   <ul role="list" class="divide-y">
     <li v-for="truck in trucks" :key=truck.id
       class="flex items-center justify-between py-4 border-gray-200 dark:border-gray-700/90">
-      <div class="">
+      <div>
         <div class="flex items-center gap-4 text-base font-semibold">
           <p>{{ truck.name }}</p>
           <BadgeComponent :type="badgeType(truck)" :title="badgeTitle(truck)" size="sm" />
@@ -12,7 +12,7 @@
       <div class="flex items-center gap-2">
         <SelectDialogComponentSlot v-slot:activator :options="docks" :isLoading="dockingIsLoading"
           @submitOption="val => dockingTruck(truck, val.selected)">
-          <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="false" />
+          <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate" />
         </SelectDialogComponentSlot>
         <MinimalToggleMenu :items="menuItems" @click="defineCurrentTruck(truck)" @select="handleMenuAction" />
       </div>

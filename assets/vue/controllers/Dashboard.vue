@@ -7,8 +7,7 @@
 <script setup>
 
 //TODO:
-// possibilité de voir les infos du truc dans le minimal toggle => finir
-// Ajouter une croix de fermeture
+// Ajouter une modal de validation pour les opérations importantes (undocking et reset)
 // gestion du animate pulse si chargement de la list
 // ajout d'un système de notification
 // ça serait cool de passer à la reception avant induction
