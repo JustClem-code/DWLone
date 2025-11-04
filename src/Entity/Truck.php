@@ -34,7 +34,7 @@ class Truck
   #[ORM\OneToOne(mappedBy: 'truck', cascade: ['persist', 'remove'])]
   private ?Dock $dock = null;
 
-  #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+  #[ORM\Column(nullable: true)]
   private ?\DateTime $DepartureDate = null;
 
   public function __construct()
