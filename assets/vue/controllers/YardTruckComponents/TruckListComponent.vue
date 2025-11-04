@@ -14,11 +14,19 @@
           @submitOption="val => dockingTruck(truck, val.selected)">
           <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate" />
         </SelectDialogComponentSlot>
-        <MinimalToggleMenu :items="menuItems" @click="defineCurrentTruck(truck)" @select="handleMenuAction" />
+        <MinimalToggleMenu :items="menuItems" @click="setCurrentTruck(truck)" @select="handleMenuAction" />
       </div>
     </li>
-    <InfoDialogComponentSlot ref="infoDialogRef">
-      <TruckInfo :currentTruck="currentTruck"/>
+    <InfoDialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
+      <TruckInfo :currentTruck="currentTruck" />
+    </InfoDialogComponentSlot>
+    <InfoDialogComponentSlot ref="confirmUndockDialogRef">
+      <ConfirmationComponent question="Are you sure to undock ?" @confirm="unDocking"
+        @cancel="confirmUndockDialogRef?.closeDialog()" />
+    </InfoDialogComponentSlot>
+    <InfoDialogComponentSlot ref="confirmResetDialogRef">
+      <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
+        @cancel="confirmResetDialogRef?.closeDialog()" />
     </InfoDialogComponentSlot>
   </ul>
 </template>
@@ -33,6 +41,7 @@ import BaseButton from '../UI/BaseButton.vue';
 import { formattedDateFr } from '../../composables/dateFormat.js'
 import InfoDialogComponentSlot from '../UI/InfoDialogComponentSlot.vue';
 import TruckInfo from './TruckInfo.vue';
+import ConfirmationComponent from '../UI/ConfirmationComponent.vue';
 
 const { trucks, dockingTruck } = inject('yardTruck')
 
@@ -47,6 +56,10 @@ const props = defineProps({
 const currentTruck = ref(null)
 
 const infoDialogRef = ref(null);
+
+const confirmUndockDialogRef = ref(null);
+
+const confirmResetDialogRef = ref(null);
 
 function badgeType(truck) {
   if (truck.departureDate) {
@@ -69,23 +82,19 @@ function dateInfo(truck) {
   return formattedDateFr(truck.deliveryDate ?? truck.expectedDate)
 }
 
-
-
-function defineCurrentTruck(truck) {
+function setCurrentTruck(truck) {
   currentTruck.value = truck
-  console.log(currentTruck.value);
-
 }
 
 const menuItems = computed(() => [
   {
     label: 'Undocking',
-    action: 'unDocking',
+    action: 'confirmUndocking',
     isDisabled: !currentTruck.value?.dock
   },
   {
     label: 'Reset',
-    action: 'resetItem',
+    action: 'confirmResetItem',
   },
   {
     label: 'Infos',
@@ -93,12 +102,20 @@ const menuItems = computed(() => [
   },
 ])
 
-const unDocking = () => dockingTruck(currentTruck.value, null)
-const resetItem = () => dockingTruck(currentTruck.value, null, true)
+const unDocking = () => {
+  dockingTruck(currentTruck.value, null)
+  confirmUndockDialogRef.value?.closeDialog()
+}
+const resetItem = () => {
+  dockingTruck(currentTruck.value, null, true)
+  confirmResetDialogRef.value?.closeDialog()
+}
+const confirmUndocking = () => confirmUndockDialogRef.value?.openDialog()
+const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
 const openInfos = () => infoDialogRef.value?.openDialog()
 
 const handleMenuAction = (action) => {
-  const actions = { unDocking, resetItem, openInfos }
+  const actions = { confirmUndocking, confirmResetItem, openInfos }
   if (actions[action]) actions[action]()
 }
 

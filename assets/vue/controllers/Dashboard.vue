@@ -7,12 +7,11 @@
 <script setup>
 
 //TODO:
-// Ajouter une modal de validation pour les opérations importantes (undocking et reset)
-// Travailler sur la modal de validation
+// Ajouter une modal de validation pour un changement de dock ?
 // gestion du animate pulse si chargement de la list
 // ajout d'un système de notification
 // ça serait cool de passer à la reception avant induction
-//
+
 
 import { onMounted } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue';
