@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between gap-8 flex-wrap mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 ">
       <LogoTitle />
       <div class="block md:hidden">
-        <button class="flex items-center p-3 border rounded hover:text-gray-700 hover:border-gray-700"
+        <button class="flex items-center p-3 border rounded text-gray-300 hover:text-gray-900 dark:text-gray-700 dark:hover:text-gray-100"
           @click="toggleSideBar">
           <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <title>Menu</title>

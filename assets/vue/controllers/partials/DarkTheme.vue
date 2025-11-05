@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="flex items-center p-1 border rounded hover:text-gray-700 hover:border-gray-700"
+  <button type="button" class="flex items-center p-1 border rounded text-gray-300 hover:text-gray-900 dark:text-gray-700 dark:hover:text-gray-100"
     @click="toggle" aria-label="Toggle dark mode">
     <svg v-if="isDark" viewBox="0 0 28 28" fill="none" class="h-7 w-7">
       <path
