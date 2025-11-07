@@ -24,6 +24,7 @@
     </div>
   </header>
   <SideBar class="md:hidden lg:hidden" :open="open" @open="val => toggleSideBar(val)" />
+  <NotificationComponent></NotificationComponent>
 </template>
 
 <script setup>
@@ -32,6 +33,7 @@ import NavContent from './NavContent.vue';
 import LogoTitle from './LogoTitle.vue';
 import SideBar from './SideBar.vue';
 import DarkTheme from './DarkTheme.vue';
+import NotificationComponent from '../UI/NotificationComponent.vue';
 
 const open = ref(false)
 

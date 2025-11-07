@@ -37,11 +37,18 @@ import BadgeComponent from '../UI/BadgeComponent.vue';
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import SelectDialogComponentSlot from '../UI/SelectDialogComponentSlot.vue';
 import BaseButton from '../UI/BaseButton.vue';
+import InfoDialogComponentSlot from '../UI/InfoDialogComponentSlot.vue';
+import ConfirmationComponent from '../UI/ConfirmationComponent.vue';
+
+import TruckInfo from './TruckInfo.vue';
 
 import { formattedDateFr } from '../../composables/dateFormat.js'
-import InfoDialogComponentSlot from '../UI/InfoDialogComponentSlot.vue';
-import TruckInfo from './TruckInfo.vue';
-import ConfirmationComponent from '../UI/ConfirmationComponent.vue';
+import emitter from '../../composables/eventBus.js'
+
+
+function notifier() {
+  emitter.emit('notify', { type: 'success', message: 'Opération réussie !' })
+}
 
 const { trucks, dockingTruck } = inject('yardTruck')
 
@@ -82,7 +89,7 @@ function dateInfo(truck) {
   return formattedDateFr(truck.deliveryDate ?? truck.expectedDate)
 }
 
-function setCurrentTruck(truck) {
+const setCurrentTruck = (truck)  => {
   currentTruck.value = truck
 }
 
@@ -105,6 +112,10 @@ const menuItems = computed(() => [
 const unDocking = () => {
   dockingTruck(currentTruck.value, null)
   confirmUndockDialogRef.value?.closeDialog()
+  notifier()
+  /* if (triggerNotification) {
+    triggerNotification('Notification déclenchée depuis l’enfant !')
+  } */
 }
 const resetItem = () => {
   dockingTruck(currentTruck.value, null, true)

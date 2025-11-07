@@ -7,9 +7,10 @@
 <script setup>
 
 //TODO:
-// Ajouter une modal de validation pour un changement de dock ?
+// créer un composant pour les svg (close cross)
 // gestion du animate pulse si chargement de la list
 // ajout d'un système de notification
+// transformer les function en arrow function si possible
 // ça serait cool de passer à la reception avant induction
 
 
