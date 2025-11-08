@@ -7,9 +7,9 @@
 <script setup>
 
 //TODO:
+// ajout d'un système de notification => gestion de plusieurs notif en même temps
 // créer un composant pour les svg (close cross)
-// gestion du animate pulse si chargement de la list
-// ajout d'un système de notification
+// gestion du animate pulse si chargement de la list => voir tailwind UI
 // transformer les function en arrow function si possible
 // ça serait cool de passer à la reception avant induction
 

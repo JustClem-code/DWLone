@@ -43,12 +43,6 @@ import ConfirmationComponent from '../UI/ConfirmationComponent.vue';
 import TruckInfo from './TruckInfo.vue';
 
 import { formattedDateFr } from '../../composables/dateFormat.js'
-import emitter from '../../composables/eventBus.js'
-
-
-function notifier() {
-  emitter.emit('notify', { type: 'success', message: 'Opération réussie !' })
-}
 
 const { trucks, dockingTruck } = inject('yardTruck')
 
@@ -112,10 +106,6 @@ const menuItems = computed(() => [
 const unDocking = () => {
   dockingTruck(currentTruck.value, null)
   confirmUndockDialogRef.value?.closeDialog()
-  notifier()
-  /* if (triggerNotification) {
-    triggerNotification('Notification déclenchée depuis l’enfant !')
-  } */
 }
 const resetItem = () => {
   dockingTruck(currentTruck.value, null, true)

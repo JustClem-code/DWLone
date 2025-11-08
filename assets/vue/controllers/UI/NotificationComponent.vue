@@ -2,7 +2,7 @@
   <transition enter-from-class="opacity-0" enter-active-class="transition-opacity duration-500"
     leave-to-class="opacity-0" leave-active-class="transition-opacity duration-500">
     <div v-if="showNotif"
-      class="transition-opacity bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-0 dark:border-1 dark:border-gray-700/90 fixed top-4 right-4 z-10 p-4 rounded-md shadow-2xl">
+      class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-0 dark:border-1 dark:border-gray-700/90 fixed top-4 right-4 z-10 p-4 rounded-md shadow-2xl">
       <div class="flex item-start gap-3">
         <div class="shrink-0">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
@@ -13,7 +13,7 @@
         </div>
         <div class="pt-1">
           <p class="text-sm">{{ notification.message }}</p>
-          <p class="text-sm font-light">Anyone with a link can now view this file.</p>
+          <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ notification.message_2 }}</p>
         </div>
         <div class="shrink-0">
           <button
@@ -42,8 +42,9 @@ function closeNotification() {
   showNotif.value = false
 }
 
-function showNotification({ type, message }) {
-  notification.value = { type, message }
+function showNotification({ type, message, message_2 }) {
+  closeNotification()
+  notification.value = { type, message, message_2 }
   showNotif.value = true
 
   setTimeout(() => {

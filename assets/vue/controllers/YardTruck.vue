@@ -20,10 +20,16 @@
 <script setup>
 
 import { ref, provide, computed } from 'vue'
-import { useFetch, usePostFetch } from '../composables/fetch.js'
 import DockCardComponent from './YardTruckComponents/DockCardComponent.vue'
 import BorderedContent from './UI/BorderedContent.vue'
 import TruckListComponent from './YardTruckComponents/TruckListComponent.vue'
+
+import { useFetch, usePostFetch } from '../composables/fetch.js'
+import emitter from '../composables/eventBus.js'
+
+const notifier = (type, message, message_2) => {
+  emitter.emit('notify', { type: type, message: message, message_2: message_2 })
+}
 
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')
@@ -84,6 +90,16 @@ async function dockingTruck(truckId, dockId, reset) {
   if (dockingData.value) {
     updateListElements()
     dockingIsLoading.value = false;
+
+    console.log(dockingData.value);
+    if (reset) {
+      notifier('success', 'Reset', `The truck (Vrid: ${dockingData.value.truckName}) is reset`)
+    } else if (!dockingData.value.dockId && dockingData.value.previousDockId) {
+      notifier('success', 'Undocking', `The truck (Vrid: ${dockingData.value.truckName}) departure from the dock ${dockingData.value.previousDockName}`)
+    } else {
+      notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truckName}) docking ${dockingData.value.dockName}`)
+    }
+
   }
 }
 
