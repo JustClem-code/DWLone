@@ -9,7 +9,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import AnimateSpin from './AnimateSpin.vue';
+import AnimateSpin from '../AnimateSpin.vue';
 
 const props = defineProps({
   buttonType: String,

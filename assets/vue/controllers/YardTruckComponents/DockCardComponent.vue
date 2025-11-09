@@ -25,7 +25,7 @@
 import { inject, computed } from 'vue'
 import BadgeComponent from '../UI/BadgeComponent.vue';
 import SelectDialogComponentSlot from '../UI/SelectDialogComponentSlot.vue';
-import BaseButton from '../UI/BaseButton.vue';
+import BaseButton from '../UI/Buttons/BaseButton.vue';
 
 const { trucks, dockingTruck, dockingIsLoading } = inject('yardTruck')
 const props = defineProps({

@@ -20,14 +20,7 @@
               <p class="text-nowrap text-sm font-light text-gray-800 dark:text-gray-400">{{ notif.message_2 }}</p>
             </div>
             <div class="shrink-0">
-              <button
-                class="flex items-center text-gray-300 hover:text-gray-900 dark:text-gray-700 dark:hover:text-gray-100"
-                @click="closeNotification(notif.id)">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="size-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <CloseCrossButton @click="closeNotification(notif.id)" />
             </div>
           </div>
         </div>
@@ -40,6 +33,7 @@
 
 import { ref, onMounted, onUnmounted } from 'vue'
 import emitter from '../../composables/eventBus.js'
+import CloseCrossButton from './Buttons/CloseCrossButton.vue'
 
 const notifications = ref([])
 
@@ -48,7 +42,7 @@ function showNotification({ type, message, message_2 }) {
   notifications.value.push({ id, type, message, message_2 })
   setTimeout(() => {
     closeNotification(id)
-  }, 10000)
+  }, 3000)
 }
 
 function closeNotification(id) {

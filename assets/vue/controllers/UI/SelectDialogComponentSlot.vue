@@ -39,7 +39,7 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import BaseButton from './BaseButton.vue';
+import BaseButton from './Buttons/BaseButton.vue';
 import OverlayInvisible from './OverlayInvisible.vue';
 
 const props = defineProps({

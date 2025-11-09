@@ -3,13 +3,7 @@
     <div class="flex items-center justify-between flex-wrap border-b border-solid bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700/90 p-6">
       <LogoTitle />
       <div class="block md:hidden p-3">
-        <button class="flex items-center text-gray-300 hover:text-gray-900 dark:text-gray-700 dark:hover:text-gray-100" :class="open ? 'left-0' : '-left-full'"
-          @click="$emit('open', open)">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <CloseCrossButton @click="$emit('open', open)" />
       </div>
     </div>
     <div class="w-full flex-grow md:flex md:items-center md:w-auto block md:hidden p-6">
@@ -19,6 +13,7 @@
 </template>
 
 <script setup>
+import CloseCrossButton from '../UI/Buttons/CloseCrossButton.vue';
 import LogoTitle from './LogoTitle.vue';
 import NavContent from './NavContent.vue';
 

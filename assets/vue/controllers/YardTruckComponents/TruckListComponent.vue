@@ -36,7 +36,7 @@ import { inject, ref, toRef, computed } from 'vue'
 import BadgeComponent from '../UI/BadgeComponent.vue';
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import SelectDialogComponentSlot from '../UI/SelectDialogComponentSlot.vue';
-import BaseButton from '../UI/BaseButton.vue';
+import BaseButton from '../UI/Buttons/BaseButton.vue';
 import InfoDialogComponentSlot from '../UI/InfoDialogComponentSlot.vue';
 import ConfirmationComponent from '../UI/ConfirmationComponent.vue';
 
