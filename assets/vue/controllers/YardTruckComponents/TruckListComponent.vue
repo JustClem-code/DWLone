@@ -1,6 +1,6 @@
 <template>
   <ul role="list" class="divide-y">
-    <li v-for="truck in trucks" :key=truck.id
+    <li v-for="truck in trucks" :key=truck.id @click="setCurrentTruck(truck)"
       class="flex items-center justify-between py-4 border-gray-200 dark:border-gray-700/90">
       <div>
         <div class="flex items-center gap-4 text-base font-semibold">
@@ -10,24 +10,30 @@
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ dateInfo(truck) }}</p>
       </div>
       <div class="flex items-center gap-2">
-        <SelectDialogComponentSlot v-slot:activator :options="docks" :isLoading="dockingIsLoading"
-          @submitOption="val => dockingTruck(truck, val.selected)">
-          <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate" />
-        </SelectDialogComponentSlot>
-        <MinimalToggleMenu :items="menuItems" @click="setCurrentTruck(truck)" @select="handleMenuAction" />
+
+        <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate"
+          @click="SelectOptionRef?.openDialog()" />
+
+        <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
       </div>
     </li>
-    <InfoDialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
+
+    <DialogComponentSlot ref="SelectOptionRef">
+      <SelectOptionComponent :options="docks" :isLoading="dockingIsLoading"
+          @submitOption="val => dockingTruck(currentTruck, val.selected)" @closeDialog="SelectOptionRef?.closeDialog()"/>
+    </DialogComponentSlot>
+
+    <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
       <TruckInfo :currentTruck="currentTruck" />
-    </InfoDialogComponentSlot>
-    <InfoDialogComponentSlot ref="confirmUndockDialogRef">
+    </DialogComponentSlot>
+    <DialogComponentSlot ref="confirmUndockDialogRef">
       <ConfirmationComponent question="Are you sure to undock ?" @confirm="unDocking"
         @cancel="confirmUndockDialogRef?.closeDialog()" />
-    </InfoDialogComponentSlot>
-    <InfoDialogComponentSlot ref="confirmResetDialogRef">
+    </DialogComponentSlot>
+    <DialogComponentSlot ref="confirmResetDialogRef">
       <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
         @cancel="confirmResetDialogRef?.closeDialog()" />
-    </InfoDialogComponentSlot>
+    </DialogComponentSlot>
   </ul>
 </template>
 
@@ -35,8 +41,9 @@
 import { inject, ref, toRef, computed } from 'vue'
 import BadgeComponent from '../UI/BadgeComponent.vue';
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
-import SelectDialogComponentSlot from '../UI/SelectDialogComponentSlot.vue';
+import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import BaseButton from '../UI/Buttons/BaseButton.vue';
+import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 import InfoDialogComponentSlot from '../UI/InfoDialogComponentSlot.vue';
 import ConfirmationComponent from '../UI/ConfirmationComponent.vue';
 
@@ -55,6 +62,8 @@ const props = defineProps({
 })
 
 const currentTruck = ref(null)
+
+const SelectOptionRef = ref(null);
 
 const infoDialogRef = ref(null);
 
@@ -83,7 +92,7 @@ function dateInfo(truck) {
   return formattedDateFr(truck.deliveryDate ?? truck.expectedDate)
 }
 
-const setCurrentTruck = (truck)  => {
+const setCurrentTruck = (truck) => {
   currentTruck.value = truck
 }
 

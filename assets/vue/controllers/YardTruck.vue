@@ -38,10 +38,16 @@ const dockingData = ref(null)
 const dockingError = ref(null)
 const dockingIsLoading = ref(false)
 
-provide('yardTruck', { trucks, dockingTruck, dockingIsLoading })
+const notDepartedTrucks = computed(() => {
+  if (!trucks.value) return
+  return trucks.value.filter(truck => truck.departureDate === null);
+})
+
+provide('yardTruck', { notDepartedTrucks, trucks, dockingTruck, dockingIsLoading })
 
 console.log("trucks", trucks);
 console.log("docks", docks);
+console.log("notDepartedTrucks", notDepartedTrucks);
 
 
 const freeDocks = computed(() => {

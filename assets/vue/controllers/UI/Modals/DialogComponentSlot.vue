@@ -13,8 +13,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import OverlayInvisible from './OverlayInvisible.vue';
-import CloseCrossButton from './Buttons/CloseCrossButton.vue';
+import OverlayInvisible from './../OverlayInvisible.vue';
+import CloseCrossButton from './../Buttons/CloseCrossButton.vue';
 
 const props = defineProps({
   hasCloseCross: Boolean

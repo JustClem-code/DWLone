@@ -14,23 +14,29 @@
     <div v-if="!dock" class="w-full flex justify-center p-2 text-gray-800 dark:text-gray-400 disabled:opacity-25">
       <span>Select</span>
     </div>
-    <SelectDialogComponentSlot v-else v-slot:activator :options="trucks" :isLoading="dockingIsLoading"
-      @submitOption="val => dockingTruck(val.selected, dock)">
-      <BaseButton title="Trucks" styleColor="flat" :isDisabled="!!dock.truckName" />
-    </SelectDialogComponentSlot>
+
+    <BaseButton title="Trucks" styleColor="flat" :isDisabled="!!dock?.truckName || notDepartedTrucks?.length === 0" @click="SelectOptionRef?.openDialog()" />
+
+    <DialogComponentSlot ref="SelectOptionRef">
+      <SelectOptionComponent :options="notDepartedTrucks" :isLoading="dockingIsLoading"
+          @submitOption="val => dockingTruck(val.selected, dock)" @closeDialog="SelectOptionRef?.closeDialog()"/>
+    </DialogComponentSlot>
   </div>
 </template>
 
 <script setup>
-import { inject, computed } from 'vue'
+import { inject, ref, computed } from 'vue'
 import BadgeComponent from '../UI/BadgeComponent.vue';
-import SelectDialogComponentSlot from '../UI/SelectDialogComponentSlot.vue';
 import BaseButton from '../UI/Buttons/BaseButton.vue';
+import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
+import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 
-const { trucks, dockingTruck, dockingIsLoading } = inject('yardTruck')
+const { notDepartedTrucks, dockingTruck, dockingIsLoading } = inject('yardTruck')
 const props = defineProps({
   dock: Object
 })
+
+const SelectOptionRef = ref(null)
 
 const badgeType = computed(() => {
   if (!props.dock) return null;
