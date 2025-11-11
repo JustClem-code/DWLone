@@ -94,3 +94,15 @@
 1. Security bundle:
 
     docker compose exec php composer require symfony/security-bundle
+
+2. User
+
+    docker compose exec php php bin/console make:user
+
+3. Migration:
+
+    docker compose exec php php bin/console make:migration
+
+4. Migrate:
+
+    docker compose exec php php bin/console doctrine:migrations:migrate
