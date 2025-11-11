@@ -20,8 +20,8 @@
 <script setup>
 
 import { ref, provide, computed } from 'vue'
-import DockCardComponent from './YardTruckComponents/DockCardComponent.vue'
 import BorderedContent from './UI/BorderedContent.vue'
+import DockCardComponent from './YardTruckComponents/DockCardComponent.vue'
 import TruckListComponent from './YardTruckComponents/TruckListComponent.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
@@ -55,7 +55,7 @@ const freeDocks = computed(() => {
   return docks.value.filter(dock => dock.truckId === null);
 })
 
-function updateListElements() {
+const updateListElements = () => {
   const { truckId, previousDockId, dockId, dockName, truckName, deliveryDate, departureDate } = dockingData.value
 
   const truck = trucks.value.find(t => t.id === truckId)

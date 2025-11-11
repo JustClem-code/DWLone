@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import BaseButton from './../Buttons/BaseButton.vue';
+import BaseButton from '../Buttons/BaseButton.vue';
 
 const props = defineProps({
   question: String

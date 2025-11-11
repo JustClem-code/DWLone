@@ -70,21 +70,21 @@ const confirmUndockDialogRef = ref(null);
 
 const confirmResetDialogRef = ref(null);
 
-function badgeType(truck) {
+const badgeType = (truck) => {
   if (truck.departureDate) {
     return 'danger'
   }
   return truck.dock ? 'warning' : 'valid';
 }
 
-function badgeTitle(truck) {
+const badgeTitle = (truck) => {
   if (truck.departureDate) {
     return 'finish'
   }
   return truck.dock ?? 'Waiting dock'
 }
 
-function dateInfo(truck) {
+const dateInfo = (truck) => {
   if (truck.departureDate) {
     return formattedDateFr(truck.departureDate)
   }

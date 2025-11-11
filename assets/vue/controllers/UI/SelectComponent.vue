@@ -16,7 +16,7 @@ const emit = defineEmits(['submitOption'])
 
 const selectedObjet = ref(null)
 
-function onChange() {
+const onChange = () => {
   const selected = selectedObjet.value
   emit('submitOption', { selected })
 }

@@ -47,14 +47,14 @@ const currentItem = ref(navigations[0])
 
 provide('navigation', { navigations, currentItem })
 
-function toggleSideBar() {
+const toggleSideBar = () => {
   open.value = !open.value
   open.value
     ? (document.body.style.overflow = "hidden")
     : (document.body.style.overflow = "auto");
 }
 
-function updateCurrentItem() {
+const updateCurrentItem = () => {
   const path = window.location.pathname
   const found = navigations.value.find(item => item.href === path)
   currentItem.value = found || navigations[0] // fallback to first if not found

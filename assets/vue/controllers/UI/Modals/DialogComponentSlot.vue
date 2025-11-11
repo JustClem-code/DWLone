@@ -15,7 +15,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import OverlayInvisible from './../OverlayInvisible.vue';
+import OverlayInvisible from '../OverlayInvisible.vue';
 import IconButton from '../Buttons/IconButton.vue';
 import CrossIcon from '../Icons/CrossIcon.vue';
 

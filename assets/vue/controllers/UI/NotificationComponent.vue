@@ -37,16 +37,16 @@ import CheckCircleIcon from './Icons/CheckCircleIcon.vue'
 
 const notifications = ref([])
 
-function showNotification({ type, message, message_2 }) {
+const closeNotification = (id) => {
+  notifications.value = notifications.value.filter(notif => notif.id !== id)
+}
+
+const showNotification = ({ type, message, message_2 }) => {
   const id = Date.now() + Math.random()
   notifications.value.push({ id, type, message, message_2 })
   setTimeout(() => {
     closeNotification(id)
   }, 3000)
-}
-
-function closeNotification(id) {
-  notifications.value = notifications.value.filter(notif => notif.id !== id)
 }
 
 onMounted(() => {
