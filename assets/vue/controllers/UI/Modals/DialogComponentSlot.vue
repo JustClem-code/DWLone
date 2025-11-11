@@ -2,10 +2,12 @@
   <dialog ref="myDialog" @click.self="closeDialog">
     <OverlayInvisible @click="closeDialog" />
     <div
-      class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-0 dark:border-1 dark:border-gray-700/90 max-w-[95vw] max-h-[95vh] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-8 rounded-2xl shadow-2xl">
+      class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-0 dark:border-1 dark:border-gray-700/90 sm:w-full md:w-auto max-w-[95vw] max-h-[95vh] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-8 rounded-2xl shadow-2xl">
       <slot></slot>
       <div v-show="hasCloseCross" class="absolute top-2 right-2 block p-3">
-        <CloseCrossButton @click="closeDialog" />
+        <IconButton @click="closeDialog">
+          <CrossIcon />
+        </IconButton>
       </div>
     </div>
   </dialog>
@@ -14,7 +16,8 @@
 <script setup>
 import { ref } from 'vue';
 import OverlayInvisible from './../OverlayInvisible.vue';
-import CloseCrossButton from './../Buttons/CloseCrossButton.vue';
+import IconButton from '../Buttons/IconButton.vue';
+import CrossIcon from '../Icons/CrossIcon.vue';
 
 const props = defineProps({
   hasCloseCross: Boolean

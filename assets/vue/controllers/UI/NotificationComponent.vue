@@ -9,18 +9,16 @@
           class="absolute top-0 right-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border dark:border-gray-700/90 p-4 rounded-md shadow-2xl">
           <div class="flex items-start gap-3">
             <div class="shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
-                aria-hidden="true" class="size-6 text-green-500">
-                <path d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke-linecap="round"
-                  stroke-linejoin="round"></path>
-              </svg>
+              <CheckCircleIcon color="text-green-500 mt-1"/>
             </div>
             <div class="pt-1">
               <p class="text-sm">{{ notif.message }}</p>
               <p class="text-nowrap text-sm font-light text-gray-800 dark:text-gray-400">{{ notif.message_2 }}</p>
             </div>
             <div class="shrink-0">
-              <CloseCrossButton @click="closeNotification(notif.id)" />
+              <IconButton @click="closeNotification(notif.id)">
+                <CrossIcon />
+              </IconButton>
             </div>
           </div>
         </div>
@@ -33,7 +31,9 @@
 
 import { ref, onMounted, onUnmounted } from 'vue'
 import emitter from '../../composables/eventBus.js'
-import CloseCrossButton from './Buttons/CloseCrossButton.vue'
+import IconButton from './Buttons/IconButton.vue'
+import CrossIcon from './Icons/CrossIcon.vue'
+import CheckCircleIcon from './Icons/CheckCircleIcon.vue'
 
 const notifications = ref([])
 

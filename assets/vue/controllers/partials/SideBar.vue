@@ -1,9 +1,13 @@
 <template>
-  <aside class="fixed w-full h-screen top-0 bg-gray-100 dark:bg-gray-900 shadow-lg z-50" :class="open ? 'left-0' : '-left-full'">
-    <div class="flex items-center justify-between flex-wrap border-b border-solid bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700/90 p-6">
+  <aside class="fixed w-full h-screen top-0 bg-gray-100 dark:bg-gray-900 shadow-lg z-50"
+    :class="open ? 'left-0' : '-left-full'">
+    <div
+      class="flex items-center justify-between flex-wrap border-b border-solid bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700/90 p-6">
       <LogoTitle />
       <div class="block md:hidden p-3">
-        <CloseCrossButton @click="$emit('open', open)" />
+        <IconButton @click="$emit('open', open)">
+          <CrossIcon />
+        </IconButton>
       </div>
     </div>
     <div class="w-full flex-grow md:flex md:items-center md:w-auto block md:hidden p-6">
@@ -13,7 +17,8 @@
 </template>
 
 <script setup>
-import CloseCrossButton from '../UI/Buttons/CloseCrossButton.vue';
+import IconButton from '../UI/Buttons/IconButton.vue';
+import CrossIcon from '../UI/Icons/CrossIcon.vue';
 import LogoTitle from './LogoTitle.vue';
 import NavContent from './NavContent.vue';
 

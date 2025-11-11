@@ -44,8 +44,7 @@ import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import BaseButton from '../UI/Buttons/BaseButton.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
-import InfoDialogComponentSlot from '../UI/InfoDialogComponentSlot.vue';
-import ConfirmationComponent from '../UI/ConfirmationComponent.vue';
+import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 
 import TruckInfo from './TruckInfo.vue';
 

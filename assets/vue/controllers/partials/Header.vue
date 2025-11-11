@@ -4,18 +4,16 @@
     <div class="flex items-center justify-between gap-8 flex-wrap mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 ">
       <LogoTitle />
       <div class="block md:hidden">
-        <button class="flex items-center p-3 border rounded text-gray-300 hover:text-gray-900 dark:text-gray-700 dark:hover:text-gray-100"
-          @click="toggleSideBar">
-          <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <title>Menu</title>
-            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-          </svg>
-        </button>
+        <IconButton @click="toggleSideBar" :border="true" :rounded="true">
+          <BurgerIcon size="size-3" />
+        </IconButton>
       </div>
       <div class="w-full flex-grow md:flex md:items-center md:w-auto hidden md:block">
         <NavContent />
       </div>
-      <DarkTheme class="hidden md:block"/>
+      <div class="hidden md:block">
+        <DarkTheme />
+      </div>
     </div>
   </nav>
   <header class="relative bg-gray-100 dark:bg-gray-900">
@@ -34,6 +32,8 @@ import LogoTitle from './LogoTitle.vue';
 import SideBar from './SideBar.vue';
 import DarkTheme from './DarkTheme.vue';
 import NotificationComponent from '../UI/NotificationComponent.vue';
+import IconButton from '../UI/Buttons/IconButton.vue';
+import BurgerIcon from '../UI/Icons/BurgerIcon.vue';
 
 const open = ref(false)
 
@@ -45,7 +45,7 @@ const navigations = ref([
 
 const currentItem = ref(navigations[0])
 
-provide('navigation', {navigations, currentItem})
+provide('navigation', { navigations, currentItem })
 
 function toggleSideBar() {
   open.value = !open.value

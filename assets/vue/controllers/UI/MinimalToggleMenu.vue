@@ -1,6 +1,8 @@
 <template>
   <div class="relative inline-block text-left">
-    <RoundedMenuButton :isExpanded="isOpen.toString()" @click="toggleMenu"/>
+    <IconButton :isExpanded="isOpen.toString()" @click="toggleMenu" >
+      <RoundBurgerIcon />
+    </IconButton>
 
     <OverlayInvisible v-show="isOpen" @click="toggleMenu" />
     <div v-show="isOpen"
@@ -21,7 +23,8 @@
 <script setup>
 import { ref } from 'vue'
 import OverlayInvisible from './OverlayInvisible.vue'
-import RoundedMenuButton from './Buttons/RoundedMenuButton.vue'
+import IconButton from './Buttons/IconButton.vue'
+import RoundBurgerIcon from './Icons/RoundBurgerIcon.vue'
 
 const props = defineProps({
   items: Array,

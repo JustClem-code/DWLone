@@ -24,7 +24,7 @@
             <div class="relative flex size-6 flex-none items-center justify-center bg-white dark:bg-gray-800">
               <div class="size-2 rounded-full bg-gray-200/50 dark:bg-gray-700/50 inset-ring inset-ring-gray-300 dark:inset-ring-gray-700/90"></div>
             </div>
-            <p class="text-xs py-1">{{ date.title }}<span class="text-gray-800 dark:text-gray-400">&nbsp;{{ date.date
+            <p class="text-xs py-1 text-nowrap">{{ date.title }}<span class="text-gray-800 dark:text-gray-400">&nbsp;{{ date.date
                 }}</span></p>
           </li>
         </ul>
