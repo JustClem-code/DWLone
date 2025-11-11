@@ -88,3 +88,9 @@
 4. Loading Fixtures:
 
     docker compose exec php php bin/console doctrine:fixtures:load
+
+## Création du système d'authentification
+
+1. Security bundle:
+
+    docker compose exec php composer require symfony/security-bundle

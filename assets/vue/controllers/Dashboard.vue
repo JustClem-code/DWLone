@@ -8,7 +8,7 @@
 
 //TODO:
 // gestion du animate pulse si chargement de la list => voir tailwind UI
-// transformer les function en arrow function si possible
+// Mettre en place utilisateurs
 // ça serait cool de passer à la reception avant induction
 
 
