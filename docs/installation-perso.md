@@ -106,3 +106,9 @@
 4. Migrate:
 
     docker compose exec php php bin/console doctrine:migrations:migrate
+
+5. Register
+
+    docker compose exec php composer require form validator
+
+    docker compose exec php php bin/console make:registration-form

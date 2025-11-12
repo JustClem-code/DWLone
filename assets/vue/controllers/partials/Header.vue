@@ -38,6 +38,7 @@ import BurgerIcon from '../UI/Icons/BurgerIcon.vue';
 const open = ref(false)
 
 const navigations = ref([
+  { name: 'Register', href: '/register' },
   { name: 'Dashboard', href: '/' },
   { name: 'Yard Truck', href: '/yard/truck' },
   { name: 'Induction', href: '#' },
