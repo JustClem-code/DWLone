@@ -1,3 +1,7 @@
+# Installation de la toolbar
+
+    docker compose exec php composer require --dev symfony/profiler-pack
+
 # Installation Vue UX
 
 > [!NOTE]
