@@ -116,3 +116,7 @@
     docker compose exec php composer require form validator
 
     docker compose exec php php bin/console make:registration-form
+
+5. Register
+
+    docker compose exec php php bin/console make:security:form-login

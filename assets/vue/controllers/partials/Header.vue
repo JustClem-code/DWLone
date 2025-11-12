@@ -39,6 +39,7 @@ const open = ref(false)
 
 const navigations = ref([
   { name: 'Register', href: '/register' },
+  { name: 'Login', href: '/login' },
   { name: 'Dashboard', href: '/' },
   { name: 'Yard Truck', href: '/yard/truck' },
   { name: 'Induction', href: '#' },
