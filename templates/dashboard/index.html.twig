@@ -4,5 +4,5 @@
 {% endblock %}
 
 {% block body %}
-	<div {{ vue_component('Dashboard', { 'user_name': user_name } ) }}></div>
+	<div {{ vue_component('Dashboard', { 'user_name': app.user ? app.user.username : null, 'is_user': app.user is not null } ) }}></div>
 {% endblock %}

@@ -3,7 +3,7 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <form method="post" class="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
+    <form method="post" class="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-md shadow-md">
 
         {% if error %}
             <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
@@ -12,7 +12,7 @@
         {% endif %}
 
         {% if app.user %}
-            <div class="mb-4 text-sm text-gray-600">
+            <div class="mb-4 text-sm">
                 You are logged in as {{ app.user.userIdentifier }},
                 <a href="{{ path('app_logout') }}" class="text-blue-600 hover:underline">Logout</a>
             </div>
@@ -20,7 +20,7 @@
 
         <h1 class="text-2xl font-semibold mb-6">Please sign in</h1>
 
-        <label for="username" class="block mb-2 font-medium text-gray-700">Username</label>
+        <label for="username" class="block mb-2 font-medium">Username</label>
         <input
             type="text"
             value="{{ last_username }}"
@@ -30,7 +30,7 @@
             autocomplete="username" required autofocus
         >
 
-        <label for="password" class="block mb-2 font-medium text-gray-700">Password</label>
+        <label for="password" class="block mb-2 font-medium">Password</label>
         <input
             type="password"
             name="_password"

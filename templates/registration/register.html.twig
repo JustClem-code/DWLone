@@ -11,7 +11,8 @@
     {{ form_start(registrationForm) }}
         {{ form_row(registrationForm.username, {
             attr: {
-                class: 'block w-full px-4 py-2 rounded border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-gray-200 mb-4'
+                class: 'block w-full px-4 py-2 rounded border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-gray-200 mb-4',
+                autocomplete:"username"
             },
             label_attr: {
                 class: 'block mb-2 font-semibold text-gray-700 dark:text-gray-300'
@@ -20,7 +21,8 @@
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password',
             attr: {
-                class: 'block w-full px-4 py-2 rounded border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-gray-200 mb-4'
+                class: 'block w-full px-4 py-2 rounded border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-gray-200 mb-4',
+                autocomplete:"password"
             },
             label_attr: {
                 class: 'block mb-2 font-semibold text-gray-700 dark:text-gray-300'
@@ -28,7 +30,8 @@
         }) }}
         {{ form_row(registrationForm.agreeTerms, {
             attr: {
-                class: 'mr-2 accent-blue-600'
+                class: 'mr-2 accent-blue-600',
+                autocomplete:"agreeterm"
             },
             label_attr: {
                 class: 'inline font-medium text-gray-700 dark:text-gray-300'

@@ -1,1 +1,1 @@
-<div {{ vue_component('partials/Header') }}></div>
+<div {{ vue_component('partials/Header',  { 'user_name': app.user ? app.user.username : null, 'is_user': app.user is not null }) }}></div>

@@ -1,6 +1,6 @@
 <template>
   <BorderedContent title="Welcome">
-    <div>Hello {{ user_name }}!</div>
+    <div>Hello {{ user_name ?? 'John Doe' }}!</div>
   </BorderedContent>
 </template>
 
@@ -18,12 +18,13 @@
 
 import { onMounted } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue';
-defineProps({
+const props = defineProps({
+  is_user: Boolean,
   user_name: String
 });
 
 onMounted(() => {
-  console.log(`the component is now mounted.`)
+  console.log(`the component is now mounted.`, props.is_user)
 })
 
 </script>
