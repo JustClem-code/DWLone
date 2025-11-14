@@ -16,8 +16,18 @@ use App\Repository\TruckRepository;
 use App\Entity\Dock;
 use App\Entity\Truck;
 
+use App\Service\UserService;
+
 final class YardTruckController extends AbstractController
 {
+
+  private UserService $userService;
+
+  public function __construct(UserService $userService)
+  {
+    $this->userService = $userService;
+  }
+
   use RepositoryTrait;
 
   #[Route('/yard/truck', name: 'app_yard_truck')]
@@ -95,7 +105,8 @@ final class YardTruckController extends AbstractController
         'truckId' => $truck->getId(),
         'truckName' => $truck->getName(),
         'deliveryDate' => $truck->getDeliveryDate(),
-        'departureDate' => $truck->getDepartureDate()
+        'departureDate' => $truck->getDepartureDate(),
+        'currentUser' => $this->userService->getCurrentUser()
       ]
     );
   }
