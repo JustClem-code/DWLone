@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref, provide, onMounted } from 'vue'
+import { ref, provide, onMounted, computed } from 'vue'
 import NavContent from './NavContent.vue';
 import LogoTitle from './LogoTitle.vue';
 import SideBar from './SideBar.vue';
@@ -52,12 +52,13 @@ onMounted(() => {
 
 const open = ref(false)
 
-const navigations = ref([
-  { name: 'Register', href: '/register', show: true },
-  { name: 'Login', href: '/login', show: true },
+const navigations = computed(() => [
+  { name: 'Register', href: '/register', show: !isUser.value },
+  { name: 'Login', href: '/login', show: !isUser.value },
+  { name: 'Logout', href: '/logout', show: isUser.value },
   { name: 'Dashboard', href: '/', show: true },
-  { name: 'Yard Truck', href: '/yard/truck', show: isUser }, // fonctionne
-  { name: 'Induction', href: '#', show: isUser }, // ne fonctionne pas
+  { name: 'Yard Truck', href: '/yard/truck', show: isUser.value },
+  { name: 'Induction', href: '#', show: isUser.value },
 ])
 
 const currentItem = ref(navigations[0])

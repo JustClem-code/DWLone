@@ -1,28 +1,3 @@
-import { reactive } from 'vue'
-
-/* export const userStore = reactive({
-  user: null,
-  isUser: null,
-  setUser(user) {
-    this.user = user;
-  },
-  getUser() {
-    return this.user
-  },
-  setIsUser(isUser) {
-    this.isUser = isUser;
-  },
-  getIsUser() {
-    return this.isUser
-  },
-  clear() {
-    this.user = null;
-  },
-  logOut() {
-    window.location.href = '/logout'
-  }
-}) */
-
 import { ref } from 'vue'
 
 const isUser = ref(false)
