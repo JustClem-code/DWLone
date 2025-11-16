@@ -7,10 +7,10 @@
 <script setup>
 
 //TODO:
-// Mettre en place utilisateurs
-// Tester si c'est bien
-// => composer require symfonycasts/verify-email-bundle
-// => php bin/console make:registration-form
+// Mettre en place utilisateurs, mieux gérer le login côter vue.js (si possible)
+// Ajouter à l'entité user nom et prénom et générer le username
+
+// Ajouter des relations user à trucks, pallets, stow etc
 
 // gestion du animate pulse si chargement de la list => voir tailwind UI
 // ça serait cool de passer à la reception avant induction

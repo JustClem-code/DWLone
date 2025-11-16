@@ -93,7 +93,6 @@ final class YardTruckController extends AbstractController
       }
     }
 
-
     $entityManager->flush();
 
     return $this->json(
