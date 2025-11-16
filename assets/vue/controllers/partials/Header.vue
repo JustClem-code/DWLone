@@ -9,7 +9,7 @@
         </IconButton>
       </div>
       <div class="w-full flex-grow md:flex md:items-center md:w-auto hidden md:block">
-        <NavContent :is_user="is_user"/>
+        <NavContent />
       </div>
       <div class="hidden md:block">
         <DarkTheme />
@@ -35,23 +35,29 @@ import NotificationComponent from '../UI/NotificationComponent.vue';
 import IconButton from '../UI/Buttons/IconButton.vue';
 import BurgerIcon from '../UI/Icons/BurgerIcon.vue';
 
+import { userStore } from '../../composables/userStore.js'
+
 const props = defineProps({
   is_user: Boolean,
   user_name: String
 })
 
+const { isUser, setIsUser, setUserName } = userStore()
+
 onMounted(() => {
-  console.log(`the component is now mounted`, props.is_user)
+  console.log(`the component is now mounted`)
+  setUserName(props.user_name)
+  setIsUser(props.is_user)
 })
 
 const open = ref(false)
 
 const navigations = ref([
-  { name: 'Register', href: '/register', is_user: true },
-  { name: 'Login', href: '/login', is_user: true },
-  { name: 'Dashboard', href: '/', is_user: true },
-  { name: 'Yard Truck', href: '/yard/truck', is_user: props.is_user },
-  { name: 'Induction', href: '#', is_user: props.is_user },
+  { name: 'Register', href: '/register', show: true },
+  { name: 'Login', href: '/login', show: true },
+  { name: 'Dashboard', href: '/', show: true },
+  { name: 'Yard Truck', href: '/yard/truck', show: isUser }, // fonctionne
+  { name: 'Induction', href: '#', show: isUser }, // ne fonctionne pas
 ])
 
 const currentItem = ref(navigations[0])

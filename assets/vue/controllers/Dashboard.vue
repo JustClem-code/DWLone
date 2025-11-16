@@ -1,6 +1,7 @@
 <template>
   <BorderedContent title="Welcome">
-    <div>Hello {{ user_name ?? 'John Doe' }}!</div>
+    <div>Hello {{ userName ?? 'John Doe' }}!</div>
+    <button @click="logOut">Log out</button>
   </BorderedContent>
 </template>
 
@@ -8,7 +9,6 @@
 
 //TODO:
 // Mettre en place utilisateurs, mieux gérer le login côter vue.js (si possible)
-// Ajouter à l'entité user nom et prénom et générer le username
 
 // Ajouter des relations user à trucks, pallets, stow etc
 
@@ -18,13 +18,20 @@
 
 import { onMounted } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue';
+
+import { userStore } from '../composables/userStore.js'
+
 const props = defineProps({
   is_user: Boolean,
   user_name: String
 });
 
+const { userName, logOut } = userStore()
+
 onMounted(() => {
-  console.log(`the component is now mounted.`, props.is_user)
+  console.log(`the component is now mounted.`)
+  console.log('getUser in dashboard', userName);
+
 })
 
 </script>
