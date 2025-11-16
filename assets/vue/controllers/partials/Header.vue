@@ -11,9 +11,6 @@
       <div class="w-full flex-grow md:flex md:items-center md:w-auto hidden md:block">
         <NavContent />
       </div>
-      <div class="hidden md:block">
-        <DarkTheme />
-      </div>
     </div>
   </nav>
   <header class="relative bg-gray-100 dark:bg-gray-900">
@@ -30,7 +27,6 @@ import { ref, provide, onMounted, computed } from 'vue'
 import NavContent from './NavContent.vue';
 import LogoTitle from './LogoTitle.vue';
 import SideBar from './SideBar.vue';
-import DarkTheme from './DarkTheme.vue';
 import NotificationComponent from '../UI/NotificationComponent.vue';
 import IconButton from '../UI/Buttons/IconButton.vue';
 import BurgerIcon from '../UI/Icons/BurgerIcon.vue';
@@ -53,17 +49,20 @@ onMounted(() => {
 const open = ref(false)
 
 const navigations = computed(() => [
-  { name: 'Register', href: '/register', show: !isUser.value },
-  { name: 'Login', href: '/login', show: !isUser.value },
-  { name: 'Logout', href: '/logout', show: isUser.value },
   { name: 'Dashboard', href: '/', show: true },
   { name: 'Yard Truck', href: '/yard/truck', show: isUser.value },
   { name: 'Induction', href: '#', show: isUser.value },
 ])
 
+const authNavigations = computed(() => [
+  { name: 'Register', href: '/register', show: !isUser.value },
+  { name: 'Login', href: '/login', show: !isUser.value },
+  { name: 'Logout', href: '/logout', show: isUser.value },
+])
+
 const currentItem = ref(navigations[0])
 
-provide('navigation', { navigations, currentItem })
+provide('navigation', { navigations, currentItem, authNavigations })
 
 const toggleSideBar = () => {
   open.value = !open.value
@@ -75,7 +74,9 @@ const toggleSideBar = () => {
 const updateCurrentItem = () => {
   const path = window.location.pathname
   const found = navigations.value.find(item => item.href === path)
-  currentItem.value = found || navigations[0] // fallback to first if not found
+  const found2 = authNavigations.value.find(item => item.href === path)
+
+  currentItem.value = (found || found2) || navigations[0] // fallback to first if not found
 }
 
 // Initial set
