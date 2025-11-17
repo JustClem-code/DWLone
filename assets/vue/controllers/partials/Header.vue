@@ -30,6 +30,7 @@ import SideBar from './SideBar.vue';
 import NotificationComponent from '../UI/NotificationComponent.vue';
 import IconButton from '../UI/Buttons/IconButton.vue';
 import BurgerIcon from '../UI/Icons/BurgerIcon.vue';
+import SignOutIcon from '../UI/Icons/SignOutIcon.vue'
 
 import { userStore } from '../../composables/userStore.js'
 
@@ -55,14 +56,17 @@ const navigations = computed(() => [
 ])
 
 const authNavigations = computed(() => [
-  { name: 'Register', href: '/register', show: !isUser.value },
-  { name: 'Login', href: '/login', show: !isUser.value },
-  { name: 'Logout', href: '/logout', show: isUser.value },
+  { name: 'Sign in', href: '/login', show: !isUser.value },
+  { name: 'Sign up', href: '/register', show: !isUser.value },
+])
+
+const avatarNavigations = computed(() => [
+  { name: 'Sign out', href: '/logout', icon: SignOutIcon },
 ])
 
 const currentItem = ref(navigations[0])
 
-provide('navigation', { navigations, currentItem, authNavigations })
+provide('navigation', { navigations, currentItem, authNavigations, avatarNavigations })
 
 const toggleSideBar = () => {
   open.value = !open.value

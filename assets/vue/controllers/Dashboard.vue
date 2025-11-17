@@ -9,6 +9,7 @@
 
 //TODO:
 // Mettre en place utilisateurs, mieux gérer le login côter vue.js (si possible)
+// s'inpirer de github pour l'avatar et les boutons de login, register
 
 // Ajouter des relations user à trucks, pallets, stow etc
 
