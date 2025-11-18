@@ -31,15 +31,20 @@ import NotificationComponent from '../UI/NotificationComponent.vue';
 import IconButton from '../UI/Buttons/IconButton.vue';
 import BurgerIcon from '../UI/Icons/BurgerIcon.vue';
 import SignOutIcon from '../UI/Icons/SignOutIcon.vue'
+import DarkIcon from '../UI/Icons/DarkIcon.vue';
+import LightIcon from '../UI/Icons/LightIcon.vue';
 
 import { userStore } from '../../composables/userStore.js'
+import { useTheme } from '../../composables/useTheme.js'
 
 const props = defineProps({
   is_user: Boolean,
   user_name: String
 })
 
-const { isUser, setIsUser, setUserName } = userStore()
+const { isUser, setIsUser, setUserName, logOut } = userStore()
+
+const { isDark, toggleTheme } = useTheme();
 
 onMounted(() => {
   console.log(`the component is now mounted`)
@@ -61,7 +66,8 @@ const authNavigations = computed(() => [
 ])
 
 const avatarNavigations = computed(() => [
-  { name: 'Sign out', href: '/logout', icon: SignOutIcon },
+  { name: isDark.value ? 'Dark theme' : 'Light theme', click: toggleTheme, icon: isDark.value ? DarkIcon : LightIcon, sizeIcon: 'size-6' },
+  { name: 'Sign out', click: logOut, icon: SignOutIcon, sizeIcon: 'size-6' },
 ])
 
 const currentItem = ref(navigations[0])

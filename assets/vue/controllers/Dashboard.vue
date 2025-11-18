@@ -13,6 +13,7 @@
 
 // Ajouter des relations user à trucks, pallets, stow etc
 
+// déplacer certaines logiques (métier, notification dans les composables ?)
 // gestion du animate pulse si chargement de la list => voir tailwind UI
 // ça serait cool de passer à la reception avant induction
 

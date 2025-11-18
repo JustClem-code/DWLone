@@ -28,7 +28,7 @@ export function useTheme() {
     }
   };
 
-  const toggle = () => apply(isDark.value ? 'light' : 'dark');
+  const toggleTheme = () => apply(isDark.value ? 'light' : 'dark');
 
   onMounted(() => {
     const saved = localStorage.getItem(THEME_KEY);
@@ -46,5 +46,5 @@ export function useTheme() {
     mq.addEventListener?.('change', onChange);
   });
 
-  return { choice, isDark, apply, toggle };
+  return { choice, isDark, apply, toggleTheme };
 }

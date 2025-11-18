@@ -1,5 +1,5 @@
 <template>
-  <IconButton @click="toggle" :border="true" :rounded="true">
+  <IconButton @click="toggleTheme" :border="true" :rounded="true">
     <DarkIcon v-if="isDark" />
     <LightIcon v-else />
   </IconButton>
@@ -11,5 +11,5 @@ import IconButton from '../UI/Buttons/IconButton.vue';
 import DarkIcon from '../UI/Icons/DarkIcon.vue';
 import LightIcon from '../UI/Icons/LightIcon.vue';
 
-const { isDark, toggle } = useTheme();
+const { isDark, toggleTheme } = useTheme();
 </script>

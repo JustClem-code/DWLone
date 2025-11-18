@@ -14,7 +14,6 @@
         </div>
       </div>
       <AvatarToggleMenu :items="avatarNavigations" />
-      <DarkTheme class="ml-3 md:ml-0" />
     </div>
   </div>
 </template>
@@ -24,8 +23,11 @@
 import { inject } from 'vue'
 import DarkTheme from './DarkTheme.vue';
 import AvatarToggleMenu from './avatarToggleMenu.vue';
+import { userStore } from '../../composables/userStore.js'
 
 const { navigations, currentItem, authNavigations, avatarNavigations } = inject('navigation')
+
+const { isUser, userName, setIsUser, setUserName, getIsUser, logOut } = userStore()
 
 const navStyle = (item) => {
   return [item.name === currentItem.value.name ? 'bg-gray-50 dark:bg-gray-950 text-blue-700 dark:text-gray-300' : 'text-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-gray-300', 'rounded-md px-3 py-2 text-sm font-medium']
