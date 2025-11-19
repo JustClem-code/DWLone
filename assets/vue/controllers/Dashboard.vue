@@ -9,11 +9,11 @@
 
 //TODO:
 // Mettre en place utilisateurs, mieux gérer le login côter vue.js (si possible)
-// s'inpirer de github pour l'avatar et les boutons de login, register
 
 // Ajouter des relations user à trucks, pallets, stow etc
 
 // déplacer certaines logiques (métier, notification dans les composables ?)
+
 // gestion du animate pulse si chargement de la list => voir tailwind UI
 // ça serait cool de passer à la reception avant induction
 

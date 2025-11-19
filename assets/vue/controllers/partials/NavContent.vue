@@ -7,13 +7,13 @@
       </div>
     </div>
     <div class="flex flex-col md:flex-row md:items-center">
-      <div class="flex flex-col md:flex-row text-sm md:flex-grow">
+      <div v-if="!isUser" class="flex flex-col md:flex-row text-sm md:flex-grow">
         <div v-for="item in authNavigations" :key="item.name" class="mb-4 md:mb-0 md:mr-4">
           <a v-if="item.show" :href="item.href" :class="[navStyle(item), hasBorder(item)]"
             :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
         </div>
       </div>
-      <AvatarToggleMenu :items="avatarNavigations" />
+      <AvatarToggleMenu v-else :items="avatarNavigations" />
     </div>
   </div>
 </template>
@@ -21,13 +21,12 @@
 <script setup>
 
 import { inject } from 'vue'
-import DarkTheme from './DarkTheme.vue';
-import AvatarToggleMenu from './avatarToggleMenu.vue';
+import AvatarToggleMenu from './AvatarToggleMenu.vue';
 import { userStore } from '../../composables/userStore.js'
 
 const { navigations, currentItem, authNavigations, avatarNavigations } = inject('navigation')
 
-const { isUser, userName, setIsUser, setUserName, getIsUser, logOut } = userStore()
+const { isUser } = userStore()
 
 const navStyle = (item) => {
   return [item.name === currentItem.value.name ? 'bg-gray-50 dark:bg-gray-950 text-blue-700 dark:text-gray-300' : 'text-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-gray-300', 'rounded-md px-3 py-2 text-sm font-medium']
