@@ -1,7 +1,10 @@
 <template>
   <BorderedContent title="Welcome">
-    <div>Hello {{ userName ?? 'John Doe' }}!</div>
-    <button @click="logOut">Log out</button>
+    <div>
+      <h2 class="text-2xl">
+        Hello {{ userName ?? 'John Doe' }}!
+      </h2>
+    </div>
   </BorderedContent>
 </template>
 
@@ -28,12 +31,10 @@ const props = defineProps({
   user_name: String
 });
 
-const { userName, logOut } = userStore()
+const { userName } = userStore()
 
 onMounted(() => {
   console.log(`the component is now mounted.`)
-  console.log('getUser in dashboard', userName);
-
 })
 
 </script>
