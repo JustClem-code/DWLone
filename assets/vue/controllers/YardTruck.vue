@@ -56,7 +56,17 @@ const freeDocks = computed(() => {
 })
 
 const updateListElements = () => {
-  const { truckId, previousDockId, dockId, dockName, truckName, deliveryDate, departureDate } = dockingData.value
+  const {
+    truckId,
+    previousDockId,
+    dockId,
+    dockName,
+    truckName,
+    deliveryDate,
+    userDelDate,
+    departureDate,
+    userDepDate
+  } = dockingData.value
 
   const truck = trucks.value.find(t => t.id === truckId)
 
@@ -80,7 +90,9 @@ const updateListElements = () => {
 
   truck.dock = dockName || null
   truck.deliveryDate = deliveryDate || null
+  truck.userDelDate = userDelDate || null
   truck.departureDate = departureDate || null
+  truck.userDepDate = userDepDate || null
 }
 
 async function dockingTruck(truckId, dockId, reset) {

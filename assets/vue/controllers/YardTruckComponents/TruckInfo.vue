@@ -5,13 +5,14 @@
       <dt class="text-sm/6 font-medium">Vrid</dt>
       <dd class="mt-1 text-sm/6 text-gray-800 dark:text-gray-400 sm:col-span-2 sm:mt-0">{{ currentTruck?.name }}</dd>
     </div>
-    <div v-if="currentTruck?.dock"  class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+    <div v-if="currentTruck?.dock" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
       <dt class="text-sm/6 font-medium">Dock</dt>
       <dd class="mt-1 text-sm/6 text-gray-800 dark:text-gray-400 sm:col-span-2 sm:mt-0">{{ currentTruck?.dock }}</dd>
     </div>
     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
       <dt class="text-sm/6 font-medium">Number of pallets</dt>
-      <dd class="mt-1 text-sm/6 text-gray-800 dark:text-gray-400 sm:col-span-2 sm:mt-0">{{ currentTruck?.pallets.length }}</dd>
+      <dd class="mt-1 text-sm/6 text-gray-800 dark:text-gray-400 sm:col-span-2 sm:mt-0">
+        {{ currentTruck?.pallets.length }}</dd>
     </div>
     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
       <dt class="text-sm/6 font-medium">Timeline</dt>
@@ -22,10 +23,14 @@
               <div class="w-[1px] bg-gray-300 dark:bg-gray-700/90 h-full"></div>
             </div>
             <div class="relative flex size-6 flex-none items-center justify-center bg-white dark:bg-gray-800">
-              <div class="size-2 rounded-full bg-gray-200/50 dark:bg-gray-700/50 inset-ring inset-ring-gray-300 dark:inset-ring-gray-700/90"></div>
+              <div
+                class="size-2 rounded-full bg-gray-200/50 dark:bg-gray-700/50 inset-ring inset-ring-gray-300 dark:inset-ring-gray-700/90">
+              </div>
             </div>
-            <p class="text-xs py-1 text-nowrap">{{ date.title }}<span class="text-gray-800 dark:text-gray-400">&nbsp;{{ date.date
-                }}</span></p>
+            <p class="text-xs py-1 text-nowrap">{{ date.title }}
+              <span class="text-gray-800 dark:text-gray-400">&nbsp;{{ date.date }}</span>
+              <span v-if="date.user" class="text-gray-800 dark:text-gray-400">&nbsp;{{ date.user }}</span>
+            </p>
           </li>
         </ul>
       </dd>
@@ -43,8 +48,8 @@ const props = defineProps({
 
 const currentTruckDates = computed(() => [
   { title: 'Expected on', date: formattedDateFr(props.currentTruck?.expectedDate) ?? 'No date' },
-  { title: 'Delivered on', date: formattedDateFr(props.currentTruck?.deliveryDate) ?? 'No date' },
-  { title: 'Departure on', date: formattedDateFr(props.currentTruck?.departureDate) ?? 'No date' },
+  { title: 'Delivered on', user: `by ${props.currentTruck?.userDelDate ?? 'No user'}`, date: formattedDateFr(props.currentTruck?.deliveryDate) ?? 'No date' },
+  { title: 'Departure on', user: `by ${props.currentTruck?.userDepDate ?? 'No user'}`, date: formattedDateFr(props.currentTruck?.departureDate) ?? 'No date' },
 ])
 </script>
 

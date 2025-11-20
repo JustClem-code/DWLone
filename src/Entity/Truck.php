@@ -38,10 +38,10 @@ class Truck
   private ?\DateTime $DepartureDate = null;
 
   #[ORM\ManyToOne(inversedBy: 'trucks')]
-  private ?user $userDelDate = null;
+  private ?User $userDelDate = null;
 
   #[ORM\ManyToOne(inversedBy: 'departureTrucks')]
-  private ?user $userDepDate = null;
+  private ?User $userDepDate = null;
 
   public function __construct()
   {
@@ -153,24 +153,24 @@ class Truck
       return $this;
   }
 
-  public function getUserDelDate(): ?user
+  public function getUserDelDate(): ?User
   {
       return $this->userDelDate;
   }
 
-  public function setUserDelDate(?user $userDelDate): static
+  public function setUserDelDate(?User $userDelDate): static
   {
       $this->userDelDate = $userDelDate;
 
       return $this;
   }
 
-  public function getUserDepDate(): ?user
+  public function getUserDepDate(): ?User
   {
       return $this->userDepDate;
   }
 
-  public function setUserDepDate(?user $userDepDate): static
+  public function setUserDepDate(?User $userDepDate): static
   {
       $this->userDepDate = $userDepDate;
 

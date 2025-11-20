@@ -16,17 +16,12 @@ use App\Repository\TruckRepository;
 use App\Entity\Dock;
 use App\Entity\Truck;
 
-use App\Service\UserService;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final class YardTruckController extends AbstractController
 {
 
-  private UserService $userService;
-
-  public function __construct(UserService $userService)
-  {
-    $this->userService = $userService;
-  }
+  public function __construct(private Security $security) {}
 
   use RepositoryTrait;
 
@@ -83,13 +78,17 @@ final class YardTruckController extends AbstractController
 
     if ($reset) {
       $truck->setDeliveryDate(null);
+      $truck->setUserDelDate(null);
       $truck->setDepartureDate(null);
+      $truck->setUserDepDate(null);
     } else {
       $date = new \DateTime();
       if ($truck->getDock()) {
         $truck->setDeliveryDate($date);
+        $truck->setUserDelDate($this->security->getUser());
       } else {
         $truck->setDepartureDate($date);
+        $truck->setUserDepDate($this->security->getUser());
       }
     }
 
@@ -104,8 +103,9 @@ final class YardTruckController extends AbstractController
         'truckId' => $truck->getId(),
         'truckName' => $truck->getName(),
         'deliveryDate' => $truck->getDeliveryDate(),
+        'userDelDate' => $truck->getUserDelDate()?->getUsername() ?? null,
         'departureDate' => $truck->getDepartureDate(),
-        'currentUser' => $this->userService->getCurrentUser()
+        'userDepDate' => $truck->getUserDepDate()?->getUsername() ?? null,
       ]
     );
   }

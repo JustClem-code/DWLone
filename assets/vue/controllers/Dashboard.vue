@@ -11,9 +11,9 @@
 <script setup>
 
 //TODO:
-// Mettre en place utilisateurs, mieux gérer le login côter vue.js (si possible)
-
 // Ajouter des relations user à trucks, pallets, stow etc
+
+// Vérifier contours notification vers light theme
 
 // déplacer certaines logiques (métier, notification dans les composables ?)
 
