@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -33,6 +35,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * @var Collection<int, Truck>
+     */
+    #[ORM\OneToMany(targetEntity: Truck::class, mappedBy: 'userDelDate')]
+    private Collection $deliveryTrucks;
+
+    /**
+     * @var Collection<int, Truck>
+     */
+    #[ORM\OneToMany(targetEntity: Truck::class, mappedBy: 'userDepDate')]
+    private Collection $departureTrucks;
+
+    public function __construct()
+    {
+        $this->deliveryTrucks = new ArrayCollection();
+        $this->departureTrucks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -114,4 +134,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // @deprecated, to be removed when upgrading to Symfony 8
     }
+
+    /**
+     * @return Collection<int, Truck>
+     */
+    public function getDeliveryTrucks(): Collection
+    {
+        return $this->deliveryTrucks;
+    }
+
+    /**
+     * @return Collection<int, Truck>
+     */
+    public function getDepartureTrucks(): Collection
+    {
+        return $this->departureTrucks;
+    }
+
 }

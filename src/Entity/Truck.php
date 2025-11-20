@@ -37,6 +37,12 @@ class Truck
   #[ORM\Column(nullable: true)]
   private ?\DateTime $DepartureDate = null;
 
+  #[ORM\ManyToOne(inversedBy: 'trucks')]
+  private ?user $userDelDate = null;
+
+  #[ORM\ManyToOne(inversedBy: 'departureTrucks')]
+  private ?user $userDepDate = null;
+
   public function __construct()
   {
     $this->pallets = new ArrayCollection();
@@ -143,6 +149,30 @@ class Truck
   public function setDepartureDate(?\DateTime $DepartureDate): static
   {
       $this->DepartureDate = $DepartureDate;
+
+      return $this;
+  }
+
+  public function getUserDelDate(): ?user
+  {
+      return $this->userDelDate;
+  }
+
+  public function setUserDelDate(?user $userDelDate): static
+  {
+      $this->userDelDate = $userDelDate;
+
+      return $this;
+  }
+
+  public function getUserDepDate(): ?user
+  {
+      return $this->userDepDate;
+  }
+
+  public function setUserDepDate(?user $userDepDate): static
+  {
+      $this->userDepDate = $userDepDate;
 
       return $this;
   }
