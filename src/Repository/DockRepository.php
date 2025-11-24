@@ -44,6 +44,25 @@ class DockRepository extends ServiceEntityRepository
     return $collection;
   }
 
+  public function transformOccupiedDocks(): array
+{
+    $entities = $this->createQueryBuilder('d')
+        ->innerJoin('d.truck', 't')
+        ->addSelect('t')
+        ->orderBy('d.id', 'ASC')
+        ->getQuery()
+        ->getResult();
+
+    $collection = [];
+
+    foreach ($entities as $entity) {
+        $collection[] = $this->toArray($entity);
+    }
+
+    return $collection;
+}
+
+
   //    /**
   //     * @return Dock[] Returns an array of Dock objects
   //     */

@@ -25,7 +25,7 @@ const notifier = (type, message, message_2) => {
   emitter.emit('notify', { type: type, message: message, message_2: message_2 })
 }
 
-const { data: docks, error: errorDock } = useFetch('/getdocks')
+const { data: docks, error: errorDock } = useFetch('/getoccupieddocks')
 
 
 /* const notDepartedTrucks = computed(() => {
@@ -35,7 +35,7 @@ const { data: docks, error: errorDock } = useFetch('/getdocks')
 
 /* provide('yardTruck', { notDepartedTrucks }) */
 
-console.log("docks", docks);
+console.log("occupied docks", docks);
  //console.log("notDepartedTrucks", notDepartedTrucks);
 
 

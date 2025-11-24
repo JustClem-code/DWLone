@@ -24,7 +24,7 @@ class TruckRepository extends ServiceEntityRepository
     foreach ($entities as $entity) {
       $collection[] = [
         'id' => $entity->getId(),
-        'associate' => $entity->getAssociate(),
+        'user' => $entity->getUserId(),
       ];
     }
 
