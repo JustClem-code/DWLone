@@ -75,6 +75,11 @@
 
     docker compose exec php php bin/console doctrine:migrations:migrate
 
+4. Suppression d'une entrée d'une table
+
+    supprimer le champ (propriété + annotations / attributs + getters/setters ) dans l'entité
+    puis migration et migrate
+
 ## Création de fixtures avec FakerPhp
 
 1. Doctrine fixtures Bundle:

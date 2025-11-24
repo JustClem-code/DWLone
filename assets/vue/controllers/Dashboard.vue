@@ -12,6 +12,7 @@
 
 //TODO:
 // Ajouter des relations user à trucks, pallets, stow etc
+// Creation d'un page Unloading pour décharger les palettes
 
 // Vérifier contours notification vers light theme
 
