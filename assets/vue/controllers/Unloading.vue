@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col gap-8">
     <BorderedContent title="Docks">
-      <!-- <div v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <DockCardComponent v-for="dock in docks" :key=dock.id :dock="dock" />
+      <div v-if="busyDocks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <InboundDockCard v-for="dock in busyDocks" :key=dock.id :dock="dock" />
       </div>
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <DockCardComponent v-for="i in 12" />
-      </div> -->
+        <InboundDockCard v-for="i in 12" />
+      </div>
     </BorderedContent>
   </div>
 </template>
@@ -16,7 +16,7 @@
 
 import { ref, provide, computed } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue'
-// import DockCardComponent from './YardTruckComponents/DockCardComponent.vue'
+import InboundDockCard from './UnloadingComponents.vue/InboundDockCard.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import emitter from '../composables/eventBus.js'
@@ -27,22 +27,23 @@ const notifier = (type, message, message_2) => {
 
 const { data: docks, error: errorDock } = useFetch('/getoccupieddocks')
 
-
-/* const notDepartedTrucks = computed(() => {
-  if (!trucks.value) return
-  return trucks.value.filter(truck => truck.departureDate === null);
-}) */
-
-/* provide('yardTruck', { notDepartedTrucks }) */
-
-console.log("occupied docks", docks);
- //console.log("notDepartedTrucks", notDepartedTrucks);
-
-
 const busyDocks = computed(() => {
   if (!docks.value) return
   return docks.value.filter(dock => dock.truckId !== null);
 })
+
+const unLoadingIsLoading = ref(false)
+
+const notUnloadedPallets = computed(() => {
+  if (!docks.value) return
+  return docks.value.filter(dock => dock.truckId !== null);
+})
+
+provide('unLoading', { notUnloadedPallets, unloadingPallet, unLoadingIsLoading })
+
+console.log("occupied docks", docks);
+
+
 
 /* const updateListElements = () => {
   const {
@@ -83,9 +84,9 @@ const busyDocks = computed(() => {
   truck.departureDate = departureDate || null
   truck.userDepDate = userDepDate || null
 }
-
-async function dockingTruck(truckId, dockId, reset) {
-  dockingIsLoading.value = true;
+ */
+async function unloadingPallet(truckId, dockId, reset) {
+  /* dockingIsLoading.value = true;
 
   const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId?.id ?? null, reset: reset ?? false })
   dockingData.value = null;
@@ -107,8 +108,8 @@ async function dockingTruck(truckId, dockId, reset) {
       notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truckName}) docking ${dockingData.value.dockName}`)
     }
 
-  }
+  } */
 }
 
- */
+
 </script>

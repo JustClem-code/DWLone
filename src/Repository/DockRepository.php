@@ -16,6 +16,21 @@ class DockRepository extends ServiceEntityRepository
     parent::__construct($registry, Dock::class);
   }
 
+  private function getPalletCollection($entities)
+  {
+
+    $collection = [];
+
+    foreach ($entities as $entity) {
+      $collection[] = [
+        'id' => $entity->getId(),
+        'user' => $entity->getUserId(),
+      ];
+    }
+
+    return $collection;
+  }
+
   private function toArray(Dock $dock): array
   {
     return [
@@ -23,6 +38,7 @@ class DockRepository extends ServiceEntityRepository
       'name' => $dock->getName(),
       'truckId' => $dock->getTruck()?->getId(),
       'truckName' => $dock->getTruck()?->getName(),
+      'pallets' => $dock->getTruck() ? $this->getPalletCollection($dock->getTruck()?->getPallets()) : null,
     ];
   }
 
