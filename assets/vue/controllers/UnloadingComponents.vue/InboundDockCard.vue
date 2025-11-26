@@ -15,10 +15,10 @@
       <span>Select</span>
     </div>
 
-    <BaseButton title="Pallets" styleColor="flat" :isDisabled="notUnloadedPallets?.length === 0" @click="SelectOptionRef?.openDialog()" />
+    <BaseButton title="Pallets" styleColor="flat" :isDisabled="pallets?.length === 0" @click="SelectOptionRef?.openDialog()" />
 
     <DialogComponentSlot ref="SelectOptionRef">
-      <SelectOptionComponent :options="notUnloadedPallets" :isLoading="unLoadingIsLoading"
+      <SelectOptionComponent :options="pallets" :isLoading="unLoadingIsLoading"
           @submitOption="val => unloadingPallet(val.selected, dock)" @closeDialog="SelectOptionRef?.closeDialog()"/>
     </DialogComponentSlot>
   </div>
@@ -31,9 +31,14 @@ import BaseButton from '../UI/Buttons/BaseButton.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 
-const { notUnloadedPallets, unloadingPallet, unLoadingIsLoading } = inject('unLoading')
+const { unloadingPallet, unLoadingIsLoading } = inject('unLoading')
 const props = defineProps({
   dock: Object
+})
+
+const pallets = computed(() => {
+  if (!props.dock) return
+  return props.dock?.pallets.filter(pallet => pallet.userId === null);
 })
 
 const SelectOptionRef = ref(null)

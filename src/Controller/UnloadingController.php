@@ -2,14 +2,25 @@
 
 namespace App\Controller;
 
+use App\Controller\Trait\RepositoryTrait;
+use App\Entity\Dock;
+use App\Entity\Pallet;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 use App\Repository\DockRepository;
 
+use Symfony\Bundle\SecurityBundle\Security;
+
 final class UnloadingController extends AbstractController
 {
+  public function __construct(private Security $security) {}
+
+  use RepositoryTrait;
+
   #[Route('/warehouse/unloading', name: 'app_unloading')]
   public function index(): Response
   {
@@ -23,5 +34,41 @@ final class UnloadingController extends AbstractController
   {
     $datas = $repository->transformOccupiedDocks();
     return $this->json($datas);
+  }
+
+  #[Route('/unloadingPallet/{id}', name: 'unloading_pallet')]
+  public function unloadingPallet(
+    Request $request,
+    EntityManagerInterface $entityManager,
+    int $id,
+  ): Response {
+    $formData = $request->getPayload()->get('id');
+    $reset = $request->getPayload()->get('reset');
+
+    $pallet = $entityManager->getRepository(Pallet::class)->find($id);
+    $dock = $this->findOrNull($entityManager->getRepository(Dock::class), $formData);
+
+    if (!$pallet) {
+      throw $this->createNotFoundException(
+        'No pallet found for id ' . $id
+      );
+    }
+
+    if ($reset) {
+      $pallet->setUserId(null);
+    } else {
+      $pallet->setUserId($this->security->getUser());
+    }
+
+    $entityManager->flush();
+
+    return $this->json(
+      [
+        'dockId' => $dock?->getId() ?? null,
+        'palletId' => $pallet->getId(),
+        'userId' => $pallet->getUserId()?->getId() ?? null,
+        'userName' => $pallet->getUserId()?->getUsername() ?? null,
+      ]
+    );
   }
 }

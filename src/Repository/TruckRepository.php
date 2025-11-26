@@ -16,21 +16,6 @@ class TruckRepository extends ServiceEntityRepository
     parent::__construct($registry, Truck::class);
   }
 
-  private function getPalletCollection($entities)
-  {
-
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = [
-        'id' => $entity->getId(),
-        'user' => $entity->getUserId(),
-      ];
-    }
-
-    return $collection;
-  }
-
   private function toArray(Truck $truck): array
   {
     return [
@@ -41,7 +26,6 @@ class TruckRepository extends ServiceEntityRepository
       'userDelDate' => $truck->getUserDelDate()?->getUsername(),
       'departureDate' => $truck->getDepartureDate(),
       'userDepDate' => $truck->getUserDepDate()?->getUsername(),
-      'pallets' => $this->getPalletCollection($truck->getPallets()),
       'dock' => $truck->getDock()?->getName(),
     ];
   }

@@ -24,7 +24,8 @@ class DockRepository extends ServiceEntityRepository
     foreach ($entities as $entity) {
       $collection[] = [
         'id' => $entity->getId(),
-        'user' => $entity->getUserId(),
+        'userId' => $entity->getUserId()?->getId(),
+        'userName' => $entity->getUserId()?->getUserName(),
       ];
     }
 

@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col gap-8">
     <BorderedContent title="Docks">
-      <div v-if="busyDocks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <InboundDockCard v-for="dock in busyDocks" :key=dock.id :dock="dock" />
+      <div v-if="docks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <InboundDockCard v-for="dock in docks" :key=dock.id :dock="dock" />
       </div>
       <div v-else-if="errorDock">Error: {{ errorDock }}</div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -27,11 +27,8 @@ const notifier = (type, message, message_2) => {
 
 const { data: docks, error: errorDock } = useFetch('/getoccupieddocks')
 
-const busyDocks = computed(() => {
-  if (!docks.value) return
-  return docks.value.filter(dock => dock.truckId !== null);
-})
-
+const unLoadingData = ref(null)
+const unLoadingError = ref(null)
 const unLoadingIsLoading = ref(false)
 
 const notUnloadedPallets = computed(() => {
@@ -44,71 +41,45 @@ provide('unLoading', { notUnloadedPallets, unloadingPallet, unLoadingIsLoading }
 console.log("occupied docks", docks);
 
 
-
-/* const updateListElements = () => {
+const updateListElements = () => {
   const {
-    truckId,
-    previousDockId,
     dockId,
-    dockName,
-    truckName,
-    deliveryDate,
-    userDelDate,
-    departureDate,
-    userDepDate
-  } = dockingData.value
+    palletId,
+    userId,
+    userName
+  } = unLoadingData.value
 
-  const truck = trucks.value.find(t => t.id === truckId)
+  const dock = docks.value.find(d => d.id === dockId)
 
-  if (!truck) return
+  if (!dock) return
 
-  if (previousDockId) {
-    const previousDock = docks.value.find(d => d.id === previousDockId)
-    if (previousDock) {
-      previousDock.truckName = null
-      previousDock.truckId = null
-    }
-  }
+  const pallet = dock.pallets.find(p => p.id === palletId)
 
-  if (dockId) {
-    const newDock = docks.value.find(d => d.id === dockId)
-    if (newDock) {
-      newDock.truckName = truckName
-      newDock.truckId = truckId
-    }
-  }
+  pallet.userId = userId || null
+  pallet.userName = userName || null
 
-  truck.dock = dockName || null
-  truck.deliveryDate = deliveryDate || null
-  truck.userDelDate = userDelDate || null
-  truck.departureDate = departureDate || null
-  truck.userDepDate = userDepDate || null
 }
- */
-async function unloadingPallet(truckId, dockId, reset) {
-  /* dockingIsLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId?.id ?? null, reset: reset ?? false })
-  dockingData.value = null;
-  dockingError.value = null;
+async function unloadingPallet(palletId, dockId, reset) {
+  unLoadingIsLoading.value = true;
 
-  dockingData.value = data.value;
-  dockingError.value = error.value;
+  const { data, error } = await usePostFetch(`/unloadingPallet/${palletId.id}`, { id: dockId?.id ?? null, reset: reset ?? false })
 
-  if (dockingData.value) {
+  unLoadingData.value = data.value;
+  unLoadingError.value = error.value;
+
+  if (unLoadingData.value) {
     updateListElements()
-    dockingIsLoading.value = false;
+    unLoadingIsLoading.value = false;
 
-    console.log(dockingData.value);
+    console.log(unLoadingData.value);
     if (reset) {
-      notifier('success', 'Reset', `The truck (Vrid: ${dockingData.value.truckName}) is reset`)
-    } else if (!dockingData.value.dockId && dockingData.value.previousDockId) {
-      notifier('success', 'Undocking', `The truck (Vrid: ${dockingData.value.truckName}) departure from the dock ${dockingData.value.previousDockName}`)
+      notifier('success', 'Reset', `The pallet (Id: ${unLoadingData.value.palletId}) is reset`)
     } else {
-      notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truckName}) docking ${dockingData.value.dockName}`)
+      notifier('success', 'Unloading', `The pallet (Id: ${unLoadingData.value.palletId}) is undloaded`)
     }
 
-  } */
+  }
 }
 
 
