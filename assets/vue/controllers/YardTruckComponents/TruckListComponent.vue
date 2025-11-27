@@ -1,7 +1,7 @@
 <template>
-  <ul role="list" class="divide-y">
+  <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700/90">
     <li v-for="truck in trucks" :key=truck.id @click="setCurrentTruck(truck)"
-      class="flex items-center justify-between py-4 border-gray-200 dark:border-gray-700/90">
+      class="flex items-center justify-between py-4">
       <div>
         <div class="flex items-center gap-4 text-base font-semibold">
           <p>{{ truck.name }}</p>
@@ -17,24 +17,23 @@
         <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
       </div>
     </li>
-
-    <DialogComponentSlot ref="SelectOptionRef">
-      <SelectOptionComponent :options="docks" :isLoading="dockingIsLoading"
-          @submitOption="val => dockingTruck(currentTruck, val.selected)" @closeDialog="SelectOptionRef?.closeDialog()"/>
-    </DialogComponentSlot>
-
-    <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
-      <TruckInfo :currentTruck="currentTruck" />
-    </DialogComponentSlot>
-    <DialogComponentSlot ref="confirmUndockDialogRef">
-      <ConfirmationComponent question="Are you sure to undock ?" @confirm="unDocking"
-        @cancel="confirmUndockDialogRef?.closeDialog()" />
-    </DialogComponentSlot>
-    <DialogComponentSlot ref="confirmResetDialogRef">
-      <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
-        @cancel="confirmResetDialogRef?.closeDialog()" />
-    </DialogComponentSlot>
   </ul>
+  <DialogComponentSlot ref="SelectOptionRef">
+    <SelectOptionComponent :options="docks" :isLoading="dockingIsLoading"
+      @submitOption="val => dockingTruck(currentTruck, val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" />
+  </DialogComponentSlot>
+
+  <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
+    <TruckInfo :currentTruck="currentTruck" />
+  </DialogComponentSlot>
+  <DialogComponentSlot ref="confirmUndockDialogRef">
+    <ConfirmationComponent question="Are you sure to undock ?" @confirm="unDocking"
+      @cancel="confirmUndockDialogRef?.closeDialog()" />
+  </DialogComponentSlot>
+  <DialogComponentSlot ref="confirmResetDialogRef">
+    <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
+      @cancel="confirmResetDialogRef?.closeDialog()" />
+  </DialogComponentSlot>
 </template>
 
 <script setup>

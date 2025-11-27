@@ -11,6 +11,9 @@
 <script setup>
 
 //TODO:
+
+// Problème pallets.lenght sur le truck suite à la suppressionn dans le repository
+
 // Ajouter des relations user à trucks, pallets, stow etc
 // Creation d'un page Unloading pour décharger les palettes
 // Refacto les methods des repository
