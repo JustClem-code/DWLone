@@ -11,11 +11,9 @@
 <script setup>
 
 //TODO:
-
-// Problème pallets.lenght sur le truck suite à la suppressionn dans le repository
-
 // Ajouter des relations user à trucks, pallets, stow etc
-// Creation d'un page Unloading pour décharger les palettes
+// création d'une liste de palettes sur le foor
+
 // Refacto les methods des repository
 
 // Vérifier contours notification vers light theme

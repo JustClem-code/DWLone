@@ -9,6 +9,11 @@
         <InboundDockCard v-for="i in 12" />
       </div>
     </BorderedContent>
+    <BorderedContent title="Pallets">
+      <PalletList v-if="pallets" :pallets="pallets"/>
+      <div v-else-if="errorPallet">Error: {{ errorPallet }}</div>
+      <div v-else>Loading...</div>
+    </BorderedContent>
   </div>
 </template>
 
@@ -20,12 +25,15 @@ import InboundDockCard from './UnloadingComponents.vue/InboundDockCard.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import emitter from '../composables/eventBus.js'
+import PalletList from './UnloadingComponents.vue/PalletList.vue'
 
 const notifier = (type, message, message_2) => {
   emitter.emit('notify', { type: type, message: message, message_2: message_2 })
 }
 
 const { data: docks, error: errorDock } = useFetch('/getoccupieddocks')
+
+const { data: pallets, error: errorPallet } = useFetch('/getpalletsonfloor')
 
 const unLoadingData = ref(null)
 const unLoadingError = ref(null)
@@ -39,6 +47,7 @@ const notUnloadedPallets = computed(() => {
 provide('unLoading', { notUnloadedPallets, unloadingPallet, unLoadingIsLoading })
 
 console.log("occupied docks", docks);
+console.log("occupied docks", pallets);
 
 
 const updateListElements = () => {

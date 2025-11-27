@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
 use App\Repository\DockRepository;
-
+use App\Repository\PalletRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 
 final class UnloadingController extends AbstractController
@@ -33,6 +33,13 @@ final class UnloadingController extends AbstractController
   public function getDocks(DockRepository $repository): Response
   {
     $datas = $repository->transformOccupiedDocks();
+    return $this->json($datas);
+  }
+
+  #[Route('/getpalletsonfloor', name: 'get_pallets_on_floor_list', methods: ['GET'])]
+  public function getPalletsOnFloor(PalletRepository $repository): Response
+  {
+    $datas = $repository->findAllHasUser();
     return $this->json($datas);
   }
 
