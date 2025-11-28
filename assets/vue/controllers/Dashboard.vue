@@ -11,7 +11,8 @@
 <script setup>
 
 //TODO:
-// Ajouter des relations user à trucks, pallets, stow etc
+
+// creation d'une table pour les ASM ?
 // création d'une liste de palettes sur le foor
 
 // Refacto les methods des repository

@@ -10,7 +10,7 @@
       </div>
     </BorderedContent>
     <BorderedContent title="Pallets">
-      <PalletList v-if="pallets" :pallets="pallets"/>
+      <PalletList v-if="palletsOnFloor" :pallets="palletsOnFloor" />
       <div v-else-if="errorPallet">Error: {{ errorPallet }}</div>
       <div v-else>Loading...</div>
     </BorderedContent>
@@ -22,10 +22,10 @@
 import { ref, provide, computed } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue'
 import InboundDockCard from './UnloadingComponents.vue/InboundDockCard.vue'
+import PalletList from './UnloadingComponents.vue/PalletList.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import emitter from '../composables/eventBus.js'
-import PalletList from './UnloadingComponents.vue/PalletList.vue'
 
 const notifier = (type, message, message_2) => {
   emitter.emit('notify', { type: type, message: message, message_2: message_2 })
@@ -33,46 +33,50 @@ const notifier = (type, message, message_2) => {
 
 const { data: docks, error: errorDock } = useFetch('/getoccupieddocks')
 
-const { data: pallets, error: errorPallet } = useFetch('/getpalletsonfloor')
+const { data: palletsOnFloor, error: errorPallet } = useFetch('/getpalletsonfloor')
 
 const unLoadingData = ref(null)
 const unLoadingError = ref(null)
 const unLoadingIsLoading = ref(false)
 
-const notUnloadedPallets = computed(() => {
-  if (!docks.value) return
-  return docks.value.filter(dock => dock.truckId !== null);
-})
-
-provide('unLoading', { notUnloadedPallets, unloadingPallet, unLoadingIsLoading })
+provide('unLoading', { unloadingPallet, unLoadingIsLoading })
 
 console.log("occupied docks", docks);
-console.log("occupied docks", pallets);
+console.log("unloaded pallet", palletsOnFloor);
 
 
 const updateListElements = () => {
   const {
-    dockId,
     palletId,
     userId,
     userName
   } = unLoadingData.value
 
-  const dock = docks.value.find(d => d.id === dockId)
+  const palletInTruck = docks.value
+    .flatMap(dock => dock.pallets || [])
+    .find(pallet => pallet.id === palletId)
 
-  if (!dock) return
+  if (!palletInTruck) return
 
-  const pallet = dock.pallets.find(p => p.id === palletId)
+  palletInTruck.userId = userId || null
+  palletInTruck.userName = userName || null
 
-  pallet.userId = userId || null
-  pallet.userName = userName || null
+  const palletOnFloorIndex = palletsOnFloor.value.findIndex(p => p.id === palletId)
+
+  if (palletOnFloorIndex === -1) {
+    palletsOnFloor.value.push({ id: palletId, userId: userId, userName: userName })
+  } else {
+    palletsOnFloor.value.splice(palletOnFloorIndex, 1)
+  }
 
 }
 
-async function unloadingPallet(palletId, dockId, reset) {
+
+
+async function unloadingPallet(palletId, reset) {
   unLoadingIsLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/unloadingPallet/${palletId.id}`, { id: dockId?.id ?? null, reset: reset ?? false })
+  const { data, error } = await usePostFetch(`/unloadingPallet/${palletId.id}`, { reset: reset ?? false })
 
   unLoadingData.value = data.value;
   unLoadingError.value = error.value;

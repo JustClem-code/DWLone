@@ -1,34 +1,37 @@
 <template>
   <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700/90">
-    <li v-for="truck in trucks" :key=truck.id @click="setCurrentTruck(truck)"
+    <li v-for="pallet in pallets" :key=pallet.id @click="setCurrentPallet(pallet)"
       class="flex items-center justify-between py-4">
       <div>
         <div class="flex items-center gap-4 text-base font-semibold">
-          <p>{{ truck.name }}</p>
-          <BadgeComponent :type="badgeType(truck)" :title="badgeTitle(truck)" size="sm" />
+          <p>{{ pallet.id }}</p>
+          <BadgeComponent :type="badgeType(pallet)" :title="badgeTitle(pallet)" size="sm" />
         </div>
-        <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ dateInfo(truck) }}</p>
+        <p class="text-sm font-light text-gray-800 dark:text-gray-400">INFOOOO</p>
       </div>
       <div class="flex items-center gap-2">
 
-        <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate"
+        <BaseButton title="ASML" styleColor="empty" size="sm"
           @click="SelectOptionRef?.openDialog()" />
+        <!-- <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate"
+          @click="SelectOptionRef?.openDialog()" /> -->
 
         <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
       </div>
     </li>
   </ul>
   <DialogComponentSlot ref="SelectOptionRef">
-    <SelectOptionComponent :options="docks" :isLoading="dockingIsLoading"
-      @submitOption="val => dockingTruck(currentTruck, val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" />
+    <!-- <SelectOptionComponent :options="docks" :isLoading="dockingIsLoading"
+      @submitOption="val => dockingTruck(currentPallet, val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" /> -->
+      <p>Test options</p>
   </DialogComponentSlot>
 
   <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
-    <TruckInfo :currentTruck="currentTruck" />
+    <PalletInfo :currentPallet="currentPallet"/>
   </DialogComponentSlot>
   <DialogComponentSlot ref="confirmUndockDialogRef">
-    <ConfirmationComponent question="Are you sure to undock ?" @confirm="unDocking"
-      @cancel="confirmUndockDialogRef?.closeDialog()" />
+    <!-- <ConfirmationComponent question="Are you sure to undock ?" @confirm="unDocking"
+      @cancel="confirmUndockDialogRef?.closeDialog()" /> -->
   </DialogComponentSlot>
   <DialogComponentSlot ref="confirmResetDialogRef">
     <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
@@ -37,7 +40,7 @@
 </template>
 
 <script setup>
-import { inject, ref, toRef, computed } from 'vue'
+import { inject, ref, computed } from 'vue'
 import BadgeComponent from '../UI/BadgeComponent.vue';
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
@@ -45,19 +48,16 @@ import BaseButton from '../UI/Buttons/BaseButton.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 
-// import TruckInfo from './TruckInfo.vue';
-
-import { formattedDateFr } from '../../composables/dateFormat.js'
+import PalletInfo from './PalletInfo.vue';
 
 const { unloadingPallet, unLoadingIsLoading } = inject('unLoading')
 // const { trucks, dockingTruck, dockingIsLoading } = inject('yardTruck')
 
 const props = defineProps({
-  trucks: Array,
-  docks: Array,
+  pallets: Array,
 })
 
-const currentTruck = ref(null)
+const currentPallet = ref(null)
 
 const SelectOptionRef = ref(null);
 
@@ -81,22 +81,15 @@ const badgeTitle = (truck) => {
   return truck.dock ?? 'Waiting dock'
 }
 
-const dateInfo = (truck) => {
-  if (truck.departureDate) {
-    return formattedDateFr(truck.departureDate)
-  }
-  return formattedDateFr(truck.deliveryDate ?? truck.expectedDate)
-}
-
-const setCurrentTruck = (truck) => {
-  currentTruck.value = truck
+const setCurrentPallet = (pallet) => {
+  currentPallet.value = pallet
 }
 
 const menuItems = computed(() => [
   {
     label: 'Undocking',
     action: 'confirmUndocking',
-    isDisabled: !currentTruck.value?.dock
+    isDisabled: !currentPallet.value?.dock
   },
   {
     label: 'Reset',
@@ -109,11 +102,11 @@ const menuItems = computed(() => [
 ])
 
 const unDocking = () => {
-  dockingTruck(currentTruck.value, null)
+  unloadingPallet(currentPallet.value, null)
   confirmUndockDialogRef.value?.closeDialog()
 }
 const resetItem = () => {
-  dockingTruck(currentTruck.value, null, true)
+  unloadingPallet(currentPallet.value, true)
   confirmResetDialogRef.value?.closeDialog()
 }
 const confirmUndocking = () => confirmUndockDialogRef.value?.openDialog()

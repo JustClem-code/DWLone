@@ -19,7 +19,7 @@
 
     <DialogComponentSlot ref="SelectOptionRef">
       <SelectOptionComponent :options="pallets" :isLoading="unLoadingIsLoading"
-          @submitOption="val => unloadingPallet(val.selected, dock)" @closeDialog="SelectOptionRef?.closeDialog()"/>
+          @submitOption="val => unloadingPallet(val.selected)" @closeDialog="SelectOptionRef?.closeDialog()"/>
     </DialogComponentSlot>
   </div>
 </template>

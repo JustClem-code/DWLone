@@ -49,11 +49,9 @@ final class UnloadingController extends AbstractController
     EntityManagerInterface $entityManager,
     int $id,
   ): Response {
-    $formData = $request->getPayload()->get('id');
     $reset = $request->getPayload()->get('reset');
 
     $pallet = $entityManager->getRepository(Pallet::class)->find($id);
-    $dock = $this->findOrNull($entityManager->getRepository(Dock::class), $formData);
 
     if (!$pallet) {
       throw $this->createNotFoundException(
@@ -71,7 +69,6 @@ final class UnloadingController extends AbstractController
 
     return $this->json(
       [
-        'dockId' => $dock?->getId() ?? null,
         'palletId' => $pallet->getId(),
         'userId' => $pallet->getUserId()?->getId() ?? null,
         'userName' => $pallet->getUserId()?->getUsername() ?? null,
