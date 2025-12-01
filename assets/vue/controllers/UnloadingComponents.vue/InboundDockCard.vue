@@ -15,7 +15,7 @@
       <span>Select</span>
     </div>
 
-    <BaseButton title="Pallets" styleColor="flat" :isDisabled="pallets?.length === 0" @click="SelectOptionRef?.openDialog()" />
+    <BaseButton title="Pallets" styleColor="flat" :isDisabled="nbOfPallets === 0" @click="SelectOptionRef?.openDialog()" />
 
     <DialogComponentSlot ref="SelectOptionRef">
       <SelectOptionComponent :options="pallets" :isLoading="unLoadingIsLoading"
@@ -41,16 +41,21 @@ const pallets = computed(() => {
   return props.dock?.pallets.filter(pallet => pallet.userId === null);
 })
 
+const nbOfPallets = computed(() => {
+  if (!props.dock) return
+  return pallets.value.length
+})
+
 const SelectOptionRef = ref(null)
 
 const badgeType = computed(() => {
   if (!props.dock) return null;
-  return !props.dock.truckName ? 'valid' : 'warning';
+  return nbOfPallets.value === 0 ? 'warning' : 'valid';
 })
 
 const badgeTitle = computed(() => {
   if (!props.dock) return null;
-  return !props.dock.truckName ? 'Free' : 'Used';
+  return nbOfPallets.value === 0 ? 'Empty' : `${nbOfPallets.value}`;
 })
 
 
