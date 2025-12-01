@@ -258,14 +258,20 @@ class AppFixtures extends Fixture
   {
 
     $PackagingRepository = $manager->getRepository(Packaging::class);
+    $PalletRepository = $manager->getRepository(Pallet::class);
+
     $packagings = $PackagingRepository->findAll();
+    $pallets = $PalletRepository->findAll();
     shuffle($packagings);
+    shuffle($pallets);
 
     $package = new Package();
     $package->setWeight(random_int(50, 2000));
     $package->setPackaging($packagings[0]);
+    $package->setPallet($pallets[0]);
     $package->setOrderId($order);
     $manager->persist($package);
+
   }
 
   private function generateOrders(mixed $manager): void

@@ -19,7 +19,7 @@ class Bag
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'bags')]
-    private ?road $road = null;
+    private ?Road $road = null;
 
     #[ORM\Column]
     private ?bool $damaged = null;

@@ -32,6 +32,9 @@ class Package
     #[ORM\ManyToOne(inversedBy: 'packages')]
     private ?Bag $bag = null;
 
+    #[ORM\ManyToOne(inversedBy: 'packages')]
+    private ?Pallet $Pallet = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class Package
     public function setBag(?Bag $bag): static
     {
         $this->bag = $bag;
+
+        return $this;
+    }
+
+    public function getPallet(): ?Pallet
+    {
+        return $this->Pallet;
+    }
+
+    public function setPallet(?Pallet $Pallet): static
+    {
+        $this->Pallet = $Pallet;
 
         return $this;
     }

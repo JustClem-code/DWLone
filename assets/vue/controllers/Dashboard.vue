@@ -15,6 +15,8 @@
 // creation d'une table pour les ASM ?
 // création d'une liste de palettes sur le foor
 
+// ajouter getPackages pour avoir le Nb de colis par palette
+
 // Refacto les methods des repository
 
 // Vérifier contours notification vers light theme
