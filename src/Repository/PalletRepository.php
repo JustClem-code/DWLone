@@ -17,12 +17,13 @@ class PalletRepository extends ServiceEntityRepository
   }
 
 
-  private function toArray(Pallet $pallet): array
+  public function toArray(Pallet $pallet): array
   {
     return [
       'id' => $pallet->getId(),
       'userId' => $pallet->getUserId()?->getId(),
       'userName' => $pallet->getUserId()?->getUserName(),
+      'truckName' => $pallet->getTruck()->getName(),
     ];
   }
 

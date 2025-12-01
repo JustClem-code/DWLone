@@ -7,12 +7,12 @@
           <p>{{ pallet.id }}</p>
           <BadgeComponent :type="badgeType(pallet)" :title="badgeTitle(pallet)" size="sm" />
         </div>
-        <p class="text-sm font-light text-gray-800 dark:text-gray-400">INFOOOO</p>
+        <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ pallet.truckName }}</p>
       </div>
       <div class="flex items-center gap-2">
 
-        <BaseButton title="ASML" styleColor="empty" size="sm"
-          @click="SelectOptionRef?.openDialog()" />
+        <!-- <BaseButton title="ASML" styleColor="empty" size="sm"
+          @click="SelectOptionRef?.openDialog()" /> -->
         <!-- <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate"
           @click="SelectOptionRef?.openDialog()" /> -->
 

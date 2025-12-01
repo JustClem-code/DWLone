@@ -46,32 +46,25 @@ console.log("unloaded pallet", palletsOnFloor);
 
 
 const updateListElements = () => {
-  const {
-    palletId,
-    userId,
-    userName
-  } = unLoadingData.value
 
   const palletInTruck = docks.value
     .flatMap(dock => dock.pallets || [])
-    .find(pallet => pallet.id === palletId)
+    .find(pallet => pallet.id === unLoadingData.value.id)
 
   if (!palletInTruck) return
 
-  palletInTruck.userId = userId || null
-  palletInTruck.userName = userName || null
+  palletInTruck.userId = unLoadingData.value.userId || null
+  palletInTruck.userName = unLoadingData.value.userName || null
 
-  const palletOnFloorIndex = palletsOnFloor.value.findIndex(p => p.id === palletId)
+  const palletOnFloorIndex = palletsOnFloor.value.findIndex(p => p.id === unLoadingData.value.id)
 
   if (palletOnFloorIndex === -1) {
-    palletsOnFloor.value.push({ id: palletId, userId: userId, userName: userName })
+    palletsOnFloor.value.push(unLoadingData.value)
   } else {
     palletsOnFloor.value.splice(palletOnFloorIndex, 1)
   }
 
 }
-
-
 
 async function unloadingPallet(palletId, reset) {
   unLoadingIsLoading.value = true;
@@ -85,11 +78,10 @@ async function unloadingPallet(palletId, reset) {
     updateListElements()
     unLoadingIsLoading.value = false;
 
-    console.log(unLoadingData.value);
     if (reset) {
-      notifier('success', 'Reset', `The pallet (Id: ${unLoadingData.value.palletId}) is reset`)
+      notifier('success', 'Reset', `The pallet (Id: ${unLoadingData.value.id}) is reset`)
     } else {
-      notifier('success', 'Unloading', `The pallet (Id: ${unLoadingData.value.palletId}) is undloaded`)
+      notifier('success', 'Unloading', `The pallet (Id: ${unLoadingData.value.id}) is undloaded`)
     }
 
   }

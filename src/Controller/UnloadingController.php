@@ -48,6 +48,7 @@ final class UnloadingController extends AbstractController
     Request $request,
     EntityManagerInterface $entityManager,
     int $id,
+    PalletRepository $repository
   ): Response {
     $reset = $request->getPayload()->get('reset');
 
@@ -68,11 +69,7 @@ final class UnloadingController extends AbstractController
     $entityManager->flush();
 
     return $this->json(
-      [
-        'palletId' => $pallet->getId(),
-        'userId' => $pallet->getUserId()?->getId() ?? null,
-        'userName' => $pallet->getUserId()?->getUsername() ?? null,
-      ]
+      $repository->toArray($pallet)
     );
   }
 }
