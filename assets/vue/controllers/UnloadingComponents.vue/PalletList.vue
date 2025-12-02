@@ -29,14 +29,11 @@ import { inject, ref, computed } from 'vue'
 import BadgeComponent from '../UI/BadgeComponent.vue';
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
-import BaseButton from '../UI/Buttons/BaseButton.vue';
-import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 
 import PalletInfo from './PalletInfo.vue';
 
-const { unloadingPallet, unLoadingIsLoading } = inject('unLoading')
-// const { trucks, dockingTruck, dockingIsLoading } = inject('yardTruck')
+const { unloadingPallet } = inject('unLoading')
 
 const props = defineProps({
   pallets: Array,
@@ -53,8 +50,6 @@ const getPackagesNotInducted = (pallet) => {
 }
 
 const badgeType = (pallet) => {
-  console.log('pallet.value.packages.length', getPackagesNotInducted(pallet).length);
-
   return getPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
 }
 
