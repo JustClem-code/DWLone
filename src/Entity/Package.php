@@ -20,9 +20,6 @@ class Package
     private ?Packaging $packaging = null;
 
     #[ORM\ManyToOne(inversedBy: 'packages')]
-    private ?Associate $Associate = null;
-
-    #[ORM\ManyToOne(inversedBy: 'packages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $OrderId = null;
 
@@ -34,6 +31,9 @@ class Package
 
     #[ORM\ManyToOne(inversedBy: 'packages')]
     private ?Pallet $Pallet = null;
+
+    #[ORM\ManyToOne(inversedBy: 'packages')]
+    private ?User $UserStow = null;
 
     public function getId(): ?int
     {
@@ -60,18 +60,6 @@ class Package
     public function setPackaging(?Packaging $packaging): static
     {
         $this->packaging = $packaging;
-
-        return $this;
-    }
-
-    public function getAssociate(): ?Associate
-    {
-        return $this->Associate;
-    }
-
-    public function setAssociate(?Associate $Associate): static
-    {
-        $this->Associate = $Associate;
 
         return $this;
     }
@@ -120,6 +108,18 @@ class Package
     public function setPallet(?Pallet $Pallet): static
     {
         $this->Pallet = $Pallet;
+
+        return $this;
+    }
+
+    public function getUserStow(): ?user
+    {
+        return $this->UserStow;
+    }
+
+    public function setUserStow(?user $UserStow): static
+    {
+        $this->UserStow = $UserStow;
 
         return $this;
     }

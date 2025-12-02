@@ -54,11 +54,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Pallet::class, mappedBy: 'UserId')]
     private Collection $pallets;
 
+    /**
+     * @var Collection<int, Package>
+     */
+    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'userStow')]
+    private Collection $packages;
+
     public function __construct()
     {
         $this->deliveryTrucks = new ArrayCollection();
         $this->departureTrucks = new ArrayCollection();
         $this->pallets = new ArrayCollection();
+        $this->packages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,6 +189,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($pallet->getUserId() === $this) {
                 $pallet->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Package>
+     */
+    public function getPackages(): Collection
+    {
+        return $this->packages;
+    }
+
+    public function addPackage(Package $package): static
+    {
+        if (!$this->packages->contains($package)) {
+            $this->packages->add($package);
+            $package->setUserStow($this);
+        }
+
+        return $this;
+    }
+
+    public function removePackage(Package $package): static
+    {
+        if ($this->packages->removeElement($package)) {
+            // set the owning side to null (unless already changed)
+            if ($package->getUserStow() === $this) {
+                $package->setUserStow(null);
             }
         }
 
