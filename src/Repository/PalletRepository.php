@@ -16,6 +16,21 @@ class PalletRepository extends ServiceEntityRepository
     parent::__construct($registry, Pallet::class);
   }
 
+  private function getPackagesCollection($entities)
+  {
+
+    $collection = [];
+
+    foreach ($entities as $entity) {
+      $collection[] = [
+        'id' => $entity->getId(),
+        'weight' => $entity->getWeight(),
+        'location' => $entity->getLocation()
+      ];
+    }
+
+    return $collection;
+  }
 
   public function toArray(Pallet $pallet): array
   {
@@ -24,6 +39,7 @@ class PalletRepository extends ServiceEntityRepository
       'userId' => $pallet->getUserId()?->getId(),
       'userName' => $pallet->getUserId()?->getUserName(),
       'truckName' => $pallet->getTruck()->getName(),
+      'packages' => $this->getPackagesCollection($pallet->getPackages()),
     ];
   }
 

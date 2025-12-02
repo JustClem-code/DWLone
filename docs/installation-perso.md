@@ -122,6 +122,6 @@
 
     docker compose exec php php bin/console make:registration-form
 
-5. Register
+5. Login
 
     docker compose exec php php bin/console make:security:form-login

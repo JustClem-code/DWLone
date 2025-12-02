@@ -16,7 +16,7 @@ class TruckRepository extends ServiceEntityRepository
     parent::__construct($registry, Truck::class);
   }
 
-    private function getPalletCollection($entities)
+  private function getPalletCollection($entities)
   {
 
     $collection = [];

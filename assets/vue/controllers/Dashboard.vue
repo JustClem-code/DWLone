@@ -11,11 +11,9 @@
 <script setup>
 
 //TODO:
-
-// creation d'une table pour les ASM ?
-// création d'une liste de palettes sur le foor
-
 // ajouter getPackages pour avoir le Nb de colis par palette
+// voir pour reset location sur package et reset la palette correspondante
+// changer associateId par userId
 
 // Refacto les methods des repository
 

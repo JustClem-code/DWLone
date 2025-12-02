@@ -10,28 +10,13 @@
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ pallet.truckName }}</p>
       </div>
       <div class="flex items-center gap-2">
-
-        <!-- <BaseButton title="ASML" styleColor="empty" size="sm"
-          @click="SelectOptionRef?.openDialog()" /> -->
-        <!-- <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate"
-          @click="SelectOptionRef?.openDialog()" /> -->
-
         <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
       </div>
     </li>
   </ul>
-  <DialogComponentSlot ref="SelectOptionRef">
-    <!-- <SelectOptionComponent :options="docks" :isLoading="dockingIsLoading"
-      @submitOption="val => dockingTruck(currentPallet, val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" /> -->
-      <p>Test options</p>
-  </DialogComponentSlot>
 
   <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
-    <PalletInfo :currentPallet="currentPallet"/>
-  </DialogComponentSlot>
-  <DialogComponentSlot ref="confirmUndockDialogRef">
-    <!-- <ConfirmationComponent question="Are you sure to undock ?" @confirm="unDocking"
-      @cancel="confirmUndockDialogRef?.closeDialog()" /> -->
+    <PalletInfo :currentPallet="currentPallet" />
   </DialogComponentSlot>
   <DialogComponentSlot ref="confirmResetDialogRef">
     <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
@@ -59,26 +44,22 @@ const props = defineProps({
 
 const currentPallet = ref(null)
 
-const SelectOptionRef = ref(null);
-
 const infoDialogRef = ref(null);
-
-const confirmUndockDialogRef = ref(null);
 
 const confirmResetDialogRef = ref(null);
 
-const badgeType = (truck) => {
-  if (truck.departureDate) {
-    return 'danger'
-  }
-  return truck.dock ? 'warning' : 'valid';
+const getPackagesNotInducted = (pallet) => {
+  return pallet.packages.filter(p => p.location === null);
 }
 
-const badgeTitle = (truck) => {
-  if (truck.departureDate) {
-    return 'finish'
-  }
-  return truck.dock ?? 'Waiting dock'
+const badgeType = (pallet) => {
+  console.log('pallet.value.packages.length', getPackagesNotInducted(pallet).length);
+
+  return getPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
+}
+
+const badgeTitle = (pallet) => {
+ return getPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getPackagesNotInducted(pallet).length}`;
 }
 
 const setCurrentPallet = (pallet) => {
@@ -86,11 +67,6 @@ const setCurrentPallet = (pallet) => {
 }
 
 const menuItems = computed(() => [
-  {
-    label: 'Undocking',
-    action: 'confirmUndocking',
-    isDisabled: !currentPallet.value?.dock
-  },
   {
     label: 'Reset',
     action: 'confirmResetItem',
@@ -101,20 +77,15 @@ const menuItems = computed(() => [
   },
 ])
 
-const unDocking = () => {
-  unloadingPallet(currentPallet.value, null)
-  confirmUndockDialogRef.value?.closeDialog()
-}
 const resetItem = () => {
   unloadingPallet(currentPallet.value, true)
   confirmResetDialogRef.value?.closeDialog()
 }
-const confirmUndocking = () => confirmUndockDialogRef.value?.openDialog()
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
 const openInfos = () => infoDialogRef.value?.openDialog()
 
 const handleMenuAction = (action) => {
-  const actions = { confirmUndocking, confirmResetItem, openInfos }
+  const actions = { confirmResetItem, openInfos }
   if (actions[action]) actions[action]()
 }
 
