@@ -2,7 +2,7 @@
   <BorderedContent v-if="currentPallet" title="Pallet 5S" minH="min-h-60">
 
     <div draggable="true" @dragstart="(e) => onDragStart(e, currentPallet.packages[0])">
-      <p>{{ currentPallet.packages[0] }}</p>
+      <Package :package="currentPallet.packages[0]" />
     </div>
 
   </BorderedContent>
@@ -27,6 +27,7 @@ import AddDatabaseIcon from '../UI/Icons/AddDatabaseIcon.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 import BorderedContent from '../UI/BorderedContent.vue';
+import Package from '../UI/Package.vue';
 
 const props = defineProps({
   currentPallet: Object

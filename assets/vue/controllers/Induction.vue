@@ -1,11 +1,5 @@
 <template>
   <div class="flex flex-col gap-8">
-    <!-- <BorderedContent title="Pallets">
-      <PalletList v-if="palletsOnFloor" :pallets="palletsOnFloor" />
-      <div v-else-if="errorPallet">Error: {{ errorPallet }}</div>
-      <div v-else>Loading...</div>
-    </BorderedContent> -->
-
     <Pallet5S :currentPallet="currentPallet"></Pallet5S>
 
     <BorderedContent title="ASML">
@@ -18,9 +12,8 @@
 
 <script setup>
 
-import { ref, provide, computed } from 'vue'
+import { ref, provide, computed, watch, onMounted } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue'
-import PalletList from './UnloadingComponents.vue/PalletList.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import emitter from '../composables/eventBus.js'
@@ -38,7 +31,16 @@ const unLoadingError = ref(null)
 const unLoadingIsLoading = ref(false)
 const addPalletLoading = ref(false)
 
+const STORAGE_KEY = 'currentPallet'
+
 const currentPallet = ref(null)
+onMounted(() => {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  currentPallet.value = raw ? JSON.parse(raw) : null
+  console.log('current pallet onmounter', currentPallet.value);
+  
+})
+
 
 const addPallet = (val) => {
   addPalletLoading.value = true
@@ -50,7 +52,7 @@ const addPallet = (val) => {
     addPalletLoading.value = false
   }, 1000);
 
- }
+}
 
 provide('unLoading', { unLoadingIsLoading })
 
@@ -85,6 +87,18 @@ function handleAction(item) {
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== item.id);
   console.log('Action sur', item);
 }
+
+watch(
+  currentPallet,
+  (val) => {
+    if (val === null) {
+      localStorage.removeItem(STORAGE_KEY)
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
+    }
+  },
+  { deep: true }
+)
 
 
 </script>

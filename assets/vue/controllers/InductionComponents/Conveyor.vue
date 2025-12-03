@@ -1,13 +1,21 @@
-<!-- DropContainer.vue -->
+<template>
+  <div
+    class="drop-container"
+    @dragover="onDragOver"
+    @drop="onDrop"
+  >
+    Dépose ici pour appliquer l’action
+  </div>
+</template>
+
 <script setup>
 import { useDragStore } from '../../composables/useDragStore.js';
 
-const emit = defineEmits(['action']); // pour informer le parent
+const emit = defineEmits(['action']);
 
 const { getDraggedItem } = useDragStore();
 
 function onDragOver(event) {
-  // nécessaire pour autoriser le drop
   event.preventDefault();
   event.dataTransfer.dropEffect = 'move';
 }
@@ -23,13 +31,3 @@ function onDrop(event) {
   // 2) éventuellement nettoyer visuel / store
 }
 </script>
-
-<template>
-  <div
-    class="drop-container"
-    @dragover="onDragOver"
-    @drop="onDrop"
-  >
-    Dépose ici pour appliquer l’action
-  </div>
-</template>
