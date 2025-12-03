@@ -1,9 +1,17 @@
 <template>
   <div class="flex flex-col gap-8">
-    <BorderedContent title="Pallets">
+    <!-- <BorderedContent title="Pallets">
       <PalletList v-if="palletsOnFloor" :pallets="palletsOnFloor" />
       <div v-else-if="errorPallet">Error: {{ errorPallet }}</div>
       <div v-else>Loading...</div>
+    </BorderedContent> -->
+
+    <Pallet5S :currentPallet="currentPallet"></Pallet5S>
+
+    <BorderedContent title="ASML">
+      <div class="flex flex-col gap-4">
+        <Conveyor @action="handleAction"></Conveyor>
+      </div>
     </BorderedContent>
   </div>
 </template>
@@ -16,6 +24,8 @@ import PalletList from './UnloadingComponents.vue/PalletList.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import emitter from '../composables/eventBus.js'
+import Pallet5S from './InductionComponents/Pallet5S.vue'
+import Conveyor from './InductionComponents/Conveyor.vue'
 
 const notifier = (type, message, message_2) => {
   emitter.emit('notify', { type: type, message: message, message_2: message_2 })
@@ -26,8 +36,25 @@ const { data: palletsOnFloor, error: errorPallet } = useFetch('/getpalletsonfloo
 const unLoadingData = ref(null)
 const unLoadingError = ref(null)
 const unLoadingIsLoading = ref(false)
+const addPalletLoading = ref(false)
 
-provide('unLoading', {unLoadingIsLoading })
+const currentPallet = ref(null)
+
+const addPallet = (val) => {
+  addPalletLoading.value = true
+  setTimeout(() => {
+    currentPallet.value = val
+    addPalletLoading.value = true
+    console.log('addPallet', val);
+    notifier('success', 'Add Pallet', `The pallet (Id: ${currentPallet.value.id}) is in 5S location`)
+    addPalletLoading.value = false
+  }, 1000);
+
+ }
+
+provide('unLoading', { unLoadingIsLoading })
+
+provide('induction', { palletsOnFloor, addPalletLoading, addPallet })
 
 console.log("unloaded pallet", palletsOnFloor);
 
@@ -52,5 +79,12 @@ console.log("unloaded pallet", palletsOnFloor);
   }
 
 } */
+
+function handleAction(item) {
+  // exemple : on enlève l’item de la liste et on log
+  currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== item.id);
+  console.log('Action sur', item);
+}
+
 
 </script>
