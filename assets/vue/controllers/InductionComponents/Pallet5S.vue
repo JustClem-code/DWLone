@@ -1,7 +1,8 @@
 <template>
   <BorderedContent v-if="currentPallet" title="Pallet 5S" minH="min-h-60">
 
-    <div draggable="true" @dragstart="(e) => onDragStart(e, currentPallet.packages[0])">
+    <div draggable="true" @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()"
+      :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'">
       <Package :package="currentPallet.packages[0]" />
     </div>
 
@@ -37,10 +38,25 @@ const { palletsOnFloor, addPalletLoading, addPallet } = inject('induction')
 
 const SelectOptionRef = ref(null)
 
+const isDragging = ref(false)
+
 const { setDraggedItem } = useDragStore();
 
 function onDragStart(event, item) {
+  isDragging.value = true;
+  document.documentElement.classList.add("grabbing");
   setDraggedItem(item);
   event.dataTransfer.effectAllowed = 'move';
 }
+
+function onDragEnd() {
+  isDragging.value = false
+  document.documentElement.classList.remove("grabbing");
+}
 </script>
+
+<style scoped>
+html.grabbing * {
+  cursor: grabbing !important;
+}
+</style>

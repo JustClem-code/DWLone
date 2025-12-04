@@ -3,6 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Pallet;
+use App\Entity\Order;
+use App\Entity\Address;
+use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,6 +19,34 @@ class PalletRepository extends ServiceEntityRepository
     parent::__construct($registry, Pallet::class);
   }
 
+  private function getAddressDetails(Address $address): array
+  {
+     return [
+      'id' => $address->getId(),
+      'streetAddress' => $address->getStreetAddress(),
+      'postcode' => $address->getPostcode(),
+      'city' => $address->getCity(),
+    ];
+  }
+
+  private function getCustomerDetails(Customer $customer) : array
+  {
+    return [
+      'id' => $customer->getId(),
+      'firstname' => $customer->getFirstname(),
+      'lastname' => $customer->getLastname(),
+    ];
+  }
+
+  private function getOrderDetails(Order $order): array
+  {
+    return [
+      'id' => $order->getId(),
+      'address' => $this->getAddressDetails($order->getAddress()),
+      'customer' => $this->getCustomerDetails($order->getCustomer()),
+    ];
+  }
+
   private function getPackagesCollection($entities)
   {
 
@@ -25,7 +56,8 @@ class PalletRepository extends ServiceEntityRepository
       $collection[] = [
         'id' => $entity->getId(),
         'weight' => $entity->getWeight(),
-        'location' => $entity->getLocation()
+        'location' => $entity->getLocation(),
+        'order' => $this->getOrderDetails($entity->getOrderId()),
       ];
     }
 

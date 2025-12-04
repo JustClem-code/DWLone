@@ -11,6 +11,9 @@
 <script setup>
 
 //TODO:
+
+// bien gérer l'animation du drag and drop et du cursor
+
 // voir pour reset location sur package et reset la palette correspondante
 
 // Refacto les methods des repository

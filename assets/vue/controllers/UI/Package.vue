@@ -2,36 +2,42 @@
   <div
     class="w-full bg-white dark:bg-gray-800/50 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
     <dl class="flex flex-col divide-y divide-gray-200 dark:divide-gray-700/90">
-      <div class="flex justify-between p-4">
+      <div class="flex justify-between p-6">
         <div class="flex flex-col">
-          <dt class="bjao bjat bjbe">Id</dt>
-          <dd class="bivj bjal bjat bjbe">{{ package.id }}</dd>
+          <dt class="text-sm">Id</dt>
+          <dd class="">{{ package.id }}</dd>
         </div>
         <div class="self-end">
           <BadgeComponent type="warning" :title="package.location" />
         </div>
       </div>
-      <div class="p-4">
-        <div class="flex">
-          <dt class="biww">
-            <AccountCircleIcon color="text-gray-200 dark:text-gray-700/90" title="client" />
+      <div class="p-6">
+        <div class="flex gap-2 items-center">
+          <dt>
+            <AccountCircleIcon size="size-7" color="text-gray-400" title="client" />
           </dt>
-          <dd class="bjao bjar bjbe">Alex Curren</dd>
+          <dd class="text-sm">
+            {{ package.order[0].customer[0].firstname }}
+            {{ package.order[0].customer[0].lastname }}
+          </dd>
         </div>
-        <div class="bivm bivu biwp biww bixn bizm">
-          <dt class="biww">
-            <span class="biul">Due date</span>
-            <AccountCircleIcon color="text-gray-200 dark:text-gray-700/90" title="client" />
+        <div class="flex gap-2 items-center pt-4">
+          <dt>
+            <AccountCircleIcon size="size-7" color="text-gray-400" title="client" />
           </dt>
-          <dd class="bjao bjaw">
-            <time datetime="2023-01-31">January 31, 2023</time>
+          <dd class="text-sm text-gray-400">{{ package.order[0].address[0].streetAddress }}</dd>
+        </div>
+        <div class="flex gap-2 items-center pt-4">
+          <dt>
+            <AccountCircleIcon size="size-7" color="text-gray-400" title="client" />
+          </dt>
+          <dd class="text-sm text-gray-400">
+            {{ package.order[0].address[0].postcode }}
+            {{ package.order[0].address[0].city }}
           </dd>
         </div>
       </div>
     </dl>
-    <div class="border-t border-gray-200 dark:border-gray-700/90 p-4">
-      <a href="#" class="bjao bjat bjbe">Download receipt <span aria-hidden="true">→</span></a>
-    </div>
   </div>
 </template>
 
