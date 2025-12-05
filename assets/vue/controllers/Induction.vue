@@ -26,19 +26,18 @@ const notifier = (type, message, message_2) => {
 
 const { data: palletsOnFloor, error: errorPallet } = useFetch('/getpalletsonfloor')
 
-const unLoadingData = ref(null)
-const unLoadingError = ref(null)
-const unLoadingIsLoading = ref(false)
 const addPalletLoading = ref(false)
+const setLocationLoading = ref(false)
 
 const STORAGE_KEY = 'currentPallet'
 
 const currentPallet = ref(null)
+
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)
   currentPallet.value = raw ? JSON.parse(raw) : null
   console.log('current pallet onmounter', currentPallet.value);
-  
+
 })
 
 
@@ -53,8 +52,6 @@ const addPallet = (val) => {
   }, 1000);
 
 }
-
-provide('unLoading', { unLoadingIsLoading })
 
 provide('induction', { palletsOnFloor, addPalletLoading, addPallet })
 
@@ -82,7 +79,34 @@ console.log("unloaded pallet", palletsOnFloor);
 
 } */
 
-function handleAction(item) {
+async function setLocation(packageId) {
+  setLocationLoading.value = true;
+
+  const { data, error } = await usePostFetch(`/setLocation/${truckId.id}`)
+  dockingData.value = null;
+  dockingError.value = null;
+
+  dockingData.value = data.value;
+  dockingError.value = error.value;
+
+  if (dockingData.value) {
+    updateListElements()
+    dockingIsLoading.value = false;
+
+    console.log(dockingData.value);
+    if (reset) {
+      notifier('success', 'Reset', `The truck (Vrid: ${dockingData.value.truckName}) is reset`)
+    } else if (!dockingData.value.dockId && dockingData.value.previousDockId) {
+      notifier('success', 'Undocking', `The truck (Vrid: ${dockingData.value.truckName}) departure from the dock ${dockingData.value.previousDockName}`)
+    } else {
+      notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truckName}) docking ${dockingData.value.dockName}`)
+    }
+
+  }
+}
+
+
+const handleAction = (item) => {
   // exemple : on enlève l’item de la liste et on log
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== item.id);
   console.log('Action sur', item);

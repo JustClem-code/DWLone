@@ -12,12 +12,15 @@
 
 //TODO:
 
+// Finir la request setLocation
+
 // bien gérer l'animation du drag and drop et du cursor
 
 // voir pour reset location sur package et reset la palette correspondante
 
 // Refacto les methods des repository
 
+// Gérer le account circle en mobile
 // Vérifier contours notification vers light theme
 
 // déplacer certaines logiques (métier, notification dans les composables ?)

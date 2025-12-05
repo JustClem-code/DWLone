@@ -1,5 +1,18 @@
 <template>
-  <BorderedContent v-if="currentPallet" title="Pallet 5S" minH="min-h-60">
+  <BorderedContent v-if="currentPallet" title="Pallet 5S" minH="min-h-60 flex flex-col gap-4">
+    <div
+      class="w-full bg-white dark:bg-gray-800/50 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
+      <div class="grid grid-cols-1 sm:grid-cols-2 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
+        <div class="py-6 px-8">
+          <p class="text-sm text-gray-400">Pallet id</p>
+          <p class="text-4xl pt-2">{{ currentPallet.id }}</p>
+        </div>
+        <div class="py-6 px-8">
+          <p class="text-sm text-gray-400">Nb of packages</p>
+          <p class="text-4xl pt-2">{{ currentPallet.packages.length }}</p>
+        </div>
+      </div>
+    </div>
 
     <div draggable="true" @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()"
       :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'">

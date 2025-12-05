@@ -17,23 +17,23 @@
             <AccountCircleIcon size="size-7" color="text-gray-400" title="client" />
           </dt>
           <dd class="text-sm">
-            {{ package.order[0].customer[0].firstname }}
-            {{ package.order[0].customer[0].lastname }}
+            {{ package.order.customer.firstname }}
+            {{ package.order.customer.lastname }}
           </dd>
         </div>
         <div class="flex gap-2 items-center pt-4">
           <dt>
             <AccountCircleIcon size="size-7" color="text-gray-400" title="client" />
           </dt>
-          <dd class="text-sm text-gray-400">{{ package.order[0].address[0].streetAddress }}</dd>
+          <dd class="text-sm text-gray-400">{{ package.order.address.streetAddress }}</dd>
         </div>
         <div class="flex gap-2 items-center pt-4">
           <dt>
             <AccountCircleIcon size="size-7" color="text-gray-400" title="client" />
           </dt>
           <dd class="text-sm text-gray-400">
-            {{ package.order[0].address[0].postcode }}
-            {{ package.order[0].address[0].city }}
+            {{ package.order.address.postcode }}
+            {{ package.order.address.city }}
           </dd>
         </div>
       </div>
