@@ -6,12 +6,14 @@ use App\Entity\Dock;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+use App\Repository\PalletRepository;
+
 /**
  * @extends ServiceEntityRepository<Dock>
  */
 class DockRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
+  public function __construct(ManagerRegistry $registry, private PalletRepository $palletRepository)
   {
     parent::__construct($registry, Dock::class);
   }
@@ -22,11 +24,7 @@ class DockRepository extends ServiceEntityRepository
     $collection = [];
 
     foreach ($entities as $entity) {
-      $collection[] = [
-        'id' => $entity->getId(),
-        'userId' => $entity->getUserId()?->getId(),
-        'userName' => $entity->getUserId()?->getUserName(),
-      ];
+      $collection[] = $this->palletRepository->toArray($entity);
     }
 
     return $collection;

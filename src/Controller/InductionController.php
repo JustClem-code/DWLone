@@ -45,7 +45,7 @@ final class InductionController extends AbstractController
     $entityManager->flush();
 
     return $this->json(
-      $repository->toArray($pallet)
+      $repository->toArray($package)
     );
   }
 }

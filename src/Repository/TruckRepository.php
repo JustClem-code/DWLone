@@ -6,12 +6,14 @@ use App\Entity\Truck;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+use App\Repository\PalletRepository;
+
 /**
  * @extends ServiceEntityRepository<Truck>
  */
 class TruckRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
+  public function __construct(ManagerRegistry $registry, private PalletRepository $palletRepository)
   {
     parent::__construct($registry, Truck::class);
   }
@@ -22,11 +24,7 @@ class TruckRepository extends ServiceEntityRepository
     $collection = [];
 
     foreach ($entities as $entity) {
-      $collection[] = [
-        'id' => $entity->getId(),
-        'userId' => $entity->getUserId()?->getId(),
-        'userName' => $entity->getUserId()?->getUserName(),
-      ];
+      $collection[] = $this->palletRepository->toArray($entity);
     }
 
     return $collection;

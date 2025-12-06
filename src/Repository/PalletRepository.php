@@ -3,48 +3,19 @@
 namespace App\Repository;
 
 use App\Entity\Pallet;
-use App\Entity\Order;
-use App\Entity\Address;
-use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
+use App\Repository\PackageRepository;
 
 /**
  * @extends ServiceEntityRepository<Pallet>
  */
 class PalletRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
+  public function __construct(ManagerRegistry $registry, private PackageRepository $packageRepository)
   {
     parent::__construct($registry, Pallet::class);
-  }
-
-  private function getAddressDetails(Address $address): array
-  {
-     return [
-      'id' => $address->getId(),
-      'streetAddress' => $address->getStreetAddress(),
-      'postcode' => $address->getPostcode(),
-      'city' => $address->getCity(),
-    ];
-  }
-
-  private function getCustomerDetails(Customer $customer) : array
-  {
-    return [
-      'id' => $customer->getId(),
-      'firstname' => $customer->getFirstname(),
-      'lastname' => $customer->getLastname(),
-    ];
-  }
-
-  private function getOrderDetails(Order $order): array
-  {
-    return [
-      'id' => $order->getId(),
-      'address' => $this->getAddressDetails($order->getAddress()),
-      'customer' => $this->getCustomerDetails($order->getCustomer()),
-    ];
   }
 
   private function getPackagesCollection($entities)
@@ -53,12 +24,7 @@ class PalletRepository extends ServiceEntityRepository
     $collection = [];
 
     foreach ($entities as $entity) {
-      $collection[] = [
-        'id' => $entity->getId(),
-        'weight' => $entity->getWeight(),
-        'location' => $entity->getLocation(),
-        'order' => $this->getOrderDetails($entity->getOrderId()),
-      ];
+      $collection[] = $this->packageRepository->toArray($entity);
     }
 
     return $collection;
