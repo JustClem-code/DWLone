@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Package>
      */
-    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'userStow')]
+    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'UserStow')]
     private Collection $packages;
 
     public function __construct()

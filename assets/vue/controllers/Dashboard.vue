@@ -14,6 +14,9 @@
 
 // Finir la request setLocation
 
+// attribuer un bag à location avant d'attribuer une location à package
+// attibuer une location en fonction du postcode
+
 // bien gérer l'animation du drag and drop et du cursor
 
 // voir pour reset location sur package et reset la palette correspondante

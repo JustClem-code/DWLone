@@ -147,7 +147,7 @@ class AppFixtures extends Fixture
       "Montoir-sur-Loire" => "44310",
       "Mouzillon" => "44330",
       "Nantes" => "44000",
-      "Saint-Herblain" => "4480"
+      "Saint-Herblain" => "44800"
     ];
 
     $randomPostcode = new \Random\Randomizer();

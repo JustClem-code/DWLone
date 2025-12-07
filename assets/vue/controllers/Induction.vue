@@ -53,7 +53,7 @@ const addPallet = (val) => {
 
 }
 
-provide('induction', { palletsOnFloor, addPalletLoading, addPallet })
+provide('induction', { palletsOnFloor, addPalletLoading, addPallet, setLocation })
 
 console.log("unloaded pallet", palletsOnFloor);
 
@@ -79,11 +79,14 @@ console.log("unloaded pallet", palletsOnFloor);
 
 } */
 
-async function setLocation(packageId) {
+async function setLocation(inductedPackage) {
   setLocationLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/setLocation/${truckId.id}`)
-  dockingData.value = null;
+  const { data, error } = await usePostFetch(`/setLocation/${inductedPackage.id}`)
+
+  console.log('inductedPackage', inductedPackage);
+
+/*   dockingData.value = null;
   dockingError.value = null;
 
   dockingData.value = data.value;
@@ -102,13 +105,14 @@ async function setLocation(packageId) {
       notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truckName}) docking ${dockingData.value.dockName}`)
     }
 
-  }
+  } */
 }
 
 
 const handleAction = (item) => {
   // exemple : on enlève l’item de la liste et on log
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== item.id);
+  setLocation(item);
   console.log('Action sur', item);
 }
 
