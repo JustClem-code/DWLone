@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Package;
+use App\Entity\Location;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,14 +19,55 @@ class PackageRepository extends ServiceEntityRepository
     parent::__construct($registry, Package::class);
   }
 
+  public function findAllHasLocation(): array
+  {
+    return $this->createQueryBuilder('p')
+      ->andWhere('p.location IS NOT NULL')
+      ->orderBy('p.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  public function findPostcode(Package $package): int
+  {
+    return $package->getOrderId()->getAddress()->getPostcode();
+  }
+
+  public function findLocationBySamePostcode(Package $package): ?Location
+  {
+    $targetPostcode = $this->findPostcode($package);
+    $packagesWithLocation = $this->findAllHasLocation();
+
+    foreach ($packagesWithLocation as $pkg) {
+      if ($this->findPostcode($pkg) === $targetPostcode && $pkg->getLocation() !== null) {
+        return $pkg->getLocation();
+      }
+    }
+
+    return null;
+  }
+
+
   public function toArray(Package $package): array
   {
     return [
       'id' => $package->getId(),
       'weight' => $package->getWeight(),
       'location' => $package->getLocation(),
+      'bag' => $package->getBag(),
       'order' => $this->orderRepository->toArray($package->getOrderId()),
     ];
+  }
+
+  public function transformCollection($entities): array
+  {
+    $collection = [];
+
+    foreach ($entities as $entity) {
+      $collection[] = $this->toArray($entity);
+    }
+
+    return $collection;
   }
 
   //    /**

@@ -19,10 +19,12 @@ class LocationRepository extends ServiceEntityRepository
   /**
    * @return Location|null
    */
-  public function findRandom(): ?Location
+  public function findRandomWithoutPackage(): ?Location
   {
-    $total = $this->createQueryBuilder('l')
-      ->select('COUNT(l.id)')
+    $qb = $this->createQueryBuilder('l');
+
+    $total = $qb->select('COUNT(l.id)')
+      ->andWhere('l.packages IS EMPTY')
       ->getQuery()
       ->getSingleScalarResult();
 
@@ -32,12 +34,14 @@ class LocationRepository extends ServiceEntityRepository
 
     $offset = random_int(0, $total - 1);
 
-    return $this->createQueryBuilder('l')
+    return $qb->select('l')
+      ->andWhere('l.packages IS EMPTY')
       ->setMaxResults(1)
       ->setFirstResult($offset)
       ->getQuery()
       ->getOneOrNullResult();
   }
+
 
 
   private function toArray(Location $location): array

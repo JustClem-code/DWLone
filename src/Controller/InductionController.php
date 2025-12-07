@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Controller\Trait\RepositoryTrait;
 use App\Entity\Package;
-use App\Entity\Pallet;
-use App\Repository\PalletRepository;
+use App\Entity\Location;
+use App\Entity\Bag;
+use App\Repository\PackageRepository;
+use App\Repository\LocationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,12 +26,13 @@ final class InductionController extends AbstractController
     ]);
   }
 
-  #[Route('/setLocation/{id}', name: 'unloading_pallet')]
-  public function unloadingPallet(
+  #[Route('/setLocation/{id}', name: 'set_location')]
+  public function setLocation(
     Request $request,
     EntityManagerInterface $entityManager,
     int $id,
-    PalletRepository $repository,
+    PackageRepository $packageRepository,
+    LocationRepository $locationRepository,
   ): Response {
     $package = $entityManager->getRepository(Package::class)->find($id);
 
@@ -39,13 +42,31 @@ final class InductionController extends AbstractController
       );
     }
 
-    $package->setLocation();
+    $location = $packageRepository->findLocationBySamePostcode($package);
 
+    if ($location) {
+      if (!$location->getBag()) {
+        $randomBag = $entityManager->getRepository(Bag::class)->findRandomWithoutLocation();
+        $location->setBag($randomBag);
+      }
+      $package->setLocation($location);
+      $package->setBag($location->getBag());
+    } else {
+      $randomLocation = $entityManager->getRepository(Location::class)->findRandomWithoutPackage();
+      if (!$randomLocation->getBag()) {
+        $randomBag = $entityManager->getRepository(Bag::class)->findRandomWithoutLocation();
+        $randomLocation->setBag($randomBag);
+      }
+      $package->setLocation($randomLocation);
+      $package->setBag($randomLocation->getBag());
+    }
 
     $entityManager->flush();
 
-    return $this->json(
-      $repository->toArray($package)
-    );
+    $alreadyLocated = $packageRepository->transformCollection($packageRepository->findAllHasLocation());
+
+    dump($alreadyLocated);
+
+    return $this->json($packageRepository->toArray($package));
   }
 }

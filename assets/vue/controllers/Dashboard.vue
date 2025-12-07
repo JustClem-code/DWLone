@@ -14,10 +14,12 @@
 
 // Finir la request setLocation
 
-// attribuer un bag à location avant d'attribuer une location à package
-// attibuer une location en fonction du postcode
+
+// bien gérer les datas retourner (location and bag)
+// refacto si besoin
 
 // bien gérer l'animation du drag and drop et du cursor
+// mettre en surbrillance le package à drag
 
 // voir pour reset location sur package et reset la palette correspondante
 

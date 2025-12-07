@@ -11,33 +11,56 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BagRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Bag::class);
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, Bag::class);
+  }
+
+  public function findRandomWithoutLocation(): ?Bag
+  {
+    $qbCount = $this->createQueryBuilder('b')
+      ->select('COUNT(b.id)')
+      ->where('b.location IS NULL');
+
+    $total = $qbCount->getQuery()->getSingleScalarResult();
+
+    if ($total === 0) {
+      return null;
     }
 
-//    /**
-//     * @return Bag[] Returns an array of Bag objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    $offset = random_int(0, $total - 1);
 
-//    public function findOneBySomeField($value): ?Bag
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    return $this->createQueryBuilder('b')
+      ->where('b.location IS NULL')
+      ->setFirstResult($offset)
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
+
+
+  //    /**
+  //     * @return Bag[] Returns an array of Bag objects
+  //     */
+  //    public function findByExampleField($value): array
+  //    {
+  //        return $this->createQueryBuilder('b')
+  //            ->andWhere('b.exampleField = :val')
+  //            ->setParameter('val', $value)
+  //            ->orderBy('b.id', 'ASC')
+  //            ->setMaxResults(10)
+  //            ->getQuery()
+  //            ->getResult()
+  //        ;
+  //    }
+
+  //    public function findOneBySomeField($value): ?Bag
+  //    {
+  //        return $this->createQueryBuilder('b')
+  //            ->andWhere('b.exampleField = :val')
+  //            ->setParameter('val', $value)
+  //            ->getQuery()
+  //            ->getOneOrNullResult()
+  //        ;
+  //    }
 }
