@@ -13,15 +13,11 @@
 //TODO:
 
 // Finir la request setLocation
+// mettre à jour côté vue
 
-
-// bien gérer les datas retourner (location and bag)
-// refacto si besoin
 
 // bien gérer l'animation du drag and drop et du cursor
 // mettre en surbrillance le package à drag
-
-// voir pour reset location sur package et reset la palette correspondante
 
 // Refacto les methods des repository
 

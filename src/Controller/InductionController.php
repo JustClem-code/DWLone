@@ -8,6 +8,7 @@ use App\Entity\Location;
 use App\Entity\Bag;
 use App\Repository\PackageRepository;
 use App\Repository\LocationRepository;
+use App\Repository\BagRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,47 +27,72 @@ final class InductionController extends AbstractController
     ]);
   }
 
-  #[Route('/setLocation/{id}', name: 'set_location')]
+
+
+  #[Route('/setLocation/{id}', name: 'set_location', methods: ['POST'])]
   public function setLocation(
-    Request $request,
+    Package $package,
     EntityManagerInterface $entityManager,
-    int $id,
     PackageRepository $packageRepository,
     LocationRepository $locationRepository,
+    BagRepository $bagRepository,
+    int $id,
   ): Response {
     $package = $entityManager->getRepository(Package::class)->find($id);
 
     if (!$package) {
       throw $this->createNotFoundException(
-        'No pallet found for id ' . $id
+        'No package found for id ' . $id
       );
     }
 
     $location = $packageRepository->findLocationBySamePostcode($package);
 
-    if ($location) {
-      if (!$location->getBag()) {
-        $randomBag = $entityManager->getRepository(Bag::class)->findRandomWithoutLocation();
-        $location->setBag($randomBag);
-      }
-      $package->setLocation($location);
-      $package->setBag($location->getBag());
-    } else {
-      $randomLocation = $entityManager->getRepository(Location::class)->findRandomWithoutPackage();
-      if (!$randomLocation->getBag()) {
-        $randomBag = $entityManager->getRepository(Bag::class)->findRandomWithoutLocation();
-        $randomLocation->setBag($randomBag);
-      }
-      $package->setLocation($randomLocation);
-      $package->setBag($randomLocation->getBag());
+    if (!$location) {
+      $location = $locationRepository->findRandomWithoutPackage();
     }
+
+    if (!$location->getBag()) {
+      $randomBag = $bagRepository->findRandomWithoutLocation();
+      $location->setBag($randomBag);
+    }
+
+    $package->setLocation($location);
+    $package->setBag($location->getBag());
 
     $entityManager->flush();
 
-    $alreadyLocated = $packageRepository->transformCollection($packageRepository->findAllHasLocation());
+    $alreadyLocated = $packageRepository->transformCollection(
+      $packageRepository->findAllHasLocation()
+    );
 
     dump($alreadyLocated);
 
     return $this->json($packageRepository->toArray($package));
+  }
+
+  #[Route('/resetLocationsBagsPackages', name: 'reset_locations_bags_packages', methods: ['POST'])]
+  public function resetLocationsBagsPackages(
+    EntityManagerInterface $entityManager,
+    PackageRepository $packageRepository,
+    BagRepository $bagRepository,
+  ): Response {
+
+    $packagesWithLocation = $packageRepository->findAllHasLocation();
+
+    foreach ($packagesWithLocation as $package) {
+      $package->setLocation(null);
+      $package->setBag(null);
+    }
+
+    $bagsWithLocation = $bagRepository->findAllHasLocation();
+
+    foreach ($bagsWithLocation as $bag) {
+      $bag->setLocation(null);
+    }
+
+    $entityManager->flush();
+
+    return $this->json($bagsWithLocation);
   }
 }

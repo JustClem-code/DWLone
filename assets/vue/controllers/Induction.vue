@@ -53,7 +53,7 @@ const addPallet = (val) => {
 
 }
 
-provide('induction', { palletsOnFloor, addPalletLoading, addPallet, setLocation })
+provide('induction', { palletsOnFloor, addPalletLoading, addPallet, resetLocationsBagsPackages })
 
 console.log("unloaded pallet", palletsOnFloor);
 
@@ -79,6 +79,11 @@ console.log("unloaded pallet", palletsOnFloor);
 
 } */
 
+async function resetLocationsBagsPackages() {
+  const { data, error } = await usePostFetch('/resetLocationsBagsPackages');
+  console.log('datareset', data);
+}
+
 async function setLocation(inductedPackage) {
   setLocationLoading.value = true;
 
@@ -86,26 +91,26 @@ async function setLocation(inductedPackage) {
 
   console.log('inductedPackage', inductedPackage);
 
-/*   dockingData.value = null;
-  dockingError.value = null;
+  /*   dockingData.value = null;
+    dockingError.value = null;
 
-  dockingData.value = data.value;
-  dockingError.value = error.value;
+    dockingData.value = data.value;
+    dockingError.value = error.value;
 
-  if (dockingData.value) {
-    updateListElements()
-    dockingIsLoading.value = false;
+    if (dockingData.value) {
+      updateListElements()
+      dockingIsLoading.value = false;
 
-    console.log(dockingData.value);
-    if (reset) {
-      notifier('success', 'Reset', `The truck (Vrid: ${dockingData.value.truckName}) is reset`)
-    } else if (!dockingData.value.dockId && dockingData.value.previousDockId) {
-      notifier('success', 'Undocking', `The truck (Vrid: ${dockingData.value.truckName}) departure from the dock ${dockingData.value.previousDockName}`)
-    } else {
-      notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truckName}) docking ${dockingData.value.dockName}`)
-    }
+      console.log(dockingData.value);
+      if (reset) {
+        notifier('success', 'Reset', `The truck (Vrid: ${dockingData.value.truckName}) is reset`)
+      } else if (!dockingData.value.dockId && dockingData.value.previousDockId) {
+        notifier('success', 'Undocking', `The truck (Vrid: ${dockingData.value.truckName}) departure from the dock ${dockingData.value.previousDockName}`)
+      } else {
+        notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truckName}) docking ${dockingData.value.dockName}`)
+      }
 
-  } */
+    } */
 }
 
 

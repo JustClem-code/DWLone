@@ -8,14 +8,20 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 use App\Repository\OrderRepository;
+use App\Repository\BagRepository;
+use App\Repository\LocationRepository;
 
 /**
  * @extends ServiceEntityRepository<Package>
  */
 class PackageRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry, private OrderRepository $orderRepository)
-  {
+  public function __construct(
+    ManagerRegistry $registry,
+    private OrderRepository $orderRepository,
+    private BagRepository $bagRepository,
+    private LocationRepository $locationRepository,
+  ) {
     parent::__construct($registry, Package::class);
   }
 
@@ -47,17 +53,17 @@ class PackageRepository extends ServiceEntityRepository
     return null;
   }
 
-
   public function toArray(Package $package): array
   {
     return [
       'id' => $package->getId(),
       'weight' => $package->getWeight(),
-      'location' => $package->getLocation(),
-      'bag' => $package->getBag(),
-      'order' => $this->orderRepository->toArray($package->getOrderId()),
+      'location' => $package->getLocation() ? $this->locationRepository->toArray($package->getLocation()) : null,
+      'bag' => $package->getBag() ? $this->bagRepository->toArray($package->getBag()) : null,
+      'order' =>$this->orderRepository->toArray($package->getOrderId()),
     ];
   }
+
 
   public function transformCollection($entities): array
   {

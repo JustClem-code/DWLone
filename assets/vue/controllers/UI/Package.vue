@@ -7,8 +7,8 @@
           <dt class="text-sm">Id</dt>
           <dd class="">{{ package.id }}</dd>
         </div>
-        <div class="self-end">
-          <BadgeComponent type="warning" :title="package.location" />
+        <div v-if="location" class="self-end">
+          <BadgeComponent type="warning" :title="location" />
         </div>
       </div>
       <div class="p-6">
@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import BadgeComponent from './BadgeComponent.vue';
 import AccountCircleIcon from './Icons/AccountCircleIcon.vue';
 
@@ -52,5 +52,9 @@ const props = defineProps({
 onMounted(() => {
   console.log('package', props.package);
 
+})
+
+const location = computed(() => {
+  return props.package.location?.name
 })
 </script>

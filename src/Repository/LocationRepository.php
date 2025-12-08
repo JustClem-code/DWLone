@@ -44,7 +44,7 @@ class LocationRepository extends ServiceEntityRepository
 
 
 
-  private function toArray(Location $location): array
+  public function toArray(Location $location): array
   {
     return [
       'id' => $location->getId(),

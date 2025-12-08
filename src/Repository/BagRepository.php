@@ -38,6 +38,23 @@ class BagRepository extends ServiceEntityRepository
       ->getOneOrNullResult();
   }
 
+  public function findAllHasLocation(): array
+  {
+    return $this->createQueryBuilder('b')
+      ->andWhere('b.location IS NOT NULL')
+      ->orderBy('b.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  public function toArray(Bag $bag): array
+  {
+    return [
+      'id' => $bag->getId(),
+      'name' => $bag->getName(),
+      'location' => $bag->getLocation(),
+    ];
+  }
 
   //    /**
   //     * @return Bag[] Returns an array of Bag objects

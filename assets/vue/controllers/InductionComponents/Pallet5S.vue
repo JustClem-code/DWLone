@@ -27,6 +27,7 @@
     <span class="">Add a pallet</span>
   </button>
 
+  <button @click="resetLocationsBagsPackages">RESET</button>
   <DialogComponentSlot ref="SelectOptionRef">
     <SelectOptionComponent :options="palletsOnFloor" :isLoading="addPalletLoading"
       @submitOption="val => addPallet(val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" />
@@ -47,7 +48,7 @@ const props = defineProps({
   currentPallet: Object
 });
 
-const { palletsOnFloor, addPalletLoading, addPallet } = inject('induction')
+const { palletsOnFloor, addPalletLoading, addPallet, resetLocationsBagsPackages } = inject('induction')
 
 const SelectOptionRef = ref(null)
 
