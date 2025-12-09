@@ -9,7 +9,7 @@
         </div>
         <div class="py-6 px-8">
           <p class="text-sm text-gray-400">Nb of packages</p>
-          <p class="text-4xl pt-2">{{ currentPallet.packages.length }}</p>
+          <p class="text-4xl pt-2">{{ getPackagesNotInducted(currentPallet).length }}</p>
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { inject, ref, computed } from 'vue'
+import { inject, ref } from 'vue'
 import { useDragStore } from '../../composables/useDragStore.js';
 import AddDatabaseIcon from '../UI/Icons/AddDatabaseIcon.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
@@ -48,7 +48,7 @@ const props = defineProps({
   currentPallet: Object
 });
 
-const { palletsOnFloor, addPalletLoading, addPallet, resetLocationsBagsPackages } = inject('induction')
+const { palletsOnFloor, addPalletLoading, addPallet, resetLocationsBagsPackages, getPackagesNotInducted } = inject('induction')
 
 const SelectOptionRef = ref(null)
 

@@ -10,12 +10,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import { useDragStore } from '../../composables/useDragStore.js';
 import Package from '../UI/Package.vue';
 import AddDatabaseIcon from '../UI/Icons/AddDatabaseIcon.vue';
 
-const emit = defineEmits(['action']);
+const { setLocation } = inject('induction')
 
 const { getDraggedItem } = useDragStore();
 
@@ -33,9 +33,6 @@ function onDrop(event) {
 
   currentPackage.value = item
 
-  // 1) appliquer l’action voulue
-  emit('action', item);
-
-  // 2) éventuellement nettoyer visuel / store
+  setLocation(currentPackage.value)
 }
 </script>

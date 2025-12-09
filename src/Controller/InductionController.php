@@ -66,8 +66,6 @@ final class InductionController extends AbstractController
       $packageRepository->findAllHasLocation()
     );
 
-    dump($alreadyLocated);
-
     return $this->json($packageRepository->toArray($package));
   }
 

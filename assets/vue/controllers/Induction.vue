@@ -4,7 +4,7 @@
 
     <BorderedContent title="ASML">
       <div class="flex flex-col gap-4">
-        <Conveyor @action="handleAction"></Conveyor>
+        <Conveyor />
       </div>
     </BorderedContent>
   </div>
@@ -25,6 +25,8 @@ const notifier = (type, message, message_2) => {
 }
 
 const { data: palletsOnFloor, error: errorPallet } = useFetch('/getpalletsonfloor')
+
+const setLocationData = ref(null)
 
 const addPalletLoading = ref(false)
 const setLocationLoading = ref(false)
@@ -53,34 +55,27 @@ const addPallet = (val) => {
 
 }
 
-provide('induction', { palletsOnFloor, addPalletLoading, addPallet, resetLocationsBagsPackages })
+const getPackagesNotInducted = (pallet) => {
+  return pallet.packages.filter(p => p.location === null);
+}
+
+provide('induction', { palletsOnFloor, addPalletLoading, addPallet, setLocation, resetLocationsBagsPackages, getPackagesNotInducted })
 
 console.log("unloaded pallet", palletsOnFloor);
 
 
-/* const updateListElements = () => {
+const updateListElements = () => {
 
-  const palletInTruck = docks.value
-    .flatMap(dock => dock.pallets || [])
-    .find(pallet => pallet.id === unLoadingData.value.id)
+  currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== setLocationData.value.id);
 
-  if (!palletInTruck) return
+  console.log('updta', setLocationData.value.id);
 
-  palletInTruck.userId = unLoadingData.value.userId || null
-  palletInTruck.userName = unLoadingData.value.userName || null
 
-  const palletOnFloorIndex = palletsOnFloor.value.findIndex(p => p.id === unLoadingData.value.id)
-
-  if (palletOnFloorIndex === -1) {
-    palletsOnFloor.value.push(unLoadingData.value)
-  } else {
-    palletsOnFloor.value.splice(palletOnFloorIndex, 1)
-  }
-
-} */
+}
 
 async function resetLocationsBagsPackages() {
   const { data, error } = await usePostFetch('/resetLocationsBagsPackages');
+  currentPallet.value = null
   console.log('datareset', data);
 }
 
@@ -89,36 +84,13 @@ async function setLocation(inductedPackage) {
 
   const { data, error } = await usePostFetch(`/setLocation/${inductedPackage.id}`)
 
-  console.log('inductedPackage', inductedPackage);
+  setLocationData.value = data.value
 
-  /*   dockingData.value = null;
-    dockingError.value = null;
-
-    dockingData.value = data.value;
-    dockingError.value = error.value;
-
-    if (dockingData.value) {
-      updateListElements()
-      dockingIsLoading.value = false;
-
-      console.log(dockingData.value);
-      if (reset) {
-        notifier('success', 'Reset', `The truck (Vrid: ${dockingData.value.truckName}) is reset`)
-      } else if (!dockingData.value.dockId && dockingData.value.previousDockId) {
-        notifier('success', 'Undocking', `The truck (Vrid: ${dockingData.value.truckName}) departure from the dock ${dockingData.value.previousDockName}`)
-      } else {
-        notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truckName}) docking ${dockingData.value.dockName}`)
-      }
-
-    } */
-}
-
-
-const handleAction = (item) => {
-  // exemple : on enlève l’item de la liste et on log
-  currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== item.id);
-  setLocation(item);
-  console.log('Action sur', item);
+  if (data.value) {
+    updateListElements()
+    setLocationLoading.value = false;
+    notifier('success', 'Induction', `The package (Id: ${setLocationData.value.id}) is inducted`)
+  }
 }
 
 watch(
@@ -132,6 +104,5 @@ watch(
   },
   { deep: true }
 )
-
 
 </script>

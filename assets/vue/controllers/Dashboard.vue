@@ -13,8 +13,11 @@
 //TODO:
 
 // Finir la request setLocation
-// mettre à jour côté vue
 
+// supprimer current pallet et current package si pallet vide
+// bouger le bouton reset location and bag
+
+// mettre les function liée à packages dans un store pour éviter les duplications (getPackagesNotInducted) ?
 
 // bien gérer l'animation du drag and drop et du cursor
 // mettre en surbrillance le package à drag
