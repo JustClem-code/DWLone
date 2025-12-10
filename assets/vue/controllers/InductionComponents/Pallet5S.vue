@@ -14,9 +14,18 @@
       </div>
     </div>
 
-    <div draggable="true" @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()"
+    <div v-if="getPackagesNotInducted(currentPallet).length !== 0" draggable="true"
+      @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()"
       :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'">
       <Package :package="currentPallet.packages[0]" />
+    </div>
+
+    <div v-else>
+      <button type="button" @click="SelectOptionRef?.openDialog()"
+        class="relative flex flex-col justify-center items-center w-full min-h-60 border-2 border-dashed border-gray-200 dark:border-gray-700/90 rounded-xl p-4 sm:p-8">
+        <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
+        <span class="">Add a pallet</span>
+      </button>
     </div>
 
   </BorderedContent>
@@ -57,6 +66,10 @@ const isDragging = ref(false)
 const { setDraggedItem } = useDragStore();
 
 function onDragStart(event, item) {
+  console.log('ev', event);
+  console.log('it', item);
+  console.log('getPackagesNotInducted', getPackagesNotInducted(props.currentPallet));
+
   isDragging.value = true;
   document.documentElement.classList.add("grabbing");
   setDraggedItem(item);
