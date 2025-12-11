@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-8">
-    <Pallet5S :currentPallet="currentPallet"></Pallet5S>
+    <BorderedContent title="Pallet 5S">
+      <Pallet5S :currentPallet="currentPallet"></Pallet5S>
+    </BorderedContent>
 
     <BorderedContent title="ASML">
-      <div class="flex flex-col gap-4">
-        <Conveyor />
-      </div>
+      <Conveyor />
     </BorderedContent>
   </div>
 </template>
@@ -38,8 +38,7 @@ const currentPallet = ref(null)
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)
   currentPallet.value = raw ? JSON.parse(raw) : null
-  console.log('current pallet onmounter', currentPallet.value);
-
+  console.log('current pallet onmounted', currentPallet.value);
 })
 
 
@@ -48,29 +47,22 @@ const addPallet = (val) => {
   setTimeout(() => {
     currentPallet.value = val
     addPalletLoading.value = true
-    console.log('addPallet', val);
     notifier('success', 'Add Pallet', `The pallet (Id: ${currentPallet.value.id}) is in 5S location`)
     addPalletLoading.value = false
   }, 1000);
 
 }
 
-const getPackagesNotInducted = (pallet) => {
-  return pallet.packages.filter(p => p.location === null);
+const getNumberOfPackagesNotInducted = (pallet) => {
+  return pallet.packages.filter(p => p.location === null).length;
 }
 
-provide('induction', { palletsOnFloor, addPalletLoading, addPallet, setLocation, resetLocationsBagsPackages, getPackagesNotInducted })
+provide('induction', { palletsOnFloor, addPalletLoading, addPallet, setLocation, resetLocationsBagsPackages, getNumberOfPackagesNotInducted })
 
 console.log("unloaded pallet", palletsOnFloor);
 
-
-const updateListElements = () => {
-
+const updateCurrentPallet = () => {
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== setLocationData.value.id);
-
-  console.log('updta', setLocationData.value.id);
-
-
 }
 
 async function resetLocationsBagsPackages() {
@@ -87,7 +79,7 @@ async function setLocation(inductedPackage) {
   setLocationData.value = data.value
 
   if (data.value) {
-    updateListElements()
+    updateCurrentPallet()
     setLocationLoading.value = false;
     notifier('success', 'Induction', `The package (Id: ${setLocationData.value.id}) is inducted`)
   }

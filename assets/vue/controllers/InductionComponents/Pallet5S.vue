@@ -1,7 +1,14 @@
 <template>
-  <BorderedContent v-if="currentPallet" title="Pallet 5S" minH="min-h-60 flex flex-col gap-4">
-    <div
+
+  <div class="flex flex-col gap-4">
+    <div v-if="currentPallet"
       class="w-full bg-white dark:bg-gray-800/50 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
+      <div class="flex items-center justify-between py-6 px-8 border-b border-gray-200 dark:border-gray-700/90">
+        test
+        <div class="flex items-center gap-2">
+          <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
+        </div>
+      </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
         <div class="py-6 px-8">
           <p class="text-sm text-gray-400">Pallet id</p>
@@ -9,67 +16,71 @@
         </div>
         <div class="py-6 px-8">
           <p class="text-sm text-gray-400">Nb of packages</p>
-          <p class="text-4xl pt-2">{{ getPackagesNotInducted(currentPallet).length }}</p>
+          <p class="text-4xl pt-2">{{ getNumberOfPackagesNotInducted(currentPallet) }}</p>
         </div>
       </div>
     </div>
 
-    <div v-if="getPackagesNotInducted(currentPallet).length !== 0" draggable="true"
+    <div v-if="currentPallet && !currentPalletIsEmpty" draggable="true"
       @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()"
       :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'">
       <Package :package="currentPallet.packages[0]" />
     </div>
 
-    <div v-else>
-      <button type="button" @click="SelectOptionRef?.openDialog()"
-        class="relative flex flex-col justify-center items-center w-full min-h-60 border-2 border-dashed border-gray-200 dark:border-gray-700/90 rounded-xl p-4 sm:p-8">
-        <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
-        <span class="">Add a pallet</span>
-      </button>
-    </div>
+    <DashedEmptyState v-if="!currentPallet || currentPalletIsEmpty" @click="SelectOptionRef?.openDialog()"
+      title="Add a pallet">
+      <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
+    </DashedEmptyState>
+  </div>
 
-  </BorderedContent>
-
-  <button v-else type="button" @click="SelectOptionRef?.openDialog()"
-    class="relative flex flex-col justify-center items-center w-full min-h-60 border-2 border-dashed border-gray-200 dark:border-gray-700/90 rounded-xl p-4 sm:p-8">
-    <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
-    <span class="">Add a pallet</span>
-  </button>
-
-  <button @click="resetLocationsBagsPackages">RESET</button>
   <DialogComponentSlot ref="SelectOptionRef">
     <SelectOptionComponent :options="palletsOnFloor" :isLoading="addPalletLoading"
       @submitOption="val => addPallet(val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" />
   </DialogComponentSlot>
 
+  <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
+    <PalletInfo :currentPallet="currentPallet" />
+  </DialogComponentSlot>
+  <DialogComponentSlot ref="confirmResetDialogRef">
+    <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
+      @cancel="confirmResetDialogRef?.closeDialog()" />
+  </DialogComponentSlot>
+
 </template>
 
 <script setup>
-import { inject, ref } from 'vue'
+import { inject, ref, computed } from 'vue'
 import { useDragStore } from '../../composables/useDragStore.js';
 import AddDatabaseIcon from '../UI/Icons/AddDatabaseIcon.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
-import BorderedContent from '../UI/BorderedContent.vue';
 import Package from '../UI/Package.vue';
+import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
+import PalletInfo from '../UnloadingComponents.vue/PalletInfo.vue';
+import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
+import DashedEmptyState from '../UI/DashedEmptyState.vue';
 
 const props = defineProps({
   currentPallet: Object
 });
 
-const { palletsOnFloor, addPalletLoading, addPallet, resetLocationsBagsPackages, getPackagesNotInducted } = inject('induction')
+const { palletsOnFloor, addPalletLoading, addPallet, resetLocationsBagsPackages, getNumberOfPackagesNotInducted } = inject('induction')
 
 const SelectOptionRef = ref(null)
 
+const infoDialogRef = ref(null);
+
+const confirmResetDialogRef = ref(null);
+
 const isDragging = ref(false)
+
+const currentPalletIsEmpty = computed(() => {
+  return props.currentPallet ? getNumberOfPackagesNotInducted(props.currentPallet) === 0 : null
+})
 
 const { setDraggedItem } = useDragStore();
 
 function onDragStart(event, item) {
-  console.log('ev', event);
-  console.log('it', item);
-  console.log('getPackagesNotInducted', getPackagesNotInducted(props.currentPallet));
-
   isDragging.value = true;
   document.documentElement.classList.add("grabbing");
   setDraggedItem(item);
@@ -79,6 +90,29 @@ function onDragStart(event, item) {
 function onDragEnd() {
   isDragging.value = false
   document.documentElement.classList.remove("grabbing");
+}
+
+const menuItems = computed(() => [
+  {
+    label: 'Hard Reset',
+    action: 'confirmResetItem',
+  },
+  {
+    label: 'Infos',
+    action: 'openInfos',
+  },
+])
+
+const resetItem = () => {
+  resetLocationsBagsPackages()
+  confirmResetDialogRef.value?.closeDialog()
+}
+const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
+const openInfos = () => infoDialogRef.value?.openDialog()
+
+const handleMenuAction = (action) => {
+  const actions = { confirmResetItem, openInfos }
+  if (actions[action]) actions[action]()
 }
 </script>
 

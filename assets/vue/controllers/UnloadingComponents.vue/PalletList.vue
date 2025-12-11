@@ -45,16 +45,16 @@ const infoDialogRef = ref(null);
 
 const confirmResetDialogRef = ref(null);
 
-const getPackagesNotInducted = (pallet) => {
-  return pallet.packages.filter(p => p.location === null);
+const getNumberOfPackagesNotInducted = (pallet) => {
+  return pallet.packages.filter(p => p.location === null).length;
 }
 
 const badgeType = (pallet) => {
-  return getPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
+  return getNumberOfPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
 }
 
 const badgeTitle = (pallet) => {
- return getPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getPackagesNotInducted(pallet).length}`;
+ return getNumberOfPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getNumberOfPackagesNotInducted(pallet)}`;
 }
 
 const setCurrentPallet = (pallet) => {

@@ -16,7 +16,6 @@
 
 // supprimer current pallet et current package si pallet vide
 // -> mettre un autre composants pour demander de supprimer currentPallet ou de changer de pallet ?
-// faire un composant pour le bouton addPallet
 // bouger le bouton reset location and bag et mettre une confirmation
 // empêcher le Reset UNLoading si un package a été inducté
 
