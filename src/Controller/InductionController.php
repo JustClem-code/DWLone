@@ -9,6 +9,7 @@ use App\Entity\Bag;
 use App\Repository\PackageRepository;
 use App\Repository\LocationRepository;
 use App\Repository\BagRepository;
+use App\Repository\PalletRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -27,7 +28,12 @@ final class InductionController extends AbstractController
     ]);
   }
 
-
+  #[Route('/getpalletsonfloorwithpackages', name: 'get_pallets_on_floor_with_packages_list', methods: ['GET'])]
+  public function getPalletsOnFloorWithPackages(PalletRepository $repository): Response
+  {
+    $datas = $repository->findAllHasUserAndPackageWithoutLocation();
+    return $this->json($datas);
+  }
 
   #[Route('/setLocation/{id}', name: 'set_location', methods: ['POST'])]
   public function setLocation(
@@ -62,10 +68,6 @@ final class InductionController extends AbstractController
 
     $entityManager->flush();
 
-    $alreadyLocated = $packageRepository->transformCollection(
-      $packageRepository->findAllHasLocation()
-    );
-
     return $this->json($packageRepository->toArray($package));
   }
 
@@ -74,6 +76,7 @@ final class InductionController extends AbstractController
     EntityManagerInterface $entityManager,
     PackageRepository $packageRepository,
     BagRepository $bagRepository,
+    PalletRepository $palletRepository
   ): Response {
 
     $packagesWithLocation = $packageRepository->findAllHasLocation();
@@ -91,6 +94,6 @@ final class InductionController extends AbstractController
 
     $entityManager->flush();
 
-    return $this->json($bagsWithLocation);
+    return $this->getPalletsOnFloorWithPackages($palletRepository);
   }
 }

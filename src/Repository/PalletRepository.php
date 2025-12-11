@@ -41,6 +41,25 @@ class PalletRepository extends ServiceEntityRepository
     ];
   }
 
+  public function findAllHasUserAndPackageWithoutLocation(): array
+  {
+    $entities = $this->createQueryBuilder('p')
+      ->leftJoin('p.packages', 'pa')
+      ->andWhere('p.UserId IS NOT NULL')
+      ->andWhere('pa.location IS NULL')
+      ->orderBy('p.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+
+    $collection = [];
+
+    foreach ($entities as $entity) {
+      $collection[] = $this->toArray($entity);
+    }
+
+    return $collection;
+  }
+
   public function findAllHasUser(): array
   {
     $entities = $this->createQueryBuilder('p')

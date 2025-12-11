@@ -12,14 +12,17 @@
 <script setup>
 import { ref, inject } from 'vue';
 import { useDragStore } from '../../composables/useDragStore.js';
+
 import Package from '../UI/Package.vue';
 import AddDatabaseIcon from '../UI/Icons/AddDatabaseIcon.vue';
+
+const props = defineProps({
+  currentPackage: Object
+});
 
 const { setLocation } = inject('induction')
 
 const { getDraggedItem } = useDragStore();
-
-const currentPackage = ref(null)
 
 function onDragOver(event) {
   event.preventDefault();
@@ -31,8 +34,6 @@ function onDrop(event) {
   const item = getDraggedItem();
   if (!item) return;
 
-  currentPackage.value = item
-
-  setLocation(currentPackage.value)
+  setLocation(item)
 }
 </script>

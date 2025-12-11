@@ -21,6 +21,7 @@
 
 
 // mettre les function liée à packages dans un store pour éviter les duplications (getPackagesNotInducted) ?
+// faire un dossier de componants partagés (PalletInfo)
 
 // bien gérer l'animation du drag and drop et du cursor
 // mettre en surbrillance le package à drag

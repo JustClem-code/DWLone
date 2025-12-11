@@ -46,7 +46,7 @@ const showNotification = ({ type, message, message_2 }) => {
   notifications.value.push({ id, type, message, message_2 })
   setTimeout(() => {
     closeNotification(id)
-  }, 3000)
+  }, 1000)
 }
 
 onMounted(() => {

@@ -28,13 +28,13 @@
     </div>
 
     <DashedEmptyState v-if="!currentPallet || currentPalletIsEmpty" @click="SelectOptionRef?.openDialog()"
-      title="Add a pallet">
+      :title="currentPallet ? 'Change pallet' : 'Add a pallet'" :disabled="palletsOnFloorWithPackages?.length === 0">
       <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
     </DashedEmptyState>
   </div>
 
   <DialogComponentSlot ref="SelectOptionRef">
-    <SelectOptionComponent :options="palletsOnFloor" :isLoading="addPalletLoading"
+    <SelectOptionComponent :options="palletsOnFloorWithPackages" :isLoading="addPalletLoading"
       @submitOption="val => addPallet(val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" />
   </DialogComponentSlot>
 
@@ -51,20 +51,22 @@
 <script setup>
 import { inject, ref, computed } from 'vue'
 import { useDragStore } from '../../composables/useDragStore.js';
+
 import AddDatabaseIcon from '../UI/Icons/AddDatabaseIcon.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 import Package from '../UI/Package.vue';
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
-import PalletInfo from '../UnloadingComponents.vue/PalletInfo.vue';
 import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 import DashedEmptyState from '../UI/DashedEmptyState.vue';
+
+import PalletInfo from '../UnloadingComponents.vue/PalletInfo.vue';
 
 const props = defineProps({
   currentPallet: Object
 });
 
-const { palletsOnFloor, addPalletLoading, addPallet, resetLocationsBagsPackages, getNumberOfPackagesNotInducted } = inject('induction')
+const { palletsOnFloorWithPackages, addPalletLoading, addPallet, resetLocationsBagsPackages, getNumberOfPackagesNotInducted } = inject('induction')
 
 const SelectOptionRef = ref(null)
 

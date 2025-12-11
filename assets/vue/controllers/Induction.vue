@@ -5,18 +5,18 @@
     </BorderedContent>
 
     <BorderedContent title="ASML">
-      <Conveyor />
+      <Conveyor :currentPackage="currentPackage"/>
     </BorderedContent>
   </div>
 </template>
 
 <script setup>
 
-import { ref, provide, computed, watch, onMounted } from 'vue'
-import BorderedContent from './UI/BorderedContent.vue'
-
+import { ref, provide, watch, onMounted } from 'vue'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import emitter from '../composables/eventBus.js'
+
+import BorderedContent from './UI/BorderedContent.vue'
 import Pallet5S from './InductionComponents/Pallet5S.vue'
 import Conveyor from './InductionComponents/Conveyor.vue'
 
@@ -24,9 +24,7 @@ const notifier = (type, message, message_2) => {
   emitter.emit('notify', { type: type, message: message, message_2: message_2 })
 }
 
-const { data: palletsOnFloor, error: errorPallet } = useFetch('/getpalletsonfloor')
-
-const setLocationData = ref(null)
+const { data: palletsOnFloorWithPackages, error: errorPallet } = useFetch('/getpalletsonfloorwithpackages')
 
 const addPalletLoading = ref(false)
 const setLocationLoading = ref(false)
@@ -34,6 +32,7 @@ const setLocationLoading = ref(false)
 const STORAGE_KEY = 'currentPallet'
 
 const currentPallet = ref(null)
+const currentPackage = ref(null)
 
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)
@@ -50,25 +49,28 @@ const addPallet = (val) => {
     notifier('success', 'Add Pallet', `The pallet (Id: ${currentPallet.value.id}) is in 5S location`)
     addPalletLoading.value = false
   }, 1000);
-
 }
 
 const getNumberOfPackagesNotInducted = (pallet) => {
   return pallet.packages.filter(p => p.location === null).length;
 }
 
-provide('induction', { palletsOnFloor, addPalletLoading, addPallet, setLocation, resetLocationsBagsPackages, getNumberOfPackagesNotInducted })
+provide('induction', { palletsOnFloorWithPackages, addPalletLoading, addPallet, setLocation, resetLocationsBagsPackages, getNumberOfPackagesNotInducted })
 
-console.log("unloaded pallet", palletsOnFloor);
+console.log("unloaded pallet", palletsOnFloorWithPackages);
 
 const updateCurrentPallet = () => {
-  currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== setLocationData.value.id);
+  currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== currentPackage.value.id);
+  if (getNumberOfPackagesNotInducted(currentPallet.value) === 0) {
+    const palletOnFloorIndex = palletsOnFloorWithPackages.value.findIndex(p => p.id === currentPallet.value.id)
+    palletsOnFloorWithPackages.value.splice(palletOnFloorIndex, 1)
+  }
 }
 
 async function resetLocationsBagsPackages() {
   const { data, error } = await usePostFetch('/resetLocationsBagsPackages');
   currentPallet.value = null
-  console.log('datareset', data);
+  palletsOnFloorWithPackages.value = data.value
 }
 
 async function setLocation(inductedPackage) {
@@ -76,12 +78,11 @@ async function setLocation(inductedPackage) {
 
   const { data, error } = await usePostFetch(`/setLocation/${inductedPackage.id}`)
 
-  setLocationData.value = data.value
-
   if (data.value) {
+    currentPackage.value = data.value
     updateCurrentPallet()
     setLocationLoading.value = false;
-    notifier('success', 'Induction', `The package (Id: ${setLocationData.value.id}) is inducted`)
+    notifier('success', 'Induction', `The package (Id: ${currentPackage.value.id}) is inducted`)
   }
 }
 
