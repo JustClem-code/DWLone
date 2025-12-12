@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Controller\Trait\RepositoryTrait;
 use App\Entity\Package;
-use App\Entity\Location;
-use App\Entity\Bag;
 use App\Repository\PackageRepository;
 use App\Repository\LocationRepository;
 use App\Repository\BagRepository;

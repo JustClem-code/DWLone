@@ -1,10 +1,17 @@
 <template>
 
   <div class="flex flex-col gap-4">
+
     <div v-if="currentPallet"
-      class="w-full bg-white dark:bg-gray-800/50 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
+      class="w-full bg-white dark:bg-gray-800 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
       <div class="flex items-center justify-between py-6 px-8 border-b border-gray-200 dark:border-gray-700/90">
-        test
+        <div>
+          <h2>Pallet</h2>
+          <p class="text-xs text-gray-400 mt-2">
+            {{ currentPalletIsEmpty ? 'The pallet is empty, change it or stop to induct'
+              : 'Pick a package in the pallet and drop it in the zone' }}
+          </p>
+        </div>
         <div class="flex items-center gap-2">
           <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
         </div>
@@ -22,8 +29,7 @@
     </div>
 
     <div v-if="currentPallet && !currentPalletIsEmpty" draggable="true"
-      @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()"
-      :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'">
+      @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()" :class="cursorType">
       <Package :package="currentPallet.packages[0]" />
     </div>
 
@@ -63,10 +69,11 @@ import DashedEmptyState from '../UI/DashedEmptyState.vue';
 import PalletInfo from '../UnloadingComponents.vue/PalletInfo.vue';
 
 const props = defineProps({
-  currentPallet: Object
+  currentPallet: Object,
+  currentPackage: Object
 });
 
-const { palletsOnFloorWithPackages, addPalletLoading, addPallet, resetLocationsBagsPackages, getNumberOfPackagesNotInducted } = inject('induction')
+const { palletsOnFloorWithPackages, addPalletLoading, addPallet, setLocationLoading, resetLocationsBagsPackages, getNumberOfPackagesNotInducted } = inject('induction')
 
 const SelectOptionRef = ref(null)
 
@@ -78,6 +85,13 @@ const isDragging = ref(false)
 
 const currentPalletIsEmpty = computed(() => {
   return props.currentPallet ? getNumberOfPackagesNotInducted(props.currentPallet) === 0 : null
+})
+
+const cursorType = computed(() => {
+  if (props.currentPackage) {
+    return 'cursor-not-allowed'
+  }
+  return isDragging.value ? 'cursor-grabbing' : 'cursor-grab'
 })
 
 const { setDraggedItem } = useDragStore();
@@ -105,12 +119,14 @@ const menuItems = computed(() => [
   },
 ])
 
+const openInfos = () => infoDialogRef.value?.openDialog()
+
 const resetItem = () => {
   resetLocationsBagsPackages()
   confirmResetDialogRef.value?.closeDialog()
 }
+
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
-const openInfos = () => infoDialogRef.value?.openDialog()
 
 const handleMenuAction = (action) => {
   const actions = { confirmResetItem, openInfos }

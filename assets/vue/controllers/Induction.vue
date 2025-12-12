@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-8">
     <BorderedContent title="Pallet 5S">
-      <Pallet5S :currentPallet="currentPallet"></Pallet5S>
+      <Pallet5S :currentPallet="currentPallet" :currentPackage="currentPackage"></Pallet5S>
     </BorderedContent>
 
     <BorderedContent title="ASML">
-      <Conveyor :currentPackage="currentPackage"/>
+      <Conveyor :currentPackage="currentPackage" />
     </BorderedContent>
   </div>
 </template>
@@ -55,9 +55,7 @@ const getNumberOfPackagesNotInducted = (pallet) => {
   return pallet.packages.filter(p => p.location === null).length;
 }
 
-provide('induction', { palletsOnFloorWithPackages, addPalletLoading, addPallet, setLocation, resetLocationsBagsPackages, getNumberOfPackagesNotInducted })
-
-console.log("unloaded pallet", palletsOnFloorWithPackages);
+provide('induction', { palletsOnFloorWithPackages, addPallet, addPalletLoading, setLocation, setLocationLoading, resetLocationsBagsPackages, getNumberOfPackagesNotInducted })
 
 const updateCurrentPallet = () => {
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== currentPackage.value.id);
@@ -81,8 +79,15 @@ async function setLocation(inductedPackage) {
   if (data.value) {
     currentPackage.value = data.value
     updateCurrentPallet()
-    setLocationLoading.value = false;
-    notifier('success', 'Induction', `The package (Id: ${currentPackage.value.id}) is inducted`)
+    setTimeout(() => {
+      setLocationLoading.value = false;
+    }, 1000);
+    setTimeout(() => {
+      notifier('success', 'Induction', `The package (Id: ${currentPackage.value.id}) is inducted`)
+    }, 2000);
+    setTimeout(() => {
+      currentPackage.value = null
+    }, 3000);
   }
 }
 

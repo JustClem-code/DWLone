@@ -1,5 +1,6 @@
 <template>
-  <span class="inline-flex items-center rounded-md text-xs font-medium inset-ring" :class="[computedColor, computedSize]">
+  <span class="inline-flex items-center rounded-md font-medium inset-ring"
+    :class="[computedColor, computedSize]">
     {{ title ?? 'State' }}
   </span>
 </template>
@@ -23,7 +24,11 @@ const computedColor = computed(() => {
 });
 
 const computedSize = computed(() => {
-  return props.size === "sm" ? "py-[2px] px-[6px]" : "px-2 py-1"
+  const map = {
+    sm: "text-xs py-[2px] px-[6px]",
+    lg: "px-4 py-2",
+  };
+  return map[props.size] ?? "text-xs px-2 py-1"
 })
 
 </script>
