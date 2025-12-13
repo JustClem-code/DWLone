@@ -28,19 +28,27 @@
       </div>
     </div>
 
-    <div v-if="currentPallet && !currentPalletIsEmpty" draggable="true"
-      @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()" :class="cursorType">
-      <Package :package="currentPallet.packages[0]" />
+    <div v-if="currentPallet && !currentPalletIsEmpty || inductPackageLoading"
+      class="relative w-full min-h-70 flex items-center justify-center">
+      <transition name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
+        enter-from-class="opacity-0" enter-to-class="opacity-100">
+        <div v-if="currentPallet && !currentPalletIsEmpty && !inductPackageLoading" draggable="true"
+          @dragstart="(e) => onDragStart(e, currentPallet.packages[0])" @dragend="onDragEnd()"
+          class="absolute top-0 w-full z-10" :class="cursorType">
+          <Package :package="currentPallet.packages[0]" borderColor="border-blue-500" />
+        </div>
+      </transition>
+      <p v-if="inductPackageLoading" class="animate-pulse">Wait for another package</p>
     </div>
 
-    <DashedEmptyState v-if="!currentPallet || currentPalletIsEmpty" @click="SelectOptionRef?.openDialog()"
-      :title="currentPallet ? 'Change pallet' : 'Add a pallet'" :disabled="palletsOnFloorWithPackages?.length === 0">
+    <DashedEmptyState v-if="!currentPallet || currentPalletIsEmpty && !inductPackageLoading" @click="selectOptions()"
+      :title="currentPallet ? 'Change pallet' : 'Add a pallet'" :disabled="palletsOnfloorOptions?.length === 0">
       <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
     </DashedEmptyState>
   </div>
 
   <DialogComponentSlot ref="SelectOptionRef">
-    <SelectOptionComponent :options="palletsOnFloorWithPackages" :isLoading="addPalletLoading"
+    <SelectOptionComponent :options="palletsOnfloorOptions" :isLoading="addPalletLoading"
       @submitOption="val => addPallet(val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" />
   </DialogComponentSlot>
 
@@ -73,7 +81,7 @@ const props = defineProps({
   currentPackage: Object
 });
 
-const { palletsOnFloorWithPackages, addPalletLoading, addPallet, setLocationLoading, resetLocationsBagsPackages, getNumberOfPackagesNotInducted } = inject('induction')
+const { palletsOnfloorOptions, addPalletLoading, addPallet, setLocationLoading, resetLocationsBagsPackages, getNumberOfPackagesNotInducted } = inject('induction')
 
 const SelectOptionRef = ref(null)
 
@@ -85,6 +93,10 @@ const isDragging = ref(false)
 
 const currentPalletIsEmpty = computed(() => {
   return props.currentPallet ? getNumberOfPackagesNotInducted(props.currentPallet) === 0 : null
+})
+
+const inductPackageLoading = computed(() => {
+  return isDragging.value || props.currentPackage || setLocationLoading.value
 })
 
 const cursorType = computed(() => {
@@ -110,14 +122,22 @@ function onDragEnd() {
 
 const menuItems = computed(() => [
   {
-    label: 'Hard Reset',
-    action: 'confirmResetItem',
-  },
-  {
     label: 'Infos',
     action: 'openInfos',
   },
+  {
+    label: 'Change',
+    action: 'selectOptions',
+    isDisabled:
+      palletsOnfloorOptions.value?.length === 0
+  },
+  {
+    label: 'Hard Reset',
+    action: 'confirmResetItem',
+  },
 ])
+
+const selectOptions = () => SelectOptionRef.value?.openDialog()
 
 const openInfos = () => infoDialogRef.value?.openDialog()
 
@@ -129,7 +149,7 @@ const resetItem = () => {
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
 
 const handleMenuAction = (action) => {
-  const actions = { confirmResetItem, openInfos }
+  const actions = { selectOptions, confirmResetItem, openInfos }
   if (actions[action]) actions[action]()
 }
 </script>

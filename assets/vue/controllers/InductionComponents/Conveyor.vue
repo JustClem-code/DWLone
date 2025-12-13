@@ -1,9 +1,7 @@
 <template>
   <div class="drop-container relative" @dragover="onDragOver" @drop="onDrop">
-    <transition name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
-      leave-active-class="transition-all duration-500 ease-in" enter-from-class="opacity-0"
-      enter-to-class="opacity-100" leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 translate-y-4">
+    <transition name="fade-slide" tag="div" leave-active-class="transition-all duration-500 ease-in"
+      leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-4">
       <div v-if="currentPackage" class="absolute top-0 w-full">
         <Package :package="currentPackage" :loading="setLocationLoading" />
       </div>

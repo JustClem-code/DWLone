@@ -49,22 +49,26 @@ final class InductionController extends AbstractController
         'No package found for id ' . $id
       );
     }
+    
+    if (!$package->getLocation()) {
 
-    $location = $packageRepository->findLocationBySamePostcode($package);
+      $location = $packageRepository->findLocationBySamePostcode($package);
 
-    if (!$location) {
-      $location = $locationRepository->findRandomWithoutPackage();
+      if (!$location) {
+        $location = $locationRepository->findRandomWithoutPackage();
+      }
+
+      if (!$location->getBag()) {
+        $randomBag = $bagRepository->findRandomWithoutLocation();
+        $location->setBag($randomBag);
+      }
+
+      # code...
+      $package->setLocation($location);
+      $package->setBag($location->getBag());
+
+      $entityManager->flush();
     }
-
-    if (!$location->getBag()) {
-      $randomBag = $bagRepository->findRandomWithoutLocation();
-      $location->setBag($randomBag);
-    }
-
-    $package->setLocation($location);
-    $package->setBag($location->getBag());
-
-    $entityManager->flush();
 
     return $this->json($packageRepository->toArray($package));
   }

@@ -13,17 +13,12 @@
 //TODO:
 
 // Finir la request setLocation
-
-// supprimer current pallet et current package si pallet vide
-// -> mettre un autre composants pour demander de supprimer currentPallet ou de changer de pallet ?
-// empêcher le Reset UNLoading si un package a été inducté
-
+// Problème sur le reset disabled mais fonctionne quand même, GRRR
 
 // mettre les function liée à packages dans un store pour éviter les duplications (getPackagesNotInducted) ?
 // faire un dossier de componants partagés (PalletInfo)
 
 // bien gérer l'animation du drag and drop et du cursor
-// mettre en surbrillance le package à drag
 
 // Refacto les methods des repository
 

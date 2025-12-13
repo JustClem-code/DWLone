@@ -12,7 +12,7 @@
 
 <script setup>
 
-import { ref, provide, watch, onMounted } from 'vue'
+import { ref, computed, provide, watch, onMounted } from 'vue'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import emitter from '../composables/eventBus.js'
 
@@ -51,11 +51,15 @@ const addPallet = (val) => {
   }, 1000);
 }
 
+const palletsOnfloorOptions = computed(() => {
+  return palletsOnFloorWithPackages.value?.filter(p => p.id !== currentPallet.value?.id)
+})
+
 const getNumberOfPackagesNotInducted = (pallet) => {
   return pallet.packages.filter(p => p.location === null).length;
 }
 
-provide('induction', { palletsOnFloorWithPackages, addPallet, addPalletLoading, setLocation, setLocationLoading, resetLocationsBagsPackages, getNumberOfPackagesNotInducted })
+provide('induction', { palletsOnfloorOptions, addPallet, addPalletLoading, setLocation, setLocationLoading, resetLocationsBagsPackages, getNumberOfPackagesNotInducted })
 
 const updateCurrentPallet = () => {
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== currentPackage.value.id);
@@ -81,13 +85,13 @@ async function setLocation(inductedPackage) {
     updateCurrentPallet()
     setTimeout(() => {
       setLocationLoading.value = false;
-    }, 1000);
+    }, 500);
     setTimeout(() => {
       notifier('success', 'Induction', `The package (Id: ${currentPackage.value.id}) is inducted`)
-    }, 2000);
+    }, 1000);
     setTimeout(() => {
       currentPackage.value = null
-    }, 3000);
+    }, 1500);
   }
 }
 

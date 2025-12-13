@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full min-h-70 bg-white dark:bg-gray-800 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
+    class="w-full min-h-70 bg-white dark:bg-gray-800 border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none" :class="borderColor ? `border-1 ${borderColor}` : 'dark:border-gray-700/90'">
     <dl class="flex flex-col divide-y divide-gray-200 dark:divide-gray-700/90">
       <div class="flex justify-between p-6">
         <div class="flex flex-col">
@@ -53,11 +53,11 @@ import AccountCircleIcon from './Icons/AccountCircleIcon.vue';
 
 const props = defineProps({
   package: Object,
-  loading: Boolean
+  loading: Boolean,
+  borderColor: String
 });
 onMounted(() => {
   console.log('package', props.package);
-
 })
 
 const location = computed(() => {

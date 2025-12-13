@@ -66,10 +66,10 @@ const updateListElements = () => {
 
 }
 
-async function unloadingPallet(palletId, reset) {
+async function unloadingPallet(pallet, reset) {
   unLoadingIsLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/unloadingPallet/${palletId.id}`, { reset: reset ?? false })
+  const { data, error } = await usePostFetch(`/unloadingPallet/${pallet.id}`, { reset: reset ?? false })
 
   unLoadingData.value = data.value;
   unLoadingError.value = error.value;

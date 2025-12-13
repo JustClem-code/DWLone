@@ -46,7 +46,7 @@ const infoDialogRef = ref(null);
 const confirmResetDialogRef = ref(null);
 
 const getNumberOfPackagesNotInducted = (pallet) => {
-  return pallet.packages.filter(p => p.location === null).length;
+  return pallet?.packages.filter(p => p.location === null).length
 }
 
 const badgeType = (pallet) => {
@@ -54,7 +54,7 @@ const badgeType = (pallet) => {
 }
 
 const badgeTitle = (pallet) => {
- return getNumberOfPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getNumberOfPackagesNotInducted(pallet)}`;
+  return getNumberOfPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getNumberOfPackagesNotInducted(pallet)}`;
 }
 
 const setCurrentPallet = (pallet) => {
@@ -65,6 +65,8 @@ const menuItems = computed(() => [
   {
     label: 'Reset',
     action: 'confirmResetItem',
+    isDisabled:
+      getNumberOfPackagesNotInducted(currentPallet?.value) !== currentPallet.value?.packages.length
   },
   {
     label: 'Infos',
@@ -77,7 +79,10 @@ const resetItem = () => {
   confirmResetDialogRef.value?.closeDialog()
 }
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
-const openInfos = () => infoDialogRef.value?.openDialog()
+const openInfos = () => {
+  infoDialogRef.value?.openDialog()
+}
+
 
 const handleMenuAction = (action) => {
   const actions = { confirmResetItem, openInfos }
