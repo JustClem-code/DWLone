@@ -6,7 +6,7 @@
         enter-to-class="opacity-100 translate-y-0" leave-from-class="opacity-100 translate-y-0"
         leave-to-class="opacity-0">
         <div v-for="notif in notifications" :key="notif.id"
-          class="absolute top-0 right-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border dark:border-gray-700/90 p-4 rounded-md shadow-2xl">
+          class="absolute top-0 right-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700/90 p-4 rounded-md shadow-2xl">
           <div class="flex items-start gap-3">
             <div class="shrink-0">
               <CheckCircleIcon color="text-green-500 mt-1"/>

@@ -38,7 +38,9 @@ const toggleMenu = () => (
 )
 
 const onSelect = (item) => {
-  emit('select', item.action)
+  if (!item.isDisabled) {
+    emit('select', item.action)
+  }
   toggleMenu()
 }
 </script>

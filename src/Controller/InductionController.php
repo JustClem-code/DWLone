@@ -49,7 +49,7 @@ final class InductionController extends AbstractController
         'No package found for id ' . $id
       );
     }
-    
+
     if (!$package->getLocation()) {
 
       $location = $packageRepository->findLocationBySamePostcode($package);
@@ -63,7 +63,6 @@ final class InductionController extends AbstractController
         $location->setBag($randomBag);
       }
 
-      # code...
       $package->setLocation($location);
       $package->setBag($location->getBag());
 

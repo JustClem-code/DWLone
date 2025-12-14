@@ -13,22 +13,18 @@
 //TODO:
 
 // Finir la request setLocation
-// Problème sur le reset disabled mais fonctionne quand même, GRRR
 
 // mettre les function liée à packages dans un store pour éviter les duplications (getPackagesNotInducted) ?
 // faire un dossier de componants partagés (PalletInfo)
 
-// bien gérer l'animation du drag and drop et du cursor
-
 // Refacto les methods des repository
 
 // Gérer le account circle en mobile
-// Vérifier contours notification vers light theme
 
 // déplacer certaines logiques (métier, notification dans les composables ?)
 
 // gestion du animate pulse si chargement de la list => voir tailwind UI
-// ça serait cool de passer à la reception avant induction
+// plus globalement, il faut gérer le chargement côté vue et twig
 
 
 import { onMounted } from 'vue'
