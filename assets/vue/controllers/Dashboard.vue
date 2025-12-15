@@ -19,8 +19,6 @@
 
 // Refacto les methods des repository
 
-// Gérer le account circle en mobile
-
 // déplacer certaines logiques (métier, notification dans les composables ?)
 
 // gestion du animate pulse si chargement de la list => voir tailwind UI

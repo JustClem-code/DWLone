@@ -13,7 +13,6 @@
             :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
         </div>
       </div>
-      <AvatarToggleMenu v-else :items="avatarNavigations" />
     </div>
   </div>
 </template>
@@ -21,10 +20,9 @@
 <script setup>
 
 import { inject } from 'vue'
-import AvatarToggleMenu from './AvatarToggleMenu.vue';
 import { userStore } from '../../composables/userStore.js'
 
-const { navigations, currentItem, authNavigations, avatarNavigations } = inject('navigation')
+const { navigations, currentItem, authNavigations } = inject('navigation')
 
 const { isUser } = userStore()
 

@@ -1,8 +1,9 @@
 <template>
-  <!-- <Sidebar bind:open bind:is_user /> -->
   <nav class="bg-white dark:bg-gray-800/50 border-b border-solid border-gray-200 dark:border-gray-700/90">
     <div class="flex items-center justify-between gap-8 flex-wrap mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 ">
-      <LogoTitle />
+      <div class="hidden md:block">
+        <LogoTitle />
+      </div>
       <div class="block md:hidden">
         <IconButton @click="toggleSideBar" :border="true" :rounded="true">
           <BurgerIcon size="size-3" />
@@ -11,6 +12,7 @@
       <div class="w-full flex-grow md:flex md:items-center md:w-auto hidden md:block">
         <NavContent />
       </div>
+      <AvatarToggleMenu v-if="isUser" :items="avatarNavigations" />
     </div>
   </nav>
   <header class="relative bg-gray-100 dark:bg-gray-900">
@@ -36,12 +38,12 @@ import LightIcon from '../UI/Icons/LightIcon.vue';
 
 import { userStore } from '../../composables/userStore.js'
 import { useTheme } from '../../composables/useTheme.js'
+import AvatarToggleMenu from './AvatarToggleMenu.vue';
 
 const props = defineProps({
   is_user: Boolean,
   user_name: String
 })
-
 const { isUser, setIsUser, setUserName, logOut } = userStore()
 
 const { isDark, toggleTheme } = useTheme();
@@ -73,7 +75,7 @@ const avatarNavigations = computed(() => [
 
 const currentItem = ref(navigations[0])
 
-provide('navigation', { navigations, currentItem, authNavigations, avatarNavigations })
+provide('navigation', { navigations, currentItem, authNavigations })
 
 const toggleSideBar = () => {
   open.value = !open.value
