@@ -31,7 +31,7 @@ import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 
-import PalletInfo from './PalletInfo.vue';
+import PalletInfo from '../SharedComponents/PalletInfo.vue';
 
 const { unloadingPallet } = inject('unLoading')
 

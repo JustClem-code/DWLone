@@ -74,7 +74,7 @@ import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 import DashedEmptyState from '../UI/DashedEmptyState.vue';
 
-import PalletInfo from '../UnloadingComponents.vue/PalletInfo.vue';
+import PalletInfo from '../SharedComponents/PalletInfo.vue';
 
 const props = defineProps({
   currentPallet: Object,

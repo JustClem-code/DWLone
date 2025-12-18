@@ -12,10 +12,7 @@
 
 //TODO:
 
-// Finir la request setLocation
-
 // mettre les function liée à packages dans un store pour éviter les duplications (getPackagesNotInducted) ?
-// faire un dossier de componants partagés (PalletInfo)
 
 // Refacto les methods des repository
 
