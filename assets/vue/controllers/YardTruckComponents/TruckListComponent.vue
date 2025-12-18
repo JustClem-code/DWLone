@@ -14,7 +14,7 @@
         <BaseButton title="Docks" styleColor="empty" size="sm" :isDisabled="!!truck.departureDate"
           @click="SelectOptionRef?.openDialog()" />
 
-        <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
+        <MinimalToggleMenu :items="menuItems" @select="(item) => handleMenuAction(item, actions)" />
       </div>
     </li>
   </ul>
@@ -48,6 +48,9 @@ import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 import TruckInfo from './TruckInfo.vue';
 
 import { formattedDateFr } from '../../composables/dateFormat.js'
+import { useLogic } from '../../composables/useLogic.js'
+
+const { handleMenuAction } = useLogic()
 
 const { trucks, dockingTruck } = inject('yardTruck')
 
@@ -122,9 +125,6 @@ const confirmUndocking = () => confirmUndockDialogRef.value?.openDialog()
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
 const openInfos = () => infoDialogRef.value?.openDialog()
 
-const handleMenuAction = (action) => {
-  const actions = { confirmUndocking, confirmResetItem, openInfos }
-  if (actions[action]) actions[action]()
-}
+const actions = { confirmUndocking, confirmResetItem, openInfos }
 
 </script>

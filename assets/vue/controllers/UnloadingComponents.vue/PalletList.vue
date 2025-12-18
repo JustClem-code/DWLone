@@ -10,7 +10,7 @@
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ pallet.truckName }}</p>
       </div>
       <div class="flex items-center gap-2">
-        <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
+        <MinimalToggleMenu :items="menuItems" @select="(item) => handleMenuAction(item, actions)" />
       </div>
     </li>
   </ul>
@@ -26,6 +26,8 @@
 
 <script setup>
 import { inject, ref, computed } from 'vue'
+import { useLogic } from '../../composables/useLogic.js'
+
 import BadgeComponent from '../UI/BadgeComponent.vue';
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
@@ -33,7 +35,11 @@ import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 
 import PalletInfo from '../SharedComponents/PalletInfo.vue';
 
+
+const { getNumberOfPackagesNotInducted, handleMenuAction } = useLogic()
+
 const { unloadingPallet } = inject('unLoading')
+
 
 const props = defineProps({
   pallets: Array,
@@ -44,10 +50,6 @@ const currentPallet = ref(null)
 const infoDialogRef = ref(null);
 
 const confirmResetDialogRef = ref(null);
-
-const getNumberOfPackagesNotInducted = (pallet) => {
-  return pallet?.packages.filter(p => p.location === null).length
-}
 
 const badgeType = (pallet) => {
   return getNumberOfPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
@@ -83,10 +85,6 @@ const openInfos = () => {
   infoDialogRef.value?.openDialog()
 }
 
-
-const handleMenuAction = (action) => {
-  const actions = { confirmResetItem, openInfos }
-  if (actions[action]) actions[action]()
-}
+const actions = { confirmResetItem, openInfos }
 
 </script>

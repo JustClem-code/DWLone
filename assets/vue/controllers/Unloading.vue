@@ -25,11 +25,9 @@ import InboundDockCard from './UnloadingComponents.vue/InboundDockCard.vue'
 import PalletList from './UnloadingComponents.vue/PalletList.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
-import emitter from '../composables/eventBus.js'
+import { useNotification } from '../composables/eventBus.js'
 
-const notifier = (type, message, message_2) => {
-  emitter.emit('notify', { type: type, message: message, message_2: message_2 })
-}
+const { notifier } = useNotification()
 
 const { data: docks, error: errorDock } = useFetch('/getoccupieddocks')
 

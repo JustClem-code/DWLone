@@ -25,14 +25,12 @@ import DockCardComponent from './YardTruckComponents/DockCardComponent.vue'
 import TruckListComponent from './YardTruckComponents/TruckListComponent.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
-import emitter from '../composables/eventBus.js'
-
-const notifier = (type, message, message_2) => {
-  emitter.emit('notify', { type: type, message: message, message_2: message_2 })
-}
+import { useNotification } from '../composables/eventBus.js'
 
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')
+
+const { notifier } = useNotification()
 
 const dockingData = ref(null)
 const dockingError = ref(null)

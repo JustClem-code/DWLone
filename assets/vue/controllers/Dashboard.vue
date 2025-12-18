@@ -12,11 +12,9 @@
 
 //TODO:
 
-// mettre les function liée à packages dans un store pour éviter les duplications (getPackagesNotInducted) ?
+// éviter les reset trucks si pallet on floor et pallet si packages inducté
 
 // Refacto les methods des repository
-
-// déplacer certaines logiques (métier, notification dans les composables ?)
 
 // gestion du animate pulse si chargement de la list => voir tailwind UI
 // plus globalement, il faut gérer le chargement côté vue et twig

@@ -14,17 +14,18 @@
 
 import { ref, computed, provide, watch, onMounted } from 'vue'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
-import emitter from '../composables/eventBus.js'
+import { useLogic } from '../composables/useLogic.js'
+import { useNotification } from '../composables/eventBus.js'
 
 import BorderedContent from './UI/BorderedContent.vue'
 import Pallet5S from './InductionComponents/Pallet5S.vue'
 import Conveyor from './InductionComponents/Conveyor.vue'
 
-const notifier = (type, message, message_2) => {
-  emitter.emit('notify', { type: type, message: message, message_2: message_2 })
-}
+const { notifier } = useNotification()
 
 const { data: palletsOnFloorWithPackages, error: errorPallet } = useFetch('/getpalletsonfloorwithpackages')
+
+const { getNumberOfPackagesNotInducted } = useLogic()
 
 const addPalletLoading = ref(false)
 const setLocationLoading = ref(false)
@@ -55,11 +56,7 @@ const palletsOnfloorOptions = computed(() => {
   return palletsOnFloorWithPackages.value?.filter(p => p.id !== currentPallet.value?.id)
 })
 
-const getNumberOfPackagesNotInducted = (pallet) => {
-  return pallet.packages.filter(p => p.location === null).length;
-}
-
-provide('induction', { palletsOnfloorOptions, addPallet, addPalletLoading, setLocation, setLocationLoading, resetLocationsBagsPackages, getNumberOfPackagesNotInducted })
+provide('induction', { palletsOnfloorOptions, addPallet, addPalletLoading, setLocation, setLocationLoading, resetLocationsBagsPackages })
 
 const updateCurrentPallet = () => {
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== currentPackage.value.id);

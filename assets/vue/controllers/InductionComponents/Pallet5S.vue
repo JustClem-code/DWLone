@@ -13,7 +13,7 @@
           </p>
         </div>
         <div class="flex items-center gap-2">
-          <MinimalToggleMenu :items="menuItems" @select="handleMenuAction" />
+          <MinimalToggleMenu :items="menuItems" @select="(item) => handleMenuAction(item, actions)" />
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
@@ -65,6 +65,7 @@
 <script setup>
 import { inject, ref, computed } from 'vue'
 import { useDragStore } from '../../composables/useDragStore.js';
+import { useLogic } from '../../composables/useLogic.js';
 
 import AddDatabaseIcon from '../UI/Icons/AddDatabaseIcon.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
@@ -81,7 +82,9 @@ const props = defineProps({
   currentPackage: Object
 });
 
-const { palletsOnfloorOptions, addPalletLoading, addPallet, setLocationLoading, resetLocationsBagsPackages, getNumberOfPackagesNotInducted } = inject('induction')
+const { getNumberOfPackagesNotInducted, handleMenuAction } = useLogic()
+
+const { palletsOnfloorOptions, addPalletLoading, addPallet, setLocationLoading, resetLocationsBagsPackages } = inject('induction')
 
 const SelectOptionRef = ref(null)
 
@@ -148,10 +151,12 @@ const resetItem = () => {
 
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
 
-const handleMenuAction = (action) => {
+const actions = { selectOptions, confirmResetItem, openInfos }
+
+/* const handleMenuAction = (action) => {
   const actions = { selectOptions, confirmResetItem, openInfos }
   if (actions[action]) actions[action]()
-}
+} */
 </script>
 
 <style scoped>
