@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Controller\Trait\RepositoryTrait;
+
 use App\Entity\Truck;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,6 +15,9 @@ use App\Repository\PalletRepository;
  */
 class TruckRepository extends ServiceEntityRepository
 {
+
+  use RepositoryTrait;
+
   public function __construct(ManagerRegistry $registry, private PalletRepository $palletRepository)
   {
     parent::__construct($registry, Truck::class);
@@ -40,7 +45,8 @@ class TruckRepository extends ServiceEntityRepository
       'userDelDate' => $truck->getUserDelDate()?->getUsername(),
       'departureDate' => $truck->getDepartureDate(),
       'userDepDate' => $truck->getUserDepDate()?->getUsername(),
-      'pallets' => $this->getPalletCollection($truck->getPallets()),
+      /* 'pallets' => $this->getPalletCollection($truck->getPallets()), */
+      'pallets' => $this->transFormEntities($truck->getPallets(),[$this->palletRepository, 'toArray']),
       'dock' => $truck->getDock()?->getName(),
     ];
   }
@@ -58,6 +64,17 @@ class TruckRepository extends ServiceEntityRepository
 
     return $collection;
   }
+
+ /*  public function transFormEntities($entities, $toArray): array
+  {
+    $collection = [];
+
+    foreach ($entities as $entity) {
+      $collection[] = $toArray($entity);
+    }
+
+    return $collection;
+  } */
 
   //    /**
   //     * @return Truck[] Returns an array of Truck objects
