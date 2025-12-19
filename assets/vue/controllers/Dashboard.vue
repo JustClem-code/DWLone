@@ -8,7 +8,7 @@
   </BorderedContent>
 </template>
 
-<script setup lang="ts">
+<script setup>
 
 //TODO:
 
@@ -25,30 +25,15 @@ import BorderedContent from './UI/BorderedContent.vue';
 
 import { userStore } from '../composables/userStore.js'
 
-const props = defineProps < {
+const props = defineProps({
   is_user: Boolean,
   user_name: String
-} > ()
-
+});
 
 const { userName } = userStore()
 
 onMounted(() => {
   console.log(`the component is now mounted.`)
-})
-
-import { ref, computed } from 'vue'
-
-const count = ref<number>()
-
-// type déduit : ComputedRef<number>
-// const double = computed(() => count.value * 2)
-
-// => TS Error: Property 'split' does not exist on type 'number'
-
-const double = computed<number>(() => {
-  return count.value * 2
-  // erreur de type si un nombre n'est pas retourné
 })
 
 </script>

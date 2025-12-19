@@ -1,5 +1,5 @@
-/* import { registerVueControllerComponents } from '@symfony/ux-vue';
-import './bootstrap.js'; */
+import { registerVueControllerComponents } from '@symfony/ux-vue';
+import './bootstrap.js';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -8,7 +8,7 @@ import './bootstrap.js'; */
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-/* import './styles/app.css';
+import './styles/app.css';
 
 registerVueControllerComponents(require.context('./vue/controllers', true, /\.vue$/));
 
@@ -16,5 +16,6 @@ registerVueControllerComponents(require.context('./vue/controllers', true, /\.vu
 const ls = localStorage.getItem('theme');
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 const shouldDark = ls === 'dark' || (ls == null && prefersDark);
-document.documentElement.classList.toggle('dark', shouldDark); */
+document.documentElement.classList.toggle('dark', shouldDark);
 // Variante data-attr: document.documentElement.setAttribute('data-theme', shouldDark ? 'dark' : 'light');
+
