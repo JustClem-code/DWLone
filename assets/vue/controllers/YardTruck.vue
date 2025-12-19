@@ -93,10 +93,10 @@ const updateListElements = () => {
   truck.userDepDate = userDepDate || null
 }
 
-async function dockingTruck(truckId, dockId, reset) {
+async function dockingTruck(truck, dock, reset) {
   dockingIsLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/dockingTruck/${truckId.id}`, { id: dockId?.id ?? null, reset: reset ?? false })
+  const { data, error } = await usePostFetch(`/dockingTruck/${truck.id}`, { id: dock?.id ?? null, reset: reset ?? false })
   dockingData.value = null;
   dockingError.value = null;
 
