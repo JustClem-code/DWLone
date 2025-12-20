@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use App\Entity\Pallet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,21 +15,12 @@ use App\Repository\PackageRepository;
  */
 class PalletRepository extends ServiceEntityRepository
 {
+
+  use RepositoryTrait;
+
   public function __construct(ManagerRegistry $registry, private PackageRepository $packageRepository)
   {
     parent::__construct($registry, Pallet::class);
-  }
-
-  private function getPackagesCollection($entities)
-  {
-
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->packageRepository->toArray($entity);
-    }
-
-    return $collection;
   }
 
   public function toArray(Pallet $pallet): array
@@ -37,7 +30,7 @@ class PalletRepository extends ServiceEntityRepository
       'userId' => $pallet->getUserId()?->getId(),
       'userName' => $pallet->getUserId()?->getUserName(),
       'truckName' => $pallet->getTruck()->getName(),
-      'packages' => $this->getPackagesCollection($pallet->getPackages()),
+      'packages' => $this->transFormEntities($pallet->getPackages(), [$this->packageRepository, 'toArray']),
     ];
   }
 
@@ -51,13 +44,7 @@ class PalletRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
 
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->toArray($entity);
-    }
-
-    return $collection;
+    return  $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
   public function findAllHasUser(): array
@@ -68,13 +55,7 @@ class PalletRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
 
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->toArray($entity);
-    }
-
-    return $collection;
+    return $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
   //    /**

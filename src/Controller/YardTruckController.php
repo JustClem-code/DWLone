@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
-use App\Controller\Trait\RepositoryTrait;
+use App\Repository\Trait\RepositoryTrait;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -36,15 +37,13 @@ final class YardTruckController extends AbstractController
   #[Route('/getdocks', name: 'get_docks_list', methods: ['GET'])]
   public function getDocks(DockRepository $repository): Response
   {
-    $datas = $repository->transformAll();
-    return $this->json($datas);
+    return $this->json($repository->transformAll());
   }
 
   #[Route('/gettrucks', name: 'get_trucks_list', methods: ['GET'])]
   public function getTrucks(TruckRepository $repository): Response
   {
-    $datas = $repository->transformAll();
-    return $this->json($datas);
+    return $this->json($repository->transformAll());
   }
 
   #[Route('/dockingTruck/{id}', name: 'docking_truck')]

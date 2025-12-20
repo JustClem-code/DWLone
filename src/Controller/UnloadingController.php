@@ -2,17 +2,20 @@
 
 namespace App\Controller;
 
-use App\Controller\Trait\RepositoryTrait;
-use App\Entity\Pallet;
+use App\Repository\Trait\RepositoryTrait;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+
+use App\Entity\Pallet;
 
 use App\Repository\DockRepository;
 use App\Repository\PalletRepository;
-use Symfony\Bundle\SecurityBundle\Security;
 
 final class UnloadingController extends AbstractController
 {
@@ -31,15 +34,13 @@ final class UnloadingController extends AbstractController
   #[Route('/getoccupieddocks', name: 'get_occupied_docks_list', methods: ['GET'])]
   public function getDocks(DockRepository $repository): Response
   {
-    $datas = $repository->transformOccupiedDocks();
-    return $this->json($datas);
+    return $this->json($repository->transformOccupiedDocks());
   }
 
   #[Route('/getpalletsonfloor', name: 'get_pallets_on_floor_list', methods: ['GET'])]
   public function getPalletsOnFloor(PalletRepository $repository): Response
   {
-    $datas = $repository->findAllHasUser();
-    return $this->json($datas);
+    return $this->json($repository->findAllHasUser());
   }
 
   #[Route('/unloadingPallet/{id}', name: 'unloading_pallet')]

@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use App\Entity\Location;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,6 +13,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class LocationRepository extends ServiceEntityRepository
 {
+
+  use RepositoryTrait;
+
   public function __construct(ManagerRegistry $registry)
   {
     parent::__construct($registry, Location::class);
@@ -42,8 +47,6 @@ class LocationRepository extends ServiceEntityRepository
       ->getOneOrNullResult();
   }
 
-
-
   public function toArray(Location $location): array
   {
     return [
@@ -54,16 +57,7 @@ class LocationRepository extends ServiceEntityRepository
 
   public function transformAll(): array
   {
-
-    $entities = $this->findAll();
-
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->toArray($entity);
-    }
-
-    return $collection;
+    return  $this->transFormEntities($this->findAll(), [$this, 'toArray']);
   }
 
   //    /**

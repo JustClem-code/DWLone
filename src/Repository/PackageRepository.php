@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use App\Entity\Package;
 use App\Entity\Location;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -67,13 +69,7 @@ class PackageRepository extends ServiceEntityRepository
 
   public function transformCollection($entities): array
   {
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->toArray($entity);
-    }
-
-    return $collection;
+    return $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
   //    /**

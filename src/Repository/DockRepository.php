@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use App\Entity\Dock;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,21 +15,12 @@ use App\Repository\PalletRepository;
  */
 class DockRepository extends ServiceEntityRepository
 {
+
+  use RepositoryTrait;
+
   public function __construct(ManagerRegistry $registry, private PalletRepository $palletRepository)
   {
     parent::__construct($registry, Dock::class);
-  }
-
-  private function getPalletCollection($entities)
-  {
-
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->palletRepository->toArray($entity);
-    }
-
-    return $collection;
   }
 
   private function toArray(Dock $dock): array
@@ -37,45 +30,26 @@ class DockRepository extends ServiceEntityRepository
       'name' => $dock->getName(),
       'truckId' => $dock->getTruck()?->getId(),
       'truckName' => $dock->getTruck()?->getName(),
-      'pallets' => $dock->getTruck() ? $this->getPalletCollection($dock->getTruck()?->getPallets()) : null,
+      'pallets' => $dock->getTruck() ? $this->transFormEntities($dock->getTruck()?->getPallets(), [$this->palletRepository, 'toArray']) : null,
     ];
   }
 
   public function transformAll(): array
   {
-
-    $entities = $this->findAll();
-
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->toArray($entity);
-    }
-
-    usort($collection, function ($a, $b) {
-      return $a['id'] <=> $b['id'];
-    });
-
-    return $collection;
+    return  $this->transFormEntities($this->findAll(), [$this, 'toArray']);
   }
 
   public function transformOccupiedDocks(): array
-{
+  {
     $entities = $this->createQueryBuilder('d')
-        ->innerJoin('d.truck', 't')
-        ->addSelect('t')
-        ->orderBy('d.id', 'ASC')
-        ->getQuery()
-        ->getResult();
+      ->innerJoin('d.truck', 't')
+      ->addSelect('t')
+      ->orderBy('d.id', 'ASC')
+      ->getQuery()
+      ->getResult();
 
-    $collection = [];
-
-    foreach ($entities as $entity) {
-        $collection[] = $this->toArray($entity);
-    }
-
-    return $collection;
-}
+    return  $this->transFormEntities($entities, [$this, 'toArray']);
+  }
 
 
   //    /**

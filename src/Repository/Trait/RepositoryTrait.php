@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Trait;
+namespace App\Repository\Trait;
 
 trait RepositoryTrait
 {
@@ -23,6 +23,10 @@ trait RepositoryTrait
     foreach ($entities as $entity) {
       $collection[] = $toArray($entity);
     }
+
+    usort($collection, function ($a, $b) {
+      return $a['id'] <=> $b['id'];
+    });
 
     return $collection;
   }

@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Controller\Trait\RepositoryTrait;
+use App\Repository\Trait\RepositoryTrait;
 
 use App\Entity\Truck;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -23,18 +23,6 @@ class TruckRepository extends ServiceEntityRepository
     parent::__construct($registry, Truck::class);
   }
 
-  private function getPalletCollection($entities)
-  {
-
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->palletRepository->toArray($entity);
-    }
-
-    return $collection;
-  }
-
   private function toArray(Truck $truck): array
   {
     return [
@@ -45,36 +33,15 @@ class TruckRepository extends ServiceEntityRepository
       'userDelDate' => $truck->getUserDelDate()?->getUsername(),
       'departureDate' => $truck->getDepartureDate(),
       'userDepDate' => $truck->getUserDepDate()?->getUsername(),
-      /* 'pallets' => $this->getPalletCollection($truck->getPallets()), */
-      'pallets' => $this->transFormEntities($truck->getPallets(),[$this->palletRepository, 'toArray']),
+      'pallets' => $this->transFormEntities($truck->getPallets(), [$this->palletRepository, 'toArray']),
       'dock' => $truck->getDock()?->getName(),
     ];
   }
 
   public function transformAll(): array
   {
-
-    $entities = $this->findAll();
-
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $this->toArray($entity);
-    }
-
-    return $collection;
+    return $this->transFormEntities($this->findAll(), [$this, 'toArray']);
   }
-
- /*  public function transFormEntities($entities, $toArray): array
-  {
-    $collection = [];
-
-    foreach ($entities as $entity) {
-      $collection[] = $toArray($entity);
-    }
-
-    return $collection;
-  } */
 
   //    /**
   //     * @return Truck[] Returns an array of Truck objects

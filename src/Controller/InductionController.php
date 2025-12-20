@@ -2,17 +2,20 @@
 
 namespace App\Controller;
 
-use App\Controller\Trait\RepositoryTrait;
+use App\Repository\Trait\RepositoryTrait;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
+
 use App\Entity\Package;
+
 use App\Repository\PackageRepository;
 use App\Repository\LocationRepository;
 use App\Repository\BagRepository;
 use App\Repository\PalletRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
 
 final class InductionController extends AbstractController
 {
@@ -29,8 +32,7 @@ final class InductionController extends AbstractController
   #[Route('/getpalletsonfloorwithpackages', name: 'get_pallets_on_floor_with_packages_list', methods: ['GET'])]
   public function getPalletsOnFloorWithPackages(PalletRepository $repository): Response
   {
-    $datas = $repository->findAllHasUserAndPackageWithoutLocation();
-    return $this->json($datas);
+    return $this->json($repository->findAllHasUserAndPackageWithoutLocation());
   }
 
   #[Route('/setLocation/{id}', name: 'set_location', methods: ['POST'])]
