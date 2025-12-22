@@ -97,6 +97,12 @@ const setCurrentTruck = (truck) => {
   currentTruck.value = truck
 }
 
+const somePalletisunloaded = computed(() => {
+  if (!currentTruck.value) return
+  const nbPalletsIntruck = currentTruck.value?.pallets?.filter(pallet => pallet.userId === null).length;
+  return nbPalletsIntruck !== currentTruck.value?.pallets.length
+})
+
 const menuItems = computed(() => [
   {
     label: 'Undocking',
@@ -106,6 +112,8 @@ const menuItems = computed(() => [
   {
     label: 'Reset',
     action: 'confirmResetItem',
+    isDisabled:
+      somePalletisunloaded.value
   },
   {
     label: 'Infos',
