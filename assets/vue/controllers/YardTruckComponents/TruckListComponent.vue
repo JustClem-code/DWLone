@@ -50,7 +50,7 @@ import TruckInfo from './TruckInfo.vue';
 import { formattedDateFr } from '../../composables/dateFormat.js'
 import { useLogic } from '../../composables/useLogic.js'
 
-const { handleMenuAction } = useLogic()
+const { getPalletsNotUnloaded, handleMenuAction } = useLogic()
 
 const { trucks, dockingTruck } = inject('yardTruck')
 
@@ -97,10 +97,9 @@ const setCurrentTruck = (truck) => {
   currentTruck.value = truck
 }
 
-const somePalletisunloaded = computed(() => {
+const somePalletIsUnloaded = computed(() => {
   if (!currentTruck.value) return
-  const nbPalletsIntruck = currentTruck.value?.pallets?.filter(pallet => pallet.userId === null).length;
-  return nbPalletsIntruck !== currentTruck.value?.pallets.length
+  return getPalletsNotUnloaded(currentTruck.value?.pallets).length !== currentTruck.value?.pallets.length
 })
 
 const menuItems = computed(() => [
@@ -113,7 +112,7 @@ const menuItems = computed(() => [
     label: 'Reset',
     action: 'confirmResetItem',
     isDisabled:
-      somePalletisunloaded.value
+      somePalletIsUnloaded.value
   },
   {
     label: 'Infos',

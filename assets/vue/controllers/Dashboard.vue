@@ -12,7 +12,6 @@
 
 //TODO:
 
-// mettre somePalletisunloaded dans le useLogic
 // creation du controller Stow (allez on continue)
 
 // gestion du animate pulse si chargement de la list => voir tailwind UI

@@ -18,7 +18,7 @@
     <BaseButton title="Pallets" styleColor="flat" :isDisabled="nbOfPallets === 0" @click="SelectOptionRef?.openDialog()" />
 
     <DialogComponentSlot ref="SelectOptionRef">
-      <SelectOptionComponent :options="pallets" :isLoading="unLoadingIsLoading"
+      <SelectOptionComponent :options="getPalletsNotUnloaded(props.dock?.pallets)" :isLoading="unLoadingIsLoading"
           @submitOption="val => unloadingPallet(val.selected)" @closeDialog="SelectOptionRef?.closeDialog()"/>
     </DialogComponentSlot>
   </div>
@@ -26,24 +26,25 @@
 
 <script setup>
 import { inject, ref, computed } from 'vue'
+
 import BadgeComponent from '../UI/BadgeComponent.vue';
 import BaseButton from '../UI/Buttons/BaseButton.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 
+import { useLogic } from '../../composables/useLogic.js'
+
+const { getPalletsNotUnloaded } = useLogic()
+
 const { unloadingPallet, unLoadingIsLoading } = inject('unLoading')
+
 const props = defineProps({
   dock: Object
 })
 
-const pallets = computed(() => {
-  if (!props.dock) return
-  return props.dock?.pallets.filter(pallet => pallet.userId === null);
-})
-
 const nbOfPallets = computed(() => {
   if (!props.dock) return
-  return pallets.value.length
+  return getPalletsNotUnloaded(props.dock?.pallets).length
 })
 
 const SelectOptionRef = ref(null)
