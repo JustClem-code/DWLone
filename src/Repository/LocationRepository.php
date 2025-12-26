@@ -8,6 +8,8 @@ use App\Entity\Location;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+use App\Repository\PackageRepository;
+
 /**
  * @extends ServiceEntityRepository<Location>
  */
@@ -49,6 +51,7 @@ class LocationRepository extends ServiceEntityRepository
 
   public function toArray(Location $location): array
   {
+    // Need service to getPackages to avoid circular error
     return [
       'id' => $location->getId(),
       'name' => $location->getName(),

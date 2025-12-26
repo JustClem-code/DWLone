@@ -14,7 +14,7 @@ import BorderedContent from './UI/BorderedContent.vue'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
 
-const { data: docks, error: errorDock } = useFetch('/getdocks')
+const { data: locations, error: errorDock } = useFetch('/getlocations')
 
 const { notifier } = useNotification()
 
@@ -22,6 +22,9 @@ const dockingData = ref(null)
 const dockingError = ref(null)
 const dockingIsLoading = ref(false)
 
-provide('yardTruck', {  })
+console.log('locations', locations);
+
+
+provide('stow', {  })
 
 </script>
