@@ -61,6 +61,7 @@ const navigations = computed(() => [
   { name: 'Yard Truck', href: '/yard/truck', show: isUser.value },
   { name: 'Unloading', href: '/warehouse/unloading', show: isUser.value },
   { name: 'Induction', href: '/warehouse/induction', show: isUser.value },
+  { name: 'Stow', href: '/warehouse/stow', show: isUser.value },
 ])
 
 const authNavigations = computed(() => [
