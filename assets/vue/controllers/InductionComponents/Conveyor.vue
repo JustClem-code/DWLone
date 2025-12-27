@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref, inject } from 'vue';
+import { inject } from 'vue';
 import { useDragStore } from '../../composables/useDragStore.js';
 
 import Package from '../UI/Package.vue';

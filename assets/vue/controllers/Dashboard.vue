@@ -12,7 +12,8 @@
 
 //TODO:
 
-// creation du controller Stow (allez on continue)
+// wip sur les locations
+// https://tailwindcss.com/plus/ui-blocks/application-ui/lists/grid-lists
 
 // gestion du animate pulse si chargement de la list => voir tailwind UI
 // plus globalement, il faut gérer le chargement côté vue et twig
