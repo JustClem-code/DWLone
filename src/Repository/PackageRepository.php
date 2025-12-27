@@ -62,7 +62,8 @@ class PackageRepository extends ServiceEntityRepository
       'weight' => $package->getWeight(),
       'location' => $package->getLocation() ? $this->locationRepository->toArray($package->getLocation()) : null,
       'bag' => $package->getBag() ? $this->bagRepository->toArray($package->getBag()) : null,
-      'order' =>$this->orderRepository->toArray($package->getOrderId()),
+      'order' => $this->orderRepository->toArray($package->getOrderId()),
+      'userStow' => $package->getUserStow()?->getUsername(),
     ];
   }
 
