@@ -6,12 +6,13 @@
             <h2 :class="alleyHasPackages(pair) ? 'text-red-500' : ''">{{ getPairName(i) }}</h2>
           </div>
         </BorderedContent>
-        <BorderedContent v-if="currentPair" title="sorting bin">
+        <BorderedContent v-if="currentPair" title="Package drop">
           <div class="relative w-full min-h-70 flex items-center justify-center">
             <transition name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
               enter-from-class="opacity-0" enter-to-class="opacity-100">
-              <div draggable="true" class="absolute top-0 w-full z-10 cursor-pointer">
-                <Package :package="currentPairPackages[0]" borderColor="border-blue-500" />
+              <div class="absolute top-0 w-full z-10 cursor-pointer"
+                v-on:click="setCurrentPackage(currentPairPackages[0])">
+                <Package :package="currentPairPackages[0]" :borderColor="currentPackage ? 'border-blue-500' : ''" />
               </div>
             </transition>
             <!-- <p v-if="inductPackageLoading" class="animate-pulse">Wait for another package</p> -->
@@ -21,9 +22,11 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
 
             <div v-for="loc in currentPair">
-              <div
-                class="flex justify-center items-center w-full bg-white dark:bg-gray-800/50 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90 p-4"
-                :class="{ 'animate-pulse': !loc }">
+              <div v-on:click="stowPackage(loc)" class="flex justify-center items-center w-full bg-white dark:bg-gray-800/50
+                border rounded-md shadow-xs dark:shadow-none border-gray-300
+                dark:border-gray-700/90 hover:border-gray-500 p-4 cursor-pointer
+                "
+                :class="{ 'animate-pulse': !loc }, isCurrentLoc(loc?.name) ? 'outline-2 outline-red-700 outline-offset-2' : ''">
                 <h3 class="text-base font-semibold">{{ loc?.name || 'Location name' }}</h3>
               </div>
             </div>
@@ -38,7 +41,7 @@
 
 <script setup>
 
-import { ref, provide, computed } from 'vue'
+import { onMounted, watch, ref, provide, computed } from 'vue'
 import BorderedContent from './UI/BorderedContent.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
@@ -53,7 +56,16 @@ const dockingData = ref(null)
 const dockingError = ref(null)
 const dockingIsLoading = ref(false)
 
+const STORAGE_KEY = 'currentPair'
+
 const currentPair = ref(null)
+const currentPackage = ref(null)
+
+onMounted(() => {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  currentPair.value = raw ? JSON.parse(raw) : null
+  console.log('current Pair onmounted', currentPair.value);
+})
 
 const getPairName = (name) => {
   const [letter, num] = name.split('-');
@@ -63,11 +75,15 @@ const getPairName = (name) => {
 
 const setCurrentPair = (pair) => currentPair.value = pair
 
+const setCurrentPackage = (pack) => currentPackage.value = pack
+
 const alleyHasPackages = (pair) => {
   const ar = pair.flatMap(row => row.packages.filter(p => p.userStow === null))
 
   return ar.length !== 0 ? true : false
 }
+
+const isCurrentLoc = (name) => currentPackage.value?.location.name === name
 
 const currentPairPackages = computed(() => {
   return currentPair.value.flatMap(row =>
@@ -75,9 +91,38 @@ const currentPairPackages = computed(() => {
   )
 })
 
+async function stowPackage(loc) {
+  if (!currentPackage.value) {
+    return
+  }
+
+  if (loc.name !== currentPackage.value.location.name) {
+    console.log('error pas le bon sac');
+    return
+  }
+
+  const { data, error } = await usePostFetch(`/setUserStow/${currentPackage.value.id}`)
+
+  console.log('fetch package', data);
+  
+}
+
+
 console.log('locations', locations.value);
 
 
 provide('stow', {})
+
+watch(
+  currentPair,
+  (val) => {
+    if (val === null) {
+      localStorage.removeItem(STORAGE_KEY)
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
+    }
+  },
+  { deep: true }
+)
 
 </script>
