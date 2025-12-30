@@ -10,7 +10,7 @@
           <div class="relative w-full min-h-70 flex items-center justify-center">
             <transition name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
               enter-from-class="opacity-0" enter-to-class="opacity-100">
-              <div class="absolute top-0 w-full z-10 cursor-pointer"
+              <div v-if="currentPairPackages.length !== 0" class="absolute top-0 w-full z-10 cursor-pointer"
                 v-on:click="setCurrentPackage(currentPairPackages[0])">
                 <Package :package="currentPairPackages[0]" :borderColor="currentPackage ? 'border-blue-500' : ''" />
               </div>
@@ -61,10 +61,12 @@ const STORAGE_KEY = 'currentPair'
 const currentPair = ref(null)
 const currentPackage = ref(null)
 
+const getFirstAisleName = ref(null)
+const getSecondAisleName = ref(null)
+
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)
   currentPair.value = raw ? JSON.parse(raw) : null
-  console.log('current Pair onmounted', currentPair.value);
 })
 
 const getPairName = (name) => {
@@ -73,9 +75,14 @@ const getPairName = (name) => {
   return `${letter}${n} & ${letter}${n + 1}`;
 };
 
-const getPairFirstLetter = (name) => {
-  return `${name[0]}`
-}
+const firstAisleNumber = computed(() => {
+  const match = currentPair.value[0].name.match(/\d+/);
+  return match ? parseInt(match[0], 10) : null;
+})
+
+const pairFirstLetter = computed(() => {
+  return `${currentPair.value[0].name[0]}`
+})
 
 const setCurrentPair = (pair) => currentPair.value = pair
 
@@ -83,9 +90,37 @@ const setCurrentPackage = (pack) => currentPackage.value = pack
 
 const alleyHasPackages = (pair) => {
   const ar = pair.flatMap(row => row.packages.filter(p => p.userStow === null))
-
   return ar.length !== 0 ? true : false
 }
+
+const orderedLocations = computed(() => {
+  const orderSpecs = [
+    { floor: `${firstAisleNumber.value}`, side: '2' }, // col 1
+    { floor: `${firstAisleNumber.value}`, side: '1' }, // col 2
+    { floor: `${firstAisleNumber.value + 1}`, side: '1' }, // col 3
+    { floor: `${firstAisleNumber.value + 1}`, side: '2' }, // col 4
+  ]
+
+  const letters = ['A', 'B', 'C', 'D', 'E', 'G']
+
+  const byKey = new Map(
+    currentPair.value.map(loc => [loc.name, loc])
+  )
+
+  const result = []
+
+  for (const spec of orderSpecs) {
+    for (const letter of letters) {
+      const key = `${pairFirstLetter.value}-${spec.floor}-${letter}-${spec.side}`
+      const loc = byKey.get(key)
+      if (loc) result.push(loc)
+    }
+  }
+
+  return result
+})
+
+
 
 const isCurrentLoc = (name) => currentPackage.value?.location.name === name
 
@@ -110,44 +145,6 @@ async function stowPackage(loc) {
   console.log('fetch package', data);
 
 }
-
-const orderedLocations = computed(() => {
-  const orderSpecs = [
-    { floor: '1', side: '2' }, // col 1
-    { floor: '1', side: '1' }, // col 2
-    { floor: '2', side: '1' }, // col 3
-    { floor: '2', side: '2' }, // col 4
-  ]
-
-  const letters = ['A', 'B', 'C', 'D', 'E', 'G']
-
-  const byKey = new Map(
-    currentPair.value.map(loc => [loc.name, loc])
-  )
-
-  const result = []
-
-  for (const spec of orderSpecs) {
-    for (const letter of letters) {
-      const key = `B-${spec.floor}-${letter}-${spec.side}`
-      const loc = byKey.get(key)
-      if (loc) result.push(loc)
-    }
-  }
-
-console.log('first', getPairFirstLetter(currentPair.value[0].name));
-console.log('byKey', byKey);
-
-console.log('result', result);
-
-
-
-  return result
-})
-
-
-
-console.log('locations', locations.value);
 
 
 provide('stow', {})
