@@ -12,6 +12,7 @@
 
 //TODO:
 
+// adapter la grid aux location visible, bugggggg
 // wip sur les locations
 // https://tailwindcss.com/plus/ui-blocks/application-ui/lists/grid-lists
 

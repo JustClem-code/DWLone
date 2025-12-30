@@ -19,15 +19,15 @@
           </div>
         </BorderedContent>
         <BorderedContent v-if="currentPair" title="Location">
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="grid grid-flow-col grid-rows-6 gap-4">
 
-            <div v-for="loc in currentPair">
+            <div v-for="loc in orderedLocations" :key="loc.id">
               <div v-on:click="stowPackage(loc)" class="flex justify-center items-center w-full bg-white dark:bg-gray-800/50
                 border rounded-md shadow-xs dark:shadow-none border-gray-300
-                dark:border-gray-700/90 hover:border-gray-500 p-4 cursor-pointer
+                dark:border-gray-700/90 hover:border-gray-500 p-1 md:p-4 cursor-pointer
                 "
                 :class="{ 'animate-pulse': !loc }, isCurrentLoc(loc?.name) ? 'outline-2 outline-red-700 outline-offset-2' : ''">
-                <h3 class="text-base font-semibold">{{ loc?.name || 'Location name' }}</h3>
+                <h3 class="text-sm md:text-base font-light md:font-semibold">{{ loc?.name || 'Location name' }}</h3>
               </div>
             </div>
 
@@ -73,6 +73,10 @@ const getPairName = (name) => {
   return `${letter}${n} & ${letter}${n + 1}`;
 };
 
+const getPairFirstLetter = (name) => {
+  return `${name[0]}`
+}
+
 const setCurrentPair = (pair) => currentPair.value = pair
 
 const setCurrentPackage = (pack) => currentPackage.value = pack
@@ -97,15 +101,50 @@ async function stowPackage(loc) {
   }
 
   if (loc.name !== currentPackage.value.location.name) {
-    console.log('error pas le bon sac');
+    console.log('Wrong Bag');
     return
   }
 
   const { data, error } = await usePostFetch(`/setUserStow/${currentPackage.value.id}`)
 
   console.log('fetch package', data);
-  
+
 }
+
+const orderedLocations = computed(() => {
+  const orderSpecs = [
+    { floor: '1', side: '2' }, // col 1
+    { floor: '1', side: '1' }, // col 2
+    { floor: '2', side: '1' }, // col 3
+    { floor: '2', side: '2' }, // col 4
+  ]
+
+  const letters = ['A', 'B', 'C', 'D', 'E', 'G']
+
+  const byKey = new Map(
+    currentPair.value.map(loc => [loc.name, loc])
+  )
+
+  const result = []
+
+  for (const spec of orderSpecs) {
+    for (const letter of letters) {
+      const key = `B-${spec.floor}-${letter}-${spec.side}`
+      const loc = byKey.get(key)
+      if (loc) result.push(loc)
+    }
+  }
+
+console.log('first', getPairFirstLetter(currentPair.value[0].name));
+console.log('byKey', byKey);
+
+console.log('result', result);
+
+
+
+  return result
+})
+
 
 
 console.log('locations', locations.value);
