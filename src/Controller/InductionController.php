@@ -87,6 +87,7 @@ final class InductionController extends AbstractController
     foreach ($packagesWithLocation as $package) {
       $package->setLocation(null);
       $package->setBag(null);
+      $package->setUserStow(null);
     }
 
     $bagsWithLocation = $bagRepository->findAllHasLocation();
