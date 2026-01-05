@@ -1,11 +1,22 @@
 <template>
   <div class="flex flex-col gap-8">
     <button v-on:click="setCurrentPair(null)"><- Back</button>
+
+
+
         <BorderedContent v-if="!currentPair" title="Alleys">
-          <div v-for="(pair, i) in locations" v-on:click="setCurrentPair(pair)">
-            <h2 :class="alleyHasPackages(pair) ? 'text-red-500' : ''">{{ getPairName(i) }}</h2>
+          <div class="grid grid-flow-col grid-rows-13 gap-4">
+            <div v-for="(pair, i) in locations" v-on:click="setCurrentPair(pair)" class="flex justify-center items-center w-full bg-white dark:bg-gray-800/50
+                border rounded-md shadow-xs dark:shadow-none border-gray-300
+                dark:border-gray-700/90 hover:border-gray-500 p-1 md:p-4 cursor-pointer
+                ">
+              <h3 class="text-xs md:text-base font-light md:font-semibold" :class="alleyHasPackages(pair) ? 'text-red-500' : ''">{{ getPairName(i) }}</h3>
+            </div>
           </div>
         </BorderedContent>
+
+
+
         <BorderedContent v-if="currentPair" title="Package drop">
           <div class="relative w-full min-h-70 flex items-center justify-center">
             <transition name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
@@ -60,9 +71,6 @@ const STORAGE_KEY = 'currentPair'
 
 const currentPair = ref(null)
 const currentPackage = ref(null)
-
-const getFirstAisleName = ref(null)
-const getSecondAisleName = ref(null)
 
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)

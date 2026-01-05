@@ -12,7 +12,9 @@
 
 //TODO:
 
-// adapter la grid aux location visible, bugggggg
+// créer un componant "horizontal link button"
+// créer un componant "header packages stack"
+//
 // wip sur les locations
 // https://tailwindcss.com/plus/ui-blocks/application-ui/lists/grid-lists
 
