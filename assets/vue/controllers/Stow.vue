@@ -10,7 +10,8 @@
                 border rounded-md shadow-xs dark:shadow-none border-gray-300
                 dark:border-gray-700/90 hover:border-gray-500 p-1 md:p-4 cursor-pointer
                 ">
-              <h3 class="text-xs md:text-base font-light md:font-semibold" :class="alleyHasPackages(pair) ? 'text-red-500' : ''">{{ getPairName(i) }}</h3>
+              <h3 class="text-xs md:text-base font-light md:font-semibold"
+                :class="alleyHasPackages(pair) ? 'text-red-500' : ''">{{ getPairName(i) }}</h3>
             </div>
           </div>
         </BorderedContent>
@@ -18,17 +19,9 @@
 
 
         <BorderedContent v-if="currentPair" title="Package drop">
-          <div class="relative w-full min-h-70 flex items-center justify-center">
-            <transition name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
-              enter-from-class="opacity-0" enter-to-class="opacity-100">
-              <div v-if="currentPairPackages.length !== 0" class="absolute top-0 w-full z-10 cursor-pointer"
-                v-on:click="setCurrentPackage(currentPairPackages[0])">
-                <Package :package="currentPairPackages[0]" :borderColor="currentPackage ? 'border-blue-500' : ''" />
-              </div>
-            </transition>
-            <!-- <p v-if="inductPackageLoading" class="animate-pulse">Wait for another package</p> -->
-          </div>
+          <PackageDrop :packages="currentPairPackages" />
         </BorderedContent>
+
         <BorderedContent v-if="currentPair" title="Location">
           <div class="grid grid-flow-col grid-rows-6 gap-4">
 
@@ -58,6 +51,7 @@ import BorderedContent from './UI/BorderedContent.vue'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
 import Package from './UI/Package.vue'
+import PackageDrop from './StowComponents/PackageDrop.vue'
 
 const { data: locations, error: errorDock } = useFetch('/getlocations')
 
@@ -128,8 +122,6 @@ const orderedLocations = computed(() => {
   return result
 })
 
-
-
 const isCurrentLoc = (name) => currentPackage.value?.location.name === name
 
 const currentPairPackages = computed(() => {
@@ -137,6 +129,27 @@ const currentPairPackages = computed(() => {
     row.packages.filter(p => p.userStow === null)
   )
 })
+
+const updateCurrentPairPackages = () => {
+  // TODO: mettre aussi à jour locations
+  currentPair.value = currentPair.value.map(row => ({
+    ...row,
+    packages: row.packages.filter(p => p.id !== currentPackage.value.id)
+  }))
+
+  /* if (locations.value) {
+    locations.value = locations.value.map(pair =>
+      pair.map(row => ({
+        ...row,
+        packages: row.packages.filter(p => p.id !== currentPackage.value.id)
+      }))
+    )
+  } */
+  /*  if (currentPairPackages.value.length === 0) {
+     const palletOnFloorIndex = palletsOnFloorWithPackages.value.findIndex(p => p.id === currentPallet.value.id)
+     palletsOnFloorWithPackages.value.splice(palletOnFloorIndex, 1)
+   } */
+}
 
 async function stowPackage(loc) {
   if (!currentPackage.value) {
@@ -150,12 +163,29 @@ async function stowPackage(loc) {
 
   const { data, error } = await usePostFetch(`/setUserStow/${currentPackage.value.id}`)
 
+  if (data.value) {
+    currentPackage.value = data.value
+    updateCurrentPairPackages()
+    /*  setTimeout(() => {
+       setLocationLoading.value = false;
+     }, 500);
+     setTimeout(() => {
+       notifier('success', 'Induction', `The package (Id: ${currentPackage.value.id}) is inducted`)
+     }, 1000);
+     setTimeout(() => {
+       currentPackage.value = null
+     }, 1500); */
+  }
+
   console.log('fetch package', data);
+  console.log('currentPairPackages', currentPairPackages.value);
+  console.log('currentPair', currentPair.value);
+  console.log('locations', locations.value);
 
 }
 
 
-provide('stow', {})
+provide('stow', { setCurrentPackage, currentPackage })
 
 watch(
   currentPair,

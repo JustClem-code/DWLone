@@ -53,7 +53,6 @@ final class StowController extends AbstractController
 
     $entityManager->flush();
 
-
     return $this->json($packageRepository->toArray($package));
   }
 }
