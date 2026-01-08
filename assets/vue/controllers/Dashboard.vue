@@ -12,7 +12,6 @@
 
 //TODO:
 
-// PB pour mettre à jour Locations qui est un object (index)
 // finir la logic de stow côter vue et php
 // créer un componant "horizontal link button"
 // créer un componant "header packages stack"

@@ -5,11 +5,12 @@
       <div>
         <h2>{{ title ?? 'Packages' }}</h2>
         <p class="text-xs text-gray-400 mt-2">
-          {{ notice ?? 'Notice'}}
+          {{ notice ?? 'Notice' }}
         </p>
       </div>
-      <div v-if="menuItems" class="flex items-center gap-2">
-        <MinimalToggleMenu :items="menuItems" @select="(item) => handleMenuAction(item, actions)" />
+      <div class="flex items-center gap-2">
+        <BaseButton v-if="backButton" @click="emit('backClick')" title="Back" styleColor="empty"/>
+        <MinimalToggleMenu v-if="menuItems" :items="menuItems" @select="(item) => handleMenuAction(item, actions)" />
       </div>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
@@ -29,16 +30,20 @@
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 
 import { useLogic } from '../../composables/useLogic.js';
+import BaseButton from '../UI/Buttons/BaseButton.vue';
 
 const props = defineProps({
   title: String,
   packagesStack: Object,
   notice: String,
   packagesStackIsEmpty: Boolean,
+  backButton: Boolean,
   menuItems: Array,
   actions: Object,
   numberOfPackages: Number
 });
+
+const emit = defineEmits(['backClick'])
 
 const { handleMenuAction } = useLogic()
 

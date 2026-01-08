@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4">
 
     <PackagesStackHeader title="Package Drop" :packagesStack="packages" :notice="noticeHeader" :menuItems="null"
-      :actions="null" :numberOfPackages="packages.length" />
+      :actions="null" :numberOfPackages="packages.length" :backButton="true" @backClick="setCurrentPair(null)" />
 
     <div class="relative w-full min-h-70 flex items-center justify-center">
       <transition name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
@@ -30,5 +30,5 @@ const noticeHeader = computed(() => {
   return 'Stow the package'
 })
 
-const { setCurrentPackage, currentPackage } = inject('stow')
+const { setCurrentPair, setCurrentPackage, currentPackage } = inject('stow')
 </script>

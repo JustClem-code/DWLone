@@ -1,8 +1,5 @@
 <template>
   <div class="flex flex-col gap-8">
-    <button v-on:click="setCurrentPair(null)"><- Back</button>
-
-
 
         <BorderedContent v-if="!currentPair" title="Alleys">
           <div class="grid grid-flow-col grid-rows-13 gap-4">
@@ -15,7 +12,6 @@
             </div>
           </div>
         </BorderedContent>
-
 
 
         <BorderedContent v-if="currentPair" title="Package drop">
@@ -131,20 +127,26 @@ const currentPairPackages = computed(() => {
 })
 
 const updateCurrentPairPackages = () => {
-  // TODO: mettre aussi à jour locations
+  const pkgId = currentPackage.value?.id
+  if (!pkgId) return
+
   currentPair.value = currentPair.value.map(row => ({
     ...row,
-    packages: row.packages.filter(p => p.id !== currentPackage.value.id)
+    packages: row.packages.filter(p => p.id !== pkgId)
   }))
 
-  /* if (locations.value) {
-    locations.value = locations.value.map(pair =>
-      pair.map(row => ({
+  if (!locations.value) return
+
+  locations.value = Object.fromEntries(
+    Object.entries(locations.value).map(([key, rows]) => [
+      key,
+      rows.map(row => ({
         ...row,
-        packages: row.packages.filter(p => p.id !== currentPackage.value.id)
-      }))
-    )
-  } */
+        packages: (row.packages || []).filter(p => p.id !== pkgId),
+      })),
+    ]),
+  )
+
   /*  if (currentPairPackages.value.length === 0) {
      const palletOnFloorIndex = palletsOnFloorWithPackages.value.findIndex(p => p.id === currentPallet.value.id)
      palletsOnFloorWithPackages.value.splice(palletOnFloorIndex, 1)
@@ -177,15 +179,10 @@ async function stowPackage(loc) {
      }, 1500); */
   }
 
-  console.log('fetch package', data);
-  console.log('currentPairPackages', currentPairPackages.value);
-  console.log('currentPair', currentPair.value);
-  console.log('locations', locations.value);
-
 }
 
 
-provide('stow', { setCurrentPackage, currentPackage })
+provide('stow', { setCurrentPair, setCurrentPackage, currentPackage })
 
 watch(
   currentPair,
