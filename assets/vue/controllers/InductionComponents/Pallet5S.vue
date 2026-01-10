@@ -59,7 +59,7 @@ const props = defineProps({
   currentPackage: Object
 });
 
-const { getNumberOfPackagesNotInducted, handleMenuAction } = useLogic()
+const { getNumberOfPackagesNotInducted } = useLogic()
 
 const { palletsOnfloorOptions, addPalletLoading, addPallet, setLocationLoading, resetLocationsBagsPackages } = inject('induction')
 
@@ -76,7 +76,7 @@ const currentPalletIsEmpty = computed(() => {
 })
 
 const noticeHeader = computed(() => {
-  return currentPalletIsEmpty ? 'The pallet is empty, change it or stop to induct'
+  return currentPalletIsEmpty.value ? 'The pallet is empty, change it or stop to induct'
     : 'Pick a package in the pallet and drop it in the zone'
 })
 

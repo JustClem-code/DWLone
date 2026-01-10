@@ -9,7 +9,8 @@
           class="absolute top-0 right-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700/90 p-4 rounded-md shadow-2xl">
           <div class="flex items-start gap-3">
             <div class="shrink-0">
-              <CheckCircleIcon color="text-green-500 mt-1"/>
+              <CheckCircleIcon v-if="notif.type === 'success'" color="text-green-500 mt-1"/>
+              <CrossIcon v-if="notif.type === 'error'" color="text-red-500 mt-1"/>
             </div>
             <div class="pt-1">
               <p class="text-sm">{{ notif.message }}</p>

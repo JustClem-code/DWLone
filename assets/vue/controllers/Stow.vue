@@ -1,38 +1,39 @@
 <template>
-  <div class="flex flex-col gap-8">
+  <div>
 
-        <BorderedContent v-if="!currentPair" title="Alleys">
-          <div class="grid grid-flow-col grid-rows-13 gap-4">
-            <div v-for="(pair, i) in locations" v-on:click="setCurrentPair(pair)" class="flex justify-center items-center w-full bg-white dark:bg-gray-800/50
+    <BorderedContent v-if="!currentPair" title="Floor">
+      <div class="grid grid-flow-col grid-rows-13 gap-4">
+        <div v-for="(pair, i) in locations" v-on:click="setCurrentPair(pair)" class="flex justify-center items-center w-full bg-white dark:bg-gray-800/50
                 border rounded-md shadow-xs dark:shadow-none border-gray-300
                 dark:border-gray-700/90 hover:border-gray-500 p-1 md:p-4 cursor-pointer
                 ">
-              <h3 class="text-xs md:text-base font-light md:font-semibold"
-                :class="alleyHasPackages(pair) ? 'text-red-500' : ''">{{ getPairName(i) }}</h3>
-            </div>
-          </div>
-        </BorderedContent>
+          <h3 class="text-xs md:text-base font-light md:font-semibold"
+            :class="alleyHasPackages(pair) ? 'text-red-500' : ''">{{ getPairName(i) }}</h3>
+        </div>
+      </div>
+    </BorderedContent>
 
+    <div v-else class="flex flex-col gap-8">
+      <BorderedContent title="Package drop">
+        <PackageDrop :packages="currentPairPackages" />
+      </BorderedContent>
 
-        <BorderedContent v-if="currentPair" title="Package drop">
-          <PackageDrop :packages="currentPairPackages" />
-        </BorderedContent>
+      <BorderedContent title="Location">
+        <div class="grid grid-flow-col grid-rows-6 gap-4">
 
-        <BorderedContent v-if="currentPair" title="Location">
-          <div class="grid grid-flow-col grid-rows-6 gap-4">
-
-            <div v-for="loc in orderedLocations" :key="loc.id">
-              <div v-on:click="stowPackage(loc)" class="flex justify-center items-center w-full bg-white dark:bg-gray-800/50
+          <div v-for="loc in orderedLocations" :key="loc.id">
+            <div v-on:click="stowPackage(loc)" class="flex justify-center items-center w-full bg-white dark:bg-gray-800/50
                 border rounded-md shadow-xs dark:shadow-none border-gray-300
                 dark:border-gray-700/90 hover:border-gray-500 p-1 md:p-4 cursor-pointer
                 "
-                :class="{ 'animate-pulse': !loc }, isCurrentLoc(loc?.name) ? 'outline-2 outline-red-700 outline-offset-2' : ''">
-                <h3 class="text-sm md:text-base font-light md:font-semibold">{{ loc?.name || 'Location name' }}</h3>
-              </div>
+              :class="{ 'animate-pulse': !loc }, isCurrentLoc(loc?.name) ? 'outline-2 outline-red-700 outline-offset-2' : ''">
+              <h3 class="text-sm md:text-base font-light md:font-semibold">{{ loc?.name || 'Location name' }}</h3>
             </div>
-
           </div>
-        </BorderedContent>
+
+        </div>
+      </BorderedContent>
+    </div>
 
 
 
@@ -46,16 +47,13 @@ import BorderedContent from './UI/BorderedContent.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
-import Package from './UI/Package.vue'
 import PackageDrop from './StowComponents/PackageDrop.vue'
 
 const { data: locations, error: errorDock } = useFetch('/getlocations')
 
 const { notifier } = useNotification()
 
-const dockingData = ref(null)
-const dockingError = ref(null)
-const dockingIsLoading = ref(false)
+const stowingIsLoading = ref(false)
 
 const STORAGE_KEY = 'currentPair'
 
@@ -118,7 +116,7 @@ const orderedLocations = computed(() => {
   return result
 })
 
-const isCurrentLoc = (name) => currentPackage.value?.location.name === name
+const isCurrentLoc = (name) => currentPackage.value?.location?.name === name
 
 const currentPairPackages = computed(() => {
   return currentPair.value.flatMap(row =>
@@ -147,19 +145,23 @@ const updateCurrentPairPackages = () => {
     ]),
   )
 
-  /*  if (currentPairPackages.value.length === 0) {
-     const palletOnFloorIndex = palletsOnFloorWithPackages.value.findIndex(p => p.id === currentPallet.value.id)
-     palletsOnFloorWithPackages.value.splice(palletOnFloorIndex, 1)
-   } */
 }
 
 async function stowPackage(loc) {
+
+  stowingIsLoading.value = true;
+
   if (!currentPackage.value) {
+       stowingIsLoading.value = false;
     return
   }
 
   if (loc.name !== currentPackage.value.location.name) {
+    // TODO: mettre une notif
     console.log('Wrong Bag');
+       stowingIsLoading.value = false;
+       currentPackage.value = false;
+       notifier('error', 'Stow', 'Wrong bag')
     return
   }
 
@@ -168,19 +170,18 @@ async function stowPackage(loc) {
   if (data.value) {
     currentPackage.value = data.value
     updateCurrentPairPackages()
-    /*  setTimeout(() => {
-       setLocationLoading.value = false;
+     setTimeout(() => {
+       stowingIsLoading.value = false;
      }, 500);
      setTimeout(() => {
-       notifier('success', 'Induction', `The package (Id: ${currentPackage.value.id}) is inducted`)
+       notifier('success', 'Stow', `The package (Id: ${currentPackage.value.id}) is stowed`)
      }, 1000);
      setTimeout(() => {
        currentPackage.value = null
-     }, 1500); */
+     }, 1500);
   }
 
 }
-
 
 provide('stow', { setCurrentPair, setCurrentPackage, currentPackage })
 
