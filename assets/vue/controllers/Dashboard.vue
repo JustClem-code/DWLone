@@ -12,12 +12,8 @@
 
 //TODO:
 
-// finir la logic de stow côter vue et php
+// finir la logic de stow côter vue et php -> vérifier
 // créer un componant "horizontal link button"
-// créer un componant "header packages stack"
-//
-// wip sur les locations
-// https://tailwindcss.com/plus/ui-blocks/application-ui/lists/grid-lists
 
 // gestion du animate pulse si chargement de la list => voir tailwind UI
 // plus globalement, il faut gérer le chargement côté vue et twig

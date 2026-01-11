@@ -12,13 +12,13 @@
           <Package :package="packages[0]" :borderColor="currentPackage ? 'border-blue-500' : ''" />
         </div>
       </transition>
-      <!-- <p v-if="inductPackageLoading" class="animate-pulse">Wait for another package</p> -->
+      <p v-if="stowingIsLoading" class="animate-pulse">Wait for another package</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { inject, computed, onMounted } from 'vue'
+import { inject, computed } from 'vue'
 import Package from '../UI/Package.vue';
 import PackagesStackHeader from '../SharedComponents/PackagesStackHeader.vue';
 
@@ -27,8 +27,8 @@ const props = defineProps({
 });
 
 const noticeHeader = computed(() => {
-  return 'Stow the package'
+  return props.packages.length === 0 ? 'The drop is empty' : 'Click on the package, then on its location.'
 })
 
-const { setCurrentPair, setCurrentPackage, currentPackage } = inject('stow')
+const { setCurrentPair, setCurrentPackage, currentPackage, stowingIsLoading } = inject('stow')
 </script>
