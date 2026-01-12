@@ -11,7 +11,7 @@
       </BorderedContent>
 
       <BorderedContent title="Locations">
-        <PairLocations :orderedLocations="orderedLocations"/>
+        <PairLocations :orderedLocations="orderedLocations" />
       </BorderedContent>
     </div>
 
@@ -21,10 +21,11 @@
 <script setup>
 
 import { onMounted, watch, ref, provide, computed } from 'vue'
-import BorderedContent from './UI/BorderedContent.vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
+
+import BorderedContent from './UI/BorderedContent.vue'
 import PackageDrop from './StowComponents/PackageDrop.vue'
 import FloorAisles from './StowComponents/FloorAisles.vue'
 import PairLocations from './StowComponents/PairLocations.vue'
@@ -53,10 +54,6 @@ const firstAisleNumber = computed(() => {
 const pairFirstLetter = computed(() => {
   return `${currentPair.value[0].name[0]}`
 })
-
-const setCurrentPair = (pair) => currentPair.value = pair
-
-const setCurrentPackage = (pack) => currentPackage.value = pack
 
 const orderedLocations = computed(() => {
   const orderSpecs = [
@@ -90,6 +87,10 @@ const currentPairPackages = computed(() => {
     row.packages.filter(p => p.userStow === null)
   )
 })
+
+const setCurrentPair = (pair) => currentPair.value = pair
+
+const setCurrentPackage = (pack) => currentPackage.value = pack
 
 const updateCurrentPairPackages = () => {
   const pkgId = currentPackage.value?.id
