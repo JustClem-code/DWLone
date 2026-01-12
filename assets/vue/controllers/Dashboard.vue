@@ -13,9 +13,8 @@
 //TODO:
 
 // finir la logic de stow côter vue et php -> vérifier
-// créer un componant "horizontal link button"
 
-// gestion du animate pulse si chargement de la list => voir tailwind UI
+// gestion du animate pulse si chargement de la (list / HorizontalLinkButton et divers composants) => voir tailwind UI
 // plus globalement, il faut gérer le chargement côté vue et twig
 
 
