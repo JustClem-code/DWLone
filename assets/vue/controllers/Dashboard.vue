@@ -12,7 +12,7 @@
 
 //TODO:
 
-// problème de circular référence pour les bags
+// Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
 // créer un vignette Bag sur le dashboard
 
 

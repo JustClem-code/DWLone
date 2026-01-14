@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use App\Entity\Bag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,6 +13,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BagRepository extends ServiceEntityRepository
 {
+
+  use RepositoryTrait;
+
   public function __construct(ManagerRegistry $registry)
   {
     parent::__construct($registry, Bag::class);
@@ -52,8 +57,14 @@ class BagRepository extends ServiceEntityRepository
     return [
       'id' => $bag->getId(),
       'name' => $bag->getName(),
-      'location' => $bag->getLocation(),
+      'location' => $bag->getLocation()->getId(),
+      'getRoad' => $bag->getRoad(),
     ];
+  }
+
+  public function transformAll(iterable $entities): array
+  {
+    return  $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
   //    /**

@@ -27,7 +27,7 @@ final class StowController extends AbstractController
   }
 
   #[Route('/getlocations', name: 'get_locations_list', methods: ['GET'])]
-  public function getDocks(LocationRepository $repository): Response
+  public function getLocations(LocationRepository $repository): Response
   {
 
     $locations = $repository->findAll();
