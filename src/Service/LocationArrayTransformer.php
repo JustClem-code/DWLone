@@ -5,13 +5,15 @@ namespace App\Service;
 use App\Repository\Trait\RepositoryTrait;
 
 use App\Entity\Location;
+use App\Repository\LocationRepository;
 use App\Repository\PackageRepository;
+use App\Service\BagArrayTransformer;
 
 class LocationArrayTransformer
 {
   use RepositoryTrait;
 
-  public function __construct(private PackageRepository $packageRepository) {}
+  public function __construct(private LocationRepository $locationRepository,private PackageRepository $packageRepository, private BagArrayTransformer $bagArrayTransformer) {}
 
   private function getPairKey(string $name): ?string
   {
@@ -56,5 +58,19 @@ class LocationArrayTransformer
     }
 
     return $grouped;
+  }
+
+  private function toArrayBagOriented(Location $location): array
+  {
+    return [
+      'id' => $location->getId(),
+      'name' => $location->getName(),
+      'bag' => $location->getBag() ? $this->bagArrayTransformer->toArray($location->getBag()) : null,
+    ];
+  }
+
+  public function transformAllBagOriented(): array
+  {
+    return $this->transFormEntities($this->locationRepository->findAll(), [$this, 'toArrayBagOriented']);
   }
 }

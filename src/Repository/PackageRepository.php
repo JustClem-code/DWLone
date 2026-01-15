@@ -36,7 +36,7 @@ class PackageRepository extends ServiceEntityRepository
       ->getResult();
   }
 
-  public function findPostcode(Package $package): int
+  private function findPostcode(Package $package): int
   {
     return $package->getOrderId()->getAddress()->getPostcode();
   }
@@ -63,6 +63,16 @@ class PackageRepository extends ServiceEntityRepository
       'location' => $package->getLocation() ? $this->locationRepository->toArray($package->getLocation()) : null,
       'bag' => $package->getBag() ? $this->bagRepository->toArray($package->getBag()) : null,
       'order' => $this->orderRepository->toArray($package->getOrderId()),
+      'userStow' => $package->getUserStow()?->getUsername(),
+    ];
+  }
+
+  public function toArrayBagOriented(Package $package): array
+  {
+    return [
+      'id' => $package->getId(),
+      'weight' => $package->getWeight(),
+      'postcode' => $package->getOrderId()->getAddress()->getPostcode(),
       'userStow' => $package->getUserStow()?->getUsername(),
     ];
   }

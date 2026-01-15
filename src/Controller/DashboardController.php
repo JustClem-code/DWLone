@@ -6,12 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-use App\Repository\BagRepository;
-use App\Service\BagArrayTransformer;
+use App\Service\LocationArrayTransformer;
 
 final class DashboardController extends AbstractController
 {
-  public function __construct(private BagArrayTransformer $bagArrayTransformer) {}
+  public function __construct(private LocationArrayTransformer $locationArrayTransformer) {}
 
   #[Route('/', name: 'app_dashboard')]
   public function index(): Response
@@ -21,10 +20,9 @@ final class DashboardController extends AbstractController
     ]);
   }
 
-  #[Route('/getBags', name: 'get_bags_list', methods: ['GET'])]
-  public function getBags(BagRepository $repository): Response
+  #[Route('/getBagsInLocations', name: 'get_bags_in_locations_list', methods: ['GET'])]
+  public function getBagsInLocations(): Response
   {
-    $bags = $repository->findAllHasLocation();
-    return $this->json($this->bagArrayTransformer->transformAll($bags));
+    return $this->json($this->locationArrayTransformer->transformAllBagOriented());
   }
 }
