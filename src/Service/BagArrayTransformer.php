@@ -20,6 +20,7 @@ class BagArrayTransformer
       'id' => $bag->getId(),
       'name' => $bag->getName(),
       'getRoad' => $bag->getRoad(),
+      'locationName' => $bag->getLocation() ? $bag->getLocation()->getName() : null,
       'packages' => $bag->getLocation()->getPackages() ? $this->transFormEntities($bag->getLocation()->getPackages(), [$this->packageRepository, 'toArrayBagOriented']) : null,
     ];
   }
