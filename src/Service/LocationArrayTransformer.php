@@ -13,7 +13,7 @@ class LocationArrayTransformer
 {
   use RepositoryTrait;
 
-  public function __construct(private LocationRepository $locationRepository,private PackageRepository $packageRepository, private BagArrayTransformer $bagArrayTransformer) {}
+  public function __construct(private LocationRepository $locationRepository, private PackageRepository $packageRepository, private BagArrayTransformer $bagArrayTransformer) {}
 
   private function getPairKey(string $name): ?string
   {
@@ -31,6 +31,14 @@ class LocationArrayTransformer
 
     return implode('-', array_slice($parts, 0, 2));
   }
+
+  private function getPairName(string $name): string
+  {
+    [$letter, $num] = explode('-', $name);
+    $n = (int) $num;
+    return sprintf('%s%d & %s%d', $letter, $n, $letter, $n + 1);
+  }
+
 
   public function toArray(Location $location): array
   {
@@ -57,8 +65,22 @@ class LocationArrayTransformer
       $grouped[$key][] = $this->toArray($location);
     }
 
-    return $grouped;
+    $result = [];
+    foreach ($grouped as $key => $locationsArray) {
+      // si tu veux ignorer les invalides :
+      if ($key === '_invalid') {
+        continue;
+      }
+
+      $result[] = [
+        'id'      => $this->getPairName($key),
+        'locations' => $locationsArray,
+      ];
+    }
+
+    return $result;
   }
+
 
   private function toArrayBagOriented(Location $location): array
   {

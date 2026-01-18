@@ -1,8 +1,8 @@
 <template>
   <div class="grid grid-flow-col grid-rows-13 gap-4">
 
-    <HorizontalLinkButton v-for="(pair, i) in locations" :key="pair" @click="setCurrentPair(pair)"
-      :title="getPairName(i)" :focused="alleyHasPackages(pair) ? 'text-red-500' : ''" />
+    <HorizontalLinkButton v-for="(pair) in locations" :key="pair" @click="setCurrentPair(pair)"
+      :title="pair.id" :focused="alleyHasPackages(pair) ? 'text-red-500' : ''" />
 
   </div>
 </template>
@@ -17,14 +17,8 @@ const props = defineProps({
 
 const { setCurrentPair } = inject('stow')
 
-const getPairName = (name) => {
-  const [letter, num] = name.split('-');
-  const n = Number(num);
-  return `${letter}${n} & ${letter}${n + 1}`;
-};
-
 const alleyHasPackages = (pair) => {
-  const ar = pair.flatMap(row => row.packages.filter(p => p.userStow === null))
+  const ar = pair.locations.flatMap(row => row.packages.filter(p => p.userStow === null))
   return ar.length !== 0 ? true : false
 }
 </script>

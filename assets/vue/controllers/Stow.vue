@@ -7,7 +7,7 @@
 
     <div v-else class="flex flex-col gap-8">
       <BorderedContent title="Package drop">
-        <PackageDrop :packages="currentPairPackages" />
+        <PackageDrop :pairPackages="currentPairPackages" />
       </BorderedContent>
 
       <BorderedContent title="Locations">
@@ -47,12 +47,12 @@ onMounted(() => {
 })
 
 const firstAisleNumber = computed(() => {
-  const match = currentPair.value[0].name.match(/\d+/);
+  const match = currentPair.value.locations[0].name.match(/\d+/);
   return match ? parseInt(match[0], 10) : null;
 })
 
 const pairFirstLetter = computed(() => {
-  return `${currentPair.value[0].name[0]}`
+  return `${currentPair.value.locations[0].name[0]}`
 })
 
 const orderedLocations = computed(() => {
@@ -66,7 +66,7 @@ const orderedLocations = computed(() => {
   const letters = ['A', 'B', 'C', 'D', 'E', 'G']
 
   const byKey = new Map(
-    currentPair.value.map(loc => [loc.name, loc])
+    currentPair.value.locations.map(loc => [loc.name, loc])
   )
 
   const result = []
@@ -83,9 +83,13 @@ const orderedLocations = computed(() => {
 })
 
 const currentPairPackages = computed(() => {
-  return currentPair.value.flatMap(row =>
-    row.packages.filter(p => p.userStow === null)
-  )
+  const data = {
+    "id": currentPair.value.id,
+    "packages": currentPair.value.locations.flatMap(row =>
+      row.packages.filter(p => p.userStow === null)
+    )
+  }
+  return data
 })
 
 const setCurrentPair = (pair) => currentPair.value = pair
@@ -96,14 +100,33 @@ const updateCurrentPairPackages = () => {
   const pkgId = currentPackage.value?.id
   if (!pkgId) return
 
-  currentPair.value = currentPair.value.map(row => ({
+  console.log('currentPaire', currentPair.value);
+
+  currentPair.value.locations = currentPair.value.locations.map(row => ({
     ...row,
     packages: row.packages.filter(p => p.id !== pkgId)
   }))
 
+  console.log('currentPaire ?', currentPair.value);
+
   if (!locations.value) return
 
-  locations.value = Object.fromEntries(
+  console.log('locations', locations.value);
+
+  /* locations.value.locations = locations.value.locations.map(row => ({
+    ...row,
+    packages: row.packages.filter(p => p.id !== pkgId)
+  })) */
+
+  locations.value.locations = locations.value.locations.map(group => ({
+    ...group,
+    locations: group.locations.map(row => ({
+      ...row,
+      packages: (row.packages || []).filter(p => p.id !== pkgId),
+    })),
+  }));
+
+  /* locations.value = Object.fromEntries(
     Object.entries(locations.value).map(([key, rows]) => [
       key,
       rows.map(row => ({
@@ -111,8 +134,7 @@ const updateCurrentPairPackages = () => {
         packages: (row.packages || []).filter(p => p.id !== pkgId),
       })),
     ]),
-  )
-
+  ) */
 }
 
 async function stowPackage(loc) {
@@ -149,7 +171,7 @@ async function stowPackage(loc) {
 
 }
 
-provide('stow', { setCurrentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
+provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
 
 watch(
   currentPair,

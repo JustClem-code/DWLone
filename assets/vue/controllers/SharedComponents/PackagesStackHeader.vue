@@ -16,7 +16,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
       <div class="py-6 px-8">
         <p class="text-sm text-gray-400">{{ title }} id</p>
-        <p class="text-4xl pt-2">{{ packagesStack.id }}</p>
+        <p class="text-4xl pt-2">{{ packagesStack.id ?? 'No Id' }}</p>
       </div>
       <div class="py-6 px-8">
         <p class="text-sm text-gray-400">Nb of packages</p>
@@ -34,6 +34,7 @@ import BaseButton from '../UI/Buttons/BaseButton.vue';
 
 const props = defineProps({
   title: String,
+  otherName: String,
   packagesStack: Object,
   notice: String,
   packagesStackIsEmpty: Boolean,
