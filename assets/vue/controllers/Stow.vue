@@ -100,41 +100,20 @@ const updateCurrentPairPackages = () => {
   const pkgId = currentPackage.value?.id
   if (!pkgId) return
 
-  console.log('currentPaire', currentPair.value);
-
   currentPair.value.locations = currentPair.value.locations.map(row => ({
     ...row,
     packages: row.packages.filter(p => p.id !== pkgId)
   }))
 
-  console.log('currentPaire ?', currentPair.value);
-
   if (!locations.value) return
 
-  console.log('locations', locations.value);
-
-  /* locations.value.locations = locations.value.locations.map(row => ({
-    ...row,
-    packages: row.packages.filter(p => p.id !== pkgId)
-  })) */
-
-  locations.value.locations = locations.value.locations.map(group => ({
+  locations.value = locations.value.map(group => ({
     ...group,
     locations: group.locations.map(row => ({
       ...row,
       packages: (row.packages || []).filter(p => p.id !== pkgId),
     })),
   }));
-
-  /* locations.value = Object.fromEntries(
-    Object.entries(locations.value).map(([key, rows]) => [
-      key,
-      rows.map(row => ({
-        ...row,
-        packages: (row.packages || []).filter(p => p.id !== pkgId),
-      })),
-    ]),
-  ) */
 }
 
 async function stowPackage(loc) {
@@ -168,7 +147,6 @@ async function stowPackage(loc) {
       currentPackage.value = null
     }, 1500);
   }
-
 }
 
 provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
