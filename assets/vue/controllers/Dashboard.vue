@@ -24,9 +24,9 @@
 
 //TODO:
 
-// package drop id est vide dans le header Stow
-// calculer le poids du sac
 // Filtrer en fonctions des locations vides
+// calculer le nombre de bag plein avec des packages
+// Itérer dans le components Info plutôt que de dupliquer le code
 // créer un script d'induction automatique et de stow automatique
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
@@ -69,9 +69,9 @@ const setCurrentBag = (bag) => {
   if (!bag) {
     return
   }
-
   currentBag.value = bag;
   infoDialogRef.value?.openDialog()
 }
+
 
 </script>

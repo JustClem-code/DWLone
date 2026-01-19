@@ -18,5 +18,13 @@ export function useLogic() {
     if (fn) fn()
   }
 
-  return { getNumberOfPackagesNotInducted, getPalletsNotUnloaded, handleMenuAction };
+  const formatInt = (n) => {
+    const value = n / 1000;
+    return new Intl.NumberFormat('fr-FR', {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3
+    }).format(value);
+  }
+
+  return { getNumberOfPackagesNotInducted, getPalletsNotUnloaded, handleMenuAction, formatInt };
 }

@@ -72,6 +72,7 @@ class PackageRepository extends ServiceEntityRepository
     return [
       'id' => $package->getId(),
       'weight' => $package->getWeight(),
+      'totalWeight' => $package->getWeight() + $package->getPackaging()->getWeight(),
       'postcode' => $package->getOrderId()->getAddress()->getPostcode(),
       'userStow' => $package->getUserStow()?->getUsername(),
     ];
