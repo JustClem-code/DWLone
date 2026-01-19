@@ -24,7 +24,7 @@
   </DialogComponentSlot>
 
   <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
-    <TruckInfo :currentTruck="currentTruck" />
+    <InformationComponent :informations="truckInfos" />
   </DialogComponentSlot>
   <DialogComponentSlot ref="confirmUndockDialogRef">
     <ConfirmationComponent question="Are you sure to undock ?" @confirm="unDocking"
@@ -44,8 +44,7 @@ import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import BaseButton from '../UI/Buttons/BaseButton.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
-
-import TruckInfo from './TruckInfo.vue';
+import InformationComponent from '../UI/Modals/InformationComponent.vue';
 
 import { formattedDateFr } from '../../composables/dateFormat.js'
 import { useLogic } from '../../composables/useLogic.js'
@@ -96,6 +95,35 @@ const dateInfo = (truck) => {
 const setCurrentTruck = (truck) => {
   currentTruck.value = truck
 }
+
+const truckInfos = computed(() => {
+  return {
+    title: "Truck informations",
+    datas: [
+      { 'Vrid': currentTruck.value?.name },
+      { 'Dock': currentTruck.value?.dock },
+      { 'Number of pallets': currentTruck.value?.pallets.length },
+      {
+        'Timeline': [
+          {
+            title: 'Expected on',
+            date: formattedDateFr(currentTruck.value?.expectedDate) ?? 'No date'
+          },
+          {
+            title: 'Delivered on',
+            user: `by ${currentTruck.value?.userDelDate ?? 'No user'}`,
+            date: formattedDateFr(currentTruck.value?.deliveryDate) ?? 'No date'
+          },
+          {
+            title: 'Departure on',
+            user: `by ${currentTruck.value?.userDepDate ?? 'No user'}`,
+            date: formattedDateFr(currentTruck.value?.departureDate) ?? 'No date'
+          },
+        ]
+      }
+    ]
+  }
+})
 
 const somePalletIsUnloaded = computed(() => {
   if (!currentTruck.value) return
