@@ -12,8 +12,7 @@
         <dt class="text-sm/6 font-medium">{{ key }}</dt>
         <dd class="mt-2 text-sm sm:col-span-2 sm:mt-0">
           <ul>
-            <li v-for="date in value" :key="date.title"
-              class="relative flex gap-1 items-center mb-6 last:mb-0">
+            <li v-for="date in value" :key="date.title" class="relative flex gap-1 items-center mb-6 last:mb-0">
               <div class="timeline_border absolute top-0 left-0 -bottom-6 flex w-6 justify-center">
                 <div class="w-[1px] bg-gray-300 dark:bg-gray-700/90 h-full"></div>
               </div>
