@@ -19,7 +19,7 @@
     </div>
     <BorderedContent title="Bags">
       <div class="grid grid-cols-6 gap-4">
-        <HorizontalLinkButton v-for="(location) in locations" :key="location.id" @click="setCurrentBag(location.bag)"
+        <HorizontalLinkButton v-for="location in locations" :key="location.id" @click="setCurrentBag(location.bag)"
           :title="location.name" :focused="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''" />
       </div>
     </BorderedContent>
@@ -79,6 +79,7 @@ const { notifier } = useNotification()
 
 onMounted(() => {
   console.log(`the component is now mounted.`)
+  console.log(`location`, locations)
 })
 
 const currentBag = ref(null)
@@ -116,6 +117,7 @@ const bagInfos = computed(() => {
       { 'Bag': currentBag.value?.name },
       { 'Location': currentBag.value?.locationName },
       { 'Number of packages': currentBag.value?.packages.length },
+      { 'Number of packages in bag': currentBag.value?.packages.filter( p => p.userStow !== null ).length },
       { 'Total Weight': `${formatInt(currentBag.value?.totalBagWeight)} kg` },
     ]
   }

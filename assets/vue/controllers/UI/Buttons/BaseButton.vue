@@ -1,9 +1,9 @@
 <template>
   <button :type="buttonType ?? 'button'"
-    class="inline-flex w-full justify-center items-center leading-6 transition duration-150 ease-in-out" :class="[computedShape, computedColor, computedSize]"
-    @click="emit('click')" :disabled="isDisabled">
-    <AnimateSpin v-if="isLoading"></AnimateSpin>
-    <span v-else>{{ title }}</span>
+    class="inline-flex w-full justify-center items-center leading-6 transition duration-150 ease-in-out"
+    :class="[computedShape, computedColor, computedSize]" @click="emit('click')" :disabled="disabled">
+    <AnimateSpin v-show="isLoading" class="absolute" />
+    <span :class="{ 'invisible': isLoading }">{{ title }}</span>
   </button>
 </template>
 
@@ -21,6 +21,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['click'])
+
+const disabled = computed(() => props.isDisabled || props.isLoading ? true : false)
 
 const computedShape = computed(() => {
   return props.styleColor === "flat" ? "text-base" : "text-sm font-semibold rounded-md shadow-xs inset-ring inset-shadow-sm"
