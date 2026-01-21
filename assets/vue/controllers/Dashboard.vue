@@ -9,8 +9,11 @@
         </div>
       </BorderedContent>
       <BorderedContent title="Auto" width="w-1/2">
-        <div>
-          <BaseButton title="Automatic" styleColor="primary" />
+        <div class="flex flex-col gap-2">
+          <BaseButton @click="automaticInduct" title="Automatic" styleColor="primary"
+            :isLoading="automaticInductIsLoading" />
+          <BaseButton @click="resetLocationsBagsPackages" title="Hard reset" styleColor="warning"
+            :isLoading="hardResetIsLoading" />
         </div>
       </BorderedContent>
     </div>
@@ -31,6 +34,8 @@
 
 //TODO:
 
+// Dégager HArdReset de l'induction
+// créer un store pour le local Storage (currentPallet dans induction et dashboard)
 // revoir la gestion de la mise en Bag, regrouper les Bags des routes dans la même allée si possible donc des routes
 // Filtrer en fonctions des locations vides
 // calculer le nombre de bag plein avec des packages
@@ -49,8 +54,9 @@
 import { onMounted, watch, ref, provide, computed } from 'vue'
 
 import { userStore } from '../composables/userStore.js'
-import { useFetch } from '../composables/fetch.js'
+import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useLogic } from '../composables/useLogic.js'
+import { useNotification } from '../composables/eventBus.js'
 
 import BorderedContent from './UI/BorderedContent.vue';
 import HorizontalLinkButton from './UI/Buttons/HorizontalLinkButton.vue';
@@ -69,12 +75,19 @@ const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations
 
 const { formatInt } = useLogic()
 
+const { notifier } = useNotification()
+
 onMounted(() => {
   console.log(`the component is now mounted.`)
 })
 
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
+
+const STORAGE_KEY = 'currentPallet'
+
+const automaticInductIsLoading = ref(null)
+const hardResetIsLoading = ref(null)
 
 const setCurrentBag = (bag) => {
   if (!bag) {
@@ -107,5 +120,30 @@ const bagInfos = computed(() => {
     ]
   }
 })
+
+async function automaticInduct() {
+  automaticInductIsLoading.value = true;
+  localStorage.removeItem(STORAGE_KEY)
+  const { data, error } = await usePostFetch('/automaticInductAndStow')
+
+  if (data.value) {
+    automaticInductIsLoading.value = false;
+    notifier('success', 'Induct', `The automatic induct is finished`)
+    locations.value = data.value
+  }
+
+}
+
+async function resetLocationsBagsPackages() {
+  hardResetIsLoading.value = true;
+  const { data, error } = await usePostFetch('/hardResetLocationsBagsPackages');
+
+  if (data.value) {
+    localStorage.removeItem(STORAGE_KEY)
+    hardResetIsLoading.value = false;
+    notifier('success', 'Hard reset', `The reset is finished`)
+    locations.value = data.value
+  }
+}
 
 </script>

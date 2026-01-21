@@ -13,13 +13,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Package;
 
 use App\Repository\PackageRepository;
-use App\Repository\LocationRepository;
 use App\Repository\BagRepository;
 use App\Repository\PalletRepository;
+
+use App\Service\SetPackageLocationService;
 
 final class InductionController extends AbstractController
 {
   use RepositoryTrait;
+
+  public function __construct(private SetPackageLocationService $setPackageLocationService) {}
 
   #[Route('/warehouse/induction', name: 'app_induction')]
   public function index(): Response
@@ -40,10 +43,9 @@ final class InductionController extends AbstractController
     Package $package,
     EntityManagerInterface $entityManager,
     PackageRepository $packageRepository,
-    LocationRepository $locationRepository,
-    BagRepository $bagRepository,
     int $id,
   ): Response {
+
     $package = $entityManager->getRepository(Package::class)->find($id);
 
     if (!$package) {
@@ -52,26 +54,9 @@ final class InductionController extends AbstractController
       );
     }
 
-    if (!$package->getLocation()) {
+    $data = $this->setPackageLocationService->setPackageLocation($package);
 
-      $location = $packageRepository->findLocationBySamePostcode($package);
-
-      if (!$location) {
-        $location = $locationRepository->findRandomWithoutPackage();
-      }
-
-      if (!$location->getBag()) {
-        $randomBag = $bagRepository->findRandomWithoutLocation();
-        $location->setBag($randomBag);
-      }
-
-      $package->setLocation($location);
-      $package->setBag($location->getBag());
-
-      $entityManager->flush();
-    }
-
-    return $this->json($packageRepository->toArray($package));
+    return $this->json($packageRepository->toArray($data));
   }
 
   #[Route('/resetLocationsBagsPackages', name: 'reset_locations_bags_packages', methods: ['POST'])]

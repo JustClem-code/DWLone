@@ -18,6 +18,9 @@ use App\Repository\LocationRepository;
  */
 class PackageRepository extends ServiceEntityRepository
 {
+
+  use RepositoryTrait;
+
   public function __construct(
     ManagerRegistry $registry,
     private OrderRepository $orderRepository,
@@ -25,6 +28,17 @@ class PackageRepository extends ServiceEntityRepository
     private LocationRepository $locationRepository,
   ) {
     parent::__construct($registry, Package::class);
+  }
+
+   public function findAllWithoutLocationFromPalletsWithUser(): array
+  {
+    return $this->createQueryBuilder('pa')
+      ->innerJoin('pa.Pallet', 'p')
+      ->andWhere('p.UserId IS NOT NULL')
+      ->andWhere('pa.location IS NULL')
+      ->orderBy('pa.id', 'ASC')
+      ->getQuery()
+      ->getResult();
   }
 
   public function findAllHasLocation(): array
@@ -78,7 +92,7 @@ class PackageRepository extends ServiceEntityRepository
     ];
   }
 
-
+  // Not used
   public function transformCollection($entities): array
   {
     return $this->transFormEntities($entities, [$this, 'toArray']);
