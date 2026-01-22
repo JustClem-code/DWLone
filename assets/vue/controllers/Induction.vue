@@ -56,7 +56,7 @@ const palletsOnfloorOptions = computed(() => {
   return palletsOnFloorWithPackages.value?.filter(p => p.id !== currentPallet.value?.id)
 })
 
-provide('induction', { palletsOnfloorOptions, addPallet, addPalletLoading, setLocation, setLocationLoading, resetLocationsBagsPackages })
+provide('induction', { palletsOnfloorOptions, addPallet, addPalletLoading, setLocation, setLocationLoading })
 
 const updateCurrentPallet = () => {
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== currentPackage.value.id);
@@ -64,12 +64,6 @@ const updateCurrentPallet = () => {
     const palletOnFloorIndex = palletsOnFloorWithPackages.value.findIndex(p => p.id === currentPallet.value.id)
     palletsOnFloorWithPackages.value.splice(palletOnFloorIndex, 1)
   }
-}
-
-async function resetLocationsBagsPackages() {
-  const { data, error } = await usePostFetch('/resetLocationsBagsPackages');
-  currentPallet.value = null
-  palletsOnFloorWithPackages.value = data.value
 }
 
 async function setLocation(inductedPackage) {

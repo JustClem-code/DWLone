@@ -32,10 +32,6 @@
   <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
     <PalletInfo :currentPallet="currentPallet" />
   </DialogComponentSlot>
-  <DialogComponentSlot ref="confirmResetDialogRef">
-    <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
-      @cancel="confirmResetDialogRef?.closeDialog()" />
-  </DialogComponentSlot>
 
 </template>
 
@@ -48,7 +44,6 @@ import AddDatabaseIcon from '../UI/Icons/AddDatabaseIcon.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import SelectOptionComponent from '../UI/Modals/SelectOptionComponent.vue';
 import Package from '../UI/Package.vue';
-import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 import DashedEmptyState from '../UI/DashedEmptyState.vue';
 
 import PalletInfo from '../SharedComponents/PalletInfo.vue';
@@ -61,13 +56,11 @@ const props = defineProps({
 
 const { getNumberOfPackagesNotInducted } = useLogic()
 
-const { palletsOnfloorOptions, addPalletLoading, addPallet, setLocationLoading, resetLocationsBagsPackages } = inject('induction')
+const { palletsOnfloorOptions, addPalletLoading, addPallet, setLocationLoading } = inject('induction')
 
 const SelectOptionRef = ref(null)
 
 const infoDialogRef = ref(null);
-
-const confirmResetDialogRef = ref(null);
 
 const isDragging = ref(false)
 
@@ -116,24 +109,13 @@ const menuItems = computed(() => [
     isDisabled:
       palletsOnfloorOptions.value?.length === 0
   },
-  {
-    label: 'Hard Reset',
-    action: 'confirmResetItem',
-  },
 ])
 
 const selectOptions = () => SelectOptionRef.value?.openDialog()
 
 const openInfos = () => infoDialogRef.value?.openDialog()
 
-const resetItem = () => {
-  resetLocationsBagsPackages()
-  confirmResetDialogRef.value?.closeDialog()
-}
-
-const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
-
-const actions = { selectOptions, confirmResetItem, openInfos }
+const actions = { selectOptions, openInfos }
 
 </script>
 

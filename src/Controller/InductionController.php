@@ -58,31 +58,4 @@ final class InductionController extends AbstractController
 
     return $this->json($packageRepository->toArray($data));
   }
-
-  #[Route('/resetLocationsBagsPackages', name: 'reset_locations_bags_packages', methods: ['POST'])]
-  public function resetLocationsBagsPackages(
-    EntityManagerInterface $entityManager,
-    PackageRepository $packageRepository,
-    BagRepository $bagRepository,
-    PalletRepository $palletRepository
-  ): Response {
-
-    $packagesWithLocation = $packageRepository->findAllHasLocation();
-
-    foreach ($packagesWithLocation as $package) {
-      $package->setLocation(null);
-      $package->setBag(null);
-      $package->setUserStow(null);
-    }
-
-    $bagsWithLocation = $bagRepository->findAllHasLocation();
-
-    foreach ($bagsWithLocation as $bag) {
-      $bag->setLocation(null);
-    }
-
-    $entityManager->flush();
-
-    return $this->getPalletsOnFloorWithPackages($palletRepository);
-  }
 }
