@@ -85,7 +85,8 @@ onMounted(() => {
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
 
-const STORAGE_KEY = 'currentPallet'
+const STORAGE_KEY_PALLET = 'currentPallet'
+const STORAGE_KEY_PAIR = 'currentPair'
 
 const automaticInductIsLoading = ref(null)
 const hardResetIsLoading = ref(null)
@@ -123,9 +124,14 @@ const bagInfos = computed(() => {
   }
 })
 
+const resetLocalStorage = () => {
+  localStorage.removeItem(STORAGE_KEY_PALLET)
+  localStorage.removeItem(STORAGE_KEY_PAIR)
+}
+
 async function automaticInduct() {
   automaticInductIsLoading.value = true;
-  localStorage.removeItem(STORAGE_KEY)
+  resetLocalStorage()
   const { data, error } = await usePostFetch('/automaticInductAndStow')
 
   if (data.value) {
@@ -141,7 +147,7 @@ async function resetLocationsBagsPackages() {
   const { data, error } = await usePostFetch('/hardResetLocationsBagsPackages');
 
   if (data.value) {
-    localStorage.removeItem(STORAGE_KEY)
+    resetLocalStorage()
     hardResetIsLoading.value = false;
     notifier('success', 'Hard reset', `The reset is finished`)
     locations.value = data.value
