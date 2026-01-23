@@ -10,6 +10,23 @@
       </BorderedContent>
       <BorderedContent title="Auto" width="w-1/2">
         <div class="flex flex-col gap-2">
+
+          <!-- RadioCard -->
+          <label aria-label="Newsletter" aria-description="Last message sent an hour ago to 621 users"
+            class="p-1 relative flex border border-gray-200 checked:border-green-5OO rounded bg-gray-500">
+            <input type="radio" name="mailing-list" value="newsletter" checked="" class="absolute inset-0 appearance-none">
+            <div class="flex-1">
+              <span class="block nzg nzi nzp">Newsletter</span>
+              <span class="nyl block nzg nzk">Last message sent an hour ago</span>
+              <span class="nym block nzg nzi nzp">621 users</span>
+            </div>
+            <CheckCircleFillIcon size="size-5" color="text-green-500"/>
+          </label>
+          <!-- /RadioCard -->
+
+
+
+
           <BaseButton @click="automaticInduct" title="Automatic" styleColor="primary"
             :isLoading="automaticInductIsLoading" />
           <BaseButton @click="resetLocationsBagsPackages" title="Hard reset" styleColor="warning"
@@ -34,24 +51,20 @@
 
 //TODO:
 
-// Dégager HArdReset de l'induction
-// créer un store pour le local Storage (currentPallet dans induction et dashboard)
-// revoir la gestion de la mise en Bag, regrouper les Bags des routes dans la même allée si possible donc des routes
+// créer un script de stow automatique
+// -> côté vue, faire en sorte de choisir des options avec radios button par exemple 'induct' 'stow' ou les deux
+
 // Filtrer en fonctions des locations vides
 // calculer le nombre de bag plein avec des packages
-// créer un script d'induction automatique et de stow automatique
+// afficher les stats des pallet attentu, packages inducté et en stow, ect...
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
-// créer un vignette Bag sur le dashboard
-// afficher les bags dans la vignette
-
-// grouper en fonctions des postcode
 
 // régler les problèmes ERROR lens (package...)
 // gestion du animate pulse si chargement de la (list / HorizontalLinkButton et divers composants) => voir tailwind UI
 // plus globalement, il faut gérer le chargement côté vue et twig
 
-import { onMounted, watch, ref, provide, computed } from 'vue'
+import { onMounted, ref, provide, computed } from 'vue'
 
 import { userStore } from '../composables/userStore.js'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
@@ -63,6 +76,7 @@ import HorizontalLinkButton from './UI/Buttons/HorizontalLinkButton.vue';
 import DialogComponentSlot from './UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from './UI/Modals/InformationComponent.vue';
 import BaseButton from './UI/Buttons/BaseButton.vue';
+import CheckCircleFillIcon from './UI/Icons/CheckCircleFillIcon.vue'
 
 const props = defineProps({
   is_user: Boolean,
@@ -118,7 +132,7 @@ const bagInfos = computed(() => {
       { 'Bag': currentBag.value?.name },
       { 'Location': currentBag.value?.locationName },
       { 'Number of packages': currentBag.value?.packages.length },
-      { 'Number of packages in bag': currentBag.value?.packages.filter( p => p.userStow !== null ).length },
+      { 'Number of packages in bag': currentBag.value?.packages.filter(p => p.userStow !== null).length },
       { 'Total Weight': `${formatInt(currentBag.value?.totalBagWeight)} kg` },
     ]
   }
