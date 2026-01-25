@@ -14,7 +14,7 @@
             </div>
             <div class="pt-1">
               <p class="text-sm">{{ notif.message }}</p>
-              <p class="text-nowrap text-sm font-light text-gray-800 dark:text-gray-400">{{ notif.message_2 }}</p>
+              <p class="text-nowrap text-sm font-light text-gray-500 dark:text-gray-400">{{ notif.message_2 }}</p>
             </div>
             <div class="shrink-0">
               <IconButton @click="closeNotification(notif.id)">

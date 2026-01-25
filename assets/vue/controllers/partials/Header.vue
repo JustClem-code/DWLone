@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-white dark:bg-gray-800/50 border-b border-solid border-gray-200 dark:border-gray-700/90">
+  <nav class="bg-white/40 dark:bg-gray-800/50 border-b border-solid border-gray-200 dark:border-gray-700/90">
     <div class="flex items-center justify-between gap-8 flex-wrap mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 ">
       <div class="hidden md:block">
         <LogoTitle />

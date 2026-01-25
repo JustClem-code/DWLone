@@ -13,19 +13,19 @@
 
           <!-- RadioCard -->
           <label aria-label="Newsletter" aria-description="Last message sent an hour ago to 621 users"
-            class="p-1 relative flex border border-gray-200 checked:border-green-5OO rounded bg-gray-500">
-            <input type="radio" name="mailing-list" value="newsletter" checked="" class="absolute inset-0 appearance-none">
+            class="w-full p-4 relative flex bg-white/40 dark:bg-gray-800/50 border shadow-xs dark:shadow-none border-gray-300 dark:border-gray-700/90 rounded-lg"
+            :class="selected === 'option4' ? 'outline-2 -outline-offset-2 outline-green-500' : ''">
+            <input type="radio" name="mailing-list" value="option4" v-model="selected"
+              class="absolute inset-0 appearance-none cursor-pointer">
             <div class="flex-1">
-              <span class="block nzg nzi nzp">Newsletter</span>
-              <span class="nyl block nzg nzk">Last message sent an hour ago</span>
-              <span class="nym block nzg nzi nzp">621 users</span>
+              <span class="block text-sm font-medium">Induction</span>
+              <span class="block text-sm mt-1 text-gray-500 dark:text-gray-400">Automating of pallet induct on floor</span>
+              <span class="block text-sm mt-4">621 users</span>
             </div>
-            <CheckCircleFillIcon size="size-5" color="text-green-500"/>
+            <CheckCircleFillIcon size="size-5" color="text-green-500" v-show="selected === 'option4'" />
           </label>
           <!-- /RadioCard -->
-
-
-
+          <p>Valeur sélectionnée : {{ selected }}</p>
 
           <BaseButton @click="automaticInduct" title="Automatic" styleColor="primary"
             :isLoading="automaticInductIsLoading" />
@@ -82,6 +82,8 @@ const props = defineProps({
   is_user: Boolean,
   user_name: String
 });
+
+const selected = ref('')
 
 const { userName } = userStore()
 
