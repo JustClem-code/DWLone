@@ -11,21 +11,11 @@
       <BorderedContent title="Auto" width="w-1/2">
         <div class="flex flex-col gap-2">
 
-          <!-- RadioCard -->
-          <label aria-label="Newsletter" aria-description="Last message sent an hour ago to 621 users"
-            class="w-full p-4 relative flex bg-white/40 dark:bg-gray-800/50 border shadow-xs dark:shadow-none border-gray-300 dark:border-gray-700/90 rounded-lg"
-            :class="selected === 'option4' ? 'outline-2 -outline-offset-2 outline-green-500' : ''">
-            <input type="radio" name="mailing-list" value="option4" v-model="selected"
-              class="absolute inset-0 appearance-none cursor-pointer">
-            <div class="flex-1">
-              <span class="block text-sm font-medium">Induction</span>
-              <span class="block text-sm mt-1 text-gray-500 dark:text-gray-400">Automating of pallet induct on floor</span>
-              <span class="block text-sm mt-4">621 users</span>
-            </div>
-            <CheckCircleFillIcon size="size-5" color="text-green-500" v-show="selected === 'option4'" />
-          </label>
-          <!-- /RadioCard -->
+          <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
+
           <p>Valeur sélectionnée : {{ selected }}</p>
+
+          <BaseButton @click="submitAutomaticForm" title="Automatic program" styleColor="primary" :isDisabled="!selected"/>
 
           <BaseButton @click="automaticInduct" title="Automatic" styleColor="primary"
             :isLoading="automaticInductIsLoading" />
@@ -77,13 +67,13 @@ import DialogComponentSlot from './UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from './UI/Modals/InformationComponent.vue';
 import BaseButton from './UI/Buttons/BaseButton.vue';
 import CheckCircleFillIcon from './UI/Icons/CheckCircleFillIcon.vue'
+import RadioCard from './UI/Radios/RadioCard.vue'
 
 const props = defineProps({
   is_user: Boolean,
   user_name: String
 });
 
-const selected = ref('')
 
 const { userName } = userStore()
 
@@ -100,12 +90,20 @@ onMounted(() => {
 
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
+const selected = ref(null)
 
 const STORAGE_KEY_PALLET = 'currentPallet'
 const STORAGE_KEY_PAIR = 'currentPair'
 
 const automaticInductIsLoading = ref(null)
 const hardResetIsLoading = ref(null)
+
+const automaticOptions = [
+  { 'value': 'Induct', 'notice': 'Automating of pallet induct on floor', 'number': '' },
+  { 'value': 'Stow', 'notice': 'Automating of packages stow', 'number': '' },
+  { 'value': 'Full', 'notice': 'Automating every step', 'number': '' },
+  { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': '' },
+]
 
 const setCurrentBag = (bag) => {
   if (!bag) {
@@ -117,14 +115,14 @@ const setCurrentBag = (bag) => {
 
 const getBagColor = (name) => {
   const prefix = name.match(/^[^-]+/)[0];
-  const map = {
+  const colors = {
     'BLK': 'outline-2 outline-offset-2',
     'NVY': 'outline-2 outline-blue-700 outline-offset-2',
     'ORG': 'outline-2 outline-orange-700 outline-offset-2',
     'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
     'GRN': 'outline-2 outline-green-700 outline-offset-2',
   }
-  return map[prefix] ?? '';
+  return colors[prefix] ?? '';
 }
 
 const bagInfos = computed(() => {
@@ -139,6 +137,11 @@ const bagInfos = computed(() => {
     ]
   }
 })
+
+async function submitAutomaticForm() {
+  console.log('selectedOption', selected.value);
+
+}
 
 const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PALLET)
