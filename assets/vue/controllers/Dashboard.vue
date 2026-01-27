@@ -15,12 +15,13 @@
 
           <p>Valeur sélectionnée : {{ selected }}</p>
 
-          <BaseButton @click="submitAutomaticForm" title="Automatic program" styleColor="primary" :isDisabled="!selected"/>
+          <BaseButton @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
+            :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading"  />
 
-          <BaseButton @click="automaticInduct" title="Automatic" styleColor="primary"
+          <!-- <BaseButton @click="automaticInduct" title="Automatic" styleColor="primary"
             :isLoading="automaticInductIsLoading" />
           <BaseButton @click="resetLocationsBagsPackages" title="Hard reset" styleColor="warning"
-            :isLoading="hardResetIsLoading" />
+            :isLoading="hardResetIsLoading" /> -->
         </div>
       </BorderedContent>
     </div>
@@ -43,6 +44,7 @@
 
 // créer un script de stow automatique
 // -> côté vue, faire en sorte de choisir des options avec radios button par exemple 'induct' 'stow' ou les deux
+// disabled les options si rien à stower ou si rien à induct ou si rien à reset, pfiou
 
 // Filtrer en fonctions des locations vides
 // calculer le nombre de bag plein avec des packages
@@ -138,11 +140,6 @@ const bagInfos = computed(() => {
   }
 })
 
-async function submitAutomaticForm() {
-  console.log('selectedOption', selected.value);
-
-}
-
 const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PALLET)
   localStorage.removeItem(STORAGE_KEY_PAIR)
@@ -158,7 +155,6 @@ async function automaticInduct() {
     notifier('success', 'Induct', `The automatic induct is finished`)
     locations.value = data.value
   }
-
 }
 
 async function resetLocationsBagsPackages() {
@@ -170,6 +166,23 @@ async function resetLocationsBagsPackages() {
     hardResetIsLoading.value = false;
     notifier('success', 'Hard reset', `The reset is finished`)
     locations.value = data.value
+  }
+}
+
+function submitAutomaticForm() {
+  console.log('selectedOption', selected.value);
+  if (selected.value === 'Induct') {
+    automaticInduct()
+  } else if (selected.value === 'Stow') {
+
+
+  } else if (selected.value === 'Full') {
+
+
+  } else if (selected.value === 'Hard reset') {
+    resetLocationsBagsPackages()
+  } else {
+    console.log('error');
   }
 }
 
