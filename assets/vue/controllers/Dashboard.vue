@@ -13,15 +13,9 @@
 
           <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
 
-          <p>Valeur sélectionnée : {{ selected }}</p>
-
           <BaseButton @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
-            :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading"  />
+            :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading" />
 
-          <!-- <BaseButton @click="automaticInduct" title="Automatic" styleColor="primary"
-            :isLoading="automaticInductIsLoading" />
-          <BaseButton @click="resetLocationsBagsPackages" title="Hard reset" styleColor="warning"
-            :isLoading="hardResetIsLoading" /> -->
         </div>
       </BorderedContent>
     </div>
@@ -68,7 +62,6 @@ import HorizontalLinkButton from './UI/Buttons/HorizontalLinkButton.vue';
 import DialogComponentSlot from './UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from './UI/Modals/InformationComponent.vue';
 import BaseButton from './UI/Buttons/BaseButton.vue';
-import CheckCircleFillIcon from './UI/Icons/CheckCircleFillIcon.vue'
 import RadioCard from './UI/Radios/RadioCard.vue'
 
 const props = defineProps({
@@ -145,14 +138,20 @@ const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PAIR)
 }
 
-async function automaticInduct() {
+async function automaticInduct(induct, stow) {
   automaticInductIsLoading.value = true;
   resetLocalStorage()
-  const { data, error } = await usePostFetch('/automaticInductAndStow')
+  const { data, error } = await usePostFetch('/automaticInductAndStow', { induct: induct ?? false, stow: stow ?? false })
 
   if (data.value) {
     automaticInductIsLoading.value = false;
-    notifier('success', 'Induct', `The automatic induct is finished`)
+    if (induct) {
+      notifier('success', 'Induct', `The automatic induct is finished`)
+    } else if (stow) {
+      notifier('success', 'Stow', `The automatic stow is finished`)
+    } else {
+      notifier('success', 'Induct and stow', `The automatic induct and stow are finished`)
+    }
     locations.value = data.value
   }
 }
@@ -172,18 +171,18 @@ async function resetLocationsBagsPackages() {
 function submitAutomaticForm() {
   console.log('selectedOption', selected.value);
   if (selected.value === 'Induct') {
-    automaticInduct()
+    automaticInduct(true, false)
   } else if (selected.value === 'Stow') {
-
-
+    automaticInduct(false, true)
   } else if (selected.value === 'Full') {
-
-
+    automaticInduct(true, true)
   } else if (selected.value === 'Hard reset') {
     resetLocationsBagsPackages()
   } else {
     console.log('error');
   }
+
+  selected.value = null;
 }
 
 </script>

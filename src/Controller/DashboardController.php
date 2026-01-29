@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 use App\Repository\PackageRepository;
@@ -31,19 +32,29 @@ final class DashboardController extends AbstractController
   }
 
   #[Route('/automaticInductAndStow', name: 'automatic_induct_and_stow', methods: ['POST'])]
-  public function automaticInductAndStow(PackageRepository $packageRepository): Response
+  public function automaticInductAndStow(PackageRepository $packageRepository, Request $request): Response
   {
-    $packages = $packageRepository->findAllWithoutLocationFromPalletsWithUser();
+    $induct = $request->getPayload()->get('induct');
+    $stow = $request->getPayload()->get('stow');
 
-    foreach ($packages as $package) {
-      $this->setPackageLocationService->setPackageLocation($package);
+    if ($induct) {
+      $packages = $packageRepository->findAllWithoutLocationFromPalletsWithUser();
+
+      foreach ($packages as $package) {
+        $this->setPackageLocationService->setPackageLocation($package);
+      }
+    }
+
+    if ($stow) {
+      # code...
     }
 
     return $this->json($this->locationArrayTransformer->transformAllBagOriented());
   }
 
   #[Route('/hardResetLocationsBagsPackages', name: 'hard_reset_locations_bags_packages', methods: ['POST'])]
-  public function hardResetLocationsBagsPackages(): Response {
+  public function hardResetLocationsBagsPackages(): Response
+  {
     $this->setPackageLocationService->resetLocationsBagsPackages();
 
     return $this->json($this->locationArrayTransformer->transformAllBagOriented());
