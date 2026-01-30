@@ -7,6 +7,7 @@ use App\Repository\BagRepository;
 use App\Repository\LocationRepository;
 use App\Repository\PackageRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class SetPackageLocationService
 {
@@ -15,6 +16,7 @@ class SetPackageLocationService
     private PackageRepository $packageRepository,
     private LocationRepository $locationRepository,
     private BagRepository $bagRepository,
+    private Security $security
   ) {}
 
   public function setPackageLocation(Package $package): Package
@@ -38,6 +40,15 @@ class SetPackageLocationService
 
       $this->entityManager->flush();
     }
+
+    return $package;
+  }
+
+  public function setPackageUserStow(Package $package): Package
+  {
+    $package->setUserStow($this->security->getUser());
+    
+    $this->entityManager->flush();
 
     return $package;
   }

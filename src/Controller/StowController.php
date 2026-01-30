@@ -11,12 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 use App\Service\LocationArrayTransformer;
+use App\Service\SetPackageLocationService;
 
 use Symfony\Bundle\SecurityBundle\Security;
 
 final class StowController extends AbstractController
 {
-  public function __construct(private Security $security, private LocationArrayTransformer $locationArrayTransformer) {}
+  public function __construct(
+    private Security $security,
+    private LocationArrayTransformer $locationArrayTransformer,
+    private SetPackageLocationService $setPackageLocationService
+  ) {}
 
   #[Route('/warehouse/stow', name: 'app_stow')]
   public function index(): Response
@@ -35,7 +40,7 @@ final class StowController extends AbstractController
   }
 
   #[Route('/setUserStow/{id}', name: 'set_user_stow', methods: ['POST'])]
-  public function setPackageUserStow(
+  public function setUserStow(
     Package $package,
     EntityManagerInterface $entityManager,
     PackageRepository $packageRepository,
@@ -49,9 +54,7 @@ final class StowController extends AbstractController
       );
     }
 
-    $package->setUserStow($this->security->getUser());
-
-    $entityManager->flush();
+    $package =$this->setPackageLocationService->setPackageUserStow($package);
 
     return $this->json($packageRepository->toArray($package));
   }

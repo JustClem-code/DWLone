@@ -36,6 +36,10 @@
 
 //TODO:
 
+// rename setLocationService, maintenant il fait du stow
+// optimiser les function vue.js
+// Pb de timing de rechargement de package après réponse côté VUE
+
 // créer un script de stow automatique
 // -> côté vue, faire en sorte de choisir des options avec radios button par exemple 'induct' 'stow' ou les deux
 // disabled les options si rien à stower ou si rien à induct ou si rien à reset, pfiou
@@ -138,21 +142,49 @@ const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PAIR)
 }
 
-async function automaticInduct(induct, stow) {
-  automaticInductIsLoading.value = true;
-  resetLocalStorage()
-  const { data, error } = await usePostFetch('/automaticInductAndStow', { induct: induct ?? false, stow: stow ?? false })
+async function automaticInduct(induct = false, stow = false) {
+  // Rien à faire
+  if (!induct && !stow) return
 
-  if (data.value) {
-    automaticInductIsLoading.value = false;
-    if (induct) {
-      notifier('success', 'Induct', `The automatic induct is finished`)
-    } else if (stow) {
-      notifier('success', 'Stow', `The automatic stow is finished`)
-    } else {
-      notifier('success', 'Induct and stow', `The automatic induct and stow are finished`)
+  automaticInductIsLoading.value = true
+  resetLocalStorage()
+
+  try {
+    const { data, error } = await usePostFetch('/automaticInductAndStow', {
+      induct,
+      stow
+    })
+
+    if (error.value) {
+      notifier('error', 'Automatic induct & stow', 'An error occurred')
+      return
     }
+
+    if (!data.value) {
+      notifier('error', 'Automatic induct & stow', 'No data returned')
+      return
+    }
+
+    // Message dynamique
+    const actions = []
+    if (induct) actions.push('induct')
+    if (stow) actions.push('stow')
+
+    const title =
+      actions.length === 2
+        ? 'Induct & stow'
+        : actions[0].charAt(0).toUpperCase() + actions[0].slice(1)
+
+    const message =
+      actions.length === 2
+        ? 'The automatic induct & stow are finished'
+        : `The automatic ${actions[0]} is finished`
+
+    notifier('success', title, message)
+
     locations.value = data.value
+  } finally {
+    automaticInductIsLoading.value = false
   }
 }
 

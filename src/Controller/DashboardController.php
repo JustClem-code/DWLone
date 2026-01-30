@@ -46,10 +46,21 @@ final class DashboardController extends AbstractController
     }
 
     if ($stow) {
-      # code...
+      $packages = $packageRepository->findAllWithLocationAndNotStowed();
+
+      foreach ($packages as $package) {
+        $this->setPackageLocationService->setPackageUserStow($package);
+      }
     }
 
     return $this->json($this->locationArrayTransformer->transformAllBagOriented());
+  }
+
+  // Not Used
+  #[Route('/getPackagesNotStowed', name: 'get_packages_not_stowed', methods: ['Get'])]
+  public function getPackagesNotStowed(PackageRepository $packageRepository): Response
+  {
+    return $this->json($packageRepository->transformCollection($packageRepository->findAllWithLocationAndNotStowed()));
   }
 
   #[Route('/hardResetLocationsBagsPackages', name: 'hard_reset_locations_bags_packages', methods: ['POST'])]
