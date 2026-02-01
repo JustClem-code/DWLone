@@ -38,7 +38,6 @@
 
 // rename setLocationService, maintenant il fait du stow
 // optimiser les function vue.js
-// Pb de timing de rechargement de package après réponse côté VUE
 
 // créer un script de stow automatique
 // -> côté vue, faire en sorte de choisir des options avec radios button par exemple 'induct' 'stow' ou les deux
@@ -54,7 +53,7 @@
 // gestion du animate pulse si chargement de la (list / HorizontalLinkButton et divers composants) => voir tailwind UI
 // plus globalement, il faut gérer le chargement côté vue et twig
 
-import { onMounted, ref, provide, computed } from 'vue'
+import { onMounted, watch, ref, provide, computed } from 'vue'
 
 import { userStore } from '../composables/userStore.js'
 import { useFetch, usePostFetch } from '../composables/fetch.js'
@@ -84,7 +83,6 @@ const { notifier } = useNotification()
 
 onMounted(() => {
   console.log(`the component is now mounted.`)
-  console.log(`location`, locations)
 })
 
 const currentBag = ref(null)
@@ -143,7 +141,6 @@ const resetLocalStorage = () => {
 }
 
 async function automaticInduct(induct = false, stow = false) {
-  // Rien à faire
   if (!induct && !stow) return
 
   automaticInductIsLoading.value = true
@@ -165,7 +162,6 @@ async function automaticInduct(induct = false, stow = false) {
       return
     }
 
-    // Message dynamique
     const actions = []
     if (induct) actions.push('induct')
     if (stow) actions.push('stow')
@@ -201,7 +197,6 @@ async function resetLocationsBagsPackages() {
 }
 
 function submitAutomaticForm() {
-  console.log('selectedOption', selected.value);
   if (selected.value === 'Induct') {
     automaticInduct(true, false)
   } else if (selected.value === 'Stow') {
@@ -216,5 +211,12 @@ function submitAutomaticForm() {
 
   selected.value = null;
 }
+
+watch(
+  () => locations.value,
+  (newVal, oldVal) => {
+    console.log('locations changed:', newVal, oldVal)
+  }
+)
 
 </script>
