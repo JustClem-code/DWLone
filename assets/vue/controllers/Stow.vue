@@ -138,12 +138,10 @@ async function stowPackage(loc) {
     currentPackage.value = data.value
     updateCurrentPairPackages()
     setTimeout(() => {
-      stowingIsLoading.value = false;
-    }, 500);
-    setTimeout(() => {
       notifier('success', 'Stow', `The package (Id: ${currentPackage.value.id}) is stowed`)
     }, 1000);
     setTimeout(() => {
+      stowingIsLoading.value = false;
       currentPackage.value = null
     }, 1500);
   }
