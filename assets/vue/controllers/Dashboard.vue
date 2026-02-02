@@ -37,7 +37,7 @@
 //TODO:
 
 // rename setLocationService, maintenant il fait du stow
-// optimiser les function vue.js
+// optimiser les function vue.js et surtout faire à attention à la non duplication du code en PHP et JS
 
 // créer un script de stow automatique
 // -> côté vue, faire en sorte de choisir des options avec radios button par exemple 'induct' 'stow' ou les deux
@@ -76,6 +76,7 @@ const props = defineProps({
 const { userName } = userStore()
 
 const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
+const { data: allPackagesOnfloor, error: errorAllPackages } = useFetch('/getAllPackagesOnFloor')
 
 const { formatInt } = useLogic()
 
@@ -95,12 +96,12 @@ const STORAGE_KEY_PAIR = 'currentPair'
 const automaticInductIsLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
-const automaticOptions = [
-  { 'value': 'Induct', 'notice': 'Automating of pallet induct on floor', 'number': '' },
-  { 'value': 'Stow', 'notice': 'Automating of packages stow', 'number': '' },
+const automaticOptions = computed(() => [
+  { 'value': 'Induct', 'notice': 'Automating of pallet induct on floor', 'number': `${allPackagesOnfloor.value  ? allPackagesOnfloor.value.packagesWithoutLocation.length : 0}` },
+  { 'value': 'Stow', 'notice': 'Automating of packages stow', 'number': `${allPackagesOnfloor.value  ? allPackagesOnfloor.value.packagesWithLocationNotStowed.length : 0}` },
   { 'value': 'Full', 'notice': 'Automating every step', 'number': '' },
   { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': '' },
-]
+])
 
 const setCurrentBag = (bag) => {
   if (!bag) {
@@ -178,7 +179,9 @@ async function automaticInduct(induct = false, stow = false) {
 
     notifier('success', title, message)
 
-    locations.value = data.value
+    locations.value = data.value.locations
+    allPackagesOnfloor.value.packagesWithoutLocation = data.value.packagesWithoutLocation
+    allPackagesOnfloor.value.packagesWithLocationNotStowed = data.value.packagesWithLocationNotStowed
   } finally {
     automaticInductIsLoading.value = false
   }
@@ -192,7 +195,9 @@ async function resetLocationsBagsPackages() {
     resetLocalStorage()
     hardResetIsLoading.value = false;
     notifier('success', 'Hard reset', `The reset is finished`)
-    locations.value = data.value
+    locations.value = data.value.locations
+    allPackagesOnfloor.value.packagesWithoutLocation = data.value.packagesWithoutLocation
+    allPackagesOnfloor.value.packagesWithLocationNotStowed = data.value.packagesWithLocationNotStowed
   }
 }
 
@@ -216,7 +221,6 @@ watch(
   () => locations.value,
   (newVal, oldVal) => {
     console.log('locations changed:', newVal, oldVal)
-  }
-)
+  })
 
 </script>

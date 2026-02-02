@@ -30,22 +30,22 @@ class PackageRepository extends ServiceEntityRepository
     parent::__construct($registry, Package::class);
   }
 
+  public function findAllFromPalletsWithUser(): array
+  {
+    return $this->createQueryBuilder('pa')
+      ->innerJoin('pa.Pallet', 'p')
+      ->andWhere('p.UserId IS NOT NULL')
+      ->orderBy('pa.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
   public function findAllWithoutLocationFromPalletsWithUser(): array
   {
     return $this->createQueryBuilder('pa')
       ->innerJoin('pa.Pallet', 'p')
       ->andWhere('p.UserId IS NOT NULL')
       ->andWhere('pa.location IS NULL')
-      ->orderBy('pa.id', 'ASC')
-      ->getQuery()
-      ->getResult();
-  }
-
-  public function findAllWithLocationAndNotStowed(): array
-  {
-    return $this->createQueryBuilder('pa')
-      ->andWhere('pa.location IS NOT NULL')
-      ->andWhere('pa.UserStow IS NULL')
       ->orderBy('pa.id', 'ASC')
       ->getQuery()
       ->getResult();
@@ -59,6 +59,17 @@ class PackageRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
   }
+  
+  public function findAllWithLocationAndNotStowed(): array
+  {
+    return $this->createQueryBuilder('pa')
+      ->andWhere('pa.location IS NOT NULL')
+      ->andWhere('pa.UserStow IS NULL')
+      ->orderBy('pa.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
 
   private function findPostcode(Package $package): int
   {
