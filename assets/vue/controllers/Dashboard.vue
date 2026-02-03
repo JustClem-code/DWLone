@@ -96,11 +96,16 @@ const STORAGE_KEY_PAIR = 'currentPair'
 const automaticInductIsLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
+const packagesWithoutLocationNumber = computed(() => { return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithoutLocation.length : 0 })
+const packagesWithLocationNotStowedNumber = computed(() => { return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocationNotStowed.length : 0 })
+const packagesToResetNumber = computed(() => { return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackages.length - packagesWithoutLocationNumber.value : 0 })
+const packagesFullAutomatingNumber = computed(() => { return allPackagesOnfloor.value ? (packagesWithLocationNotStowedNumber.value >= packagesWithoutLocationNumber.value ? packagesWithLocationNotStowedNumber.value : packagesWithoutLocationNumber.value) : 0 })
+
 const automaticOptions = computed(() => [
-  { 'value': 'Induct', 'notice': 'Automating of pallet induct on floor', 'number': `${allPackagesOnfloor.value  ? allPackagesOnfloor.value.packagesWithoutLocation.length : 0}` },
-  { 'value': 'Stow', 'notice': 'Automating of packages stow', 'number': `${allPackagesOnfloor.value  ? allPackagesOnfloor.value.packagesWithLocationNotStowed.length : 0}` },
-  { 'value': 'Full', 'notice': 'Automating every step', 'number': '' },
-  { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': '' },
+  { 'value': 'Induct', 'notice': 'Automating of pallet induct on floor', 'number': `${packagesWithoutLocationNumber.value}`, 'disabled': packagesWithoutLocationNumber.value === 0 },
+  { 'value': 'Stow', 'notice': 'Automating of packages stow', 'number': `${packagesWithLocationNotStowedNumber.value}`, 'disabled': packagesWithLocationNotStowedNumber.value === 0 },
+  { 'value': 'Full', 'notice': 'Automating every step', 'number': `${packagesFullAutomatingNumber.value}`, 'disabled': packagesFullAutomatingNumber.value === 0 },
+  { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': `${packagesToResetNumber.value}`, 'disabled': packagesToResetNumber.value === 0 },
 ])
 
 const setCurrentBag = (bag) => {
@@ -109,18 +114,6 @@ const setCurrentBag = (bag) => {
   }
   currentBag.value = bag;
   infoDialogRef.value?.openDialog()
-}
-
-const getBagColor = (name) => {
-  const prefix = name.match(/^[^-]+/)[0];
-  const colors = {
-    'BLK': 'outline-2 outline-offset-2',
-    'NVY': 'outline-2 outline-blue-700 outline-offset-2',
-    'ORG': 'outline-2 outline-orange-700 outline-offset-2',
-    'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
-    'GRN': 'outline-2 outline-green-700 outline-offset-2',
-  }
-  return colors[prefix] ?? '';
 }
 
 const bagInfos = computed(() => {
@@ -136,9 +129,27 @@ const bagInfos = computed(() => {
   }
 })
 
+const getBagColor = (name) => {
+  const prefix = name.match(/^[^-]+/)[0];
+  const colors = {
+    'BLK': 'outline-2 outline-offset-2',
+    'NVY': 'outline-2 outline-blue-700 outline-offset-2',
+    'ORG': 'outline-2 outline-orange-700 outline-offset-2',
+    'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
+    'GRN': 'outline-2 outline-green-700 outline-offset-2',
+  }
+  return colors[prefix] ?? '';
+}
+
 const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PALLET)
   localStorage.removeItem(STORAGE_KEY_PAIR)
+}
+
+const updatePackagesData = (data) => {
+  locations.value = data.value.locations
+  allPackagesOnfloor.value.packagesWithoutLocation = data.value.packagesWithoutLocation
+  allPackagesOnfloor.value.packagesWithLocationNotStowed = data.value.packagesWithLocationNotStowed
 }
 
 async function automaticInduct(induct = false, stow = false) {
@@ -179,9 +190,8 @@ async function automaticInduct(induct = false, stow = false) {
 
     notifier('success', title, message)
 
-    locations.value = data.value.locations
-    allPackagesOnfloor.value.packagesWithoutLocation = data.value.packagesWithoutLocation
-    allPackagesOnfloor.value.packagesWithLocationNotStowed = data.value.packagesWithLocationNotStowed
+    updatePackagesData(data)
+
   } finally {
     automaticInductIsLoading.value = false
   }
@@ -195,9 +205,9 @@ async function resetLocationsBagsPackages() {
     resetLocalStorage()
     hardResetIsLoading.value = false;
     notifier('success', 'Hard reset', `The reset is finished`)
-    locations.value = data.value.locations
-    allPackagesOnfloor.value.packagesWithoutLocation = data.value.packagesWithoutLocation
-    allPackagesOnfloor.value.packagesWithLocationNotStowed = data.value.packagesWithLocationNotStowed
+
+    updatePackagesData(data)
+
   }
 }
 
