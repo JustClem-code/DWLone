@@ -1,6 +1,10 @@
 <template>
   <div class="flex flex-col gap-2">
 
+    <BaseButton title="Open side panel" @click="sidePanelRef?.toggleSideBar()"/>
+
+    <SidePanel ref="sidePanelRef"></SidePanel>
+
     <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
 
     <BaseButton @click="submitAutomaticForm" title="Automatic program" styleColor="primary" :isDisabled="!selected"
@@ -16,6 +20,7 @@ import { useNotification } from '../../composables/eventBus.js'
 
 import BaseButton from '../UI/Buttons/BaseButton.vue';
 import RadioCard from '../UI/Radios/RadioCard.vue';
+import SidePanel from '../UI/SidePanel.vue';
 
 const { data: allPackagesOnfloor, error: errorAllPackages } = useFetch('/getAllPackagesOnFloor')
 
@@ -25,6 +30,8 @@ const { locations } = inject('dashboard')
 
 const STORAGE_KEY_PALLET = 'currentPallet'
 const STORAGE_KEY_PAIR = 'currentPair'
+
+const sidePanelRef = ref(null)
 
 const selected = ref(null)
 const automaticInductIsLoading = ref(null)

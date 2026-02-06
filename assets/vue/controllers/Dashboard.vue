@@ -30,6 +30,7 @@
 //TODO:
 
 // régler les problèmes entities du profiler
+// Le side panel devrait s'ouvrir depuis le parent dashbord
 
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
