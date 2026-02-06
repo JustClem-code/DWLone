@@ -36,12 +36,11 @@
 
 //TODO:
 
-// rename setLocationService, maintenant il fait du stow
-// optimiser les function vue.js et surtout faire à attention à la non duplication du code en PHP et JS
+// STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
+// PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
+// DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// créer un script de stow automatique
-// -> côté vue, faire en sorte de choisir des options avec radios button par exemple 'induct' 'stow' ou les deux
-// disabled les options si rien à stower ou si rien à induct ou si rien à reset, pfiou
+// travailler l'UI de la page dashboard
 
 // Filtrer en fonctions des locations vides
 // calculer le nombre de bag plein avec des packages
@@ -49,7 +48,6 @@
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
 
-// régler les problèmes ERROR lens (package...)
 // gestion du animate pulse si chargement de la (list / HorizontalLinkButton et divers composants) => voir tailwind UI
 // plus globalement, il faut gérer le chargement côté vue et twig
 
@@ -212,20 +210,24 @@ async function resetLocationsBagsPackages() {
 }
 
 function submitAutomaticForm() {
-  if (selected.value === 'Induct') {
-    automaticInduct(true, false)
-  } else if (selected.value === 'Stow') {
-    automaticInduct(false, true)
-  } else if (selected.value === 'Full') {
-    automaticInduct(true, true)
-  } else if (selected.value === 'Hard reset') {
-    resetLocationsBagsPackages()
-  } else {
-    console.log('error');
+  const actions = {
+    'Induct':      () => automaticInduct(true, false),
+    'Stow':        () => automaticInduct(false, true),
+    'Full':        () => automaticInduct(true, true),
+    'Hard reset': () => resetLocationsBagsPackages(),
   }
 
-  selected.value = null;
+  const run = actions[selected.value]
+
+  if (!run) {
+    console.log('error')
+  } else {
+    run()
+  }
+
+  selected.value = null
 }
+
 
 watch(
   () => locations.value,

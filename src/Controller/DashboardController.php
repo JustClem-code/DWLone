@@ -42,6 +42,21 @@ final class DashboardController extends AbstractController
     return $this->json($this->locationArrayTransformer->transformAllBagOriented());
   }
 
+  //
+
+  private function buildLocationsResponse(PackageRepository $packageRepository): Response
+  {
+    return $this->json([
+      'locations' => $this->locationArrayTransformer->transformAllBagOriented(),
+      'packagesWithoutLocation' => $packageRepository->transformCollection(
+        $packageRepository->findAllWithoutLocationFromPalletsWithUser()
+      ),
+      'packagesWithLocationNotStowed' => $packageRepository->transformCollection(
+        $packageRepository->findAllWithLocationAndNotStowed()
+      ),
+    ]);
+  }
+
   #[Route('/automaticInductAndStow', name: 'automatic_induct_and_stow', methods: ['POST'])]
   public function automaticInductAndStow(PackageRepository $packageRepository, Request $request): Response
   {
@@ -64,33 +79,14 @@ final class DashboardController extends AbstractController
       }
     }
 
-    return $this->json(
-      [
-        'locations' => $this->locationArrayTransformer->transformAllBagOriented(),
-        'packagesWithoutLocation' => $packageRepository->transformCollection($packageRepository->findAllWithoutLocationFromPalletsWithUser()),
-        'packagesWithLocationNotStowed' => $packageRepository->transformCollection($packageRepository->findAllWithLocationAndNotStowed()),
-      ]
-    );
+    return $this->buildLocationsResponse($packageRepository);
   }
-
-  // Not Used
-  /* #[Route('/getPackagesNotStowed', name: 'get_packages_not_stowed', methods: ['Get'])]
-  public function getPackagesNotStowed(PackageRepository $packageRepository): Response
-  {
-    return $this->json($packageRepository->transformCollection($packageRepository->findAllWithLocationAndNotStowed()));
-  } */
 
   #[Route('/hardResetLocationsBagsPackages', name: 'hard_reset_locations_bags_packages', methods: ['POST'])]
   public function hardResetLocationsBagsPackages(PackageRepository $packageRepository): Response
   {
     $this->setPackageLocationService->resetLocationsBagsPackages();
 
-    return $this->json(
-      [
-        'locations' => $this->locationArrayTransformer->transformAllBagOriented(),
-        'packagesWithoutLocation' => $packageRepository->transformCollection($packageRepository->findAllWithoutLocationFromPalletsWithUser()),
-        'packagesWithLocationNotStowed' => $packageRepository->transformCollection($packageRepository->findAllWithLocationAndNotStowed()),
-      ]
-    );
+    return $this->buildLocationsResponse($packageRepository);
   }
 }
