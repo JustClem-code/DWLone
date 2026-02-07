@@ -1,14 +1,19 @@
 <template>
   <div class="flex flex-col gap-2">
 
-    <BaseButton title="Open side panel" @click="sidePanelRef?.toggleSideBar()"/>
+    <BaseButton title="Open side panel" @click="sidePanelRef?.toggleSidePanel()" />
 
-    <SidePanel ref="sidePanelRef"></SidePanel>
+    <SidePanel ref="sidePanelRef" title="Automatic">
 
-    <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
+      <div class="flex flex-col gap-2">
 
-    <BaseButton @click="submitAutomaticForm" title="Automatic program" styleColor="primary" :isDisabled="!selected"
-      :isLoading="hardResetIsLoading || automaticInductIsLoading" />
+        <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
+
+        <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
+          :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading" />
+
+      </div>
+    </SidePanel>
 
   </div>
 </template>
@@ -121,6 +126,7 @@ async function automaticInduct(induct = false, stow = false) {
 
   } finally {
     automaticInductIsLoading.value = false
+    sidePanelRef.value?.toggleSidePanel()
   }
 }
 
@@ -134,7 +140,7 @@ async function resetLocationsBagsPackages() {
     notifier('success', 'Hard reset', `The reset is finished`)
 
     updatePackagesData(data)
-
+    sidePanelRef.value?.toggleSidePanel()
   }
 }
 
