@@ -29,6 +29,35 @@
   }
 }
 
+@layer base {
+  .scrollbar-dark {
+    /* Chrome/Safari */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      @apply rounded-full bg-neutral-400;
+    }
+    /* Dark mode */
+    .dark &::-webkit-scrollbar-track {
+      @apply bg-neutral-800;
+    }
+    .dark &::-webkit-scrollbar-thumb {
+      @apply bg-neutral-200;
+    }
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.neutral.400') transparent;
+  }
+  .dark .scrollbar-dark {
+    scrollbar-color: theme('colors.neutral.200') theme('colors.neutral.800');
+  }
+}
+
+
 body:has(dialog:open) {
   overflow: hidden;
   /* position: fixed; */

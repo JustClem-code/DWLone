@@ -11,7 +11,7 @@
 
         <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
           :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading" />
-
+        <div class="min-h-screen">tex</div>
       </div>
     </SidePanel>
 
