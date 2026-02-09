@@ -11,7 +11,6 @@
 
         <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
           :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading" />
-        <div class="min-h-screen">tex</div>
       </div>
     </SidePanel>
 
@@ -19,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
+import { ref, computed, inject, watch } from 'vue';
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 
@@ -143,5 +142,14 @@ async function resetLocationsBagsPackages() {
     sidePanelRef.value?.toggleSidePanel()
   }
 }
+
+const handleToggle = () => {
+
+  if (!sidePanelRef.value?.isOpen) {
+    selected.value = null
+  }
+}
+
+watch(handleToggle)
 
 </script>
