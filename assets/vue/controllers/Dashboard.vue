@@ -30,7 +30,8 @@
 //TODO:
 
 // régler les problèmes entities du profiler
-// mettre le dégradé en version light theme
+
+// vérifier les convention de naming (styleColor => StyleColor ?)
 
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars

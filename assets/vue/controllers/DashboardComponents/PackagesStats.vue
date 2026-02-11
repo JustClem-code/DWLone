@@ -5,7 +5,7 @@
 
     <SidePanel ref="sidePanelRef" title="Automatic">
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2 mb-8">
 
         <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
 
@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watch } from 'vue';
+import { ref, computed, inject, watch, watchEffect } from 'vue';
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 
@@ -150,6 +150,6 @@ const handleToggle = () => {
   }
 }
 
-watch(handleToggle)
+watchEffect(handleToggle)
 
 </script>
