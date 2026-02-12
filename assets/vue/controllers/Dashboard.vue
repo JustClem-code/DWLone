@@ -8,10 +8,13 @@
           </h2>
         </div>
       </BorderedContent>
-      <BorderedContent title="Auto" width="w-1/2">
-        <PackagesStats />
+      <BorderedContent title="Exemple" width="w-1/2">
+        <h2>Exemple</h2>
       </BorderedContent>
     </div>
+    <BorderedContent title="Stats">
+      <PackagesStats />
+    </BorderedContent>
     <BorderedContent title="Bags">
       <div class="grid grid-cols-6 gap-4">
         <HorizontalLinkButton v-for="location in locations" :key="location.id" @click="setCurrentBag(location.bag)"
