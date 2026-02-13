@@ -116,10 +116,10 @@ const getBagColor = (name) => {
   return colors[prefix] ?? '';
 }
 
-watch(
+/* watch(
   () => locations.value,
   (newVal, oldVal) => {
     console.log('locations changed:', newVal, oldVal)
-  })
+  }) */
 
 </script>

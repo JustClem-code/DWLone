@@ -6,17 +6,9 @@
     <div
       class="w-full bg-white dark:bg-gray-800 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
       <div class="grid grid-cols-1 sm:grid-cols-3 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
-        <div class="py-6 px-8">
-          <p class="text-sm text-gray-400">Number of packages</p>
-          <p class="text-4xl pt-2">{{ allPackagesNumber }}</p>
-        </div>
-        <div class="py-6 px-8">
-          <p class="text-sm text-gray-400">Induct progress</p>
-          <p class="text-4xl pt-2">{{ inductPercentage }}%</p>
-        </div>
-        <div class="py-6 px-8">
-          <p class="text-sm text-gray-400">Stow progress</p>
-          <p class="text-4xl pt-2">{{ stowPercentage }}%</p>
+        <div v-for="stat in packagesStats" :key="stat.title" class="py-6 px-8">
+          <p class="text-sm text-gray-400">{{ stat.title }}</p>
+          <p class="text-4xl pt-2">{{ stat.number }}</p>
         </div>
       </div>
     </div>
@@ -60,27 +52,47 @@ const selected = ref(null)
 const automaticInductIsLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
-const allPackagesNumber = computed(() => { return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackages.length : 0 })
-const packagesWithoutLocationNumber = computed(() => { return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithoutLocation.length : 0 })
-const packagesWithLocationNotStowedNumber = computed(() => { return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocationNotStowed.length : 0 })
-const packagesToResetNumber = computed(() => { return allPackagesOnfloor.value ? allPackagesNumber.value - packagesWithoutLocationNumber.value : 0 })
-const packagesFullAutomatingNumber = computed(() => { return allPackagesOnfloor.value ? (packagesWithLocationNotStowedNumber.value >= packagesWithoutLocationNumber.value ? packagesWithLocationNotStowedNumber.value : packagesWithoutLocationNumber.value) : 0 })
+const allPackagesNumber = computed(() => {
+  return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackages.length : 0
+})
+
+const packagesWithoutLocationNumber = computed(() => {
+  return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithoutLocation.length : 0
+})
+
+const packagesWithLocationNotStowedNumber = computed(() => {
+  return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocationNotStowed.length : 0
+})
+
+const packagesToResetNumber = computed(() => {
+  return allPackagesOnfloor.value ? allPackagesNumber.value - packagesWithoutLocationNumber.value : 0
+})
+
+const packagesFullAutomatingNumber = computed(() => {
+  return allPackagesOnfloor.value ?
+    (packagesWithLocationNotStowedNumber.value >= packagesWithoutLocationNumber.value ? packagesWithLocationNotStowedNumber.value : packagesWithoutLocationNumber.value)
+    : 0
+})
 
 const inductPercentage = computed(() => {
   if (allPackagesNumber.value === 0) return 0
-  /* return (allPackagesNumber.value / packagesWithLocationNotStowedNumber.value) */
   return Math.round(((allPackagesNumber.value - packagesWithoutLocationNumber.value) / allPackagesNumber.value) * 100)
 })
-const stowPercentage = computed(() => {
-  if (allPackagesNumber.value === 0) return 0
-  /* return (allPackagesNumber.value / packagesWithLocationNotStowedNumber.value) */
-  return Math.round(((allPackagesNumber.value - packagesWithLocationNotStowedNumber.value) / allPackagesNumber.value) * 100)
-})
 
-const pourcentage = computed(() => {
-  if (total.value === 0) return 0  // Évite la division par zéro
-  return Math.round((valeurActuelle.value / total.value) * 100)
-})
+const stowPercentage = computed(() =>
+  !allPackagesNumber.value || !inductPercentage.value
+    ? 0
+    : Math.round(
+      ((allPackagesNumber.value - packagesWithLocationNotStowedNumber.value) / allPackagesNumber.value) * 100
+    )
+)
+
+
+const packagesStats = computed(() => [
+  { 'title': 'Number of packages', 'number': `${allPackagesNumber.value}` },
+  { 'title': 'Induct progress', 'number': `${inductPercentage.value}%` },
+  { 'title': 'Stow progress', 'number': `${stowPercentage.value}%` },
+])
 
 const automaticOptions = computed(() => [
   { 'value': 'Induct', 'notice': 'Automating of pallet induct on floor', 'number': `${packagesWithoutLocationNumber.value}`, 'disabled': packagesWithoutLocationNumber.value === 0 },
