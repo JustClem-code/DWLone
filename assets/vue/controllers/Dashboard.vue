@@ -12,7 +12,7 @@
         <h2>Exemple</h2>
       </BorderedContent>
     </div>
-    <BorderedContent title="Stats">
+    <BorderedContent title="Statistics">
       <PackagesStats />
     </BorderedContent>
     <BorderedContent title="Bags">

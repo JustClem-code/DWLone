@@ -1,10 +1,21 @@
 <template>
   <div class="flex flex-col gap-2">
 
-    <BaseButton title="Open side panel" @click="sidePanelRef?.toggleSidePanel()" />
-
     <div
       class="w-full bg-white dark:bg-gray-800 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
+
+      <div class="flex items-center justify-between py-6 px-8 border-b border-gray-200 dark:border-gray-700/90">
+        <div>
+          <h2>Packages statistics</h2>
+          <p class="text-xs text-gray-400 mt-2">
+            You can automate the steps
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <BaseButton title="Automating steps" @click="sidePanelRef?.toggleSidePanel()" styleColor="empty" />
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-3 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
         <div v-for="stat in packagesStats" :key="stat.title" class="py-6 px-8">
           <p class="text-sm text-gray-400">{{ stat.title }}</p>
@@ -14,7 +25,7 @@
     </div>
 
 
-    <SidePanel ref="sidePanelRef" title="Automatic">
+    <SidePanel ref="sidePanelRef" title="Automating steps">
 
       <div class="flex flex-col gap-2 mb-8">
 
@@ -29,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watch, watchEffect } from 'vue';
+import { ref, computed, inject, watchEffect } from 'vue';
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 
@@ -70,8 +81,9 @@ const packagesToResetNumber = computed(() => {
 
 const packagesFullAutomatingNumber = computed(() => {
   return allPackagesOnfloor.value ?
-    (packagesWithLocationNotStowedNumber.value >= packagesWithoutLocationNumber.value ? packagesWithLocationNotStowedNumber.value : packagesWithoutLocationNumber.value)
-    : 0
+    (packagesWithLocationNotStowedNumber.value >= packagesWithoutLocationNumber.value ?
+      packagesWithLocationNotStowedNumber.value : packagesWithoutLocationNumber.value
+    ) : 0
 })
 
 const inductPercentage = computed(() => {
@@ -86,7 +98,6 @@ const stowPercentage = computed(() =>
       ((allPackagesNumber.value - packagesWithLocationNotStowedNumber.value) / allPackagesNumber.value) * 100
     )
 )
-
 
 const packagesStats = computed(() => [
   { 'title': 'Number of packages', 'number': `${allPackagesNumber.value}` },
