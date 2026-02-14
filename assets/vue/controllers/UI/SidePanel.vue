@@ -7,7 +7,7 @@
       leave-active-class="transition-all duration-500 ease-in-out transform" leave-from-class="translate-x-0"
       leave-to-class="translate-x-full">
       <aside v-show="isOpen"
-        class="fixed inset-y-0 right-0 w-full md:w-1/2 bg-gray-100 dark:bg-gray-800 shadow-2xl z-50 border-l-0 dark:border-l dark:border-gray-700/90 flex flex-col">
+        class="fixed inset-y-0 right-0 w-full bg-gray-100 dark:bg-gray-800 shadow-2xl z-50 border-l-0 dark:border-l dark:border-gray-700/90 flex flex-col" :class="width ?? 'md:w-1/2'">
         <header class="h-24 p-8 flex items-center justify-between shrink-0">
           <p class="text-base">{{ title ?? 'Panel title' }}</p>
           <div class="p-2">
@@ -38,6 +38,7 @@ import OverlayInvisible from './OverlayInvisible.vue';
 
 const props = defineProps({
   title: String,
+  width: String,
 })
 
 const isOpen = ref(false)

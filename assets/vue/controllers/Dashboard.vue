@@ -16,15 +16,18 @@
       <PackagesStats />
     </BorderedContent>
     <BorderedContent title="Bags">
-      <div class="grid grid-cols-6 gap-4">
+
+      <BagsProcessing />
+
+      <!-- <div class="grid grid-cols-6 gap-4">
         <HorizontalLinkButton v-for="location in locations" :key="location.id" @click="setCurrentBag(location.bag)"
           :title="location.name" :focused="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''" />
-      </div>
+      </div> -->
     </BorderedContent>
 
-    <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
+    <!-- <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
       <InformationComponent :informations="bagInfos" />
-    </DialogComponentSlot>
+    </DialogComponentSlot> -->
   </div>
 </template>
 
@@ -35,6 +38,8 @@
 // régler les problèmes entities du profiler
 
 // vérifier les convention de naming (styleColor => StyleColor ?)
+
+// Create bags components in dashboard
 
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
@@ -62,6 +67,7 @@ import HorizontalLinkButton from './UI/Buttons/HorizontalLinkButton.vue';
 import DialogComponentSlot from './UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from './UI/Modals/InformationComponent.vue';
 import PackagesStats from './DashboardComponents/PackagesStats.vue'
+import BagsProcessing from './DashboardComponents/BagsProcessing.vue';
 
 const props = defineProps({
   is_user: Boolean,
@@ -83,7 +89,7 @@ onMounted(() => {
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
 
-const setCurrentBag = (bag) => {
+/* const setCurrentBag = (bag) => {
   if (!bag) {
     return
   }
@@ -114,7 +120,7 @@ const getBagColor = (name) => {
     'GRN': 'outline-2 outline-green-700 outline-offset-2',
   }
   return colors[prefix] ?? '';
-}
+} */
 
 /* watch(
   () => locations.value,
