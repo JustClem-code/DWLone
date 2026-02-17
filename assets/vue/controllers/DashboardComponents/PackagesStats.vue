@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watchEffect } from 'vue';
+import { ref, computed, inject, watchEffect, onMounted } from 'vue';
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 
@@ -53,6 +53,11 @@ const { data: allPackagesOnfloor, error: errorAllPackages } = useFetch('/getAllP
 const { notifier } = useNotification()
 
 const { locations } = inject('dashboard')
+
+onMounted(() => {
+  console.log('locations', locations);
+  
+})
 
 const STORAGE_KEY_PALLET = 'currentPallet'
 const STORAGE_KEY_PAIR = 'currentPair'

@@ -19,21 +19,14 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watchEffect } from 'vue';
-import { useFetch, usePostFetch } from '../../composables/fetch.js'
-import { useNotification } from '../../composables/eventBus.js'
+import { ref, computed, inject } from 'vue';
 import { useLogic } from '../../composables/useLogic.js'
 
 import BaseButton from '../UI/Buttons/BaseButton.vue';
-import RadioCard from '../UI/Radios/RadioCard.vue';
 import SidePanel from '../UI/SidePanel.vue';
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from '../UI/Modals/InformationComponent.vue';
-
-
-
-const { notifier } = useNotification()
 
 const { formatInt } = useLogic()
 

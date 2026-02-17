@@ -23,6 +23,7 @@
         <HorizontalLinkButton v-for="location in locations" :key="location.id" @click="setCurrentBag(location.bag)"
           :title="location.name" :focused="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''" />
       </div> -->
+
     </BorderedContent>
 
     <!-- <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
@@ -46,6 +47,8 @@
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
 // travailler l'UI de la page dashboard
+
+// Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
 
 // Filtrer en fonctions des locations vides
 // calculer le nombre de bag plein avec des packages
@@ -78,54 +81,55 @@ const { userName } = userStore()
 
 const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
 
-const { formatInt } = useLogic()
-
 provide('dashboard', { locations })
 
 onMounted(() => {
   console.log(`the component is now mounted.`)
 })
 
-const currentBag = ref(null)
-const infoDialogRef = ref(null)
-
-/* const setCurrentBag = (bag) => {
-  if (!bag) {
-    return
-  }
-  currentBag.value = bag;
-  infoDialogRef.value?.openDialog()
+// TODO: faire une fonction et mettre un index de la location
+const aisleNumber = (index) => {
+  const match = locations.value[index].name.match(/\d+/);
+  return match ? parseInt(match[0], 10) : null;
 }
 
-const bagInfos = computed(() => {
-  return {
-    title: "Bag informations",
-    datas: [
-      { 'Bag': currentBag.value?.name },
-      { 'Location': currentBag.value?.locationName },
-      { 'Number of packages': currentBag.value?.packages.length },
-      { 'Number of packages in bag': currentBag.value?.packages.filter(p => p.userStow !== null).length },
-      { 'Total Weight': `${formatInt(currentBag.value?.totalBagWeight)} kg` },
-    ]
+const orderedLocations = computed(() => {
+
+  const aisleLetters = ['B', 'C']
+
+  const orderSpecs = [
+    { floor: `${aisleNumber.value}`, side: '2' }, // col 1
+    { floor: `${aisleNumber.value}`, side: '1' }, // col 2
+    { floor: `${aisleNumber.value + 1}`, side: '1' }, // col 3
+    { floor: `${aisleNumber.value + 1}`, side: '2' }, // col 4
+  ]
+
+
+  const letters = ['A', 'B', 'C', 'D', 'E', 'G']
+
+  const byKey = new Map(
+    currentPair.value.locations.map(loc => [loc.name, loc])
+  )
+
+  const result = []
+
+  for (const aisleLet of aisleLetters) {
+
+    for (let index = 0; index <= 52; index++) {
+
+      for (const spec of orderSpecs) {
+        for (const letter of letters) {
+          const key = `${aisleLet}-${spec.floor}-${letter}-${spec.side}`
+          const loc = byKey.get(key)
+          if (loc) result.push(loc)
+        }
+      }
+
+    }
+
   }
+
+  return result
 })
-
-const getBagColor = (name) => {
-  const prefix = name.match(/^[^-]+/)[0];
-  const colors = {
-    'BLK': 'outline-2 outline-offset-2',
-    'NVY': 'outline-2 outline-blue-700 outline-offset-2',
-    'ORG': 'outline-2 outline-orange-700 outline-offset-2',
-    'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
-    'GRN': 'outline-2 outline-green-700 outline-offset-2',
-  }
-  return colors[prefix] ?? '';
-} */
-
-/* watch(
-  () => locations.value,
-  (newVal, oldVal) => {
-    console.log('locations changed:', newVal, oldVal)
-  }) */
 
 </script>
