@@ -40,6 +40,7 @@
 
 // vérifier les convention de naming (styleColor => StyleColor ?)
 
+// Finir de bien trier les allées d'abord C puis B (et oui)
 // Create bags components in dashboard
 
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
@@ -63,12 +64,8 @@ import { onMounted, watch, ref, provide, computed } from 'vue'
 
 import { userStore } from '../composables/userStore.js'
 import { useFetch } from '../composables/fetch.js'
-import { useLogic } from '../composables/useLogic.js'
 
 import BorderedContent from './UI/BorderedContent.vue';
-import HorizontalLinkButton from './UI/Buttons/HorizontalLinkButton.vue';
-import DialogComponentSlot from './UI/Modals/DialogComponentSlot.vue';
-import InformationComponent from './UI/Modals/InformationComponent.vue';
 import PackagesStats from './DashboardComponents/PackagesStats.vue'
 import BagsProcessing from './DashboardComponents/BagsProcessing.vue';
 
@@ -81,47 +78,66 @@ const { userName } = userStore()
 
 const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
 
-provide('dashboard', { locations })
+
 
 onMounted(() => {
   console.log(`the component is now mounted.`)
 })
 
-// TODO: faire une fonction et mettre un index de la location
-const aisleNumber = (index) => {
-  const match = locations.value[index].name.match(/\d+/);
-  return match ? parseInt(match[0], 10) : null;
-}
-
 const orderedLocations = computed(() => {
 
   const aisleLetters = ['B', 'C']
 
-  const orderSpecs = [
-    { floor: `${aisleNumber.value}`, side: '2' }, // col 1
-    { floor: `${aisleNumber.value}`, side: '1' }, // col 2
-    { floor: `${aisleNumber.value + 1}`, side: '1' }, // col 3
-    { floor: `${aisleNumber.value + 1}`, side: '2' }, // col 4
+  const orderSpecsPair = [
+    { side: '1' }, // col 3
+    { side: '2' }, // col 4
+  ]
+
+  const orderSpecsOdd = [
+    { side: '2' }, // col 1
+    { side: '1' }, // col 2
   ]
 
 
-  const letters = ['A', 'B', 'C', 'D', 'E', 'G']
+  const bagLetters = ['A', 'B', 'C', 'D', 'E', 'G']
+  const bagLettersReverse = [...bagLetters].reverse();
+
 
   const byKey = new Map(
-    currentPair.value.locations.map(loc => [loc.name, loc])
+    locations.value?.map(loc => [loc.name, loc])
   )
 
   const result = []
 
   for (const aisleLet of aisleLetters) {
 
-    for (let index = 0; index <= 52; index++) {
+    for (let index = 0; index < 52; index++) {
 
-      for (const spec of orderSpecs) {
-        for (const letter of letters) {
-          const key = `${aisleLet}-${spec.floor}-${letter}-${spec.side}`
-          const loc = byKey.get(key)
-          if (loc) result.push(loc)
+      let floor = index + 1
+      let letters = []
+
+      if (index < 26) {
+        letters = bagLettersReverse
+      } else {
+        letters = bagLetters
+      }
+
+      if (floor % 2 === 0) {
+        for (const spec of orderSpecsPair) {
+          for (const letter of letters) {
+            const key = `${aisleLet}-${floor}-${letter}-${spec.side}`
+
+            const loc = byKey.get(key)
+            if (loc) result.push(loc)
+          }
+        }
+      } else {
+        for (const spec of orderSpecsOdd) {
+          for (const letter of letters) {
+            const key = `${aisleLet}-${floor}-${letter}-${spec.side}`
+            const loc = byKey.get(key)
+            if (loc) result.push(loc)
+          }
         }
       }
 
@@ -131,5 +147,15 @@ const orderedLocations = computed(() => {
 
   return result
 })
+
+provide('dashboard', { locations, orderedLocations })
+
+/* watch(
+  orderedLocations,
+  (val) => {
+    console.log('ordered location', val)
+  },
+  { deep: true }
+) */
 
 </script>

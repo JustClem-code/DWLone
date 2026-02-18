@@ -5,7 +5,7 @@
     <SidePanel ref="sidePanelRef" title="Zoom on bags" width="md:w-5/6">
 
       <div class="grid grid-cols-6 gap-4">
-        <HorizontalLinkButton v-for="location in locations" :key="location.id" @click="setCurrentBag(location.bag)"
+        <HorizontalLinkButton v-for="location in orderedLocations" :key="location.id" @click="setCurrentBag(location.bag)"
           :title="location.name" :focused="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''" />
       </div>
 
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
+import { ref, computed, inject, onMounted } from 'vue';
 import { useLogic } from '../../composables/useLogic.js'
 
 import BaseButton from '../UI/Buttons/BaseButton.vue';
@@ -30,7 +30,12 @@ import InformationComponent from '../UI/Modals/InformationComponent.vue';
 
 const { formatInt } = useLogic()
 
-const { locations } = inject('dashboard')
+const { orderedLocations } = inject('dashboard')
+
+onMounted(() => {
+  console.log('orderlocations', orderedLocations);
+
+})
 
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
