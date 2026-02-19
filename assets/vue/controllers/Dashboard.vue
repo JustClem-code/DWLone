@@ -18,11 +18,40 @@
     <BorderedContent title="Bags">
 
       <BagsProcessing />
+      <!-- <div class="grid grid-cols-4 gap-4">
+        <div class="grid grid-cols-6 gap-1">
+          <div v-for="location, i in orderedLocations" :key="location.id">
+            <div v-if="i < 156" class="size-1 bg-gray-100"
+              :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''">
 
-      <!-- <div class="grid grid-cols-6 gap-4">
-        <HorizontalLinkButton v-for="location in locations" :key="location.id" @click="setCurrentBag(location.bag)"
-          :title="location.name" :focused="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''" />
+            </div>
+          </div>
+        </div>
       </div> -->
+
+      <div v-if="orderedLocations">
+        <div v-for="(rang, indexRang) in orderedLocations" :key="indexRang">
+          <div v-for="(emplacement, indexEmpl) in rang" :key="emplacement.id">
+            {{ emplacement.name }} (ID: {{ emplacement.id }})
+          </div>
+        </div>
+      </div>
+
+
+
+     <!--  <div class="grid grid-cols-4 gap-4">
+        <div v-for="(groupe, indexGroupe) in orderedLocations" :key="indexGroupe" class="grid grid-cols-6 gap-1">
+
+          <div v-for="(location, indexElement) in groupe" :key="indexElement" class="size-1 bg-gray-100"
+            :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''">
+
+          </div>
+
+        </div>
+      </div> -->
+
+
+
 
     </BorderedContent>
 
@@ -84,69 +113,96 @@ onMounted(() => {
   console.log(`the component is now mounted.`)
 })
 
+const getBagColor = (name) => {
+  const prefix = name.match(/^[^-]+/)[0];
+  const colors = {
+    'BLK': 'outline-2 outline-offset-2',
+    'NVY': 'outline-2 outline-blue-700 outline-offset-2',
+    'ORG': 'outline-2 outline-orange-700 outline-offset-2',
+    'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
+    'GRN': 'outline-2 outline-green-700 outline-offset-2',
+  }
+  return colors[prefix] ?? '';
+}
+
 const orderedLocations = computed(() => {
+  const byKey = new Map(locations.value?.map(loc => [loc.name, loc]) || []);
+  const result = [[], [], [], []];
 
-  const aisleLetters = ['B', 'C']
-
-  const orderSpecsPair = [
-    { side: '1' }, // col 3
-    { side: '2' }, // col 4
-  ]
-
-  const orderSpecsOdd = [
-    { side: '2' }, // col 1
-    { side: '1' }, // col 2
-  ]
-
-
-  const bagLetters = ['A', 'B', 'C', 'D', 'E', 'G']
+  const aisleLetters = ['C', 'B'];
+  const bagLetters = ['A', 'B', 'C', 'D', 'E', 'G'];
   const bagLettersReverse = [...bagLetters].reverse();
-
-
-  const byKey = new Map(
-    locations.value?.map(loc => [loc.name, loc])
-  )
-
-  const result = []
+  const orderSpecsPair = [{ side: '1' }, { side: '2' }];
+  const orderSpecsOdd = [{ side: '2' }, { side: '1' }];
+  let indexGlobal = 0;
+  let arrayIndex = 0;
 
   for (const aisleLet of aisleLetters) {
+    for (let floor = 1; floor <= 52; floor++) {
+      const letters = floor <= 26 ? bagLettersReverse : bagLetters;
+      const specs = floor % 2 === 0 ? orderSpecsPair : orderSpecsOdd;
 
-    for (let index = 0; index < 52; index++) {
+      for (const spec of specs) {
+        for (const letter of letters) {
+          const key = `${aisleLet}-${floor}-${letter}-${spec.side}`;
+          const loc = byKey.get(key);
 
-      let floor = index + 1
-      let letters = []
-
-      if (index < 26) {
-        letters = bagLettersReverse
-      } else {
-        letters = bagLetters
-      }
-
-      if (floor % 2 === 0) {
-        for (const spec of orderSpecsPair) {
-          for (const letter of letters) {
-            const key = `${aisleLet}-${floor}-${letter}-${spec.side}`
-
-            const loc = byKey.get(key)
-            if (loc) result.push(loc)
+          if (loc) {
+            const arrayIndex = Math.floor(indexGlobal / 312);
+            if (arrayIndex < 4) {
+              result[arrayIndex].push(loc);
+            }
           }
-        }
-      } else {
-        for (const spec of orderSpecsOdd) {
-          for (const letter of letters) {
-            const key = `${aisleLet}-${floor}-${letter}-${spec.side}`
-            const loc = byKey.get(key)
-            if (loc) result.push(loc)
+          indexGlobal++;
+
+
+          if (result[arrayIndex] && result[arrayIndex].length >= 312) {
+            arrayIndex++;
           }
         }
       }
-
     }
-
   }
 
-  return result
-})
+
+  /* result.forEach((subArray, index) => {
+    while (subArray.length < 312) {
+      result[index].push(null);
+    }
+  }); */
+
+  return result;
+});
+
+
+/* const orderedLocations = computed(() => {
+  const byKey = new Map(locations.value?.map(loc => [loc.name, loc]) || []);
+  const result = [];
+
+  const aisleLetters = ['C', 'B'];
+  const bagLetters = ['A', 'B', 'C', 'D', 'E', 'G'];
+  const bagLettersReverse = [...bagLetters].reverse();
+  const orderSpecsPair = [{ side: '1' }, { side: '2' }];
+  const orderSpecsOdd = [{ side: '2' }, { side: '1' }];
+
+  for (const aisleLet of aisleLetters) {
+    for (let floor = 1; floor <= 52; floor++) {
+      const letters = floor <= 26 ? bagLettersReverse : bagLetters;
+      const specs = floor % 2 === 0 ? orderSpecsPair : orderSpecsOdd;
+
+      for (const spec of specs) {
+        for (const letter of letters) {
+          const key = `${aisleLet}-${floor}-${letter}-${spec.side}`;
+          const loc = byKey.get(key);
+          if (loc) result.push(loc);
+        }
+      }
+    }
+  }
+
+  return result;
+}); */
+
 
 provide('dashboard', { locations, orderedLocations })
 

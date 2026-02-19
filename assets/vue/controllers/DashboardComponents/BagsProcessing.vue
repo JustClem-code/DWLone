@@ -63,16 +63,16 @@ const bagInfos = computed(() => {
   }
 })
 
-const getBagColor = (name) => {
-  const prefix = name.match(/^[^-]+/)[0];
-  const colors = {
-    'BLK': 'outline-2 outline-offset-2',
-    'NVY': 'outline-2 outline-blue-700 outline-offset-2',
-    'ORG': 'outline-2 outline-orange-700 outline-offset-2',
-    'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
-    'GRN': 'outline-2 outline-green-700 outline-offset-2',
+  const getBagColor = (name) => {
+    const prefix = name.match(/^[^-]+/)[0];
+    const colors = {
+      'BLK': 'outline-2 outline-offset-2',
+      'NVY': 'outline-2 outline-blue-700 outline-offset-2',
+      'ORG': 'outline-2 outline-orange-700 outline-offset-2',
+      'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
+      'GRN': 'outline-2 outline-green-700 outline-offset-2',
+    }
+    return colors[prefix] ?? '';
   }
-  return colors[prefix] ?? '';
-}
 
 </script>
