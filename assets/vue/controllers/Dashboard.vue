@@ -16,48 +16,9 @@
       <PackagesStats />
     </BorderedContent>
     <BorderedContent title="Bags">
-
       <BagsProcessing />
-      <!-- <div class="grid grid-cols-4 gap-4">
-        <div class="grid grid-cols-6 gap-1">
-          <div v-for="location, i in orderedLocations" :key="location.id">
-            <div v-if="i < 156" class="size-1 bg-gray-100"
-              :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''">
-
-            </div>
-          </div>
-        </div>
-      </div> -->
-
-      <div v-if="orderedLocations">
-        <div v-for="(rang, indexRang) in orderedLocations" :key="indexRang">
-          <div v-for="(emplacement, indexEmpl) in rang" :key="emplacement.id">
-            {{ emplacement.name }} (ID: {{ emplacement.id }})
-          </div>
-        </div>
-      </div>
-
-
-
-     <!--  <div class="grid grid-cols-4 gap-4">
-        <div v-for="(groupe, indexGroupe) in orderedLocations" :key="indexGroupe" class="grid grid-cols-6 gap-1">
-
-          <div v-for="(location, indexElement) in groupe" :key="indexElement" class="size-1 bg-gray-100"
-            :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''">
-
-          </div>
-
-        </div>
-      </div> -->
-
-
-
-
     </BorderedContent>
 
-    <!-- <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
-      <InformationComponent :informations="bagInfos" />
-    </DialogComponentSlot> -->
   </div>
 </template>
 
@@ -68,9 +29,6 @@
 // régler les problèmes entities du profiler
 
 // vérifier les convention de naming (styleColor => StyleColor ?)
-
-// Finir de bien trier les allées d'abord C puis B (et oui)
-// Create bags components in dashboard
 
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
@@ -107,109 +65,16 @@ const { userName } = userStore()
 
 const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
 
-
-
 onMounted(() => {
   console.log(`the component is now mounted.`)
 })
 
-const getBagColor = (name) => {
-  const prefix = name.match(/^[^-]+/)[0];
-  const colors = {
-    'BLK': 'outline-2 outline-offset-2',
-    'NVY': 'outline-2 outline-blue-700 outline-offset-2',
-    'ORG': 'outline-2 outline-orange-700 outline-offset-2',
-    'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
-    'GRN': 'outline-2 outline-green-700 outline-offset-2',
-  }
-  return colors[prefix] ?? '';
-}
-
-const orderedLocations = computed(() => {
-  const byKey = new Map(locations.value?.map(loc => [loc.name, loc]) || []);
-  const result = [[], [], [], []];
-
-  const aisleLetters = ['C', 'B'];
-  const bagLetters = ['A', 'B', 'C', 'D', 'E', 'G'];
-  const bagLettersReverse = [...bagLetters].reverse();
-  const orderSpecsPair = [{ side: '1' }, { side: '2' }];
-  const orderSpecsOdd = [{ side: '2' }, { side: '1' }];
-  let indexGlobal = 0;
-  let arrayIndex = 0;
-
-  for (const aisleLet of aisleLetters) {
-    for (let floor = 1; floor <= 52; floor++) {
-      const letters = floor <= 26 ? bagLettersReverse : bagLetters;
-      const specs = floor % 2 === 0 ? orderSpecsPair : orderSpecsOdd;
-
-      for (const spec of specs) {
-        for (const letter of letters) {
-          const key = `${aisleLet}-${floor}-${letter}-${spec.side}`;
-          const loc = byKey.get(key);
-
-          if (loc) {
-            const arrayIndex = Math.floor(indexGlobal / 312);
-            if (arrayIndex < 4) {
-              result[arrayIndex].push(loc);
-            }
-          }
-          indexGlobal++;
-
-
-          if (result[arrayIndex] && result[arrayIndex].length >= 312) {
-            arrayIndex++;
-          }
-        }
-      }
-    }
-  }
-
-
-  /* result.forEach((subArray, index) => {
-    while (subArray.length < 312) {
-      result[index].push(null);
-    }
-  }); */
-
-  return result;
-});
-
-
-/* const orderedLocations = computed(() => {
-  const byKey = new Map(locations.value?.map(loc => [loc.name, loc]) || []);
-  const result = [];
-
-  const aisleLetters = ['C', 'B'];
-  const bagLetters = ['A', 'B', 'C', 'D', 'E', 'G'];
-  const bagLettersReverse = [...bagLetters].reverse();
-  const orderSpecsPair = [{ side: '1' }, { side: '2' }];
-  const orderSpecsOdd = [{ side: '2' }, { side: '1' }];
-
-  for (const aisleLet of aisleLetters) {
-    for (let floor = 1; floor <= 52; floor++) {
-      const letters = floor <= 26 ? bagLettersReverse : bagLetters;
-      const specs = floor % 2 === 0 ? orderSpecsPair : orderSpecsOdd;
-
-      for (const spec of specs) {
-        for (const letter of letters) {
-          const key = `${aisleLet}-${floor}-${letter}-${spec.side}`;
-          const loc = byKey.get(key);
-          if (loc) result.push(loc);
-        }
-      }
-    }
-  }
-
-  return result;
-}); */
-
-
-provide('dashboard', { locations, orderedLocations })
+provide('dashboard', { locations })
 
 /* watch(
-  orderedLocations,
+  locations,
   (val) => {
-    console.log('ordered location', val)
+    console.log('locations', val)
   },
   { deep: true }
 ) */

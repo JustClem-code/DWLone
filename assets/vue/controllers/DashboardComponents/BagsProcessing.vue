@@ -2,11 +2,26 @@
   <div class="flex flex-col gap-2">
     <BaseButton title="Zoom on bags" @click="sidePanelRef?.toggleSidePanel()" styleColor="empty" />
 
+    <div v-if="orderedLocations" class="grid grid-cols-4 gap-4 md:gap-10">
+      <div v-for="(groupe, indexGroup) in orderedLocations" :key="indexGroup" class="grid grid-cols-6 gap-1">
+
+        <div v-for="location in groupe" :key="location.id" class="size-1"
+          :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : 'bg-gray-200'">
+        </div>
+
+      </div>
+    </div>
+
     <SidePanel ref="sidePanelRef" title="Zoom on bags" width="md:w-5/6">
 
-      <div class="grid grid-cols-6 gap-4">
-        <HorizontalLinkButton v-for="location in orderedLocations" :key="location.id" @click="setCurrentBag(location.bag)"
-          :title="location.name" :focused="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : ''" />
+      <div v-if="orderedLocations" class="divide-y divide-gray-200 dark:divide-gray-700/90">
+        <div v-for="(groupe, indexGroup) in orderedLocations" :key="indexGroup" class="grid grid-cols-6 gap-4 py-8">
+
+          <HorizontalLinkButton v-for="location in groupe" :key="location.id" @click="setCurrentBag(location.bag)"
+            :title="location.name"
+            :focused="location.bag?.packages?.length > 0 ? getBagColorZoom(location.bag?.name) : ''" />
+
+        </div>
       </div>
 
     </SidePanel>
@@ -19,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, onMounted } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { useLogic } from '../../composables/useLogic.js'
 
 import BaseButton from '../UI/Buttons/BaseButton.vue';
@@ -30,12 +45,7 @@ import InformationComponent from '../UI/Modals/InformationComponent.vue';
 
 const { formatInt } = useLogic()
 
-const { orderedLocations } = inject('dashboard')
-
-onMounted(() => {
-  console.log('orderlocations', orderedLocations);
-
-})
+const { locations } = inject('dashboard')
 
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
@@ -63,16 +73,71 @@ const bagInfos = computed(() => {
   }
 })
 
-  const getBagColor = (name) => {
-    const prefix = name.match(/^[^-]+/)[0];
-    const colors = {
-      'BLK': 'outline-2 outline-offset-2',
-      'NVY': 'outline-2 outline-blue-700 outline-offset-2',
-      'ORG': 'outline-2 outline-orange-700 outline-offset-2',
-      'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
-      'GRN': 'outline-2 outline-green-700 outline-offset-2',
-    }
-    return colors[prefix] ?? '';
+const getBagColorZoom = (name) => {
+  const prefix = name.match(/^[^-]+/)[0];
+  const colors = {
+    'BLK': 'outline-2 outline-offset-2',
+    'NVY': 'outline-2 outline-blue-700 outline-offset-2',
+    'ORG': 'outline-2 outline-orange-700 outline-offset-2',
+    'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
+    'GRN': 'outline-2 outline-green-700 outline-offset-2',
   }
+  return colors[prefix] ?? '';
+}
+
+
+const getBagColor = (name) => {
+  const prefix = name.match(/^[^-]+/)[0];
+  const colors = {
+    'BLK': 'outline outline-offset-1',
+    'NVY': 'outline outline-blue-700 outline-offset-1 bg-blue-700',
+    'ORG': 'outline outline-orange-700 outline-offset-1 bg-orange-700',
+    'YLO': 'outline outline-yellow-700 outline-offset-1 bg-yellow-700',
+    'GRN': 'outline outline-green-700 outline-offset-1 bg-green-700',
+  }
+  return colors[prefix] ?? '';
+}
+
+const orderedLocations = computed(() => {
+  const byKey = new Map(locations.value?.map(loc => [loc.name, loc]) || []);
+  const result = [[], [], [], []];
+
+  const aisleLetters = ['C', 'B'];
+  const bagLetters = ['A', 'B', 'C', 'D', 'E', 'G'];
+  const bagLettersReverse = [...bagLetters].reverse();
+  const orderSpecsPair = [{ side: '1' }, { side: '2' }];
+  const orderSpecsOdd = [{ side: '2' }, { side: '1' }];
+  let indexGlobal = 0;
+  let arrayIndex = 0;
+
+  for (const aisleLet of aisleLetters) {
+    for (let floor = 1; floor <= 52; floor++) {
+      const letters = floor <= 26 ? bagLettersReverse : bagLetters;
+      const specs = floor % 2 === 0 ? orderSpecsPair : orderSpecsOdd;
+
+      for (const spec of specs) {
+        for (const letter of letters) {
+          const key = `${aisleLet}-${floor}-${letter}-${spec.side}`;
+          const loc = byKey.get(key);
+
+          if (loc) {
+            const arrayIndex = Math.floor(indexGlobal / 312);
+            if (arrayIndex < 4) {
+              result[arrayIndex].push(loc);
+            }
+          }
+          indexGlobal++;
+
+
+          if (result[arrayIndex] && result[arrayIndex].length >= 312) {
+            arrayIndex++;
+          }
+        }
+      }
+    }
+  }
+
+  return result;
+});
 
 </script>
