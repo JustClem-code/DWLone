@@ -36,8 +36,6 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Mettre la couleur du bag au stow 
-
 // travailler l'UI de la page dashboard
 
 // Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
@@ -51,7 +49,7 @@
 // gestion du animate pulse si chargement de la (list / HorizontalLinkButton et divers composants) => voir tailwind UI
 // plus globalement, il faut gérer le chargement côté vue et twig
 
-import { onMounted, watch, ref, provide, computed } from 'vue'
+import { onMounted, provide } from 'vue'
 
 import { userStore } from '../composables/userStore.js'
 import { useFetch } from '../composables/fetch.js'
