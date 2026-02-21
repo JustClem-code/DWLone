@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col gap-8">
+
     <div class="flex gap-8">
+
       <BorderedContent title="Welcome" width="w-1/2">
         <div>
           <h2 class="text-2xl">
@@ -8,13 +10,17 @@
           </h2>
         </div>
       </BorderedContent>
+
       <BorderedContent title="Exemple" width="w-1/2">
         <h2>Exemple</h2>
       </BorderedContent>
+
     </div>
+
     <BorderedContent title="Statistics">
       <PackagesStats />
     </BorderedContent>
+
     <BorderedContent title="Bags">
       <BagsProcessing />
     </BorderedContent>
@@ -29,6 +35,8 @@
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
+
+// Mettre la couleur du bag au stow 
 
 // travailler l'UI de la page dashboard
 

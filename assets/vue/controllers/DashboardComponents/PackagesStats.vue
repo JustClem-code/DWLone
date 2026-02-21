@@ -56,11 +56,10 @@ const { locations } = inject('dashboard')
 
 onMounted(() => {
   console.log('locations', locations);
-  
+
 })
 
 const STORAGE_KEY_PALLET = 'currentPallet'
-const STORAGE_KEY_PAIR = 'currentPair'
 
 const sidePanelRef = ref(null)
 
@@ -138,7 +137,6 @@ function submitAutomaticForm() {
 
 const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PALLET)
-  localStorage.removeItem(STORAGE_KEY_PAIR)
 }
 
 const updatePackagesData = (data) => {

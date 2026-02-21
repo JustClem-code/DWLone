@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4">
 
     <PackagesStackHeader title="Package Drop" :packagesStack="pairPackages" :notice="noticeHeader" :menuItems="null"
-      :actions="null" :numberOfPackages="pairPackages.packages.length" :backButton="true" @backClick="setCurrentPair(null)" />
+      :actions="null" :numberOfPackages="pairPackages.packages.length" />
 
     <div class="relative w-full min-h-70 flex items-center justify-center">
       <transition v-if="!stowingIsLoading" name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
@@ -30,5 +30,5 @@ const noticeHeader = computed(() => {
   return props.pairPackages.packages.length === 0 ? 'The drop is empty' : 'Click on the package, then on its location.'
 })
 
-const { setCurrentPair, setCurrentPackage, currentPackage, stowingIsLoading } = inject('stow')
+const { setCurrentPackage, currentPackage, stowingIsLoading } = inject('stow')
 </script>

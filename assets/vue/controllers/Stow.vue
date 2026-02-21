@@ -1,31 +1,36 @@
 <template>
   <div>
 
-    <BorderedContent v-if="!currentPair" title="Floor">
+    <BorderedContent title="Floor">
       <FloorAisles :locations="locations" />
     </BorderedContent>
 
-    <div v-else class="flex flex-col gap-8">
-      <BorderedContent title="Package drop">
-        <PackageDrop :pairPackages="currentPairPackages" />
-      </BorderedContent>
+    <SidePanel ref="sidePanelRef" :title="currentPair ? currentPairPackages?.id : 'title'" width="md:w-5/6">
 
-      <BorderedContent title="Locations">
-        <PairLocations :orderedLocations="orderedLocations" />
-      </BorderedContent>
-    </div>
+      <div v-if="currentPair" class="flex flex-col gap-8">
+        <BorderedContent title="Package drop">
+          <PackageDrop :pairPackages="currentPairPackages" />
+        </BorderedContent>
+
+        <BorderedContent title="Locations">
+          <PairLocations :orderedLocations="orderedLocations" />
+        </BorderedContent>
+      </div>
+
+    </SidePanel>
 
   </div>
 </template>
 
 <script setup>
 
-import { onMounted, watch, ref, provide, computed } from 'vue'
+import { ref, provide, computed } from 'vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
 
 import BorderedContent from './UI/BorderedContent.vue'
+import SidePanel from './UI/SidePanel.vue'
 import PackageDrop from './StowComponents/PackageDrop.vue'
 import FloorAisles from './StowComponents/FloorAisles.vue'
 import PairLocations from './StowComponents/PairLocations.vue'
@@ -36,15 +41,10 @@ const { notifier } = useNotification()
 
 const stowingIsLoading = ref(false)
 
-const STORAGE_KEY = 'currentPair'
-
 const currentPair = ref(null)
 const currentPackage = ref(null)
 
-onMounted(() => {
-  const raw = localStorage.getItem(STORAGE_KEY)
-  currentPair.value = raw ? JSON.parse(raw) : null
-})
+const sidePanelRef = ref(null)
 
 const firstAisleNumber = computed(() => {
   const match = currentPair.value.locations[0].name.match(/\d+/);
@@ -57,10 +57,10 @@ const pairFirstLetter = computed(() => {
 
 const orderedLocations = computed(() => {
   const orderSpecs = [
-    { floor: `${firstAisleNumber.value}`, side: '2' }, // col 1
-    { floor: `${firstAisleNumber.value}`, side: '1' }, // col 2
-    { floor: `${firstAisleNumber.value + 1}`, side: '1' }, // col 3
-    { floor: `${firstAisleNumber.value + 1}`, side: '2' }, // col 4
+    { floor: `${firstAisleNumber.value}`, side: '2' },
+    { floor: `${firstAisleNumber.value}`, side: '1' },
+    { floor: `${firstAisleNumber.value + 1}`, side: '1' },
+    { floor: `${firstAisleNumber.value + 1}`, side: '2' },
   ]
 
   const letters = ['A', 'B', 'C', 'D', 'E', 'G']
@@ -92,7 +92,10 @@ const currentPairPackages = computed(() => {
   return data
 })
 
-const setCurrentPair = (pair) => currentPair.value = pair
+const setCurrentPair = (pair) => {
+  currentPair.value = pair
+  sidePanelRef.value?.toggleSidePanel()
+}
 
 const setCurrentPackage = (pack) => currentPackage.value = pack
 
@@ -148,17 +151,5 @@ async function stowPackage(loc) {
 }
 
 provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
-
-watch(
-  currentPair,
-  (val) => {
-    if (val === null) {
-      localStorage.removeItem(STORAGE_KEY)
-    } else {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
-    }
-  },
-  { deep: true }
-)
 
 </script>

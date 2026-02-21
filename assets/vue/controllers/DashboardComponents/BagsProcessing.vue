@@ -6,7 +6,7 @@
       <div v-for="(groupe, indexGroup) in orderedLocations" :key="indexGroup" class="grid grid-cols-6 gap-1">
 
         <div v-for="location in groupe" :key="location.id" class="size-1"
-          :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : 'bg-gray-200'">
+          :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : 'bg-gray-200 dark:bg-gray-700/90'">
         </div>
 
       </div>
@@ -26,7 +26,7 @@
 
     </SidePanel>
 
-    <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true" :darkerBackground="true">
+    <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
       <InformationComponent :informations="bagInfos" />
     </DialogComponentSlot>
 

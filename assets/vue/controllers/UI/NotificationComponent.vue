@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-4 right-4 flex flex-col gap-4 z-20">
+  <div class="fixed top-4 right-4 flex flex-col gap-4 z-100">
     <div class="relative">
       <transition-group name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
         leave-active-class="transition-all duration-500 ease-in" enter-from-class="opacity-0 -translate-y-4"

@@ -19,6 +19,6 @@ const { setCurrentPair } = inject('stow')
 
 const alleyHasPackages = (pair) => {
   const ar = pair.locations.flatMap(row => row.packages.filter(p => p.userStow === null))
-  return ar.length !== 0 ? true : false
+  return ar.length !== 0
 }
 </script>
