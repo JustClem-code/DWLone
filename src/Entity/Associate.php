@@ -114,58 +114,6 @@ class Associate
         return $this->pallets;
     }
 
-    public function addPallet(Pallet $pallet): static
-    {
-        if (!$this->pallets->contains($pallet)) {
-            $this->pallets->add($pallet);
-            $pallet->setAssociate($this);
-        }
-
-        return $this;
-    }
-
-    public function removePallet(Pallet $pallet): static
-    {
-        if ($this->pallets->removeElement($pallet)) {
-            // set the owning side to null (unless already changed)
-            if ($pallet->getAssociate() === $this) {
-                $pallet->setAssociate(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Package>
-     */
-    public function getPackages(): Collection
-    {
-        return $this->packages;
-    }
-
-    public function addPackage(Package $package): static
-    {
-        if (!$this->packages->contains($package)) {
-            $this->packages->add($package);
-            $package->setAssociate($this);
-        }
-
-        return $this;
-    }
-
-    public function removePackage(Package $package): static
-    {
-        if ($this->packages->removeElement($package)) {
-            // set the owning side to null (unless already changed)
-            if ($package->getAssociate() === $this) {
-                $package->setAssociate(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Cart>
      */

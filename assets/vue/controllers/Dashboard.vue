@@ -26,10 +26,6 @@
 
 //TODO:
 
-// régler les problèmes entities du profiler
-
-// vérifier les convention de naming (styleColor => StyleColor ?)
-
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers

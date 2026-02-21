@@ -37,7 +37,7 @@ class Truck
   #[ORM\Column(nullable: true)]
   private ?\DateTime $DepartureDate = null;
 
-  #[ORM\ManyToOne(inversedBy: 'trucks')]
+  #[ORM\ManyToOne(inversedBy: 'deliveryTrucks')]
   private ?User $userDelDate = null;
 
   #[ORM\ManyToOne(inversedBy: 'departureTrucks')]
