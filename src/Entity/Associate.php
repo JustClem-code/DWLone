@@ -29,18 +29,6 @@ class Associate
     private ?Role $role = null;
 
     /**
-     * @var Collection<int, Pallet>
-     */
-    #[ORM\OneToMany(targetEntity: Pallet::class, mappedBy: 'associate')]
-    private Collection $pallets;
-
-    /**
-     * @var Collection<int, Package>
-     */
-    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'Associate')]
-    private Collection $packages;
-
-    /**
      * @var Collection<int, Cart>
      */
     #[ORM\OneToMany(targetEntity: Cart::class, mappedBy: 'associate')]
@@ -48,8 +36,6 @@ class Associate
 
     public function __construct()
     {
-        $this->pallets = new ArrayCollection();
-        $this->packages = new ArrayCollection();
         $this->carts = new ArrayCollection();
     }
 
@@ -104,14 +90,6 @@ class Associate
         $this->role = $role;
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, Pallet>
-     */
-    public function getPallets(): Collection
-    {
-        return $this->pallets;
     }
 
     /**
