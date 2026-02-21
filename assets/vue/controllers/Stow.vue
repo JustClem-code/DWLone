@@ -24,7 +24,7 @@
 
 <script setup>
 
-import { ref, provide, computed } from 'vue'
+import { ref, provide, computed, watchEffect } from 'vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
@@ -151,5 +151,14 @@ async function stowPackage(loc) {
 }
 
 provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
+
+const handleToggle = () => {
+
+  if (!sidePanelRef.value?.isOpen) {
+    currentPackage.value = null
+  }
+}
+
+watchEffect(handleToggle)
 
 </script>
