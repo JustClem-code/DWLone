@@ -32,17 +32,29 @@
 
 //TODO:
 
+// travailler l'UI de la page dashboard
+
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// travailler l'UI de la page dashboard
+// afficher les stats des pallet attentu, truckc, ect...
+
+
+// Créer le controller Picking
+//  -> générer les routes (combien de sacs par chariot, 1 chariot par routes ?)
+//  -> tables emplacement chariot picking ?
+//  -> lier les codes postaux en fonction de la localisation
+//  -> afficher "heavy bag" si dépasse un certain poids
+//  -> trouver un moyen pour se déplacer dans l'entrepôt -> reprendre celui de la stow plus ajouter les emplacements de staging
+//  -> Staging en Sidepanel
+//  -> revoir la manière d'afficher la pairLocation le "&" est moche
+
+// Revoir l'ordre des locations sur la stow
+// Créer un fichier store pour redéfinir les locations ou le faire directement dans le php ?
 
 // Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
 
-// Filtrer en fonctions des locations vides
-// calculer le nombre de bag plein avec des packages
-// afficher les stats des pallet attentu, packages inducté et en stow, ect...
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
 
