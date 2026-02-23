@@ -40,6 +40,14 @@
 
 // afficher les stats des pallet attentu, truckc, ect...
 
+// revoir le composant InFo en mode mobile, trop long et non scrollable
+// créer un composant unique pour les stats ( à l'image de Packages Stats header)
+// refacto les methods de getBagColor
+// retrouver les stats des bags
+// Revoir l'ordre des locations sur la stow
+// Créer un fichier store pour redéfinir les locations ou le faire directement dans le php ?
+// Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
+
 
 // Créer le controller Picking
 //  -> générer les routes (combien de sacs par chariot, 1 chariot par routes ?)
@@ -50,10 +58,7 @@
 //  -> Staging en Sidepanel
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
 
-// Revoir l'ordre des locations sur la stow
-// Créer un fichier store pour redéfinir les locations ou le faire directement dans le php ?
 
-// Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
 
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée

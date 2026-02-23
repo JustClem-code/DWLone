@@ -2,7 +2,7 @@
   <div class="grid grid-flow-col grid-rows-13 gap-4">
 
     <HorizontalLinkButton v-for="(pair) in locations" :key="pair" @click="setCurrentPair(pair)"
-      :title="pair.id" :focused="alleyHasPackages(pair) ? 'text-blue-400' : ''" :pingfocused="alleyHasPackages(pair)" />
+      :title="pair.id" :focused="alleyHasPackages(pair) ? 'text-blue-400' : 'text-gray-300 dark:text-gray-700/90'" :pingfocused="alleyHasPackages(pair)" />
 
   </div>
 </template>

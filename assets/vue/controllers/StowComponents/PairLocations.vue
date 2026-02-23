@@ -3,7 +3,7 @@
 
     <HorizontalLinkButton v-for="loc in orderedLocations" :key="loc.id" @click="stowPackage(loc)"
       :title="loc?.name || 'Location name'"
-      :focused="isCurrentLoc(loc?.name) ? getBagColor(currentPackage.bag?.name) : ''" />
+      :focused="isCurrentLoc(loc?.name) ? getBagColor(currentPackage.bag?.name) : 'text-gray-300 dark:text-gray-700/90'" />
 
   </div>
 </template>
