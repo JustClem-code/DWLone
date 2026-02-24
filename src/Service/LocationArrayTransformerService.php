@@ -9,7 +9,7 @@ use App\Repository\LocationRepository;
 use App\Repository\PackageRepository;
 use App\Service\BagArrayTransformer;
 
-class LocationArrayTransformer
+class LocationArrayTransformerService
 {
   use RepositoryTrait;
 
@@ -91,8 +91,58 @@ class LocationArrayTransformer
     ];
   }
 
+
+  private function floorOrdered($locations): array
+  {
+
+    // 1. Indexer par name (équivalent du Map in JS)
+    $byKey = [];
+    foreach ($locations as $loc) {
+      // si c'est un objet
+      // $byKey[$loc->name] = $loc;
+      // si c'est un array, utiliser:
+      $byKey[$loc['name']] = $loc;
+    }
+
+    // 2. Préparer la structure de résultat [[], [], [], []]
+    $result = [[], [], [], []];
+
+    $aisleLetters      = ['C', 'B'];
+    $bagLetters        = ['A', 'B', 'C', 'D', 'E', 'G'];
+    $bagLettersReverse = array_reverse($bagLetters);
+    $orderSpecsPair    = [['side' => '1'], ['side' => '2']];
+    $orderSpecsOdd     = [['side' => '2'], ['side' => '1']];
+
+    $indexGlobal = 0;
+
+    foreach ($aisleLetters as $aisleLet) {
+      for ($floor = 1; $floor <= 52; $floor++) {
+        $letters = $floor <= 26 ? $bagLettersReverse : $bagLetters;
+        $specs   = $floor % 2 === 0 ? $orderSpecsPair : $orderSpecsOdd;
+
+        foreach ($specs as $spec) {
+          foreach ($letters as $letter) {
+            $key = sprintf('%s-%d-%s-%s', $aisleLet, $floor, $letter, $spec['side']);
+
+            if (isset($byKey[$key])) {
+              // même règle de découpage : 312 par sous‑tableau, max 4
+              $arrayIndex = intdiv($indexGlobal, 312); // PHP 7+
+              if ($arrayIndex < 4) {
+                $result[$arrayIndex][] = $byKey[$key];
+              }
+            }
+
+            $indexGlobal++;
+          }
+        }
+      }
+    }
+
+    return $result;
+  }
+
   public function transformAllBagOriented(): array
   {
-    return $this->transFormEntities($this->locationRepository->findAll(), [$this, 'toArrayBagOriented']);
+    return $this->floorOrdered($this->transFormEntities($this->locationRepository->findAll(), [$this, 'toArrayBagOriented']));
   }
 }

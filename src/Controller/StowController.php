@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-use App\Service\LocationArrayTransformer;
+use App\Service\LocationArrayTransformerService;
 use App\Service\SetPackageLocationService;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -19,7 +19,7 @@ final class StowController extends AbstractController
 {
   public function __construct(
     private Security $security,
-    private LocationArrayTransformer $locationArrayTransformer,
+    private LocationArrayTransformerService $locationArrayTransformerService,
     private SetPackageLocationService $setPackageLocationService
   ) {}
 
@@ -36,7 +36,7 @@ final class StowController extends AbstractController
   {
 
     $locations = $repository->findAll();
-    return $this->json($this->locationArrayTransformer->transformAll($locations));
+    return $this->json($this->locationArrayTransformerService->transformAll($locations));
   }
 
   #[Route('/setUserStow/{id}', name: 'set_user_stow', methods: ['POST'])]

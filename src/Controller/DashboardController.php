@@ -10,12 +10,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\PackageRepository;
 use App\Repository\PalletRepository;
 
-use App\Service\LocationArrayTransformer;
+use App\Service\LocationArrayTransformerService;
 use App\Service\SetPackageLocationService;
 
 final class DashboardController extends AbstractController
 {
-  public function __construct(private LocationArrayTransformer $locationArrayTransformer, private SetPackageLocationService $setPackageLocationService) {}
+  public function __construct(private LocationArrayTransformerService $locationArrayTransformerService, private SetPackageLocationService $setPackageLocationService) {}
 
   #[Route('/', name: 'app_dashboard')]
   public function index(): Response
@@ -39,7 +39,7 @@ final class DashboardController extends AbstractController
   #[Route('/getBagsInLocations', name: 'get_bags_in_locations_list', methods: ['GET'])]
   public function getBagsInLocations(): Response
   {
-    return $this->json($this->locationArrayTransformer->transformAllBagOriented());
+    return $this->json($this->locationArrayTransformerService->transformAllBagOriented());
   }
 
   //
@@ -47,7 +47,7 @@ final class DashboardController extends AbstractController
   private function buildLocationsResponse(PackageRepository $packageRepository): Response
   {
     return $this->json([
-      'locations' => $this->locationArrayTransformer->transformAllBagOriented(),
+      'locations' => $this->locationArrayTransformerService->transformAllBagOriented(),
       'packagesWithoutLocation' => $packageRepository->transformCollection(
         $packageRepository->findAllWithoutLocationFromPalletsWithUser()
       ),
