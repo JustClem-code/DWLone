@@ -1,29 +1,8 @@
 <template>
   <div class="flex flex-col gap-2">
 
-    <div
-      class="w-full bg-white dark:bg-gray-800 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
-
-      <div class="flex items-center justify-between py-6 px-8 border-b border-gray-200 dark:border-gray-700/90">
-        <div>
-          <h2>Packages statistics</h2>
-          <p class="text-xs text-gray-400 mt-2">
-            You can automate the steps
-          </p>
-        </div>
-        <div class="flex items-center gap-2">
-          <BaseButton title="Automating steps" @click="sidePanelRef?.toggleSidePanel()" styleColor="empty" />
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
-        <div v-for="stat in packagesStats" :key="stat.title" class="py-6 px-8">
-          <p class="text-sm text-gray-400">{{ stat.title }}</p>
-          <p class="text-4xl pt-2">{{ stat.number }}</p>
-        </div>
-      </div>
-    </div>
-
+    <StatsHeader title="Packages statistics" notice="You can automate the steps" actionTitle="Automating steps"
+      @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="packagesStats" />
 
     <SidePanel ref="sidePanelRef" title="Automating steps">
 
@@ -47,6 +26,7 @@ import { useNotification } from '../../composables/eventBus.js'
 import BaseButton from '../UI/Buttons/BaseButton.vue';
 import RadioCard from '../UI/Radios/RadioCard.vue';
 import SidePanel from '../UI/SidePanel.vue';
+import StatsHeader from './StatsHeader.vue';
 
 const { data: allPackagesOnfloor, error: errorAllPackages } = useFetch('/getAllPackagesOnFloor')
 

@@ -39,13 +39,12 @@
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
 // afficher les stats des pallet attentu, truckc, ect...
+// WIP
+// Créer un fichier store pour redéfinir les locations ou le faire directement dans le php ?
 
-// revoir le composant InFo en mode mobile, trop long et non scrollable
-// créer un composant unique pour les stats ( à l'image de Packages Stats header)
 // refacto les methods de getBagColor
 // retrouver les stats des bags
 // Revoir l'ordre des locations sur la stow
-// Créer un fichier store pour redéfinir les locations ou le faire directement dans le php ?
 // Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
 
 
