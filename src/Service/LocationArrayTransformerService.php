@@ -49,7 +49,7 @@ class LocationArrayTransformerService
     ];
   }
 
-  public function transformAll(iterable $locations): array
+  /* public function transformAll(iterable $locations): array
   {
     $grouped = [];
 
@@ -67,7 +67,6 @@ class LocationArrayTransformerService
 
     $result = [];
     foreach ($grouped as $key => $locationsArray) {
-      // si tu veux ignorer les invalides :
       if ($key === '_invalid') {
         continue;
       }
@@ -79,8 +78,46 @@ class LocationArrayTransformerService
     }
 
     return $result;
-  }
+  } */
 
+  public function mapAllInPair(iterable $locations): array
+  {
+    $finalResult = [[], [], [], []];
+    $index = 0;
+
+    foreach ($locations as $aisles) {
+      $grouped = [];
+
+      foreach ($aisles as $location) {
+        $name = $location['name'];
+        $key  = $this->getPairKey($name);
+
+        if ($key === null) {
+          $grouped['_invalid'][] = $location;
+          continue;
+        }
+
+        $grouped[$key][] = $location;
+      }
+
+      $result = [];
+      foreach ($grouped as $key => $locationsArray) {
+        if ($key === '_invalid') {
+          continue;
+        }
+
+        $result[] = [
+          'id'      => $this->getPairName($key),
+          'locations' => $locationsArray,
+        ];
+      }
+
+      $finalResult[$index][] = $result;
+      $index++;
+    }
+
+    return $finalResult;
+  }
 
   private function toArrayBagOriented(Location $location): array
   {
@@ -92,19 +129,15 @@ class LocationArrayTransformerService
   }
 
 
-  private function floorOrdered($locations): array
+  private function floorOrdered(iterable $locations): array
   {
 
-    // 1. Indexer par name (équivalent du Map in JS)
+    // Index by name
     $byKey = [];
     foreach ($locations as $loc) {
-      // si c'est un objet
-      // $byKey[$loc->name] = $loc;
-      // si c'est un array, utiliser:
       $byKey[$loc['name']] = $loc;
     }
 
-    // 2. Préparer la structure de résultat [[], [], [], []]
     $result = [[], [], [], []];
 
     $aisleLetters      = ['C', 'B'];
@@ -125,8 +158,8 @@ class LocationArrayTransformerService
             $key = sprintf('%s-%d-%s-%s', $aisleLet, $floor, $letter, $spec['side']);
 
             if (isset($byKey[$key])) {
-              // même règle de découpage : 312 par sous‑tableau, max 4
-              $arrayIndex = intdiv($indexGlobal, 312); // PHP 7+
+              // 312 locations  4 aisle
+              $arrayIndex = intdiv($indexGlobal, 312);
               if ($arrayIndex < 4) {
                 $result[$arrayIndex][] = $byKey[$key];
               }
@@ -139,6 +172,11 @@ class LocationArrayTransformerService
     }
 
     return $result;
+  }
+
+  public function transformAllInPair(): array
+  {
+    return $this->mapAllInPair($this->floorOrdered($this->transFormEntities($this->locationRepository->findAll(), [$this, 'toArray'])));
   }
 
   public function transformAllBagOriented(): array

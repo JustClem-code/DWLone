@@ -32,11 +32,12 @@ final class StowController extends AbstractController
   }
 
   #[Route('/getlocations', name: 'get_locations_list', methods: ['GET'])]
-  public function getLocations(LocationRepository $repository): Response
+  public function getLocations(): Response
   {
 
-    $locations = $repository->findAll();
-    return $this->json($this->locationArrayTransformerService->transformAll($locations));
+   /*  $locations = $repository->findAll();
+    return $this->json($this->locationArrayTransformerService->transformAll($locations)); */
+    return $this->json($this->locationArrayTransformerService->transformAllInPair());
   }
 
   #[Route('/setUserStow/{id}', name: 'set_user_stow', methods: ['POST'])]

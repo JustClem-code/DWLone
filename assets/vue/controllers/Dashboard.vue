@@ -38,9 +38,11 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// afficher les stats des pallet attentu, truckc, ect...
-// WIP
 // Créer un fichier store pour redéfinir les locations ou le faire directement dans le php ?
+// WIP creation de private function, vérifier la structure et qu'il n'y a pas trop de array imbriqués pour une bonne itération dans vue
+//
+
+// afficher les stats des pallet attentu, truckc, ect...
 
 // refacto les methods de getBagColor
 // retrouver les stats des bags
