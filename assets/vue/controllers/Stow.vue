@@ -13,7 +13,7 @@
         </BorderedContent>
 
         <BorderedContent title="Locations">
-          <PairLocations :orderedLocations="orderedLocations" />
+          <PairLocations :orderedLocations="currentPair.locations" />
         </BorderedContent>
       </div>
 

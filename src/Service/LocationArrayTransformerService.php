@@ -112,7 +112,7 @@ class LocationArrayTransformerService
         ];
       }
 
-      $finalResult[$index][] = $result;
+      $finalResult[$index] = $result;
       $index++;
     }
 
@@ -129,7 +129,7 @@ class LocationArrayTransformerService
   }
 
 
-  private function floorOrdered(iterable $locations): array
+  private function floorOrdered(iterable $locations, $isFps = false): array
   {
 
     // Index by name
@@ -142,7 +142,12 @@ class LocationArrayTransformerService
 
     $aisleLetters      = ['C', 'B'];
     $bagLetters        = ['A', 'B', 'C', 'D', 'E', 'G'];
-    $bagLettersReverse = array_reverse($bagLetters);
+
+    $bagLettersReverse = $bagLetters;
+    if (!$isFps) {
+      $bagLettersReverse = array_reverse($bagLetters);
+    }
+
     $orderSpecsPair    = [['side' => '1'], ['side' => '2']];
     $orderSpecsOdd     = [['side' => '2'], ['side' => '1']];
 
@@ -176,7 +181,7 @@ class LocationArrayTransformerService
 
   public function transformAllInPair(): array
   {
-    return $this->mapAllInPair($this->floorOrdered($this->transFormEntities($this->locationRepository->findAll(), [$this, 'toArray'])));
+    return $this->mapAllInPair($this->floorOrdered($this->transFormEntities($this->locationRepository->findAll(), [$this, 'toArray']), true));
   }
 
   public function transformAllBagOriented(): array
