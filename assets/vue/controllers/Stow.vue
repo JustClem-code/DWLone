@@ -46,42 +46,6 @@ const currentPackage = ref(null)
 
 const sidePanelRef = ref(null)
 
-const firstAisleNumber = computed(() => {
-  const match = currentPair.value.locations[0].name.match(/\d+/);
-  return match ? parseInt(match[0], 10) : null;
-})
-
-const pairFirstLetter = computed(() => {
-  return `${currentPair.value.locations[0].name[0]}`
-})
-
-const orderedLocations = computed(() => {
-  const orderSpecs = [
-    { floor: `${firstAisleNumber.value}`, side: '2' },
-    { floor: `${firstAisleNumber.value}`, side: '1' },
-    { floor: `${firstAisleNumber.value + 1}`, side: '1' },
-    { floor: `${firstAisleNumber.value + 1}`, side: '2' },
-  ]
-
-  const letters = ['A', 'B', 'C', 'D', 'E', 'G']
-
-  const byKey = new Map(
-    currentPair.value.locations.map(loc => [loc.name, loc])
-  )
-
-  const result = []
-
-  for (const spec of orderSpecs) {
-    for (const letter of letters) {
-      const key = `${pairFirstLetter.value}-${spec.floor}-${letter}-${spec.side}`
-      const loc = byKey.get(key)
-      if (loc) result.push(loc)
-    }
-  }
-
-  return result
-})
-
 const currentPairPackages = computed(() => {
   const data = {
     "id": currentPair.value.id,

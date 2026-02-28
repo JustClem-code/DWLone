@@ -38,9 +38,7 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Créer un fichier store pour redéfinir les locations ou le faire directement dans le php ?
-// WIP creation de private function, vérifier la structure et qu'il n'y a pas trop de array imbriqués pour une bonne itération dans vue
-//
+// simplifier le LocationArrayTransformerService
 
 // afficher les stats des pallet attentu, truckc, ect...
 
