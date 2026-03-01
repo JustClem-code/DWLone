@@ -74,13 +74,17 @@ const updateCurrentPairPackages = () => {
 
   if (!locations.value) return
 
-  locations.value = locations.value.map(group => ({
-    ...group,
-    locations: group.locations.map(row => ({
-      ...row,
-      packages: (row.packages || []).filter(p => p.id !== pkgId),
-    })),
-  }));
+  console.log('old loc', locations.value);
+
+  locations.value = locations.value.map(aisle =>
+    aisle.map(group => ({
+      ...group,
+      locations: group.locations.map(row => ({
+        ...row,
+        packages: (row.packages || []).filter(p => p.id !== pkgId),
+      })),
+    }))
+  );
 }
 
 async function stowPackage(loc) {
