@@ -66,48 +66,62 @@ class LocationArrayTransformerService
     return array_merge($second, $first);
   }
 
+  private function groupByPair(iterable $aisles): array
+  {
+    $grouped = [];
+
+    foreach ($aisles as $location) {
+      $name = $location['name'];
+      $key  = $this->getPairKey($name);
+
+      if ($key === null) {
+        $grouped['_invalid'][] = $location;
+        continue;
+      }
+
+      $grouped[$key][] = $location;
+    }
+
+    return $grouped;
+  }
+
+  private function getPairLocations(iterable $grouped): array
+  {
+    $result = [];
+
+    foreach ($grouped as $key => $locationsArray) {
+      if ($key === '_invalid') {
+        continue;
+      }
+
+      [$letter, $num] = explode('-', $key);
+
+      $aisleNumber = (int) $num;
+
+      if ($aisleNumber > 26) {
+
+        $locationsArray = $this->reverseOrderOfLocation($locationsArray);
+      }
+
+      $result[] = [
+        'id'      => $this->getPairName($key),
+        'locations' => $locationsArray,
+      ];
+    }
+
+    return $result;
+  }
+
   public function mapAllInPair(iterable $locations): array
   {
     $finalResult = [[], [], [], []];
     $index = 0;
 
     foreach ($locations as $aisles) {
-      $grouped = [];
 
-      foreach ($aisles as $location) {
-        $name = $location['name'];
-        $key  = $this->getPairKey($name);
+      $grouped = $this->groupByPair($aisles);
 
-        if ($key === null) {
-          $grouped['_invalid'][] = $location;
-          continue;
-        }
-
-
-        $grouped[$key][] = $location;
-      }
-
-      $result = [];
-
-      foreach ($grouped as $key => $locationsArray) {
-        if ($key === '_invalid') {
-          continue;
-        }
-
-        [$letter, $num] = explode('-', $key);
-
-        $aisleNumber = (int) $num;
-
-        if ($aisleNumber > 26) {
-
-          $locationsArray = $this->reverseOrderOfLocation($locationsArray);
-        }
-
-        $result[] = [
-          'id'      => $this->getPairName($key),
-          'locations' => $locationsArray,
-        ];
-      }
+      $result = $this->getPairLocations($grouped);
 
       $finalResult[$index] = $result;
       $index++;
@@ -116,47 +130,60 @@ class LocationArrayTransformerService
     return $finalResult;
   }
 
-  private function floorOrdered(iterable $locations, $isFps = false): array
+  private function indexLocationsByName(iterable $locations): array
   {
-
-    // Index by name
     $byKey = [];
     foreach ($locations as $loc) {
       $byKey[$loc['name']] = $loc;
     }
+    return $byKey;
+  }
 
-    $result = [[], [], [], []];
+  private function getAisleLetters(): array
+  {
+    return ['C', 'B'];
+  }
 
-    $aisleLetters      = ['C', 'B'];
-    $bagLetters        = ['A', 'B', 'C', 'D', 'E', 'G'];
+  private function getBagLetters(): array
+  {
+    return ['A', 'B', 'C', 'D', 'E', 'G'];
+  }
 
-    $bagLettersReverse = $bagLetters;
-    if (!$isFps) {
-      $bagLettersReverse = array_reverse($bagLetters);
+  private function getLettersForFloor(int $floor, bool $isFps): array
+  {
+    $bagLetters = $this->getBagLetters();
+    $bagLettersReverse = $isFps ? $bagLetters : array_reverse($bagLetters);
+    return $floor <= 26 ? $bagLettersReverse : $bagLetters;
+  }
+
+  private function getOrderSpecs(int $floor, bool $isFps): array
+  {
+    $orderSpecsPair = [['side' => '1'], ['side' => '2']];
+    $orderSpecsOdd = [['side' => '2'], ['side' => '1']];
+
+    if ($isFps && $floor > 26) {
+      return $floor % 2 !== 0 ? $orderSpecsPair : $orderSpecsOdd;
     }
 
-    $orderSpecsPair    = [['side' => '1'], ['side' => '2']];
-    $orderSpecsOdd     = [['side' => '2'], ['side' => '1']];
+    return $floor % 2 === 0 ? $orderSpecsPair : $orderSpecsOdd;
+  }
 
+  private function floorOrdered(iterable $locations, bool $isFps = false): array
+  {
+    $byKey = $this->indexLocationsByName($locations);
+    $result = [[], [], [], []];
     $indexGlobal = 0;
 
-    foreach ($aisleLetters as $aisleLet) {
+    foreach ($this->getAisleLetters() as $aisleLet) {
       for ($floor = 1; $floor <= 52; $floor++) {
-        $letters = $floor <= 26 ? $bagLettersReverse : $bagLetters;
-        $specs   = $floor % 2 === 0 ? $orderSpecsPair : $orderSpecsOdd;
-
-        if ($isFps) {
-          if ($floor > 26) {
-            $specs   = $floor % 2 !== 0 ? $orderSpecsPair : $orderSpecsOdd;
-          }
-        }
+        $letters = $this->getLettersForFloor($floor, $isFps);
+        $specs = $this->getOrderSpecs($floor, $isFps);
 
         foreach ($specs as $spec) {
           foreach ($letters as $letter) {
             $key = sprintf('%s-%d-%s-%s', $aisleLet, $floor, $letter, $spec['side']);
 
             if (isset($byKey[$key])) {
-              // 312 locations  4 aisle
               $arrayIndex = intdiv($indexGlobal, 312);
               if ($arrayIndex < 4) {
                 $result[$arrayIndex][] = $byKey[$key];

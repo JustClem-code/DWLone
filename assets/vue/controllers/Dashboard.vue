@@ -38,13 +38,10 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// simplifier le LocationArrayTransformerService
-
 // afficher les stats des pallet attentu, truckc, ect...
 
 // refacto les methods de getBagColor
 // retrouver les stats des bags
-// Revoir l'ordre des locations sur la stow
 // Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
 
 
