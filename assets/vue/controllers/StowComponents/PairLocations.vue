@@ -11,6 +11,9 @@
 <script setup>
 import { inject } from 'vue'
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
+import { useLogic } from '../../composables/useLogic.js';
+
+const { getColor } = useLogic()
 
 const props = defineProps({
   orderedLocations: Array,
@@ -21,15 +24,8 @@ const { currentPackage, stowPackage } = inject('stow')
 const isCurrentLoc = (name) => currentPackage.value?.location?.name === name
 
 const getBagColor = (name) => {
-  const prefix = name.match(/^[^-]+/)[0];
-  const colors = {
-    'BLK': 'outline-2 outline-offset-2',
-    'NVY': 'outline-2 outline-blue-700 outline-offset-2',
-    'ORG': 'outline-2 outline-orange-700 outline-offset-2',
-    'YLO': 'outline-2 outline-yellow-700 outline-offset-2',
-    'GRN': 'outline-2 outline-green-700 outline-offset-2',
-  }
-  return colors[prefix] ?? '';
+  const color = getColor(name)
+  return color ? `outline-2 outline-${color}-700 outline-offset-2` : 'outline-2 outline-offset-2';
 }
 
 </script>

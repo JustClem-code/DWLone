@@ -40,7 +40,6 @@
 
 // afficher les stats des pallet attentu, truckc, ect...
 
-// refacto les methods de getBagColor
 // retrouver les stats des bags
 // Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
 

@@ -74,8 +74,6 @@ const updateCurrentPairPackages = () => {
 
   if (!locations.value) return
 
-  console.log('old loc', locations.value);
-
   locations.value = locations.value.map(aisle =>
     aisle.map(group => ({
       ...group,

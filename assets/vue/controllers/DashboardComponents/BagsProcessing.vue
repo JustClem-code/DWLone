@@ -17,8 +17,7 @@
     <SidePanel ref="sidePanelRef" title="Zoom on bags" width="md:w-5/6">
 
       <div v-if="locations" class="divide-y divide-gray-200 dark:divide-gray-700/90">
-        <div v-for="(groupe, indexGroup) in locations" :key="indexGroup"
-          class="grid grid-cols-6 gap-1 sm:gap-4 py-8">
+        <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1 sm:gap-4 py-8">
 
           <HorizontalLinkButton v-for="location in groupe" :key="location.id" @click="setCurrentBag(location.bag)"
             :title="location.name"
@@ -46,7 +45,7 @@ import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from '../UI/Modals/InformationComponent.vue';
 import StatsHeader from './StatsHeader.vue';
 
-const { formatInt } = useLogic()
+const { formatInt, getColor } = useLogic()
 
 const { locations } = inject('dashboard')
 
@@ -83,28 +82,13 @@ const bagInfos = computed(() => {
 })
 
 const getBagColorZoom = (name) => {
-  const prefix = name.match(/^[^-]+/)[0];
-  const colors = {
-    'BLK': 'outline sm:outline-2  outline-offset sm:outline-offset-2',
-    'NVY': 'outline sm:outline-2  outline-offset sm:outline-offset-2 outline-blue-700',
-    'ORG': 'outline sm:outline-2  outline-offset sm:outline-offset-2 outline-orange-700',
-    'YLO': 'outline sm:outline-2  outline-offset sm:outline-offset-2 outline-yellow-700',
-    'GRN': 'outline sm:outline-2  outline-offset sm:outline-offset-2 outline-green-700',
-  }
-  return colors[prefix] ?? '';
+  const color = getColor(name)
+  return color ? `outline sm:outline-2  outline-offset sm:outline-offset-2 outline-${color}-700` : 'outline sm:outline-2  outline-offset sm:outline-offset-2';
 }
 
-
 const getBagColor = (name) => {
-  const prefix = name.match(/^[^-]+/)[0];
-  const colors = {
-    'BLK': 'outline outline-offset-1',
-    'NVY': 'outline outline-blue-700 outline-offset-1 bg-blue-700',
-    'ORG': 'outline outline-orange-700 outline-offset-1 bg-orange-700',
-    'YLO': 'outline outline-yellow-700 outline-offset-1 bg-yellow-700',
-    'GRN': 'outline outline-green-700 outline-offset-1 bg-green-700',
-  }
-  return colors[prefix] ?? '';
+  const color = getColor(name)
+  return color ? `outline outline-${color}-700 outline-offset-1` : 'outline outline-offset-1';
 }
 
 const orderedLocations = computed(() => {

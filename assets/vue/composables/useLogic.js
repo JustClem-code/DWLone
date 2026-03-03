@@ -26,5 +26,17 @@ export function useLogic() {
     }).format(value);
   }
 
-  return { getNumberOfPackagesNotInducted, getPalletsNotUnloaded, handleMenuAction, formatInt };
+  const getColor = (name) => {
+    const prefix = name.match(/^[^-]+/)[0];
+    const colors = {
+      'BLK': null,
+      'NVY': 'blue',
+      'ORG': 'orange',
+      'YLO': 'yellow',
+      'GRN': 'green',
+    }
+    return colors[prefix];
+  }
+
+  return { getNumberOfPackagesNotInducted, getPalletsNotUnloaded, handleMenuAction, formatInt, getColor };
 }
