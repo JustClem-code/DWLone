@@ -75,6 +75,13 @@ const inductPercentage = computed(() => {
   return Math.round(((allPackagesNumber.value - packagesWithoutLocationNumber.value) / allPackagesNumber.value) * 100)
 })
 
+/* const stowPercentage = computed(() =>
+  !allPackagesNumber.value || !inductPercentage.value
+    ? 0
+    : Math.round(
+      ((allPackagesNumber.value - packagesWithLocationNotStowedNumber.value) / allPackagesNumber.value) * 100
+    )
+) */
 const stowPercentage = computed(() =>
   !allPackagesNumber.value || !inductPercentage.value
     ? 0
