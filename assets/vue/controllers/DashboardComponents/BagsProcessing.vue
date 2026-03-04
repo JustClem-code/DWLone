@@ -82,13 +82,28 @@ const bagInfos = computed(() => {
 })
 
 const getBagColorZoom = (name) => {
-  const color = getColor(name)
-  return color ? `outline sm:outline-2  outline-offset sm:outline-offset-2 outline-${color}-700` : 'outline sm:outline-2  outline-offset sm:outline-offset-2';
+  const prefix = getColor(name);
+  const colors = {
+    'BLK': '',
+    'NVY': 'outline-blue-700',
+    'ORG': 'outline-orange-700',
+    'YLO': 'outline-yellow-700',
+    'GRN': 'outline-green-700',
+  }
+  return `outline sm:outline-2  outline-offset sm:outline-offset-2 ${colors[prefix]}` ?? '';
 }
 
+
 const getBagColor = (name) => {
-  const color = getColor(name)
-  return color ? `outline outline-${color}-700 outline-offset-1` : 'outline outline-offset-1';
+  const prefix = getColor(name);
+  const colors = {
+    'BLK': '',
+    'NVY': 'outline-blue-700 bg-blue-700',
+    'ORG': 'outline-orange-700 bg-orange-700',
+    'YLO': 'outline-yellow-700 bg-yellow-700',
+    'GRN': 'outline-green-700 bg-green-700',
+  }
+  return `outline outline-offset-1 ${colors[prefix]}` ?? '';
 }
 
 const orderedLocations = computed(() => {

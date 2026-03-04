@@ -24,8 +24,15 @@ const { currentPackage, stowPackage } = inject('stow')
 const isCurrentLoc = (name) => currentPackage.value?.location?.name === name
 
 const getBagColor = (name) => {
-  const color = getColor(name)
-  return color ? `outline-2 outline-${color}-700 outline-offset-2` : 'outline-2 outline-offset-2';
+  const prefix = getColor(name);
+  const colors = {
+    'BLK': '',
+    'NVY': 'outline-blue-700',
+    'ORG': 'outline-orange-700',
+    'YLO': 'outline-yellow-700',
+    'GRN': 'outline-green-700',
+  }
+  return `outline-2 outline-offset-2 ${colors[prefix]}` ?? '';
 }
 
 </script>

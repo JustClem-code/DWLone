@@ -27,15 +27,7 @@ export function useLogic() {
   }
 
   const getColor = (name) => {
-    const prefix = name.match(/^[^-]+/)[0];
-    const colors = {
-      'BLK': null,
-      'NVY': 'blue',
-      'ORG': 'orange',
-      'YLO': 'yellow',
-      'GRN': 'green',
-    }
-    return colors[prefix];
+    return name.match(/^[^-]+/)[0];
   }
 
   return { getNumberOfPackagesNotInducted, getPalletsNotUnloaded, handleMenuAction, formatInt, getColor };
