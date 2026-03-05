@@ -59,12 +59,22 @@ class PackageRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
   }
-  
+
   public function findAllWithLocationAndNotStowed(): array
   {
     return $this->createQueryBuilder('pa')
       ->andWhere('pa.location IS NOT NULL')
       ->andWhere('pa.UserStow IS NULL')
+      ->orderBy('pa.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  public function findAllWithLocationAndStowed(): array
+  {
+    return $this->createQueryBuilder('pa')
+      ->andWhere('pa.location IS NOT NULL')
+      ->andWhere('pa.UserStow IS NOT NULL')
       ->orderBy('pa.id', 'ASC')
       ->getQuery()
       ->getResult();

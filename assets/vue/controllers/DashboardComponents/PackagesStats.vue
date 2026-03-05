@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watchEffect, onMounted } from 'vue';
+import { ref, computed, inject,watch, watchEffect, onMounted } from 'vue';
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 
@@ -54,9 +54,17 @@ const allPackagesNumber = computed(() => {
 const packagesWithoutLocationNumber = computed(() => {
   return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithoutLocation.length : 0
 })
-
+/////////
 const packagesWithLocationNotStowedNumber = computed(() => {
   return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocationNotStowed.length : 0
+})
+//////////
+const packagesWithLocation = computed(() => {
+  return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocation.length : 0
+})
+
+const packagesWithLocationAndStowedNumber = computed(() => {
+  return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocationAndStowed.length : 0
 })
 
 const packagesToResetNumber = computed(() => {
@@ -75,19 +83,18 @@ const inductPercentage = computed(() => {
   return Math.round(((allPackagesNumber.value - packagesWithoutLocationNumber.value) / allPackagesNumber.value) * 100)
 })
 
-/* const stowPercentage = computed(() =>
-  !allPackagesNumber.value || !inductPercentage.value
-    ? 0
-    : Math.round(
-      ((allPackagesNumber.value - packagesWithLocationNotStowedNumber.value) / allPackagesNumber.value) * 100
-    )
-) */
 const stowPercentage = computed(() =>
   !allPackagesNumber.value || !inductPercentage.value
     ? 0
-    : Math.round(
-      ((allPackagesNumber.value - packagesWithLocationNotStowedNumber.value) / allPackagesNumber.value) * 100
-    )
+    : Math.round((packagesWithLocationAndStowedNumber.value / packagesWithLocation.value) * 100)
+)
+
+watch(
+  allPackagesNumber,
+  (val) => {
+    console.log('allPackagesNumber', val)
+  },
+  { deep: true }
 )
 
 const packagesStats = computed(() => [
