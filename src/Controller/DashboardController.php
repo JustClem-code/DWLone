@@ -15,7 +15,11 @@ use App\Service\SetPackageLocationService;
 
 final class DashboardController extends AbstractController
 {
-  public function __construct(private LocationArrayTransformerService $locationArrayTransformerService, private SetPackageLocationService $setPackageLocationService) {}
+  public function __construct(
+    private LocationArrayTransformerService $locationArrayTransformerService,
+    private SetPackageLocationService $setPackageLocationService,
+    private PackageRepository $packageRepository
+  ) {}
 
   #[Route('/', name: 'app_dashboard')]
   public function index(): Response
@@ -25,20 +29,20 @@ final class DashboardController extends AbstractController
     ]);
   }
 
-  private function packagesStats(PackageRepository $packageRepository): array
+  private function packagesStats(): array
   {
     return [
-      'packagesWithoutLocation' => $packageRepository->transformCollection(
-        $packageRepository->findAllWithoutLocationFromPalletsWithUser()
+      'packagesWithoutLocation' => $this->packageRepository->transformCollection(
+        $this->packageRepository->findAllWithoutLocationFromPalletsWithUser()
       ),
-      'packagesWithLocationNotStowed' => $packageRepository->transformCollection(
-        $packageRepository->findAllWithLocationAndNotStowed()
+      'packagesWithLocationNotStowed' => $this->packageRepository->transformCollection(
+        $this->packageRepository->findAllWithLocationAndNotStowed()
       ),
-      'packagesWithLocation' => $packageRepository->transformCollection(
-        $packageRepository->findAllHasLocation()
+      'packagesWithLocation' => $this->packageRepository->transformCollection(
+        $this->packageRepository->findAllHasLocation()
       ),
-      'packagesWithLocationAndStowed' => $packageRepository->transformCollection(
-        $packageRepository->findAllWithLocationAndStowed()
+      'packagesWithLocationAndStowed' => $this->packageRepository->transformCollection(
+        $this->packageRepository->findAllWithLocationAndStowed()
       )
     ];
   }
@@ -48,10 +52,13 @@ final class DashboardController extends AbstractController
   {
     return $this->json([
       'allPackages' => $packageRepository->transformCollection($packageRepository->findAllFromPalletsWithUser()),
-      /*  'packagesWithoutLocation' => $packageRepository->transformCollection($packageRepository->findAllWithoutLocationFromPalletsWithUser()),
-      'packagesWithLocationNotStowed' => $packageRepository->transformCollection($packageRepository->findAllWithLocationAndNotStowed()),
-      'packagesWithLocationAndStowed' => $packageRepository->transformCollection($packageRepository->findAllWithLocationAndStowed()), */
-    ] + $this->packagesStats($packageRepository));
+    ]);
+  }
+
+  #[Route('/getPackagesStats', name: 'get_packages_stats', methods: ['GET'])]
+  public function getPackagesStats(): Response
+  {
+    return $this->json($this->packagesStats());
   }
 
   #[Route('/getBagsInLocations', name: 'get_bags_in_locations_list', methods: ['GET'])]
@@ -60,11 +67,11 @@ final class DashboardController extends AbstractController
     return $this->json($this->locationArrayTransformerService->transformAllBagOriented());
   }
 
-  private function buildLocationsResponse(PackageRepository $packageRepository): Response
+  private function buildLocationsResponse(): Response
   {
     return $this->json([
       'locations' => $this->locationArrayTransformerService->transformAllBagOriented()
-    ] + $this->packagesStats($packageRepository));
+    ] + $this->packagesStats());
   }
 
   #[Route('/automaticInductAndStow', name: 'automatic_induct_and_stow', methods: ['POST'])]
@@ -89,14 +96,14 @@ final class DashboardController extends AbstractController
       }
     }
 
-    return $this->buildLocationsResponse($packageRepository);
+    return $this->buildLocationsResponse();
   }
 
   #[Route('/hardResetLocationsBagsPackages', name: 'hard_reset_locations_bags_packages', methods: ['POST'])]
-  public function hardResetLocationsBagsPackages(PackageRepository $packageRepository): Response
+  public function hardResetLocationsBagsPackages(): Response
   {
     $this->setPackageLocationService->resetLocationsBagsPackages();
 
-    return $this->buildLocationsResponse($packageRepository);
+    return $this->buildLocationsResponse();
   }
 }

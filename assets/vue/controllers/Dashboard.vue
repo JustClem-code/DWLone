@@ -38,8 +38,6 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// dans le dashboardCOntroller, créer une function pour les stats, revoir les stats du stow
-
 // afficher les stats des pallet attentu, truckc, ect...
 
 // retrouver les stats des bags

@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject,watch, watchEffect, onMounted } from 'vue';
+import { ref, computed, inject, watch, watchEffect, onMounted } from 'vue';
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 
@@ -29,6 +29,7 @@ import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 
 const { data: allPackagesOnfloor, error: errorAllPackages } = useFetch('/getAllPackagesOnFloor')
+const { data: allPackagesStats, error: errorPackagesStats } = useFetch('/getPackagesStats')
 
 const { notifier } = useNotification()
 
@@ -52,19 +53,19 @@ const allPackagesNumber = computed(() => {
 })
 
 const packagesWithoutLocationNumber = computed(() => {
-  return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithoutLocation.length : 0
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithoutLocation.length : 0
 })
 /////////
 const packagesWithLocationNotStowedNumber = computed(() => {
-  return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocationNotStowed.length : 0
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationNotStowed.length : 0
 })
 //////////
 const packagesWithLocation = computed(() => {
-  return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocation.length : 0
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocation.length : 0
 })
 
 const packagesWithLocationAndStowedNumber = computed(() => {
-  return allPackagesOnfloor.value ? allPackagesOnfloor.value.packagesWithLocationAndStowed.length : 0
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationAndStowed.length : 0
 })
 
 const packagesToResetNumber = computed(() => {
@@ -90,9 +91,9 @@ const stowPercentage = computed(() =>
 )
 
 watch(
-  allPackagesNumber,
+  stowPercentage,
   (val) => {
-    console.log('allPackagesNumber', val)
+    console.log('stowPercentage', val)
   },
   { deep: true }
 )
@@ -135,8 +136,10 @@ const resetLocalStorage = () => {
 
 const updatePackagesData = (data) => {
   locations.value = data.value.locations
-  allPackagesOnfloor.value.packagesWithoutLocation = data.value.packagesWithoutLocation
-  allPackagesOnfloor.value.packagesWithLocationNotStowed = data.value.packagesWithLocationNotStowed
+  allPackagesStats.value.packagesWithoutLocation = data.value.packagesWithoutLocation
+  allPackagesStats.value.packagesWithLocationNotStowed = data.value.packagesWithLocationNotStowed
+  allPackagesStats.value.packagesWithLocationAndStowed = data.value.packagesWithLocationAndStowed
+  allPackagesStats.value.packagesWithLocation = data.value.packagesWithLocation
 }
 
 async function automaticInduct(induct = false, stow = false) {

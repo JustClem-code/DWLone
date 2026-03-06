@@ -62,9 +62,18 @@ const setCurrentBag = (bag) => {
   infoDialogRef.value?.openDialog()
 }
 
+const numberOfBags = computed(() =>
+  locations.value
+    ? locations.value
+      .flatMap(group => group.filter(loc => loc.bag !== null))
+      .length
+    : 0
+)
+
+
 const bagsStats = computed(() => [
-  { 'title': 'Number of bags', 'number': `0` },
-  { 'title': 'Stow progress', 'number': `0` },
+  { 'title': 'Number of bags', 'number': `${numberOfBags.value}` },
+  { 'title': 'Number of road', 'number': `0` },
   { 'title': 'Picking progress', 'number': `0` },
 ])
 
