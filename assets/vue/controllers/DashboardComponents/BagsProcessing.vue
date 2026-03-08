@@ -70,7 +70,6 @@ const numberOfBags = computed(() =>
     : 0
 )
 
-
 const bagsStats = computed(() => [
   { 'title': 'Number of bags', 'number': `${numberOfBags.value}` },
   { 'title': 'Number of road', 'number': `0` },
@@ -114,47 +113,5 @@ const getBagColor = (name) => {
   }
   return `outline outline-offset-1 ${colors[prefix]}` ?? '';
 }
-
-const orderedLocations = computed(() => {
-  const byKey = new Map(locations.value?.map(loc => [loc.name, loc]) || []);
-  const result = [[], [], [], []];
-
-  const aisleLetters = ['C', 'B'];
-  const bagLetters = ['A', 'B', 'C', 'D', 'E', 'G'];
-  const bagLettersReverse = [...bagLetters].reverse();
-  const orderSpecsPair = [{ side: '1' }, { side: '2' }];
-  const orderSpecsOdd = [{ side: '2' }, { side: '1' }];
-  let indexGlobal = 0;
-  let arrayIndex = 0;
-
-  for (const aisleLet of aisleLetters) {
-    for (let floor = 1; floor <= 52; floor++) {
-      const letters = floor <= 26 ? bagLettersReverse : bagLetters;
-      const specs = floor % 2 === 0 ? orderSpecsPair : orderSpecsOdd;
-
-      for (const spec of specs) {
-        for (const letter of letters) {
-          const key = `${aisleLet}-${floor}-${letter}-${spec.side}`;
-          const loc = byKey.get(key);
-
-          if (loc) {
-            const arrayIndex = Math.floor(indexGlobal / 312);
-            if (arrayIndex < 4) {
-              result[arrayIndex].push(loc);
-            }
-          }
-          indexGlobal++;
-
-
-          if (result[arrayIndex] && result[arrayIndex].length >= 312) {
-            arrayIndex++;
-          }
-        }
-      }
-    }
-  }
-
-  return result;
-});
 
 </script>

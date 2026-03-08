@@ -36,8 +36,7 @@ const { notifier } = useNotification()
 const { locations } = inject('dashboard')
 
 onMounted(() => {
-  console.log('locations', locations);
-
+  console.log('locations', locations)
 })
 
 const STORAGE_KEY_PALLET = 'currentPallet'
@@ -49,31 +48,31 @@ const automaticInductIsLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
 const allPackagesNumber = computed(() => {
-  return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackages.length : 0
+  return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackagesNumber : 0
 })
 
 const packagesWithoutLocationNumber = computed(() => {
-  return allPackagesStats.value ? allPackagesStats.value.packagesWithoutLocation.length : 0
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithoutLocationNumber : 0
 })
-/////////
+
 const packagesWithLocationNotStowedNumber = computed(() => {
-  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationNotStowed.length : 0
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationNotStowedNumber : 0
 })
-//////////
-const packagesWithLocation = computed(() => {
-  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocation.length : 0
+
+const packagesWithLocationNumber = computed(() => {
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationNumber : 0
 })
 
 const packagesWithLocationAndStowedNumber = computed(() => {
-  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationAndStowed.length : 0
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationAndStowedNumber : 0
 })
 
 const packagesToResetNumber = computed(() => {
-  return allPackagesOnfloor.value ? allPackagesNumber.value - packagesWithoutLocationNumber.value : 0
+  return allPackagesStats.value ? packagesWithLocationNumber.value : 0
 })
 
 const packagesFullAutomatingNumber = computed(() => {
-  return allPackagesOnfloor.value ?
+  return allPackagesStats.value ?
     (packagesWithLocationNotStowedNumber.value >= packagesWithoutLocationNumber.value ?
       packagesWithLocationNotStowedNumber.value : packagesWithoutLocationNumber.value
     ) : 0
@@ -81,21 +80,13 @@ const packagesFullAutomatingNumber = computed(() => {
 
 const inductPercentage = computed(() => {
   if (allPackagesNumber.value === 0) return 0
-  return Math.round(((allPackagesNumber.value - packagesWithoutLocationNumber.value) / allPackagesNumber.value) * 100)
+  return Math.round((packagesWithLocationNumber.value / allPackagesNumber.value) * 100)
 })
 
 const stowPercentage = computed(() =>
   !allPackagesNumber.value || !inductPercentage.value
     ? 0
-    : Math.round((packagesWithLocationAndStowedNumber.value / packagesWithLocation.value) * 100)
-)
-
-watch(
-  stowPercentage,
-  (val) => {
-    console.log('stowPercentage', val)
-  },
-  { deep: true }
+    : Math.round((packagesWithLocationAndStowedNumber.value / packagesWithLocationNumber.value) * 100)
 )
 
 const packagesStats = computed(() => [
@@ -136,10 +127,7 @@ const resetLocalStorage = () => {
 
 const updatePackagesData = (data) => {
   locations.value = data.value.locations
-  allPackagesStats.value.packagesWithoutLocation = data.value.packagesWithoutLocation
-  allPackagesStats.value.packagesWithLocationNotStowed = data.value.packagesWithLocationNotStowed
-  allPackagesStats.value.packagesWithLocationAndStowed = data.value.packagesWithLocationAndStowed
-  allPackagesStats.value.packagesWithLocation = data.value.packagesWithLocation
+  allPackagesStats.value = data.value.allPackagesStats
 }
 
 async function automaticInduct(induct = false, stow = false) {

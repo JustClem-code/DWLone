@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 use App\Repository\PackageRepository;
-use App\Repository\PalletRepository;
 
 use App\Service\LocationArrayTransformerService;
 use App\Service\SetPackageLocationService;
@@ -32,26 +31,26 @@ final class DashboardController extends AbstractController
   private function packagesStats(): array
   {
     return [
-      'packagesWithoutLocation' => $this->packageRepository->transformCollection(
+      'packagesWithoutLocationNumber' => count(
         $this->packageRepository->findAllWithoutLocationFromPalletsWithUser()
       ),
-      'packagesWithLocationNotStowed' => $this->packageRepository->transformCollection(
+      'packagesWithLocationNotStowedNumber' => count(
         $this->packageRepository->findAllWithLocationAndNotStowed()
       ),
-      'packagesWithLocation' => $this->packageRepository->transformCollection(
+      'packagesWithLocationNumber' => count(
         $this->packageRepository->findAllHasLocation()
       ),
-      'packagesWithLocationAndStowed' => $this->packageRepository->transformCollection(
+      'packagesWithLocationAndStowedNumber' => count(
         $this->packageRepository->findAllWithLocationAndStowed()
-      )
+      ),
     ];
   }
 
   #[Route('/getAllPackagesOnFloor', name: 'get_all_packages_on_floor', methods: ['GET'])]
-  public function getAllPackagesOnFloor(PackageRepository $packageRepository): Response
+  public function getAllPackagesOnFloor(): Response
   {
     return $this->json([
-      'allPackages' => $packageRepository->transformCollection($packageRepository->findAllFromPalletsWithUser()),
+      'allPackagesNumber' => count($this->packageRepository->findAllFromPalletsWithUser()),
     ]);
   }
 
@@ -71,17 +70,17 @@ final class DashboardController extends AbstractController
   {
     return $this->json([
       'locations' => $this->locationArrayTransformerService->transformAllBagOriented()
-    ] + $this->packagesStats());
+    ] + ['allPackagesStats' => $this->packagesStats()]);
   }
 
   #[Route('/automaticInductAndStow', name: 'automatic_induct_and_stow', methods: ['POST'])]
-  public function automaticInductAndStow(PackageRepository $packageRepository, Request $request): Response
+  public function automaticInductAndStow(Request $request): Response
   {
     $induct = $request->getPayload()->get('induct');
     $stow = $request->getPayload()->get('stow');
 
     if ($induct) {
-      $packages = $packageRepository->findAllWithoutLocationFromPalletsWithUser();
+      $packages = $this->packageRepository->findAllWithoutLocationFromPalletsWithUser();
 
       foreach ($packages as $package) {
         $this->setPackageLocationService->setPackageLocation($package);
@@ -89,7 +88,7 @@ final class DashboardController extends AbstractController
     }
 
     if ($stow) {
-      $packages = $packageRepository->findAllWithLocationAndNotStowed();
+      $packages = $this->packageRepository->findAllWithLocationAndNotStowed();
 
       foreach ($packages as $package) {
         $this->setPackageLocationService->setPackageUserStow($package);
