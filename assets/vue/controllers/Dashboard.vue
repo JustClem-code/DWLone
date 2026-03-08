@@ -32,17 +32,9 @@
 
 //TODO:
 
-// travailler l'UI de la page dashboard
-
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
-
-// afficher les stats des pallet attentu, truckc, ect...
-
-// retrouver les stats des bags
-// Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
-
 
 // Créer le controller Picking
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
@@ -58,6 +50,9 @@
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
 
 
+// afficher les stats des pallet attentu, truckc, ect...
+
+// Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
 
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
