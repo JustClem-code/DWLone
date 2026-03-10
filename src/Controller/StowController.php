@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Package;
-use App\Repository\LocationRepository;
 use App\Repository\PackageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,12 +12,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Service\LocationArrayTransformerService;
 use App\Service\SetPackageLocationService;
 
-use Symfony\Bundle\SecurityBundle\Security;
-
 final class StowController extends AbstractController
 {
   public function __construct(
-    private Security $security,
     private LocationArrayTransformerService $locationArrayTransformerService,
     private SetPackageLocationService $setPackageLocationService
   ) {}
