@@ -52,6 +52,17 @@ class BagRepository extends ServiceEntityRepository
       ->getResult();
   }
 
+  public function findAllHasLocationAndPackages(): array
+  {
+    return $this->createQueryBuilder('b')
+      ->select('DISTINCT b')
+      ->innerJoin('b.packages', 'p')
+      ->andWhere('b.location IS NOT NULL')
+      ->orderBy('b.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
   public function toArray(Bag $bag): array
   {
     return [
