@@ -11,33 +11,43 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RoadRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Road::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, Road::class);
+  }
 
-    //    /**
-    //     * @return Road[] Returns an array of Road objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('r.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+  public function findOneByName($value): ?Road
+  {
+    return $this->createQueryBuilder('r')
+      ->andWhere('r.name = :val')
+      ->setParameter('val', $value)
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
+  }
 
-    //    public function findOneBySomeField($value): ?Road
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+  //    /**
+  //     * @return Road[] Returns an array of Road objects
+  //     */
+  //    public function findByExampleField($value): array
+  //    {
+  //        return $this->createQueryBuilder('r')
+  //            ->andWhere('r.exampleField = :val')
+  //            ->setParameter('val', $value)
+  //            ->orderBy('r.id', 'ASC')
+  //            ->setMaxResults(10)
+  //            ->getQuery()
+  //            ->getResult()
+  //        ;
+  //    }
+
+  //    public function findOneBySomeField($value): ?Road
+  //    {
+  //        return $this->createQueryBuilder('r')
+  //            ->andWhere('r.exampleField = :val')
+  //            ->setParameter('val', $value)
+  //            ->getQuery()
+  //            ->getOneOrNullResult()
+  //        ;
+  //    }
 }
