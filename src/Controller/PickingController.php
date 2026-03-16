@@ -131,7 +131,7 @@ final class PickingController extends AbstractController
   // function qui retourne tous les sacs avec colis
   private function getAllBagsWithPackages(): array
   {
-    return $this->bagRepository->findAllHasLocationAndPackages();
+    return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
   }
   // Function qui génère et renvoie toutes les routes
 
@@ -140,16 +140,14 @@ final class PickingController extends AbstractController
   {
     $bags = $this->getAllBagsWithPackages();
 
+    // dump($bags);
+
     foreach ($bags as $bag) {
       // trouver le postcode du bag
-
-      //dump($bag->getPackages()[0]->getOrderId()->getAddress()->getPostcode());
 
       $postcode = $this->bagRepository->findBagPostcode($bag);
 
       $groupName = $this->findPostcodeGroup($postcode);
-
-       // dump($groupName);
 
       if ($groupName === null) {
         // gérer le cas "pas de groupe"
@@ -160,21 +158,19 @@ final class PickingController extends AbstractController
 
 
       if (!$this->roadRepository->findOneByName($groupName)) {
-        dump($allRoads);
         $road = new Road();
         $road->setName($groupName);
         $entityManager->persist($road);
-        $entityManager->flush();
       } else {
         $road = $this->roadRepository->findOneByName($groupName);
       }
 
       $bag->setRoad($road);
+      $entityManager->flush();
 
       // Chercher si le group à une route créer : si non créer une road,
       // puis attribuer la route au sac
       // attribuer le stagging au moment de prendre la route par le picker
-      dump($bag);
     }
 
     return $this->json($this->groupPostcodes());
