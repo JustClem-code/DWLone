@@ -2,16 +2,22 @@
 
 namespace App\Repository;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use App\Entity\Road;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
+use App\Repository\BagRepository;
 
 /**
  * @extends ServiceEntityRepository<Road>
  */
 class RoadRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
+  use RepositoryTrait;
+
+  public function __construct(ManagerRegistry $registry, private BagRepository $bagRepository)
   {
     parent::__construct($registry, Road::class);
   }
@@ -24,6 +30,22 @@ class RoadRepository extends ServiceEntityRepository
       ->getQuery()
       ->getOneOrNullResult()
     ;
+  }
+
+  public function toArray(Road $road): array
+  {
+    return [
+      'id' => $road->getId(),
+      'name' => $road->getName(),
+      'stagging' => $road->getStagging(),
+      'carts' => $road->getCarts(),
+      'bags' => $this->transFormEntities($road->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
+    ];
+  }
+
+  public function transformAll(iterable $entities): array
+  {
+    return  $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
   //    /**

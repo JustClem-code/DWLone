@@ -80,6 +80,15 @@ class BagRepository extends ServiceEntityRepository
     ];
   }
 
+  public function toArrayRoadOriented(Bag $bag): array
+  {
+    return [
+      'id' => $bag->getId(),
+      'name' => $bag->getName(),
+      'location' => $bag->getLocation()->getName(),
+    ];
+  }
+
   public function transformAll(iterable $entities): array
   {
     return  $this->transFormEntities($entities, [$this, 'toArray']);

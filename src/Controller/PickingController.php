@@ -123,27 +123,28 @@ final class PickingController extends AbstractController
       }
     }
 
-    return null; // postcode non trouvé
+    return null;
   }
 
-  // Function qui créer une route avec tous les sacs des postcodes
-
-  // function qui retourne tous les sacs avec colis
   private function getAllBagsWithPackages(): array
   {
     return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
   }
-  // Function qui génère et renvoie toutes les routes
 
-  #[Route('/getAllBagsWithPackages', name: 'get_all_bags_with_packages', methods: ['GET'])]
-  public function generateAllBags(EntityManagerInterface $entityManager): Response
+  #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
+  public function getAllRoads(): Response
+  {
+    $allRoads = $this->roadRepository->findAll();
+
+    return $this->json($this->roadRepository->transformAll($allRoads));
+  }
+
+  #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
+  public function generateAllRoads(EntityManagerInterface $entityManager): Response
   {
     $bags = $this->getAllBagsWithPackages();
 
-    // dump($bags);
-
     foreach ($bags as $bag) {
-      // trouver le postcode du bag
 
       $postcode = $this->bagRepository->findBagPostcode($bag);
 
@@ -152,10 +153,6 @@ final class PickingController extends AbstractController
       if ($groupName === null) {
         // gérer le cas "pas de groupe"
       }
-
-      $allRoads = $this->roadRepository->findAll();
-
-
 
       if (!$this->roadRepository->findOneByName($groupName)) {
         $road = new Road();
@@ -167,23 +164,8 @@ final class PickingController extends AbstractController
 
       $bag->setRoad($road);
       $entityManager->flush();
-
-      // Chercher si le group à une route créer : si non créer une road,
-      // puis attribuer la route au sac
-      // attribuer le stagging au moment de prendre la route par le picker
     }
 
-    return $this->json($this->groupPostcodes());
+    return $this->getAllRoads();
   }
-
-
-
-
-
-
-  /* #[Route('/getAllBagsWithPackages', name: 'get_all_bags_with_packages', methods: ['GET'])]
-  public function getAllBagsWithPackages(): Response
-  {
-    return $this->json($this->bagRepository->findAllHasLocationAndPackages());
-  } */
 }

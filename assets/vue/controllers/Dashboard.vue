@@ -39,10 +39,7 @@
 // Créer le controller Picking
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair
-//  -> générer les routes (combien de sacs par chariot, 1 chariot par routes ?)
-//  -> + ou - 50 sacs => 36 emplacements => 62 postcodes
 
-//  -> grouper les Postcode par 6 ou 7 dans le dashbord avant de générer les routes ???
 //  -> tables emplacement chariot picking ? => créer les CART 1 cart par emplacement 36 et attribuer aléatoirement
 //  -> lier les codes postaux en fonction de la localisation
 //  -> afficher "heavy bag" si dépasse un certain poids
