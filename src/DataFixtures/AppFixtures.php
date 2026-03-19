@@ -18,6 +18,8 @@ use App\Entity\Address;
 use App\Entity\Pallet;
 use App\Entity\Truck;
 use App\Entity\Dock;
+use App\Entity\GroupPostcodes;
+use App\Entity\Postcodes;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\Persistence\ObjectManager;
@@ -50,18 +52,18 @@ class AppFixtures extends Fixture
     return $part1 . $part2 . $part3;
   }
 
-  private function GenerateDocks(mixed $manager): void
+  private function generateDocks(mixed $manager): void
   {
     $dockNumber = 1;
     for ($i = 0; $i < 11; $i++) {
-      $dock = New Dock();
+      $dock = new Dock();
       $dock->setName('OB_' . $dockNumber);
       $manager->persist($dock);
       $dockNumber++;
     }
   }
 
-  private  function GeneratePallets(mixed $manager, mixed $truck): void
+  private  function generatePallets(mixed $manager, mixed $truck): void
   {
     for ($i = 0; $i < 5; $i++) {
       $pallet = new Pallet();
@@ -70,7 +72,7 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function GenerateTrucks(mixed $manager): void
+  private function generateTrucks(mixed $manager): void
   {
     for ($i = 0; $i < 3; $i++) {
       $truck = new Truck();
@@ -81,11 +83,23 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function generateAddress(mixed $manager, mixed $customer): void
+  private function generateGroupPostcodes(mixed $manager): void
   {
-    $this->faker = Factory::create();
+    for ($i = 1; $i <= 10; $i++) {
+      // %02d => nombre sur 2 chiffres, complété avec des zéros
+      $groupName = sprintf('CA_A_%02d', $i);
 
-    $postCodes = [
+      $group = new GroupPostcodes();
+      $group->setName($groupName);
+      $manager->persist($group);
+    }
+
+    $manager->flush();
+  }
+
+  private function postCodes(): array
+  {
+    return [
       "Abbaretz" => "44170",
       "Aigrefeuille-sur-Maine" => "44140",
       "Ancenis" => "44150",
@@ -149,12 +163,33 @@ class AppFixtures extends Fixture
       "Nantes" => "44000",
       "Saint-Herblain" => "44800"
     ];
+  }
+
+  private function generatePostcodes(mixed $manager): void
+  {
+    $GroupPostcodesRepository = $manager->getRepository(GroupPostcodes::class);
+    $groupPostcodes = $GroupPostcodesRepository->findAll();
+
+    foreach ($this->postCodes() as $city => $code) {
+
+      shuffle($groupPostcodes);
+
+      $postcode = new Postcodes();
+      $postcode->setName($code);
+      $postcode->setGroupPostcodes($groupPostcodes[0]);
+      $manager->persist($postcode);
+    }
+  }
+
+  private function generateAddress(mixed $manager, mixed $customer): void
+  {
+    $this->faker = Factory::create();
 
     $randomPostcode = new \Random\Randomizer();
 
-    $city = $randomPostcode->pickArrayKeys($postCodes, 1)[0];
+    $city = $randomPostcode->pickArrayKeys($this->postCodes(), 1)[0];
 
-    $postcode = $postCodes[$city];
+    $postcode = $this->postCodes()[$city];
 
     $address = new Address();
     $address->setStreetAddress($this->faker->streetAddress());
@@ -271,7 +306,6 @@ class AppFixtures extends Fixture
     $package->setPallet($pallets[0]);
     $package->setOrderId($order);
     $manager->persist($package);
-
   }
 
   private function generateOrders(mixed $manager): void
@@ -386,7 +420,7 @@ class AppFixtures extends Fixture
 
   public function load(ObjectManager $manager): void
   {
-    $this->generateDocks($manager);
+    /* $this->generateDocks($manager);
     $this->generateTrucks($manager);
     $this->generateCustomers($manager);
     $this->generateRoles($manager);
@@ -396,7 +430,10 @@ class AppFixtures extends Fixture
     $this->generateDeliveryCompany($manager);
     $this->generateStaggings($manager);
     $this->generateLocations($manager);
-    $this->generateBags($manager);
+    $this->generateBags($manager); */
+
+    $this->generateGroupPostcodes($manager);
+    $this->generatePostcodes($manager);
 
     $manager->flush();
   }

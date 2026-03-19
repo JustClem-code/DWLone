@@ -96,7 +96,13 @@
 
 4. Loading Fixtures:
 
+    En purgeant toute la base :
+
     docker compose exec php php bin/console doctrine:fixtures:load
+
+    ou seulement ajouter aux données présentes :
+
+    docker compose exec php php bin/console doctrine:fixtures:load --append
 
 ## Création du système d'authentification
 
