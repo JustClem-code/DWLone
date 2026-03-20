@@ -19,6 +19,7 @@ class Bag
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'bags')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Road $road = null;
 
     #[ORM\Column]

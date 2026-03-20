@@ -139,6 +139,21 @@ final class PickingController extends AbstractController
     return $this->json($this->roadRepository->transformAll($allRoads));
   }
 
+  #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['GET'])]
+  public function deleteAllRoads(EntityManagerInterface $entityManager): Response
+  {
+    $allRoads = $this->roadRepository->findAll();
+
+    foreach ($allRoads as $road) {
+      $this->roadRepository->setBagsToNull($road);
+      $entityManager->remove($road);
+    }
+
+    $entityManager->flush();
+
+    return $this->getAllRoads();
+  }
+
   #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
   public function generateAllRoads(EntityManagerInterface $entityManager): Response
   {

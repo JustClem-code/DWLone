@@ -37,6 +37,9 @@
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
 // Créer le controller Picking
+
+//  -> remplacer et adapter le groupPostcode du pickingController
+
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair
 

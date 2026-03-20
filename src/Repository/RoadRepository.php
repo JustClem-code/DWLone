@@ -32,6 +32,13 @@ class RoadRepository extends ServiceEntityRepository
     ;
   }
 
+  public function setBagsToNull(Road $road): void
+  {
+    foreach ($road->getBags() as $bag) {
+      $bag->setRoad(null);
+    }
+  }
+
   public function toArray(Road $road): array
   {
     return [
