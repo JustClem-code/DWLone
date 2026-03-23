@@ -2,19 +2,23 @@
 
 namespace App\Controller;
 
-use App\Repository\BagRepository;
-use App\Repository\RoadRepository;
-use App\Entity\Road;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+
+use App\Repository\BagRepository;
+use App\Repository\RoadRepository;
+use App\Repository\PostcodesRepository;
+
+use App\Entity\Road;
 
 final class PickingController extends AbstractController
 {
   public function __construct(
     private BagRepository $bagRepository,
     private RoadRepository $roadRepository,
+    private PostcodesRepository $postcodesRepository,
   ) {}
 
   #[Route('/warehouse/picking', name: 'app_picking')]
@@ -27,7 +31,7 @@ final class PickingController extends AbstractController
 
   // Function qui groupe les postcodes par 6 ou 7
   // TODO: Créer une table pour pouvoir changer les groupes dans le dashboard
-  private function groupPostcodes()
+  /* private function groupPostcodes()
   {
     return [
       'CA_A_01' => [
@@ -113,18 +117,12 @@ final class PickingController extends AbstractController
         "44800",
       ]
     ];
-  }
+  } */
 
-  private function findPostcodeGroup(string $postcode): ?string
+  /* private function findPostcodeGroup(string $postcode): ?string
   {
-    foreach ($this->groupPostcodes() as $group => $postcodes) {
-      if (in_array($postcode, $postcodes, true)) {
-        return $group;
-      }
-    }
-
-    return null;
-  }
+    return $this->postcodesRepository->findPostcodeByName($postcode)->getGroupPostcodes()?->getName();
+  } */
 
   private function getAllBagsWithPackages(): array
   {
@@ -163,7 +161,7 @@ final class PickingController extends AbstractController
 
       $postcode = $this->bagRepository->findBagPostcode($bag);
 
-      $groupName = $this->findPostcodeGroup($postcode);
+      $groupName = $this->postcodesRepository->findPostcodeByName($postcode)->getGroupPostcodes()?->getName();
 
       if ($groupName === null) {
         // gérer le cas "pas de groupe"
