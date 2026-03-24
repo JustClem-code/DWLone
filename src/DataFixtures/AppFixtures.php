@@ -166,20 +166,26 @@ class AppFixtures extends Fixture
   }
 
   private function generatePostcodes(mixed $manager): void
-  {
-    $GroupPostcodesRepository = $manager->getRepository(GroupPostcodes::class);
-    $groupPostcodes = $GroupPostcodesRepository->findAll();
+{
+    $postcodesRepository = $manager->getRepository(Postcodes::class);
+    $groupPostcodesRepository = $manager->getRepository(GroupPostcodes::class);
+    $groupPostcodes = $groupPostcodesRepository->findAll();
 
     foreach ($this->postCodes() as $city => $code) {
+        // Vérifier si le code existe déjà
+        $existingPostcode = $postcodesRepository->findOneBy(['name' => $code]);
 
-      shuffle($groupPostcodes);
-
-      $postcode = new Postcodes();
-      $postcode->setName($code);
-      $postcode->setGroupPostcodes($groupPostcodes[0]);
-      $manager->persist($postcode);
+        if ($existingPostcode === null) {
+            // Si non existant, créer et persister
+            shuffle($groupPostcodes);
+            $postcode = new Postcodes();
+            $postcode->setName($code);
+            $postcode->setGroupPostcodes($groupPostcodes[0]);
+            $manager->persist($postcode);
+            $manager->flush();
+        }
     }
-  }
+}
 
   private function generateAddress(mixed $manager, mixed $customer): void
   {
@@ -432,7 +438,7 @@ class AppFixtures extends Fixture
     $this->generateLocations($manager);
     $this->generateBags($manager); */
 
-    $this->generateGroupPostcodes($manager);
+    // $this->generateGroupPostcodes($manager);
     $this->generatePostcodes($manager);
 
     $manager->flush();

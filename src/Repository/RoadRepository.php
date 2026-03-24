@@ -22,16 +22,6 @@ class RoadRepository extends ServiceEntityRepository
     parent::__construct($registry, Road::class);
   }
 
-  public function findOneByName($value): ?Road
-  {
-    return $this->createQueryBuilder('r')
-      ->andWhere('r.name = :val')
-      ->setParameter('val', $value)
-      ->getQuery()
-      ->getOneOrNullResult()
-    ;
-  }
-
   public function setBagsToNull(Road $road): void
   {
     foreach ($road->getBags() as $bag) {

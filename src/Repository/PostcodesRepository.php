@@ -16,16 +16,6 @@ class PostcodesRepository extends ServiceEntityRepository
     parent::__construct($registry, Postcodes::class);
   }
 
-  public function findPostcodeByName($value): ?Postcodes
-  {
-    return $this->createQueryBuilder('p')
-      ->andWhere('p.name = :val')
-      ->setParameter('val', $value)
-      ->getQuery()
-      ->getOneOrNullResult()
-    ;
-  }
-
   //    /**
   //     * @return Postcodes[] Returns an array of Postcodes objects
   //     */
