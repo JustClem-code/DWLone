@@ -44,7 +44,7 @@
 //  -> si plus de 4 sacs par road, spliter sur 2 chariots
 //  -> tables emplacement chariot picking ? => créer les CART 1 cart par emplacement 36 et attribuer aléatoirement
 //  -> lier les codes postaux en fonction de la localisation
-//  -> afficher "heavy bag" si dépasse un certain poids
+
 //  -> trouver un moyen pour se déplacer dans l'entrepôt -> reprendre celui de la stow plus ajouter les emplacements de staging
 //  -> Staging en Sidepanel
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
