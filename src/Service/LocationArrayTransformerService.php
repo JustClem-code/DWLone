@@ -204,6 +204,11 @@ class LocationArrayTransformerService
     return $this->mapAllInPair($this->floorOrdered($this->transFormEntities($this->locationRepository->findAll(), [$this, 'toArray']), true));
   }
 
+  public function transformAllInPairLight(): array
+  {
+    return $this->mapAllInPair($this->floorOrdered($this->transFormEntities($this->locationRepository->findAll(), [$this->locationRepository, 'toArray']), true));
+  }
+
   public function transformAllBagOriented(): array
   {
     return $this->floorOrdered($this->transFormEntities($this->locationRepository->findAll(), [$this, 'toArrayBagOriented']));

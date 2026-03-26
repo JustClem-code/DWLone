@@ -11,6 +11,8 @@ use App\Repository\BagRepository;
 use App\Repository\RoadRepository;
 use App\Repository\PostcodesRepository;
 
+use App\Service\LocationArrayTransformerService;
+
 use App\Entity\Road;
 
 final class PickingController extends AbstractController
@@ -19,6 +21,7 @@ final class PickingController extends AbstractController
     private BagRepository $bagRepository,
     private RoadRepository $roadRepository,
     private PostcodesRepository $postcodesRepository,
+    private LocationArrayTransformerService $locationArrayTransformerService,
   ) {}
 
   #[Route('/warehouse/picking', name: 'app_picking')]
@@ -27,6 +30,12 @@ final class PickingController extends AbstractController
     return $this->render('picking/index.html.twig', [
       'controller_name' => 'PickingController',
     ]);
+  }
+
+  #[Route('/getLocationsLight', name: 'get_locations_light', methods: ['GET'])]
+  public function getLocationsLight(): Response
+  {
+    return $this->json($this->locationArrayTransformerService->transformAllInPairLight());
   }
 
   private function getAllBagsWithPackages(): array

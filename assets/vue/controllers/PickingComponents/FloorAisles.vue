@@ -21,10 +21,10 @@ const props = defineProps({
   locations: Object,
 });
 
-const { setCurrentPair } = inject('stow')
+const { setCurrentPair } = inject('picking')
 
 const alleyHasPackages = (pair) => {
-  const ar = pair.locations.flatMap(row => row.packages.filter(p => p.userStow === null))
-  return ar.length !== 0
+  // const ar = pair.locations.flatMap(row => row.packages.filter(p => p.userStow === null))
+  return true
 }
 </script>

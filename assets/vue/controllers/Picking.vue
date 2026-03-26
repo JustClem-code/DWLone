@@ -2,7 +2,9 @@
   <div>
 
     <BorderedContent title="Floor">
+      <!-- si Cart attribuer à USER -->
       <FloorAisles :locations="locations" />
+      <!-- Else Component de choix de chariot avec avec stagging  -->
     </BorderedContent>
 
     <SidePanel ref="sidePanelRef" :title="currentPair ? currentPair?.id : 'title'" width="md:w-5/6">
@@ -10,6 +12,7 @@
       <div v-if="currentPair" class="flex flex-col gap-8">
         <BorderedContent title="Cart">
           <!-- <PackageDrop :pairPackages="currentPairPackages" /> -->
+
         </BorderedContent>
 
         <BorderedContent title="Locations">
@@ -36,7 +39,7 @@ import SidePanel from './UI/SidePanel.vue'
 import FloorAisles from './PickingComponents/FloorAisles.vue'
 import PairLocations from './PickingComponents/PairLocations.vue'
 
-const { data: locations, error: errorDock } = useFetch('/getlocations')
+const { data: locations, error: errorDock } = useFetch('/getLocationsLight')
 
 const { notifier } = useNotification()
 
@@ -117,7 +120,7 @@ const setCurrentPair = (pair) => {
   }
 } */
 
-provide('stow', { setCurrentPair, currentPair, stowingIsLoading })
+provide('picking', { setCurrentPair, currentPair, stowingIsLoading })
 // provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
 
 /* const handleToggle = () => {
