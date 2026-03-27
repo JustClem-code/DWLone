@@ -20,6 +20,7 @@ use App\Entity\Truck;
 use App\Entity\Dock;
 use App\Entity\GroupPostcodes;
 use App\Entity\Postcodes;
+use App\Entity\Cart;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\Persistence\ObjectManager;
@@ -166,26 +167,26 @@ class AppFixtures extends Fixture
   }
 
   private function generatePostcodes(mixed $manager): void
-{
+  {
     $postcodesRepository = $manager->getRepository(Postcodes::class);
     $groupPostcodesRepository = $manager->getRepository(GroupPostcodes::class);
     $groupPostcodes = $groupPostcodesRepository->findAll();
 
     foreach ($this->postCodes() as $city => $code) {
-        // Vérifier si le code existe déjà
-        $existingPostcode = $postcodesRepository->findOneBy(['name' => $code]);
+      // Vérifier si le code existe déjà
+      $existingPostcode = $postcodesRepository->findOneBy(['name' => $code]);
 
-        if ($existingPostcode === null) {
-            // Si non existant, créer et persister
-            shuffle($groupPostcodes);
-            $postcode = new Postcodes();
-            $postcode->setName($code);
-            $postcode->setGroupPostcodes($groupPostcodes[0]);
-            $manager->persist($postcode);
-            $manager->flush();
-        }
+      if ($existingPostcode === null) {
+        // Si non existant, créer et persister
+        shuffle($groupPostcodes);
+        $postcode = new Postcodes();
+        $postcode->setName($code);
+        $postcode->setGroupPostcodes($groupPostcodes[0]);
+        $manager->persist($postcode);
+        $manager->flush();
+      }
     }
-}
+  }
 
   private function generateAddress(mixed $manager, mixed $customer): void
   {
@@ -371,14 +372,12 @@ class AppFixtures extends Fixture
 
   private function generateStaggings(mixed $manager): void
   {
-    $letters = ['A', 'B', 'C', 'D', 'E', 'G'];
+    $letters = ['A', 'B', 'C', 'D'];
 
     foreach ($letters as $letter) {
-      $staggingNumber = 1;
-      for ($i = 0; $i < 6; $i++) {
+      for ($i = 1; $i <= 4; $i++) {
         $stagging = new Stagging();
-        $stagging->setName($letter . '-' . $staggingNumber);
-        $staggingNumber++;
+        $stagging->setName($letter . sprintf('%02d', $i));
         $manager->persist($stagging);
       }
     }
@@ -424,22 +423,38 @@ class AppFixtures extends Fixture
     }
   }
 
+  private function generateCarts(mixed $manager): void
+  {
+    $staggingsRepository = $manager->getRepository(Stagging::class);
+    $staggings = $staggingsRepository->findAll();
+
+    for ($i = 1; $i <= 32; $i++) {
+      $cart = new Cart();
+      $manager->persist($cart);
+    }
+
+    $manager->flush();
+
+    foreach ($staggings as $stagging) {
+      # code...
+    }
+  }
+
   public function load(ObjectManager $manager): void
   {
-    /* $this->generateDocks($manager);
-    $this->generateTrucks($manager);
-    $this->generateCustomers($manager);
-    $this->generateRoles($manager);
-    $this->generateAssociates($manager);
-    $this->generatePackagings($manager);
-    $this->generateOrders($manager);
-    $this->generateDeliveryCompany($manager);
-    $this->generateStaggings($manager);
-    $this->generateLocations($manager);
-    $this->generateBags($manager); */
-
+    // $this->generateDocks($manager);
+    // $this->generateTrucks($manager);
+    // $this->generateCustomers($manager);
+    // $this->generateRoles($manager);
+    // $this->generateAssociates($manager);
+    // $this->generatePackagings($manager);
+    // $this->generateOrders($manager);
+    // $this->generateDeliveryCompany($manager);
+    // $this->generateStaggings($manager);
+    // $this->generateLocations($manager);
+    // $this->generateBags($manager);
     // $this->generateGroupPostcodes($manager);
-    $this->generatePostcodes($manager);
+    // $this->generatePostcodes($manager);
 
     $manager->flush();
   }
