@@ -370,19 +370,6 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function generateStaggings(mixed $manager): void
-  {
-    $letters = ['A', 'B', 'C', 'D'];
-
-    foreach ($letters as $letter) {
-      for ($i = 1; $i <= 4; $i++) {
-        $stagging = new Stagging();
-        $stagging->setName($letter . sprintf('%02d', $i));
-        $manager->persist($stagging);
-      }
-    }
-  }
-
   private function generateLocations(mixed $manager): void
   {
     $alleys = ['B', 'C'];
@@ -423,6 +410,19 @@ class AppFixtures extends Fixture
     }
   }
 
+  private function generateStaggings(mixed $manager): void
+  {
+    $letters = ['A', 'B', 'C', 'D'];
+
+    foreach ($letters as $letter) {
+      for ($i = 1; $i <= 4; $i++) {
+        $stagging = new Stagging();
+        $stagging->setName($letter . sprintf('%02d', $i));
+        $manager->persist($stagging);
+      }
+    }
+  }
+
   private function generateCarts(mixed $manager): void
   {
     $staggingsRepository = $manager->getRepository(Stagging::class);
@@ -434,6 +434,11 @@ class AppFixtures extends Fixture
     }
 
     $manager->flush();
+
+    $cartsRepository = $manager->getRepository(Cart::class);
+    $carts = $cartsRepository->findAll();
+
+    shuffle($carts);
 
     foreach ($staggings as $stagging) {
       # code...
