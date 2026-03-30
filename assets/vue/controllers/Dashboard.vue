@@ -49,6 +49,20 @@
 //  -> Staging en Sidepanel
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
 
+ /* GÉRER CE PROBLÈME
+
+ [WARNING] You have 6 previously executed migrations in the database that are
+           not registered migrations.
+
+
+ >> 2026-03-20 15:59:45 (DoctrineMigrations\Version20260320155942)
+ >> 2026-03-20 16:02:58 (DoctrineMigrations\Version20260320160251)
+ >> 2026-03-20 16:04:22 (DoctrineMigrations\Version20260320160419)
+ >> 2026-03-20 16:08:40 (DoctrineMigrations\Version20260320160836)
+ >> 2026-03-20 16:09:47 (DoctrineMigrations\Version20260320160945)
+ >> 2026-03-20 16:11:36 (DoctrineMigrations\Version20260320161133)
+
+ */
 
 // afficher les stats des pallet attentu, truckc, ect...
 

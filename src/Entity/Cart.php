@@ -20,7 +20,7 @@ class Cart
     private ?Stagging $stagging = null;
 
     #[ORM\ManyToOne(inversedBy: 'carts')]
-    private ?Associate $associate = null;
+    private ?User $UserPicking = null;
 
     public function getId(): ?int
     {
@@ -51,14 +51,14 @@ class Cart
         return $this;
     }
 
-    public function getAssociate(): ?Associate
+    public function getUserPicking(): ?User
     {
-        return $this->associate;
+        return $this->UserPicking;
     }
 
-    public function setAssociate(?Associate $associate): static
+    public function setUserPicking(?User $UserPicking): static
     {
-        $this->associate = $associate;
+        $this->UserPicking = $UserPicking;
 
         return $this;
     }
