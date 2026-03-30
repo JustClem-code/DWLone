@@ -428,20 +428,22 @@ class AppFixtures extends Fixture
     $staggingsRepository = $manager->getRepository(Stagging::class);
     $staggings = $staggingsRepository->findAll();
 
+    $carts = [];
     for ($i = 1; $i <= 32; $i++) {
       $cart = new Cart();
       $manager->persist($cart);
+      $carts[] = $cart;
     }
 
     $manager->flush();
 
-    $cartsRepository = $manager->getRepository(Cart::class);
-    $carts = $cartsRepository->findAll();
-
     shuffle($carts);
-
     foreach ($staggings as $stagging) {
-      # code...
+      if (count($carts) >= 2) {
+        $carts[0]->setStagging($stagging);
+        $carts[1]->setStagging($stagging);
+        array_splice($carts, 0, 2);
+      }
     }
   }
 
@@ -460,6 +462,7 @@ class AppFixtures extends Fixture
     // $this->generateBags($manager);
     // $this->generateGroupPostcodes($manager);
     // $this->generatePostcodes($manager);
+    // $this->generateCarts($manager);
 
     $manager->flush();
   }
