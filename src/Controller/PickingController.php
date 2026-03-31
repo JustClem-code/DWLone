@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\BagRepository;
 use App\Repository\RoadRepository;
 use App\Repository\PostcodesRepository;
+use App\Repository\StaggingRepository;
 
 use App\Service\LocationArrayTransformerService;
 
@@ -21,6 +22,7 @@ final class PickingController extends AbstractController
     private BagRepository $bagRepository,
     private RoadRepository $roadRepository,
     private PostcodesRepository $postcodesRepository,
+    private StaggingRepository $staggingRepository,
     private LocationArrayTransformerService $locationArrayTransformerService,
   ) {}
 
@@ -94,5 +96,11 @@ final class PickingController extends AbstractController
     }
 
     return $this->getAllRoads();
+  }
+
+  #[Route('/getStaggingAreas', name: 'get_stagging_areas', methods: ['GET'])]
+  public function getStaggingAreas(): Response
+  {
+    return $this->json($this->staggingRepository->transformAll());
   }
 }

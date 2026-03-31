@@ -36,7 +36,7 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Créer le controller Picking
+//  -> travailler sur la distribution des emplacements de stagging
 
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair
@@ -46,7 +46,6 @@
 //  -> lier les codes postaux en fonction de la localisation
 
 //  -> trouver un moyen pour se déplacer dans l'entrepôt -> reprendre celui de la stow plus ajouter les emplacements de staging
-//  -> Staging en Sidepanel
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
 
  /* GÉRER CE PROBLÈME
