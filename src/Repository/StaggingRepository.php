@@ -23,6 +23,43 @@ class StaggingRepository extends ServiceEntityRepository
     parent::__construct($registry, Stagging::class);
   }
 
+  private function sortStaggingAreas($result)
+  {
+    foreach (['C', 'D'] as $letter) {
+      usort($result[$letter], function ($a, $b) {
+        $nameA = $a['name'];
+        $nameB = $b['name'];
+
+        return strcmp($nameB, $nameA);
+      });
+    }
+
+    return $result;
+  }
+
+  private function ordererdStaggingAreas($items): array
+  {
+    $order = ['C', 'B', 'D', 'A'];
+    $result = [];
+
+    foreach ($order as $letter) {
+      $result[$letter] = [];
+    }
+
+    foreach ($items as $item) {
+      $name = $item['name'];
+      $letter = strtoupper($name[0]);
+
+      if (isset($result[$letter])) {
+        $result[$letter][] = $item;
+      }
+    }
+
+    $result = $this->sortStaggingAreas($result);
+
+    return array_values(array_intersect_key($result, array_flip($order)));
+  }
+
   private function toArray(Stagging $stagging): array
   {
     return [
@@ -36,6 +73,11 @@ class StaggingRepository extends ServiceEntityRepository
   public function transformAll(): array
   {
     return $this->transFormEntities($this->findAll(), [$this, 'toArray']);
+  }
+
+  public function getAllOrderedStagging(): array
+  {
+    return $this->ordererdStaggingAreas($this->transformAll());
   }
 
   //    /**

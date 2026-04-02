@@ -40,11 +40,6 @@ final class PickingController extends AbstractController
     return $this->json($this->locationArrayTransformerService->transformAllInPairLight());
   }
 
-  private function getAllBagsWithPackages(): array
-  {
-    return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
-  }
-
   #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
   public function getAllRoads(): Response
   {
@@ -66,6 +61,11 @@ final class PickingController extends AbstractController
     $entityManager->flush();
 
     return $this->getAllRoads();
+  }
+
+  private function getAllBagsWithPackages(): array
+  {
+    return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
   }
 
   #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
@@ -101,6 +101,6 @@ final class PickingController extends AbstractController
   #[Route('/getStaggingAreas', name: 'get_stagging_areas', methods: ['GET'])]
   public function getStaggingAreas(): Response
   {
-    return $this->json($this->staggingRepository->transformAll());
+    return $this->json($this->staggingRepository->getAllOrderedStagging());
   }
 }
