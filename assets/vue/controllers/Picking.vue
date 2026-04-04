@@ -3,6 +3,7 @@
 
     <BorderedContent title="Floor">
       <!-- si Cart attribuer à USER -->
+      <FloorStaggingArea :staggingAreas="staggingAreas" class="pb-8"/>
       <FloorAisles :locations="locations" />
       <!-- Else Component de choix de chariot avec avec stagging  -->
     </BorderedContent>
@@ -38,8 +39,10 @@ import SidePanel from './UI/SidePanel.vue'
 // import PackageDrop from './StowComponents/PackageDrop.vue'
 import FloorAisles from './PickingComponents/FloorAisles.vue'
 import PairLocations from './PickingComponents/PairLocations.vue'
+import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
 
-const { data: locations, error: errorDock } = useFetch('/getLocationsLight')
+const { data: locations, error: errorLocations } = useFetch('/getLocationsLight')
+const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggingAreas')
 
 const { notifier } = useNotification()
 
