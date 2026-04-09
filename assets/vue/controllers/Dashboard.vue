@@ -36,14 +36,6 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-
-//  BACK !!!
-//  -> Revoir l'attribution des road aux users,
-//  -> créer un des parts #1 ou 2# en fonction du nombre de sacs,
-//  -> attribuer le users et le stagging, puis y mettre ensuite le cart
-
-//  -> travailler sur la distribution des emplacements de stagging
-
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair
 

@@ -11,6 +11,7 @@ use App\Repository\BagRepository;
 use App\Repository\RoadRepository;
 use App\Repository\PostcodesRepository;
 use App\Repository\StaggingRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Service\LocationArrayTransformerService;
 
@@ -24,6 +25,7 @@ final class PickingController extends AbstractController
     private PostcodesRepository $postcodesRepository,
     private StaggingRepository $staggingRepository,
     private LocationArrayTransformerService $locationArrayTransformerService,
+    private Security $security
   ) {}
 
   #[Route('/warehouse/picking', name: 'app_picking')]
@@ -102,5 +104,23 @@ final class PickingController extends AbstractController
   public function getStaggingAreas(): Response
   {
     return $this->json($this->staggingRepository->getAllOrderedStagging());
+  }
+
+  #[Route('/setRoadToUser', name: 'setR_road_to_user', methods: ['POST'])]
+  public function setRoadToUser(): Response
+  {
+
+    $allroad = $this->getAllRoads();
+
+    // 1 Trouver les road sans cart donc sans user
+    // il faut un user avant d'attibuer un cart !!!
+    // s'assurer que le cart n'a pas de user
+
+    // random les road et attribuer un user
+
+    // $package->setUserStow($this->security->getUser());
+    // $this->entityManager->flush();
+
+    return $this->json('truc');
   }
 }
