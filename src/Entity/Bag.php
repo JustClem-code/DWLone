@@ -18,12 +18,12 @@ class Bag
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'bags')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Road $road = null;
-
     #[ORM\Column]
     private ?bool $damaged = null;
+
+    #[ORM\ManyToOne(inversedBy: 'bags')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?RoadPart $roadPartId = null;
 
     #[ORM\OneToOne(inversedBy: 'bag', cascade: ['persist', 'remove'])]
     private ?Location $location = null;
@@ -52,18 +52,6 @@ class Bag
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getRoad(): ?road
-    {
-        return $this->road;
-    }
-
-    public function setRoad(?road $road): static
-    {
-        $this->road = $road;
 
         return $this;
     }
@@ -118,6 +106,18 @@ class Bag
                 $package->setBag(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRoadPartId(): ?RoadPart
+    {
+        return $this->roadPartId;
+    }
+
+    public function setRoadPartId(?RoadPart $roadPartId): static
+    {
+        $this->roadPartId = $roadPartId;
 
         return $this;
     }

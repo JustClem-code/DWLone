@@ -76,7 +76,7 @@ class BagRepository extends ServiceEntityRepository
       'id' => $bag->getId(),
       'name' => $bag->getName(),
       'location' => $bag->getLocation()->getId(),
-      'getRoad' => $bag->getRoad(),
+      'roadPart' => $bag->getRoadPartId(),
     ];
   }
 

@@ -66,6 +66,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Cart::class, mappedBy: 'UserPicking')]
     private Collection $carts;
 
+    /**
+     * @var Collection<int, RoadPart>
+     */
+    #[ORM\OneToMany(targetEntity: RoadPart::class, mappedBy: 'userId')]
+    private Collection $roadParts;
+
     public function __construct()
     {
         $this->deliveryTrucks = new ArrayCollection();
@@ -73,6 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->pallets = new ArrayCollection();
         $this->packages = new ArrayCollection();
         $this->carts = new ArrayCollection();
+        $this->roadParts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -256,6 +263,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($cart->getUserPicking() === $this) {
                 $cart->setUserPicking(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RoadPart>
+     */
+    public function getRoadParts(): Collection
+    {
+        return $this->roadParts;
+    }
+
+    public function addRoadPart(RoadPart $roadPart): static
+    {
+        if (!$this->roadParts->contains($roadPart)) {
+            $this->roadParts->add($roadPart);
+            $roadPart->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoadPart(RoadPart $roadPart): static
+    {
+        if ($this->roadParts->removeElement($roadPart)) {
+            // set the owning side to null (unless already changed)
+            if ($roadPart->getUserId() === $this) {
+                $roadPart->setUserId(null);
             }
         }
 

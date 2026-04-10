@@ -112,9 +112,11 @@ final class PickingController extends AbstractController
 
     $allroad = $this->getAllRoads();
 
-    // 1 Trouver les road sans cart donc sans user
-    // il faut un user avant d'attibuer un cart !!!
-    // s'assurer que le cart n'a pas de user
+    // sur l'entity bag changer le roadId en roadPartId
+
+    // s'assurer que les roadPart n'ont pas de user
+
+    // créer des RoadPart avec user
 
     // random les road et attribuer un user
 
