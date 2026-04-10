@@ -28,12 +28,6 @@ class Road
     private Collection $carts;
 
     /**
-     * @var Collection<int, Bag>
-     */
-    #[ORM\OneToMany(targetEntity: Bag::class, mappedBy: 'road')]
-    private Collection $bags;
-
-    /**
      * @var Collection<int, RoadPart>
      */
     #[ORM\OneToMany(targetEntity: RoadPart::class, mappedBy: 'roadId', orphanRemoval: true)]
@@ -42,7 +36,6 @@ class Road
     public function __construct()
     {
         $this->carts = new ArrayCollection();
-        $this->bags = new ArrayCollection();
         $this->roadParts = new ArrayCollection();
     }
 
@@ -99,36 +92,6 @@ class Road
             // set the owning side to null (unless already changed)
             if ($cart->getRoad() === $this) {
                 $cart->setRoad(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Bag>
-     */
-    public function getBags(): Collection
-    {
-        return $this->bags;
-    }
-
-    public function addBag(Bag $bag): static
-    {
-        if (!$this->bags->contains($bag)) {
-            $this->bags->add($bag);
-            $bag->setRoad($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBag(Bag $bag): static
-    {
-        if ($this->bags->removeElement($bag)) {
-            // set the owning side to null (unless already changed)
-            if ($bag->getRoad() === $this) {
-                $bag->setRoad(null);
             }
         }
 

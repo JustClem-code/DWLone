@@ -93,7 +93,13 @@ final class PickingController extends AbstractController
         $road = $this->roadRepository->findOneBy(['name' => $groupName]);
       }
 
-      $bag->setRoad($road);
+      // créer 1 ou 2 roadPart en fonction du nombre de Bags 
+
+      // TODO: Faire la modification de setRoadPart
+
+      // $bag->setRoad($road);
+
+      //
       $entityManager->flush();
     }
 
@@ -111,8 +117,6 @@ final class PickingController extends AbstractController
   {
 
     $allroad = $this->getAllRoads();
-
-    // sur l'entity bag changer le roadId en roadPartId
 
     // s'assurer que les roadPart n'ont pas de user
 
