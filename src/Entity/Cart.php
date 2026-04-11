@@ -8,58 +8,43 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CartRepository::class)]
 class Cart
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+  #[ORM\Id]
+  #[ORM\GeneratedValue]
+  #[ORM\Column]
+  private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'carts')]
-    private ?Road $road = null;
+  #[ORM\ManyToOne(inversedBy: 'carts')]
+  private ?Stagging $stagging = null;
 
-    #[ORM\ManyToOne(inversedBy: 'carts')]
-    private ?Stagging $stagging = null;
+  #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist', 'remove'])]
+  private ?RoadPart $roadPartId = null;
 
-    #[ORM\ManyToOne(inversedBy: 'carts')]
-    private ?User $UserPicking = null;
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+  public function getStagging(): ?Stagging
+  {
+    return $this->stagging;
+  }
 
-    public function getRoad(): ?Road
-    {
-        return $this->road;
-    }
+  public function setStagging(?Stagging $stagging): static
+  {
+    $this->stagging = $stagging;
 
-    public function setRoad(?Road $road): static
-    {
-        $this->road = $road;
+    return $this;
+  }
 
-        return $this;
-    }
+  public function getRoadPartId(): ?RoadPart
+  {
+      return $this->roadPartId;
+  }
 
-    public function getStagging(): ?Stagging
-    {
-        return $this->stagging;
-    }
+  public function setRoadPartId(?RoadPart $roadPartId): static
+  {
+      $this->roadPartId = $roadPartId;
 
-    public function setStagging(?Stagging $stagging): static
-    {
-        $this->stagging = $stagging;
-
-        return $this;
-    }
-
-    public function getUserPicking(): ?User
-    {
-        return $this->UserPicking;
-    }
-
-    public function setUserPicking(?User $UserPicking): static
-    {
-        $this->UserPicking = $UserPicking;
-
-        return $this;
-    }
+      return $this;
+  }
 }

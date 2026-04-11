@@ -34,6 +34,9 @@ class RoadPart
     #[ORM\OneToMany(targetEntity: Bag::class, mappedBy: 'roadPartId')]
     private Collection $bags;
 
+    #[ORM\OneToOne(mappedBy: 'roadPartId', cascade: ['persist', 'remove'])]
+    private ?Cart $cart = null;
+
     public function __construct()
     {
         $this->bags = new ArrayCollection();
@@ -118,6 +121,28 @@ class RoadPart
                 $bag->setRoadPartId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCart(): ?Cart
+    {
+        return $this->cart;
+    }
+
+    public function setCart(?Cart $cart): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($cart === null && $this->cart !== null) {
+            $this->cart->setRoadPartId(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($cart !== null && $cart->getRoadPartId() !== $this) {
+            $cart->setRoadPartId($this);
+        }
+
+        $this->cart = $cart;
 
         return $this;
     }
