@@ -20,10 +20,10 @@ class RoadPart
 
     #[ORM\ManyToOne(inversedBy: 'roadParts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Road $roadId = null;
+    private ?Road $road = null;
 
     #[ORM\ManyToOne(inversedBy: 'roadParts')]
-    private ?User $userId = null;
+    private ?User $user = null;
 
     #[ORM\Column]
     private ?bool $stagged = null;
@@ -31,10 +31,10 @@ class RoadPart
     /**
      * @var Collection<int, Bag>
      */
-    #[ORM\OneToMany(targetEntity: Bag::class, mappedBy: 'roadPartId')]
+    #[ORM\OneToMany(targetEntity: Bag::class, mappedBy: 'roadPart')]
     private Collection $bags;
 
-    #[ORM\OneToOne(mappedBy: 'roadPartId', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'roadPart', cascade: ['persist', 'remove'])]
     private ?Cart $cart = null;
 
     public function __construct()
@@ -59,26 +59,26 @@ class RoadPart
         return $this;
     }
 
-    public function getRoadId(): ?Road
+    public function getRoad(): ?Road
     {
-        return $this->roadId;
+        return $this->road;
     }
 
-    public function setRoadId(?Road $roadId): static
+    public function setRoad(?Road $road): static
     {
-        $this->roadId = $roadId;
+        $this->road = $road;
 
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(?User $userId): static
+    public function setUser(?User $user): static
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
@@ -107,7 +107,7 @@ class RoadPart
     {
         if (!$this->bags->contains($bag)) {
             $this->bags->add($bag);
-            $bag->setRoadPartId($this);
+            $bag->setRoadPart($this);
         }
 
         return $this;
@@ -117,8 +117,8 @@ class RoadPart
     {
         if ($this->bags->removeElement($bag)) {
             // set the owning side to null (unless already changed)
-            if ($bag->getRoadPartId() === $this) {
-                $bag->setRoadPartId(null);
+            if ($bag->getRoadPart() === $this) {
+                $bag->setRoadPart(null);
             }
         }
 
@@ -134,12 +134,12 @@ class RoadPart
     {
         // unset the owning side of the relation if necessary
         if ($cart === null && $this->cart !== null) {
-            $this->cart->setRoadPartId(null);
+            $this->cart->setRoadPart(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($cart !== null && $cart->getRoadPartId() !== $this) {
-            $cart->setRoadPartId($this);
+        if ($cart !== null && $cart->getRoadPart() !== $this) {
+            $cart->setRoadPart($this);
         }
 
         $this->cart = $cart;

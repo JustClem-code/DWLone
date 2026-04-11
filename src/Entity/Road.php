@@ -24,7 +24,7 @@ class Road
   /**
    * @var Collection<int, RoadPart>
    */
-  #[ORM\OneToMany(targetEntity: RoadPart::class, mappedBy: 'roadId', orphanRemoval: true)]
+  #[ORM\OneToMany(targetEntity: RoadPart::class, mappedBy: 'road', orphanRemoval: true)]
   private Collection $roadParts;
 
   public function __construct()
@@ -73,7 +73,7 @@ class Road
   {
     if (!$this->roadParts->contains($roadPart)) {
       $this->roadParts->add($roadPart);
-      $roadPart->setRoadId($this);
+      $roadPart->setRoad($this);
     }
 
     return $this;
@@ -83,8 +83,8 @@ class Road
   {
     if ($this->roadParts->removeElement($roadPart)) {
       // set the owning side to null (unless already changed)
-      if ($roadPart->getRoadId() === $this) {
-        $roadPart->setRoadId(null);
+      if ($roadPart->getRoad() === $this) {
+        $roadPart->setRoad(null);
       }
     }
 

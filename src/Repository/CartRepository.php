@@ -25,7 +25,7 @@ class CartRepository extends ServiceEntityRepository
   {
     return [
       'id' => $cart->getId(),
-      'road' => $cart->getRoad() ? $cart->getRoad()->getName() : '',
+      // 'road' => $cart->getRoad() ? $cart->getRoad()->getName() : '',
     ];
   }
 

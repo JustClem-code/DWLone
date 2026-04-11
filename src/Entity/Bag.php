@@ -23,7 +23,7 @@ class Bag
 
     #[ORM\ManyToOne(inversedBy: 'bags')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?RoadPart $roadPartId = null;
+    private ?RoadPart $roadPart = null;
 
     #[ORM\OneToOne(inversedBy: 'bag', cascade: ['persist', 'remove'])]
     private ?Location $location = null;
@@ -110,14 +110,14 @@ class Bag
         return $this;
     }
 
-    public function getRoadPartId(): ?RoadPart
+    public function getRoadPart(): ?RoadPart
     {
-        return $this->roadPartId;
+        return $this->roadPart;
     }
 
-    public function setRoadPartId(?RoadPart $roadPartId): static
+    public function setRoadPart(?RoadPart $roadPart): static
     {
-        $this->roadPartId = $roadPartId;
+        $this->roadPart = $roadPart;
 
         return $this;
     }

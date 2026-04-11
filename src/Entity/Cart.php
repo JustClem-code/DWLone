@@ -17,7 +17,7 @@ class Cart
   private ?Stagging $stagging = null;
 
   #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist', 'remove'])]
-  private ?RoadPart $roadPartId = null;
+  private ?RoadPart $roadPart = null;
 
   public function getId(): ?int
   {
@@ -36,14 +36,14 @@ class Cart
     return $this;
   }
 
-  public function getRoadPartId(): ?RoadPart
+  public function getRoadPart(): ?RoadPart
   {
-      return $this->roadPartId;
+      return $this->roadPart;
   }
 
-  public function setRoadPartId(?RoadPart $roadPartId): static
+  public function setRoadPart(?RoadPart $roadPart): static
   {
-      $this->roadPartId = $roadPartId;
+      $this->roadPart = $roadPart;
 
       return $this;
   }
