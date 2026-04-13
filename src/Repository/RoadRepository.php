@@ -9,6 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 use App\Repository\BagRepository;
+use App\Repository\RoadPartRepositoryRepository;
 
 /**
  * @extends ServiceEntityRepository<Road>
@@ -22,12 +23,13 @@ class RoadRepository extends ServiceEntityRepository
     parent::__construct($registry, Road::class);
   }
 
-  public function setBagsToNull(Road $road): void
+  // TODO: Move in roadpart repository
+  /* public function setBagsToNull(Road $road): void
   {
     foreach ($road->getBags() as $bag) {
       $bag->setRoadPartId(null);
     }
-  }
+  } */
 
   public function toArray(Road $road): array
   {
@@ -35,8 +37,7 @@ class RoadRepository extends ServiceEntityRepository
       'id' => $road->getId(),
       'name' => $road->getName(),
       'stagging' => $road->getStagging(),
-      'carts' => $road->getCarts(),
-      'bags' => $this->transFormEntities($road->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
+      'roadParts' => $this->transFormEntities($road->getRoadParts(), [$this->bagRepository, 'toArrayRoadOriented']),
     ];
   }
 

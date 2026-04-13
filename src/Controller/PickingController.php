@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 use App\Repository\BagRepository;
 use App\Repository\RoadRepository;
+use App\Repository\RoadPartRepository;
 use App\Repository\PostcodesRepository;
 use App\Repository\StaggingRepository;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -16,12 +17,14 @@ use Symfony\Bundle\SecurityBundle\Security;
 use App\Service\LocationArrayTransformerService;
 
 use App\Entity\Road;
+use App\Entity\RoadPart;
 
 final class PickingController extends AbstractController
 {
   public function __construct(
     private BagRepository $bagRepository,
     private RoadRepository $roadRepository,
+    private RoadPartRepository $roadPartRepository,
     private PostcodesRepository $postcodesRepository,
     private StaggingRepository $staggingRepository,
     private LocationArrayTransformerService $locationArrayTransformerService,
@@ -76,32 +79,37 @@ final class PickingController extends AbstractController
     $bags = $this->getAllBagsWithPackages();
 
     foreach ($bags as $bag) {
-
       $postcode = $this->bagRepository->findBagPostcode($bag);
 
-      $groupName = $this->postcodesRepository->findOneBy(['name' => $postcode])->getGroupPostcodes()?->getName();
+      $postcodeEntity = $this->postcodesRepository->findOneBy(['name' => $postcode]);
+      $groupName = $postcodeEntity?->getGroupPostcodes()?->getName();
 
       if ($groupName === null) {
-        // gérer le cas "pas de groupe"
+        continue;
       }
 
-      if (!$this->roadRepository->findOneBy(['name' => $groupName])) {
+      $road = $this->roadRepository->findOneBy(['name' => $groupName]);
+
+      if (!$road) {
         $road = new Road();
         $road->setName($groupName);
         $entityManager->persist($road);
-      } else {
-        $road = $this->roadRepository->findOneBy(['name' => $groupName]);
       }
 
-      // créer 1 ou 2 roadPart en fonction du nombre de Bags 
+      $roadPart = $this->roadPartRepository->findOneBy(['road' => $road, 'number' => 1]);
 
-      // TODO: Faire la modification de setRoadPart
+      if (!$roadPart) {
+        $roadPart = new RoadPart();
+        $roadPart->setRoad($road);
+        $roadPart->setNumber(1);
+        $roadPart->setStagged(false);
+        $entityManager->persist($roadPart);
+      }
 
-      // $bag->setRoad($road);
-
-      //
+      $bag->setRoadPart($roadPart);
       $entityManager->flush();
     }
+
 
     return $this->getAllRoads();
   }
