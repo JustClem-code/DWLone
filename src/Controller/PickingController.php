@@ -110,7 +110,6 @@ final class PickingController extends AbstractController
       $entityManager->flush();
     }
 
-
     return $this->getAllRoads();
   }
 

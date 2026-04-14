@@ -28,7 +28,18 @@ class RoadPartRepository extends ServiceEntityRepository
     return [
       'id' => $roadPart->getId(),
       'number' => $roadPart->getNumber(),
-      'road' => $roadPart->getRoad(),
+      'road' => $roadPart->getRoad()->getName(),
+      'bags' => $this->transFormEntities($roadPart->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
+      'cart' => $roadPart->getCart() ? $roadPart->getCart() : '',
+    ];
+  }
+
+  public function toArrayRoadOriented(RoadPart $roadPart): array
+  {
+    return [
+      'id' => $roadPart->getId(),
+      'number' => $roadPart->getNumber(),
+      'nbOfBags' => count($roadPart->getBags()),
       'bags' => $this->transFormEntities($roadPart->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
       'cart' => $roadPart->getCart() ? $roadPart->getCart() : '',
     ];

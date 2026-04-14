@@ -34,7 +34,7 @@ class BagArrayTransformer
     return [
       'id' => $bag->getId(),
       'name' => $bag->getName(),
-      'getRoad' => $bag->getRoad(),
+      'road' => $bag->getRoadPart()->getRoad()->getName(),
       'locationName' => $bag->getLocation() ? $bag->getLocation()->getName() : null,
       'packages' => $packages,
       'totalBagWeight' => $this->computeTotalWeight($packages),

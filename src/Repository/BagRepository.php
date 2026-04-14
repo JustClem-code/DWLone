@@ -65,8 +65,13 @@ class BagRepository extends ServiceEntityRepository
 
   public function findBagPostcode(Bag $bag): ?string
   {
-    $firstPackage = $bag->getPackages()[0] ?? null;
-    return $firstPackage?->getOrderId()?->getAddress()?->getPostcode();
+    $firstPackage = $bag->getPackages()->first();
+
+    if (!$firstPackage) {
+      return null;
+    }
+
+    return $firstPackage->getOrderId()?->getAddress()?->getPostcode();
   }
 
 
