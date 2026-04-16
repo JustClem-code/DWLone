@@ -45,21 +45,16 @@ final class PickingController extends AbstractController
     return $this->json($this->locationArrayTransformerService->transformAllInPairLight());
   }
 
-  #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
-  public function getAllRoads(): Response
-  {
-    $allRoads = $this->roadRepository->findAll();
-
-    return $this->json($this->roadRepository->transformAll($allRoads));
-  }
-
   #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['GET'])]
   public function deleteAllRoads(EntityManagerInterface $entityManager): Response
   {
     $allRoads = $this->roadRepository->findAll();
 
     foreach ($allRoads as $road) {
-      $this->roadRepository->setBagsToNull($road);
+      foreach ($road->getRoadParts() as $roadPart) {
+        $road->removeRoadPart($roadPart);
+      }
+      $entityManager->flush();
       $entityManager->remove($road);
     }
 
@@ -71,6 +66,14 @@ final class PickingController extends AbstractController
   private function getAllBagsWithPackages(): array
   {
     return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
+  }
+
+  #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
+  public function getAllRoads(): Response
+  {
+    $allRoads = $this->roadRepository->findAll();
+
+    return $this->json($this->roadRepository->transformAll($allRoads));
   }
 
   #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
@@ -108,9 +111,20 @@ final class PickingController extends AbstractController
 
       $bag->setRoadPart($roadPart);
       $entityManager->flush();
-    }
+      }
 
-    return $this->getAllRoads();
+      return $this->getAllRoads();
+
+      // tester ça après $entityManager->flush();
+
+    /* return $this->json(
+        $this->roadRepository->transformAll(
+            $this->roadRepository->findAllWithParts()
+        )
+    ); */
+
+    // Retourne les données via une méthode repository qui fait un JOIN FETCH sur roadParts pour avoir la réponse complète immédiatement.
+
   }
 
   #[Route('/getStaggingAreas', name: 'get_stagging_areas', methods: ['GET'])]

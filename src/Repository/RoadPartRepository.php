@@ -23,6 +23,14 @@ class RoadPartRepository extends ServiceEntityRepository
     parent::__construct($registry, RoadPart::class);
   }
 
+
+  public function setBagsToNull(RoadPart $roadPart): void
+  {
+    foreach ($roadPart->getBags() as $bag) {
+      $bag->setRoadPart(null);
+    }
+  }
+
   public function toArray(RoadPart $roadPart): array
   {
     return [

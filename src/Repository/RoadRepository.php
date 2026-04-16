@@ -26,13 +26,12 @@ class RoadRepository extends ServiceEntityRepository
     parent::__construct($registry, Road::class);
   }
 
-  // TODO: Move in roadpart repository
-  /* public function setBagsToNull(Road $road): void
+  public function removeRoadParts(Road $road): void
   {
-    foreach ($road->getBags() as $bag) {
-      $bag->setRoadPartId(null);
+    foreach ($road->getRoadParts() as $roadPart) {
+      $roadPart->setRoad(null);
     }
-  } */
+  }
 
   public function toArray(Road $road): array
   {
