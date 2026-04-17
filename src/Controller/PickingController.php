@@ -103,28 +103,17 @@ final class PickingController extends AbstractController
 
       if (!$roadPart) {
         $roadPart = new RoadPart();
-        $roadPart->setRoad($road);
+        $road->addRoadPart($roadPart);
         $roadPart->setNumber(1);
         $roadPart->setStagged(false);
         $entityManager->persist($roadPart);
       }
 
-      $bag->setRoadPart($roadPart);
+      $roadPart->addBag($bag);
       $entityManager->flush();
-      }
+    }
 
-      return $this->getAllRoads();
-
-      // tester ça après $entityManager->flush();
-
-    /* return $this->json(
-        $this->roadRepository->transformAll(
-            $this->roadRepository->findAllWithParts()
-        )
-    ); */
-
-    // Retourne les données via une méthode repository qui fait un JOIN FETCH sur roadParts pour avoir la réponse complète immédiatement.
-
+    return $this->getAllRoads();
   }
 
   #[Route('/getStaggingAreas', name: 'get_stagging_areas', methods: ['GET'])]
