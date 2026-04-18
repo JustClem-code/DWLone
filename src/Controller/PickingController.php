@@ -76,6 +76,17 @@ final class PickingController extends AbstractController
     return $this->json($this->roadRepository->transformAll($allRoads));
   }
 
+  private function createRoadPart(EntityManagerInterface $entityManager, $road, $partNumber): RoadPart
+  {
+    $roadPart = new RoadPart();
+    $road->addRoadPart($roadPart);
+    $roadPart->setNumber($partNumber);
+    $roadPart->setStagged(false);
+    $entityManager->persist($roadPart);
+
+    return $roadPart;
+  }
+
   #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
   public function generateAllRoads(EntityManagerInterface $entityManager): Response
   {
@@ -99,17 +110,22 @@ final class PickingController extends AbstractController
         $entityManager->persist($road);
       }
 
-      $roadPart = $this->roadPartRepository->findOneBy(['road' => $road, 'number' => 1]);
+      $roadPart = $this->roadPartRepository->findOneBy(
+        ['road' => $road],
+        ['number' => 'DESC']
+      );
 
       if (!$roadPart) {
-        $roadPart = new RoadPart();
-        $road->addRoadPart($roadPart);
-        $roadPart->setNumber(1);
-        $roadPart->setStagged(false);
-        $entityManager->persist($roadPart);
+        $roadPart = $this->createRoadPart($entityManager, $road, 1);
+      }
+
+      if (count($roadPart->getBags()) >= 6) {
+        $incrementedNumber = $roadPart->getNumber() + 1;
+        $roadPart = $this->createRoadPart($entityManager, $road, $incrementedNumber);
       }
 
       $roadPart->addBag($bag);
+
       $entityManager->flush();
     }
 
