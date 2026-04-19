@@ -39,6 +39,7 @@ class RoadPartRepository extends ServiceEntityRepository
       'road' => $roadPart->getRoad()->getName(),
       'bags' => $this->transFormEntities($roadPart->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
       'cart' => $roadPart->getCart() ? $roadPart->getCart() : '',
+      'userName' => $roadPart->getUser() ? $roadPart->getUser()->getUsername() : '',
     ];
   }
 
@@ -52,6 +53,18 @@ class RoadPartRepository extends ServiceEntityRepository
       'cart' => $roadPart->getCart() ? $roadPart->getCart() : '',
     ];
   }
+
+  public function findFirstWithNoUser(): ?RoadPart
+  {
+    return $this->createQueryBuilder('r')
+      ->andWhere('r.user IS NULL')
+      ->orderBy('r.road', 'ASC')
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
+
+
 
 
   //    /**

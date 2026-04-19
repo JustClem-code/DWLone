@@ -147,21 +147,17 @@ final class PickingController extends AbstractController
     return $this->json($this->staggingRepository->getAllOrderedStagging());
   }
 
-  #[Route('/setRoadToUser', name: 'setR_road_to_user', methods: ['POST'])]
+  #[Route('/setRoadToUser', name: 'setR_road_to_user', methods: ['GET'])]
   public function setRoadToUser(): Response
   {
 
-    $allroad = $this->getAllRoads();
+    $roadPart = $this->roadPartRepository->findFirstWithNoUser();
 
-    // s'assurer que les roadPart n'ont pas de user
+    // retrouver la route 01 et non l'id plus petit
 
-    // créer des RoadPart avec user
-
-    // random les road et attribuer un user
-
-    // $package->setUserStow($this->security->getUser());
+    // $roadPart->setUser($this->security->getUser());
     // $this->entityManager->flush();
 
-    return $this->json('truc');
+    return $this->json($this->roadPartRepository->toArray($roadPart));
   }
 }
