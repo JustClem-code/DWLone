@@ -45,7 +45,7 @@ class RoadRepository extends ServiceEntityRepository
 
   public function transformAll(iterable $entities): array
   {
-    return  $this->transFormEntities($entities, [$this, 'toArray']);
+    return $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
   //    /**

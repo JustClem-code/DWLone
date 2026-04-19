@@ -63,17 +63,17 @@ final class PickingController extends AbstractController
     return $this->getAllRoads();
   }
 
-  private function getAllBagsWithPackages(): array
-  {
-    return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
-  }
-
   #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
   public function getAllRoads(): Response
   {
     $allRoads = $this->roadRepository->findAll();
 
     return $this->json($this->roadRepository->transformAll($allRoads));
+  }
+
+  private function getAllBagsWithPackages(): array
+  {
+    return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
   }
 
   private function createRoadPart(EntityManagerInterface $entityManager, $road, $partNumber): RoadPart
@@ -87,43 +87,52 @@ final class PickingController extends AbstractController
     return $roadPart;
   }
 
+  private function getRoadPart(EntityManagerInterface $entityManager, $road): RoadPart
+  {
+    $roadPart = $this->roadPartRepository->findOneBy(
+      ['road' => $road],
+      ['number' => 'DESC']
+    );
+
+    if (!$roadPart) {
+      $roadPart = $this->createRoadPart($entityManager, $road, 1);
+    }
+
+    if (count($roadPart->getBags()) >= 6) {
+      $incrementedNumber = $roadPart->getNumber() + 1;
+      $roadPart = $this->createRoadPart($entityManager, $road, $incrementedNumber);
+    }
+
+    return $roadPart;
+  }
+
+  private function getOrCreateRoad(EntityManagerInterface $entityManager, $bag): Road
+  {
+    $postcode = $this->bagRepository->findBagPostcode($bag);
+
+    $postcodeEntity = $this->postcodesRepository->findOneBy(['name' => $postcode]);
+    $groupName = $postcodeEntity?->getGroupPostcodes()?->getName();
+
+    $road = $this->roadRepository->findOneBy(['name' => $groupName]);
+
+    if (!$road) {
+      $road = new Road();
+      $road->setName($groupName);
+      $entityManager->persist($road);
+    }
+
+    return $road;
+  }
+
   #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
   public function generateAllRoads(EntityManagerInterface $entityManager): Response
   {
     $bags = $this->getAllBagsWithPackages();
 
     foreach ($bags as $bag) {
-      $postcode = $this->bagRepository->findBagPostcode($bag);
+      $road = $this->getOrCreateRoad($entityManager, $bag);
 
-      $postcodeEntity = $this->postcodesRepository->findOneBy(['name' => $postcode]);
-      $groupName = $postcodeEntity?->getGroupPostcodes()?->getName();
-
-      if ($groupName === null) {
-        continue;
-      }
-
-      $road = $this->roadRepository->findOneBy(['name' => $groupName]);
-
-      if (!$road) {
-        $road = new Road();
-        $road->setName($groupName);
-        $entityManager->persist($road);
-      }
-
-      $roadPart = $this->roadPartRepository->findOneBy(
-        ['road' => $road],
-        ['number' => 'DESC']
-      );
-
-      if (!$roadPart) {
-        $roadPart = $this->createRoadPart($entityManager, $road, 1);
-      }
-
-      if (count($roadPart->getBags()) >= 6) {
-        $incrementedNumber = $roadPart->getNumber() + 1;
-        $roadPart = $this->createRoadPart($entityManager, $road, $incrementedNumber);
-      }
-
+      $roadPart = $this->getRoadPart($entityManager, $road);
       $roadPart->addBag($bag);
 
       $entityManager->flush();
