@@ -63,6 +63,7 @@
 
 // Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
 
+// Refacto certaines fonctions trop longue -> YardTruckController
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
 

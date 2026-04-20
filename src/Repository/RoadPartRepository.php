@@ -40,6 +40,7 @@ class RoadPartRepository extends ServiceEntityRepository
       'bags' => $this->transFormEntities($roadPart->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
       'cart' => $roadPart->getCart() ? $roadPart->getCart() : '',
       'userName' => $roadPart->getUser() ? $roadPart->getUser()->getUsername() : '',
+      'stagged' => $roadPart->isStagged()
     ];
   }
 
@@ -57,8 +58,10 @@ class RoadPartRepository extends ServiceEntityRepository
   public function findFirstWithNoUser(): ?RoadPart
   {
     return $this->createQueryBuilder('r')
+      ->innerJoin('r.road', 'ro')
       ->andWhere('r.user IS NULL')
-      ->orderBy('r.road', 'ASC')
+      ->andWhere('r.stagged = FALSE')
+      ->orderBy('ro.name', 'ASC')
       ->setMaxResults(1)
       ->getQuery()
       ->getOneOrNullResult();

@@ -28,7 +28,8 @@ final class PickingController extends AbstractController
     private PostcodesRepository $postcodesRepository,
     private StaggingRepository $staggingRepository,
     private LocationArrayTransformerService $locationArrayTransformerService,
-    private Security $security
+    private Security $security,
+    private EntityManagerInterface $entityManager,
   ) {}
 
   #[Route('/warehouse/picking', name: 'app_picking')]
@@ -46,7 +47,7 @@ final class PickingController extends AbstractController
   }
 
   #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['GET'])]
-  public function deleteAllRoads(EntityManagerInterface $entityManager): Response
+  public function deleteAllRoads(): Response
   {
     $allRoads = $this->roadRepository->findAll();
 
@@ -54,11 +55,11 @@ final class PickingController extends AbstractController
       foreach ($road->getRoadParts() as $roadPart) {
         $road->removeRoadPart($roadPart);
       }
-      $entityManager->flush();
-      $entityManager->remove($road);
+      $this->entityManager->flush();
+      $this->entityManager->remove($road);
     }
 
-    $entityManager->flush();
+    $this->entityManager->flush();
 
     return $this->getAllRoads();
   }
@@ -66,7 +67,7 @@ final class PickingController extends AbstractController
   #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
   public function getAllRoads(): Response
   {
-    $allRoads = $this->roadRepository->findAll();
+    $allRoads = $this->roadRepository->findAllOrderedByName();
 
     return $this->json($this->roadRepository->transformAll($allRoads));
   }
@@ -76,18 +77,18 @@ final class PickingController extends AbstractController
     return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
   }
 
-  private function createRoadPart(EntityManagerInterface $entityManager, $road, $partNumber): RoadPart
+  private function createRoadPart($road, $partNumber): RoadPart
   {
     $roadPart = new RoadPart();
     $road->addRoadPart($roadPart);
     $roadPart->setNumber($partNumber);
     $roadPart->setStagged(false);
-    $entityManager->persist($roadPart);
+    $this->entityManager->persist($roadPart);
 
     return $roadPart;
   }
 
-  private function getRoadPart(EntityManagerInterface $entityManager, $road): RoadPart
+  private function getRoadPart($road): RoadPart
   {
     $roadPart = $this->roadPartRepository->findOneBy(
       ['road' => $road],
@@ -95,18 +96,18 @@ final class PickingController extends AbstractController
     );
 
     if (!$roadPart) {
-      $roadPart = $this->createRoadPart($entityManager, $road, 1);
+      $roadPart = $this->createRoadPart($road, 1);
     }
 
     if (count($roadPart->getBags()) >= 6) {
       $incrementedNumber = $roadPart->getNumber() + 1;
-      $roadPart = $this->createRoadPart($entityManager, $road, $incrementedNumber);
+      $roadPart = $this->createRoadPart($road, $incrementedNumber);
     }
 
     return $roadPart;
   }
 
-  private function getOrCreateRoad(EntityManagerInterface $entityManager, $bag): Road
+  private function getOrCreateRoad($bag): Road
   {
     $postcode = $this->bagRepository->findBagPostcode($bag);
 
@@ -118,24 +119,24 @@ final class PickingController extends AbstractController
     if (!$road) {
       $road = new Road();
       $road->setName($groupName);
-      $entityManager->persist($road);
+      $this->entityManager->persist($road);
     }
 
     return $road;
   }
 
   #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
-  public function generateAllRoads(EntityManagerInterface $entityManager): Response
+  public function generateAllRoads(): Response
   {
     $bags = $this->getAllBagsWithPackages();
 
     foreach ($bags as $bag) {
-      $road = $this->getOrCreateRoad($entityManager, $bag);
+      $road = $this->getOrCreateRoad($bag);
 
-      $roadPart = $this->getRoadPart($entityManager, $road);
+      $roadPart = $this->getRoadPart($road);
       $roadPart->addBag($bag);
 
-      $entityManager->flush();
+      $this->entityManager->flush();
     }
 
     return $this->getAllRoads();
@@ -147,16 +148,16 @@ final class PickingController extends AbstractController
     return $this->json($this->staggingRepository->getAllOrderedStagging());
   }
 
-  #[Route('/setRoadToUser', name: 'setR_road_to_user', methods: ['GET'])]
+  #[Route('/setRoadToUser', name: 'set_road_to_user', methods: ['GET'])]
   public function setRoadToUser(): Response
   {
 
+    // vérifier que ça fonctionne bien
     $roadPart = $this->roadPartRepository->findFirstWithNoUser();
 
-    // retrouver la route 01 et non l'id plus petit
 
-    // $roadPart->setUser($this->security->getUser());
-    // $this->entityManager->flush();
+    /* $roadPart->setUser($this->security->getUser());
+    $this->entityManager->flush(); */
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
