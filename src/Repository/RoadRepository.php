@@ -48,12 +48,15 @@ class RoadRepository extends ServiceEntityRepository
 
   public function findAllOrderedByName(): array
   {
-    return $this->getEntityManager()->createQuery('SELECT r FROM App\Entity\Road r ORDER BY r.name ASC')->getResult();
+    return $this->createQueryBuilder('r')
+      ->orderBy('r.name', 'ASC')
+      ->getQuery()
+      ->getResult();
   }
 
   public function transformAll(iterable $entities): array
   {
-    return $this->transFormEntities($entities, [$this, 'toArray']);
+    return $this->transformEntitiesNoSorting($entities, [$this, 'toArray']);
   }
 
   //    /**

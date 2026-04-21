@@ -36,8 +36,12 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
+// tester les routes en étant identifier dans bruno
+
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair
+
+// ajouter des dates de début et de fin picking pour calculer le temps moyen de picking
 
 //  -> lier les codes postaux en fonction de la localisation
 

@@ -30,4 +30,16 @@ trait RepositoryTrait
 
     return $collection;
   }
+
+
+  public function transformEntitiesNoSorting(iterable $entities, callable $toArray): array
+  {
+    $collection = [];
+
+    foreach ($entities as $entity) {
+      $collection[] = $toArray($entity);
+    }
+
+    return $collection;
+  }
 }

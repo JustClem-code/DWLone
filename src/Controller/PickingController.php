@@ -151,13 +151,20 @@ final class PickingController extends AbstractController
   #[Route('/setRoadToUser', name: 'set_road_to_user', methods: ['GET'])]
   public function setRoadToUser(): Response
   {
+    $user = $this->security->getUser();
 
-    // vérifier que ça fonctionne bien
+    if (!$user) {
+      return $this->json(['error' => 'Unauthorized'], 401);
+    }
+
     $roadPart = $this->roadPartRepository->findFirstWithNoUser();
 
+    if (!$roadPart) {
+      return $this->json(['error' => 'No road part available'], 404);
+    }
 
-    /* $roadPart->setUser($this->security->getUser());
-    $this->entityManager->flush(); */
+    $roadPart->setUser($user);
+    $this->entityManager->flush();
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
