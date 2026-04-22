@@ -61,15 +61,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $packages;
 
     /**
-     * @var Collection<int, Cart>
-     */
-    #[ORM\OneToMany(targetEntity: Cart::class, mappedBy: 'UserPicking')]
-    private Collection $carts;
-
-    /**
      * @var Collection<int, RoadPart>
      */
-    #[ORM\OneToMany(targetEntity: RoadPart::class, mappedBy: 'userId')]
+    #[ORM\OneToMany(targetEntity: RoadPart::class, mappedBy: 'user')]
     private Collection $roadParts;
 
     public function __construct()
@@ -78,7 +72,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->departureTrucks = new ArrayCollection();
         $this->pallets = new ArrayCollection();
         $this->packages = new ArrayCollection();
-        $this->carts = new ArrayCollection();
         $this->roadParts = new ArrayCollection();
     }
 
@@ -240,36 +233,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Cart>
-     */
-    public function getCarts(): Collection
-    {
-        return $this->carts;
-    }
-
-    public function addCart(Cart $cart): static
-    {
-        if (!$this->carts->contains($cart)) {
-            $this->carts->add($cart);
-            $cart->setUserPicking($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCart(Cart $cart): static
-    {
-        if ($this->carts->removeElement($cart)) {
-            // set the owning side to null (unless already changed)
-            if ($cart->getUserPicking() === $this) {
-                $cart->setUserPicking(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, RoadPart>
      */
     public function getRoadParts(): Collection
@@ -281,7 +244,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->roadParts->contains($roadPart)) {
             $this->roadParts->add($roadPart);
-            $roadPart->setUserId($this);
+            $roadPart->setUser($this);
         }
 
         return $this;
@@ -291,8 +254,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->roadParts->removeElement($roadPart)) {
             // set the owning side to null (unless already changed)
-            if ($roadPart->getUserId() === $this) {
-                $roadPart->setUserId(null);
+            if ($roadPart->getUser() === $this) {
+                $roadPart->setUser(null);
             }
         }
 
