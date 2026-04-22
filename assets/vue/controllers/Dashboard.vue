@@ -36,7 +36,7 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// tester les routes en étant identifier dans bruno
+// Faire en sorte que USER ne peux pas prendre une autre road part si celle qu'il a stagged à false
 
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair

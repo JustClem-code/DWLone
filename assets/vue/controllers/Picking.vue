@@ -1,6 +1,7 @@
 <template>
   <div>
-
+    <BaseButton class="mt-4" @click="setUserToRoadPart" title="Get a road Part" styleColor="primary"
+          :isDisabled="setUserToRoadPartIsLoading" :isLoading="setUserToRoadPartIsLoading" />
     <BorderedContent title="Floor">
       <!-- si Cart attribuer à USER -->
       <FloorStaggingArea :staggingAreas="staggingAreas" class="pb-8"/>
@@ -40,6 +41,7 @@ import SidePanel from './UI/SidePanel.vue'
 import FloorAisles from './PickingComponents/FloorAisles.vue'
 import PairLocations from './PickingComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
+import BaseButton from './UI/Buttons/BaseButton.vue'
 
 const { data: locations, error: errorLocations } = useFetch('/getLocationsLight')
 const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggingAreas')
@@ -47,9 +49,10 @@ const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggin
 const { notifier } = useNotification()
 
 const stowingIsLoading = ref(false)
+const setUserToRoadPartIsLoading = ref(false)
 
 const currentPair = ref(null)
-// const currentPackage = ref(null)
+const currentRoadPart = ref(null)
 
 const sidePanelRef = ref(null)
 
@@ -66,6 +69,24 @@ const currentPairPackages = computed(() => {
 const setCurrentPair = (pair) => {
   currentPair.value = pair
   sidePanelRef.value?.toggleSidePanel()
+}
+
+async function setUserToRoadPart() {
+
+  setUserToRoadPartIsLoading.value = true;
+
+  const { data, error } = await usePostFetch(`/setRoadToUser`)
+
+  if (data.value) {
+    currentRoadPart.value = data.value
+    // updateCurrentPairPackages()
+    setTimeout(() => {
+      notifier('success', 'RoadPart', `The package (Id: ${currentRoadPart.value.id}) is ready to pick`)
+    }, 1000);
+    setTimeout(() => {
+      setUserToRoadPartIsLoading.value = false;
+    }, 1500);
+  }
 }
 
 // const setCurrentPackage = (pack) => currentPackage.value = pack

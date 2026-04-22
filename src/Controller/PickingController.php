@@ -148,7 +148,7 @@ final class PickingController extends AbstractController
     return $this->json($this->staggingRepository->getAllOrderedStagging());
   }
 
-  #[Route('/setRoadToUser', name: 'set_road_to_user', methods: ['GET'])]
+  #[Route('/setRoadToUser', name: 'set_road_to_user', methods: ['POST'])]
   public function setRoadToUser(): Response
   {
     $user = $this->security->getUser();
