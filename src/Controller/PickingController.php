@@ -148,6 +148,19 @@ final class PickingController extends AbstractController
     return $this->json($this->staggingRepository->getAllOrderedStagging());
   }
 
+  #[Route('/getCurrentUserRoadpart', name: 'get_current_user_roadpart', methods: ['GET'])]
+  public function getCurrentUserRoadpart(): Response
+  {
+    $user = $this->security->getUser();
+    $roadPart = $this->roadPartRepository->findOnHasUserNotStagged($user);
+
+    if (!$roadPart) {
+      return $this->json(['error' => 'No road part available'], 404);
+    }
+
+    return $this->json($this->roadPartRepository->toArray($roadPart));
+  }
+
   #[Route('/setRoadToUser', name: 'set_road_to_user', methods: ['POST'])]
   public function setRoadToUser(): Response
   {
@@ -155,6 +168,14 @@ final class PickingController extends AbstractController
 
     if (!$user) {
       return $this->json(['error' => 'Unauthorized'], 401);
+    }
+
+    $currentRoadPart = $this->roadPartRepository->findOnHasUserNotStagged($user);
+
+    if ($currentRoadPart) {
+      throw $this->createNotFoundException(
+        'Road part is already set'
+      );
     }
 
     $roadPart = $this->roadPartRepository->findFirstWithNoUser();

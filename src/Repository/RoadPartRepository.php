@@ -64,7 +64,20 @@ class RoadPartRepository extends ServiceEntityRepository
       ->orderBy('ro.name', 'ASC')
       ->setMaxResults(1)
       ->getQuery()
-      ->getOneOrNullResult();
+      ->getOneOrNullResult()
+    ;
+  }
+
+  public function findOnHasUserNotStagged($user): ?RoadPart
+  {
+    return $this->createQueryBuilder('r')
+      ->andWhere('r.stagged = FALSE')
+      ->andWhere('r.user = :val')
+      ->setParameter('val', $user)
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
   }
 
 

@@ -1,10 +1,10 @@
 <template>
   <div>
     <BaseButton class="mt-4" @click="setUserToRoadPart" title="Get a road Part" styleColor="primary"
-          :isDisabled="setUserToRoadPartIsLoading" :isLoading="setUserToRoadPartIsLoading" />
+      :isDisabled="setUserToRoadPartIsLoading" :isLoading="setUserToRoadPartIsLoading" />
     <BorderedContent title="Floor">
       <!-- si Cart attribuer à USER -->
-      <FloorStaggingArea :staggingAreas="staggingAreas" class="pb-8"/>
+      <FloorStaggingArea :staggingAreas="staggingAreas" class="pb-8" />
       <FloorAisles :locations="locations" />
       <!-- Else Component de choix de chariot avec avec stagging  -->
     </BorderedContent>
@@ -76,6 +76,16 @@ async function setUserToRoadPart() {
   setUserToRoadPartIsLoading.value = true;
 
   const { data, error } = await usePostFetch(`/setRoadToUser`)
+
+  if (error.value) {
+    setTimeout(() => {
+      console.log(error.value ?? 'Erreur inconnue');
+      notifier('error', 'RoadPart', ` ${error.value ?? 'Erreur inconnue'}`)
+    }, 1000);
+    setTimeout(() => {
+      setUserToRoadPartIsLoading.value = false;
+    }, 1500);
+  }
 
   if (data.value) {
     currentRoadPart.value = data.value
