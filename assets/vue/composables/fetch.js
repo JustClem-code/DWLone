@@ -26,7 +26,7 @@ export async function usePostFetch(url, body) {
     .then(async res => {
       const resData = await res.json();
       if (!res.ok) {
-        throw new Error(resData.message || 'Error');
+        throw new Error(resData.error || 'Error');
       }
       return resData
     })

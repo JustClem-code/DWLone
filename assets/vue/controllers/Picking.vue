@@ -79,8 +79,7 @@ async function setUserToRoadPart() {
 
   if (error.value) {
     setTimeout(() => {
-      console.log(error.value ?? 'Erreur inconnue');
-      notifier('error', 'RoadPart', ` ${error.value ?? 'Erreur inconnue'}`)
+      notifier('error', 'RoadPart', ` ${error.value}`)
     }, 1000);
     setTimeout(() => {
       setUserToRoadPartIsLoading.value = false;

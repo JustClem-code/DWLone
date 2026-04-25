@@ -173,9 +173,7 @@ final class PickingController extends AbstractController
     $currentRoadPart = $this->roadPartRepository->findOnHasUserNotStagged($user);
 
     if ($currentRoadPart) {
-      throw $this->createNotFoundException(
-        'Road part is already set'
-      );
+      return $this->json(['error' => 'Road part is already set'], 404);
     }
 
     $roadPart = $this->roadPartRepository->findFirstWithNoUser();
