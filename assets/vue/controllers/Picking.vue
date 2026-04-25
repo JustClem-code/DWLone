@@ -1,7 +1,15 @@
 <template>
-  <div>
-    <BaseButton class="mt-4" @click="setUserToRoadPart" title="Get a road Part" styleColor="primary"
-      :isDisabled="setUserToRoadPartIsLoading" :isLoading="setUserToRoadPartIsLoading" />
+  <div class="flex flex-col gap-8">
+    <BorderedContent title="Road part">
+      <RoadPartHeader v-if="currentRoadPart" :title="currentRoadPart.road" notice="You can automate the steps" actionTitle="Automating steps"
+        @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="packagesStats" />
+      <DashedEmptyState v-else @click="setUserToRoadPart()" title="Get a road Part" :disabled="setUserToRoadPartIsLoading">
+        <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
+        <AnimateSpin v-show="setUserToRoadPartIsLoading" class="absolute" />
+      </DashedEmptyState>
+    </BorderedContent>
+
+
     <BorderedContent title="Floor">
       <!-- si Cart attribuer à USER -->
       <FloorStaggingArea :staggingAreas="staggingAreas" class="pb-8" />
@@ -42,9 +50,14 @@ import FloorAisles from './PickingComponents/FloorAisles.vue'
 import PairLocations from './PickingComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
 import BaseButton from './UI/Buttons/BaseButton.vue'
+import DashedEmptyState from './UI/DashedEmptyState.vue'
+import AddDatabaseIcon from './UI/Icons/AddDatabaseIcon.vue'
+import AnimateSpin from './UI/AnimateSpin.vue'
+import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
 
 const { data: locations, error: errorLocations } = useFetch('/getLocationsLight')
 const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggingAreas')
+const { data: currentRoadPart, error: errorCurrentRoadPart} = useFetch('/getCurrentUserRoadpart')
 
 const { notifier } = useNotification()
 
@@ -52,7 +65,6 @@ const stowingIsLoading = ref(false)
 const setUserToRoadPartIsLoading = ref(false)
 
 const currentPair = ref(null)
-const currentRoadPart = ref(null)
 
 const sidePanelRef = ref(null)
 
