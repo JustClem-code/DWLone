@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col gap-8">
     <BorderedContent title="Road part">
-      <RoadPartHeader v-if="currentRoadPart" :title="currentRoadPart.road" notice="You can automate the steps" actionTitle="Automating steps"
-        @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="packagesStats" />
+      <RoadPartHeader v-if="currentRoadPart" :title="currentRoadPartTitle" :notice="roadPartNotice" actionTitle="Automating steps"
+        @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="roadPartStats" />
       <DashedEmptyState v-else @click="setUserToRoadPart()" title="Get a road Part" :disabled="setUserToRoadPartIsLoading">
         <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
         <AnimateSpin v-show="setUserToRoadPartIsLoading" class="absolute" />
@@ -77,6 +77,24 @@ const currentPairPackages = computed(() => {
   }
   return data
 })
+
+const currentRoadPartTitle = computed(() => {
+  return `${currentRoadPart.value.road} #${currentRoadPart.value.number}`
+})
+
+const nbOfBags = computed(() => {
+  return currentRoadPart.value ? currentRoadPart.value.bags.length : '0'
+})
+
+const roadPartNotice = computed(() => {
+  return currentRoadPart?.value.cart === "" ? 'Take a cart in the stagged area' : 'pick your bag'
+})
+
+const roadPartStats = computed(() => [
+  { 'title': 'Number of bags', 'number': `2`, 'number_2': `/${nbOfBags.value}` },
+  { 'title': 'Time to picking', 'number': `1'32 ` },
+  { 'title': 'Exemple', 'number': `50%` },
+])
 
 const setCurrentPair = (pair) => {
   currentPair.value = pair
