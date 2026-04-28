@@ -12,8 +12,8 @@
 
     <BorderedContent title="Floor">
       <!-- si Cart attribuer à USER -->
-      <FloorStaggingArea :staggingAreas="staggingAreas" class="pb-8" />
-      <FloorAisles :locations="locations" />
+      <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
+      <FloorStaggingArea :staggingAreas="staggingAreas" />
       <!-- Else Component de choix de chariot avec avec stagging  -->
     </BorderedContent>
 
@@ -87,7 +87,7 @@ const nbOfBags = computed(() => {
 })
 
 const roadPartNotice = computed(() => {
-  return currentRoadPart?.value.cart === "" ? 'Take a cart in the stagged area' : 'pick your bag'
+  return !currentRoadPart?.value.cart ? 'Take a cart in the stagged area' : 'pick your bag'
 })
 
 const roadPartStats = computed(() => [

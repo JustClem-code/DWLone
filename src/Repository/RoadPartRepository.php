@@ -9,6 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 use App\Repository\BagRepository;
+use App\Repository\StaggingRepository;
 
 /**
  * @extends ServiceEntityRepository<RoadPart>
@@ -18,7 +19,7 @@ class RoadPartRepository extends ServiceEntityRepository
 
   use RepositoryTrait;
 
-  public function __construct(ManagerRegistry $registry, private BagRepository $bagRepository)
+  public function __construct(ManagerRegistry $registry, private BagRepository $bagRepository, private StaggingRepository $staggingRepository)
   {
     parent::__construct($registry, RoadPart::class);
   }
@@ -37,9 +38,10 @@ class RoadPartRepository extends ServiceEntityRepository
       'id' => $roadPart->getId(),
       'number' => $roadPart->getNumber(),
       'road' => $roadPart->getRoad()->getName(),
+      'stagging' => $this->staggingRepository->toArrayRoadOriented($roadPart->getRoad()->getStagging()),
       'bags' => $this->transFormEntities($roadPart->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
-      'cart' => $roadPart->getCart() ? $roadPart->getCart() : '',
-      'userName' => $roadPart->getUser() ? $roadPart->getUser()->getUsername() : '',
+      'cart' => $roadPart->getCart() ? $roadPart->getCart() : null,
+      'userName' => $roadPart->getUser() ? $roadPart->getUser()->getUsername() : null,
       'stagged' => $roadPart->isStagged()
     ];
   }

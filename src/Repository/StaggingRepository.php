@@ -60,6 +60,14 @@ class StaggingRepository extends ServiceEntityRepository
     return array_values(array_intersect_key($result, array_flip($order)));
   }
 
+  private function toArrayRoadOriented(Stagging $stagging): array
+  {
+    return [
+      'id' => $stagging->getId(),
+      'name' => $stagging->getName(),
+    ];
+  }
+
   private function toArray(Stagging $stagging): array
   {
     return [
@@ -68,6 +76,15 @@ class StaggingRepository extends ServiceEntityRepository
       'road' => $stagging->getRoad() ? $stagging->getRoad()->getName() : '',
       'carts' => $this->transFormEntities($stagging->getCarts(), [$this->cartRepository, 'toArray']),
     ];
+  }
+
+  public function findWithoutRoad(): array
+  {
+    return $this->createQueryBuilder('s')
+      ->leftJoin('s.road', 'r')
+      ->andWhere('r IS NULL')
+      ->getQuery()
+      ->getResult();
   }
 
   public function transformAll(): array

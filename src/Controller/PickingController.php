@@ -117,8 +117,11 @@ final class PickingController extends AbstractController
     $road = $this->roadRepository->findOneBy(['name' => $groupName]);
 
     if (!$road) {
+      $staggings = $this->staggingRepository->findWithoutRoad();
+      shuffle($staggings);
       $road = new Road();
       $road->setName($groupName);
+      $road->setStagging($staggings[0]);
       $this->entityManager->persist($road);
     }
 
