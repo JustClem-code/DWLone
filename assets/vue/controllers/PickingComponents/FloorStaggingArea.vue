@@ -19,15 +19,15 @@ import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 
 const props = defineProps({
   staggingAreas: Object,
+  roadPartStagging: Object
 });
 
-const action = (staggingArea) => { console.log('click on stagging area', staggingArea.name);
+const action = (staggingArea) => { console.log('click on stagging area', staggingArea);
 }
 
-// const { setCurrentPair } = inject('picking')
+// const { setCartToRoadPart } = inject('picking')
 
-const alleyHasPackages = (pair) => {
-  // const ar = pair.locations.flatMap(row => row.packages.filter(p => p.userStow === null))
-  return true
+const alleyHasPackages = (staggingArea) => {
+  return props.roadPartStagging.name === staggingArea.name
 }
 </script>

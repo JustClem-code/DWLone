@@ -36,7 +36,9 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Faire en sorte que USER ne peux pas prendre une autre road part si celle qu'il a stagged à false
+// message d'erreur si le User se trompe de stagging
+// message d'erreur si le cart que le User veux prendre a déjà une RoadPart, prendre le deuxième
+// Afficher le plan des stagging avec les emplacements occupés
 
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair

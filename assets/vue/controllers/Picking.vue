@@ -1,19 +1,20 @@
 <template>
   <div class="flex flex-col gap-8">
     <BorderedContent title="Road part">
-      <RoadPartHeader v-if="currentRoadPart" :title="currentRoadPartTitle" :notice="roadPartNotice" actionTitle="Automating steps"
-        @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="roadPartStats" />
-      <DashedEmptyState v-else @click="setUserToRoadPart()" title="Get a road Part" :disabled="setUserToRoadPartIsLoading">
+      <RoadPartHeader v-if="currentRoadPart" :title="currentRoadPartTitle" :notice="roadPartNotice"
+        actionTitle="Automating steps" @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="roadPartStats" />
+      <DashedEmptyState v-else @click="setUserToRoadPart()" title="Get a road Part"
+        :disabled="setUserToRoadPartIsLoading">
         <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
         <AnimateSpin v-show="setUserToRoadPartIsLoading" class="absolute" />
       </DashedEmptyState>
     </BorderedContent>
 
 
-    <BorderedContent title="Floor">
+    <BorderedContent v-if="currentRoadPart" title="Floor">
       <!-- si Cart attribuer à USER -->
       <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
-      <FloorStaggingArea :staggingAreas="staggingAreas" />
+      <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging" />
       <!-- Else Component de choix de chariot avec avec stagging  -->
     </BorderedContent>
 
@@ -57,12 +58,13 @@ import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
 
 const { data: locations, error: errorLocations } = useFetch('/getLocationsLight')
 const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggingAreas')
-const { data: currentRoadPart, error: errorCurrentRoadPart} = useFetch('/getCurrentUserRoadpart')
+const { data: currentRoadPart, error: errorCurrentRoadPart } = useFetch('/getCurrentUserRoadpart')
 
 const { notifier } = useNotification()
 
 const stowingIsLoading = ref(false)
 const setUserToRoadPartIsLoading = ref(false)
+const setCartToRoadPartIsLoading = ref(false)
 
 const currentPair = ref(null)
 
@@ -87,7 +89,7 @@ const nbOfBags = computed(() => {
 })
 
 const roadPartNotice = computed(() => {
-  return !currentRoadPart?.value.cart ? 'Take a cart in the stagged area' : 'pick your bag'
+  return !currentRoadPart?.value.cart ? `Take a cart in the stagged area STG-${currentRoadPart?.value.stagging.name}` : 'pick your bag'
 })
 
 const roadPartStats = computed(() => [
@@ -152,6 +154,19 @@ async function setUserToRoadPart() {
   );
 } */
 
+async function setCartToRoadPart(stagging) {
+
+  setCartToRoadPartIsLoading.value = true
+
+  if (!currentRoadPart.value) {
+    setCartToRoadPartIsLoading.value = false;
+    return
+  }
+
+// TODO: Continue
+
+}
+
 /* async function stowPackage(loc) {
 
   stowingIsLoading.value = true;
@@ -183,7 +198,7 @@ async function setUserToRoadPart() {
   }
 } */
 
-provide('picking', { setCurrentPair, currentPair, stowingIsLoading })
+provide('picking', { setCurrentPair, currentPair, stowingIsLoading, setCartToRoadPart })
 // provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
 
 /* const handleToggle = () => {
