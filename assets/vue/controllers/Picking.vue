@@ -163,7 +163,26 @@ async function setCartToRoadPart(stagging) {
     return
   }
 
-// TODO: Continue
+  if (currentRoadPart.value.stagging.id !== stagging.id) {
+    console.log('error');
+
+    setTimeout(() => {
+      notifier('error', 'Wrong cart', `Go to the staggin area ${currentRoadPart.value.stagging.name}`)
+    }, 1000);
+    setTimeout(() => {
+      setCartToRoadPartIsLoading.value = false;
+      return
+    }, 1500);
+  }
+
+  currentRoadPart.value.cart
+
+  console.log('CRP', currentRoadPart.value);
+  console.log('STG', stagging);
+
+  const { data, error } = await usePostFetch(`/setCartToRoadPart/${currentRoadPart.value.id}`, {id: stagging?.id ?? null})
+
+  // TODO: Continue
 
 }
 

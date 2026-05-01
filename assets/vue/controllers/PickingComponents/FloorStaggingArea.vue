@@ -22,10 +22,12 @@ const props = defineProps({
   roadPartStagging: Object
 });
 
-const action = (staggingArea) => { console.log('click on stagging area', staggingArea);
+const emit = defineEmits(['click'])
+
+const action = (staggingArea) => { setCartToRoadPart(staggingArea);
 }
 
-// const { setCartToRoadPart } = inject('picking')
+const { setCartToRoadPart } = inject('picking')
 
 const alleyHasPackages = (staggingArea) => {
   return props.roadPartStagging.name === staggingArea.name
