@@ -40,7 +40,7 @@ class RoadPartRepository extends ServiceEntityRepository
       'road' => $roadPart->getRoad()->getName(),
       'stagging' => $this->staggingRepository->toArrayRoadOriented($roadPart->getRoad()->getStagging()),
       'bags' => $this->transFormEntities($roadPart->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
-      'cart' => $roadPart->getCart() ? $roadPart->getCart() : null,
+      'cart' => $roadPart->getCart() ? $roadPart->getCart()->getId() : null,
       'userName' => $roadPart->getUser() ? $roadPart->getUser()->getUsername() : null,
       'stagged' => $roadPart->isStagged()
     ];
@@ -53,7 +53,7 @@ class RoadPartRepository extends ServiceEntityRepository
       'number' => $roadPart->getNumber(),
       'nbOfBags' => count($roadPart->getBags()),
       'bags' => $this->transFormEntities($roadPart->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
-      'cart' => $roadPart->getCart() ? $roadPart->getCart() : '',
+      'cart' => $roadPart->getCart() ? $roadPart->getCart()->getId() : '',
     ];
   }
 

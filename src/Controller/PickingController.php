@@ -15,6 +15,7 @@ use App\Repository\RoadRepository;
 use App\Repository\RoadPartRepository;
 use App\Repository\PostcodesRepository;
 use App\Repository\StaggingRepository;
+use App\Repository\CartRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Service\LocationArrayTransformerService;
@@ -31,6 +32,7 @@ final class PickingController extends AbstractController
     private RoadPartRepository $roadPartRepository,
     private PostcodesRepository $postcodesRepository,
     private StaggingRepository $staggingRepository,
+    private CartRepository $cartRepository,
     private LocationArrayTransformerService $locationArrayTransformerService,
     private Security $security,
     private EntityManagerInterface $entityManager,
@@ -197,41 +199,42 @@ final class PickingController extends AbstractController
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
 
- #[Route('/setCartToRoadPart/{id}', name: 'set_cart_to_roadPart')]
+  #[Route('/setCartToRoadPart/{id}', name: 'set_cart_to_roadPart')]
   public function setCartToRoadPart(
     Request $request,
     EntityManagerInterface $entityManager,
     int $id,
   ): Response {
-    $formData = $request->getPayload()->get('id');
+    $formData = $request->getPayload()->get('staggingId');
 
     $roadPart = $entityManager->getRepository(RoadPart::class)->find($id);
 
     $stagging = $this->findOrNull($entityManager->getRepository(Stagging::class), $formData);
 
-   /*  if (!$truck) {
-      throw $this->createNotFoundException(
-        'No truck found for id ' . $id
-      );
+    if (!$roadPart) {
+      return $this->json(['error' => 'No road part available'], 404);
     }
 
-    if ($dock?->getTruck()) {
-      return $this->json(['status' => 'error', 'message' => 'Dock is not available'], 400);
+    if (!$stagging) {
+      return $this->json(['error' => 'No stagging area available'], 404);
     }
 
-    if ($truck->getDock()) {
-      $previousDock = $truck->getDock();
+    if ($roadPart->getRoad()->getStagging() !== $stagging) {
+      return $this->json(['error' => 'Go to the staggin area'], 404);
     }
 
-    $truck->setDock($dock); */
+    $stagging->getCarts()->first();
 
+    $cart = $this->cartRepository->findOneWithoutRoadPart($stagging);
+    // dump('cart', $cart);
+    if (!$cart) {
+      return $this->json(['error' => 'No cart available'], 404);
+    }
+
+    $roadPart->setCart($cart);
 
     $entityManager->flush();
 
-    return $this->json(
-      [
-
-      ]
-    );
+    return $this->json($this->roadPartRepository->toArray($roadPart));
   }
 }

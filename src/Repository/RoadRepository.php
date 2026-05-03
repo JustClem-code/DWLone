@@ -43,9 +43,6 @@ class RoadRepository extends ServiceEntityRepository
     ];
   }
 
-
-
-
   public function findAllOrderedByName(): array
   {
     return $this->createQueryBuilder('r')

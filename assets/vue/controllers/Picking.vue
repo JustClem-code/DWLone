@@ -11,10 +11,10 @@
     </BorderedContent>
 
 
-    <BorderedContent v-if="currentRoadPart" title="Floor">
+    <BorderedContent v-if="currentRoadPart" title="Floor" class="flex flex-col gap-8">
       <!-- si Cart attribuer à USER -->
       <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
-      <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging" />
+      <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging" :globalLoading="globalLoading" />
       <!-- Else Component de choix de chariot avec avec stagging  -->
     </BorderedContent>
 
@@ -70,6 +70,10 @@ const currentPair = ref(null)
 
 const sidePanelRef = ref(null)
 
+const globalLoading = computed(() => {
+  return setCartToRoadPartIsLoading.value
+})
+
 const currentPairPackages = computed(() => {
   const data = {
     "id": currentPair.value.id,
@@ -121,6 +125,8 @@ async function setUserToRoadPart() {
   if (data.value) {
     currentRoadPart.value = data.value
     // updateCurrentPairPackages()
+    console.log('currentRoadPart', currentRoadPart.value);
+
     setTimeout(() => {
       notifier('success', 'RoadPart', `The package (Id: ${currentRoadPart.value.id}) is ready to pick`)
     }, 1000);
@@ -163,9 +169,7 @@ async function setCartToRoadPart(stagging) {
     return
   }
 
-  if (currentRoadPart.value.stagging.id !== stagging.id) {
-    console.log('error');
-
+  /* if (currentRoadPart.value.stagging.id !== stagging.id) {
     setTimeout(() => {
       notifier('error', 'Wrong cart', `Go to the staggin area ${currentRoadPart.value.stagging.name}`)
     }, 1000);
@@ -173,14 +177,36 @@ async function setCartToRoadPart(stagging) {
       setCartToRoadPartIsLoading.value = false;
       return
     }, 1500);
-  }
+  } */
 
   currentRoadPart.value.cart
 
   console.log('CRP', currentRoadPart.value);
   console.log('STG', stagging);
 
-  const { data, error } = await usePostFetch(`/setCartToRoadPart/${currentRoadPart.value.id}`, {id: stagging?.id ?? null})
+  const { data, error } = await usePostFetch(`/setCartToRoadPart/${currentRoadPart.value.id}`, { staggingId: stagging?.id ?? null })
+
+  if (data.value) {
+    currentRoadPart.value = data.value
+    // updateCurrentPairPackages()
+    setTimeout(() => {
+      notifier('success', 'Cart', `The cart ...`)
+    }, 1000);
+    setTimeout(() => {
+      setCartToRoadPartIsLoading.value = false;
+      // currentPackage.value = null
+    }, 1500);
+  }
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Wrong cart', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      setCartToRoadPartIsLoading.value = false;
+      return
+    }, 1500);
+  }
 
   // TODO: Continue
 

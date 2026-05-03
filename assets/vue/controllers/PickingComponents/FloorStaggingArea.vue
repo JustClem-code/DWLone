@@ -5,7 +5,7 @@
 
       <HorizontalLinkButton v-for="(staggingArea) in groupe" :key="staggingArea" @click="action(staggingArea)" :title="staggingArea.name"
         :focused="alleyHasPackages(staggingArea) ? 'text-blue-400' : 'text-gray-300 dark:text-gray-700/90'"
-        :pingfocused="alleyHasPackages(staggingArea)" />
+        :pingfocused="alleyHasPackages(staggingArea)" :isDisabled="globalLoading"/>
 
     </div>
 
@@ -19,7 +19,8 @@ import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 
 const props = defineProps({
   staggingAreas: Object,
-  roadPartStagging: Object
+  roadPartStagging: Object,
+  globalLoading: Boolean
 });
 
 const emit = defineEmits(['click'])

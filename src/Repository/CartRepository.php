@@ -29,6 +29,18 @@ class CartRepository extends ServiceEntityRepository
     ];
   }
 
+  public function findOneWithoutRoadPart($value): ?Cart
+  {
+    return $this->createQueryBuilder('c')
+      ->andWhere('c.stagging = :val')
+      ->andWhere('c.roadPart IS NULL')
+      ->setParameter('val', $value)
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
+  }
+
   //    /**
   //     * @return Cart[] Returns an array of Cart objects
   //     */
