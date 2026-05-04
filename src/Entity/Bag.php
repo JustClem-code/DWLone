@@ -34,6 +34,12 @@ class Bag
     #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'bag')]
     private Collection $packages;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $picked = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $loaded = null;
+
     public function __construct()
     {
         $this->packages = new ArrayCollection();
@@ -118,6 +124,30 @@ class Bag
     public function setRoadPart(?RoadPart $roadPart): static
     {
         $this->roadPart = $roadPart;
+
+        return $this;
+    }
+
+    public function isPicked(): ?bool
+    {
+        return $this->picked;
+    }
+
+    public function setPicked(?bool $picked): static
+    {
+        $this->picked = $picked;
+
+        return $this;
+    }
+
+    public function isLoaded(): ?bool
+    {
+        return $this->loaded;
+    }
+
+    public function setLoaded(?bool $loaded): static
+    {
+        $this->loaded = $loaded;
 
         return $this;
     }

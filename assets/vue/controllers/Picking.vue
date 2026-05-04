@@ -14,7 +14,8 @@
     <BorderedContent v-if="currentRoadPart" title="Floor" class="flex flex-col gap-8">
       <!-- si Cart attribuer à USER -->
       <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
-      <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging" :globalLoading="globalLoading" />
+      <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging"
+        :globalLoading="globalLoading" />
       <!-- Else Component de choix de chariot avec avec stagging  -->
     </BorderedContent>
 
@@ -93,7 +94,7 @@ const nbOfBags = computed(() => {
 })
 
 const roadPartNotice = computed(() => {
-  return !currentRoadPart?.value.cart ? `Take a cart in the stagged area STG-${currentRoadPart?.value.stagging.name}` : 'pick your bag'
+  return !currentRoadPart?.value.cart ? `Take a cart in the stagged area STG-${currentRoadPart?.value.stagging.name}` : 'Pick the next   bag'
 })
 
 const roadPartStats = computed(() => [
@@ -128,7 +129,7 @@ async function setUserToRoadPart() {
     console.log('currentRoadPart', currentRoadPart.value);
 
     setTimeout(() => {
-      notifier('success', 'RoadPart', `The package (Id: ${currentRoadPart.value.id}) is ready to pick`)
+      notifier('success', 'RoadPart', `The road part  ${currentRoadPart.value.name} is ready to pick`)
     }, 1000);
     setTimeout(() => {
       setUserToRoadPartIsLoading.value = false;
@@ -160,6 +161,10 @@ async function setUserToRoadPart() {
   );
 } */
 
+const scanStaggingArea = (stagging) => {
+// TODO: Continue split if start or end picking
+}
+
 async function setCartToRoadPart(stagging) {
 
   setCartToRoadPartIsLoading.value = true
@@ -168,21 +173,6 @@ async function setCartToRoadPart(stagging) {
     setCartToRoadPartIsLoading.value = false;
     return
   }
-
-  /* if (currentRoadPart.value.stagging.id !== stagging.id) {
-    setTimeout(() => {
-      notifier('error', 'Wrong cart', `Go to the staggin area ${currentRoadPart.value.stagging.name}`)
-    }, 1000);
-    setTimeout(() => {
-      setCartToRoadPartIsLoading.value = false;
-      return
-    }, 1500);
-  } */
-
-  currentRoadPart.value.cart
-
-  console.log('CRP', currentRoadPart.value);
-  console.log('STG', stagging);
 
   const { data, error } = await usePostFetch(`/setCartToRoadPart/${currentRoadPart.value.id}`, { staggingId: stagging?.id ?? null })
 
@@ -194,7 +184,6 @@ async function setCartToRoadPart(stagging) {
     }, 1000);
     setTimeout(() => {
       setCartToRoadPartIsLoading.value = false;
-      // currentPackage.value = null
     }, 1500);
   }
 
@@ -207,9 +196,6 @@ async function setCartToRoadPart(stagging) {
       return
     }, 1500);
   }
-
-  // TODO: Continue
-
 }
 
 /* async function stowPackage(loc) {
@@ -243,7 +229,7 @@ async function setCartToRoadPart(stagging) {
   }
 } */
 
-provide('picking', { setCurrentPair, currentPair, stowingIsLoading, setCartToRoadPart })
+provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea })
 // provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
 
 /* const handleToggle = () => {

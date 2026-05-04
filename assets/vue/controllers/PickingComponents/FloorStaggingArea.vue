@@ -4,8 +4,8 @@
     <div v-for="(groupe, indexGroup) in staggingAreas" :key="indexGroup" class="grid grid-cols-4 gap-1 sm:gap-4 justify-center px-2 md:px-4">
 
       <HorizontalLinkButton v-for="(staggingArea) in groupe" :key="staggingArea" @click="action(staggingArea)" :title="staggingArea.name"
-        :focused="alleyHasPackages(staggingArea) ? 'text-blue-400' : 'text-gray-300 dark:text-gray-700/90'"
-        :pingfocused="alleyHasPackages(staggingArea)" :isDisabled="globalLoading"/>
+        :focused="stagginAreaHighlighted(staggingArea) ? 'text-blue-400' : 'text-gray-300 dark:text-gray-700/90'"
+        :pingfocused="stagginAreaHighlighted(staggingArea)" :isDisabled="globalLoading"/>
 
     </div>
 
@@ -25,12 +25,12 @@ const props = defineProps({
 
 const emit = defineEmits(['click'])
 
-const action = (staggingArea) => { setCartToRoadPart(staggingArea);
+const { scanStaggingArea } = inject('picking')
+
+const action = (staggingArea) => { scanStaggingArea(staggingArea);
 }
 
-const { setCartToRoadPart } = inject('picking')
-
-const alleyHasPackages = (staggingArea) => {
+const stagginAreaHighlighted = (staggingArea) => {
   return props.roadPartStagging.name === staggingArea.name
 }
 </script>

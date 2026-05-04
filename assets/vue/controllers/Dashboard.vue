@@ -36,18 +36,23 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// message d'erreur si le User se trompe de stagging
-// message d'erreur si le cart que le User veux prendre a déjà une RoadPart, prendre le deuxième
+// creation d'un snake path
+
+// ajouter des dates de début et de fin picking pour calculer le temps moyen de picking
+
+// 1. scanner le bag -> scanner le chariot -> pickingBag(idCart + idBag) pour vérifier pas de changement d'erreur
+//   -> double vérification front + back
+
+
+
 // Afficher le plan des stagging avec les emplacements occupés
 
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair
 
-// ajouter des dates de début et de fin picking pour calculer le temps moyen de picking
 
 //  -> lier les codes postaux en fonction de la localisation
 
-//  -> trouver un moyen pour se déplacer dans l'entrepôt -> reprendre celui de la stow plus ajouter les emplacements de staging
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
 
  /* GÉRER CE PROBLÈME
