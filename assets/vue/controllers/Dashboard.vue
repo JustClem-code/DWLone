@@ -36,6 +36,8 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
+// vérifier picking controller et mettre en place des resets 
+
 // creation d'un snake path
 
 // ajouter des dates de début et de fin picking pour calculer le temps moyen de picking

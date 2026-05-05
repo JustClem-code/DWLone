@@ -91,6 +91,8 @@ class BagRepository extends ServiceEntityRepository
       'id' => $bag->getId(),
       'name' => $bag->getName(),
       'location' => $bag->getLocation()->getName(),
+      'picked' => $bag->isPicked(),
+      'loaded' => $bag->isLoaded(),
     ];
   }
 

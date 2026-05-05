@@ -29,12 +29,12 @@ class CartRepository extends ServiceEntityRepository
     ];
   }
 
-  public function findOneWithoutRoadPart($value): ?Cart
+  public function findOneWithoutRoadPart($stagging): ?Cart
   {
     return $this->createQueryBuilder('c')
       ->andWhere('c.stagging = :val')
       ->andWhere('c.roadPart IS NULL')
-      ->setParameter('val', $value)
+      ->setParameter('val', $stagging)
       ->setMaxResults(1)
       ->getQuery()
       ->getOneOrNullResult()

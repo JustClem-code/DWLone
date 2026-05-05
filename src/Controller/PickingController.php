@@ -223,18 +223,58 @@ final class PickingController extends AbstractController
       return $this->json(['error' => 'Go to the staggin area'], 404);
     }
 
-    $stagging->getCarts()->first();
-
     $cart = $this->cartRepository->findOneWithoutRoadPart($stagging);
-    // dump('cart', $cart);
+
     if (!$cart) {
       return $this->json(['error' => 'No cart available'], 404);
     }
 
-    $roadPart->setCart($cart);
+    $roadPart->startPicking($cart);
+
+    $entityManager->flush();
+
+    return $this->json($this->roadPartRepository->toArray($roadPart));
+  }
+
+  private function allBagsPicked(iterable $bags): bool
+  {
+    return empty($bags) || array_all(iterator_to_array($bags), fn($bag) => $bag->isPicked());
+  }
+
+  #[Route('/staggingCart/{id}', name: 'stagging_cart')]
+  public function staggingCart(
+    Request $request,
+    EntityManagerInterface $entityManager,
+    int $id,
+  ): Response {
+    $formData = $request->getPayload()->get('staggingId');
+
+    $roadPart = $entityManager->getRepository(RoadPart::class)->find($id);
+
+    $stagging = $this->findOrNull($entityManager->getRepository(Stagging::class), $formData);
+
+    if (!$roadPart) {
+      return $this->json(['error' => 'No road part available'], 404);
+    }
+
+    if (!$stagging) {
+      return $this->json(['error' => 'No stagging area available'], 404);
+    }
+
+    if ($roadPart->getRoad()->getStagging() !== $stagging) {
+      return $this->json(['error' => 'Go to the staggin area'], 404);
+    }
+
+    if (!$this->allBagsPicked($roadPart->getBags())) {
+      return $this->json(['error' => 'Not all the bags are picked!'], 404);
+    }
+
+    $roadPart->finishPicking();
 
     $entityManager->flush();
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
 }
+
+

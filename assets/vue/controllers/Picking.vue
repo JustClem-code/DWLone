@@ -65,14 +65,14 @@ const { notifier } = useNotification()
 
 const stowingIsLoading = ref(false)
 const setUserToRoadPartIsLoading = ref(false)
-const setCartToRoadPartIsLoading = ref(false)
+const scanStaggingAreaIsLoading = ref(false)
 
 const currentPair = ref(null)
 
 const sidePanelRef = ref(null)
 
 const globalLoading = computed(() => {
-  return setCartToRoadPartIsLoading.value
+  return scanStaggingAreaIsLoading.value
 })
 
 const currentPairPackages = computed(() => {
@@ -137,40 +137,30 @@ async function setUserToRoadPart() {
   }
 }
 
-// const setCurrentPackage = (pack) => currentPackage.value = pack
 
-/* const updateCurrentPairPackages = () => {
-  const pkgId = currentPackage.value?.id
-  if (!pkgId) return
 
-  currentPair.value.locations = currentPair.value.locations.map(row => ({
-    ...row,
-    packages: row.packages.filter(p => p.id !== pkgId)
-  }))
-
-  if (!locations.value) return
-
-  locations.value = locations.value.map(aisle =>
-    aisle.map(group => ({
-      ...group,
-      locations: group.locations.map(row => ({
-        ...row,
-        packages: (row.packages || []).filter(p => p.id !== pkgId),
-      })),
-    }))
-  );
-} */
+const allBagsPicked = computed(() => {
+  return currentRoadPart?.value.bags.every(bag => bag.picked === true)
+})
 
 const scanStaggingArea = (stagging) => {
-// TODO: Continue split if start or end picking
+  if (!currentRoadPart.value.cart) {
+    setCartToRoadPart(stagging)
+  } else if (currentRoadPart.value.cart) {
+    staggingCart(stagging);
+    console.log("finish");
+  } else {
+    console.log("entre deux");
+
+  }
 }
 
 async function setCartToRoadPart(stagging) {
 
-  setCartToRoadPartIsLoading.value = true
+  scanStaggingAreaIsLoading.value = true
 
   if (!currentRoadPart.value) {
-    setCartToRoadPartIsLoading.value = false;
+    scanStaggingAreaIsLoading.value = false;
     return
   }
 
@@ -183,7 +173,7 @@ async function setCartToRoadPart(stagging) {
       notifier('success', 'Cart', `The cart ...`)
     }, 1000);
     setTimeout(() => {
-      setCartToRoadPartIsLoading.value = false;
+      scanStaggingAreaIsLoading.value = false;
     }, 1500);
   }
 
@@ -192,45 +182,47 @@ async function setCartToRoadPart(stagging) {
       notifier('error', 'Wrong cart', `${error.value}`)
     }, 1000);
     setTimeout(() => {
-      setCartToRoadPartIsLoading.value = false;
+      scanStaggingAreaIsLoading.value = false;
       return
     }, 1500);
   }
 }
 
-/* async function stowPackage(loc) {
+async function staggingCart(stagging) {
 
-  stowingIsLoading.value = true;
+  scanStaggingAreaIsLoading.value = true
 
-  if (!currentPackage.value) {
-    stowingIsLoading.value = false;
+  if (!currentRoadPart.value) {
+    scanStaggingAreaIsLoading.value = false;
     return
   }
 
-  if (loc.name !== currentPackage.value.location.name) {
-    currentPackage.value = false;
-    stowingIsLoading.value = false;
-    notifier('error', 'Stow', 'Wrong bag')
-    return
-  }
+  const { data, error } = await usePostFetch(`/staggingCart/${currentRoadPart.value.id}`, { staggingId: stagging?.id ?? null })
 
-  const { data, error } = await usePostFetch(`/setUserStow/${currentPackage.value.id}`)
-
-  if (data.value) {
-    currentPackage.value = data.value
-    updateCurrentPairPackages()
+ /*  if (data.value) {
+    currentRoadPart.value = data.value
+    // updateCurrentPairPackages()
     setTimeout(() => {
-      notifier('success', 'Stow', `The package (Id: ${currentPackage.value.id}) is stowed`)
+      notifier('success', 'Cart', `The cart ...`)
     }, 1000);
     setTimeout(() => {
-      stowingIsLoading.value = false;
-      currentPackage.value = null
+      scanStaggingAreaIsLoading.value = false;
     }, 1500);
   }
-} */
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Wrong cart', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      scanStaggingAreaIsLoading.value = false;
+      return
+    }, 1500);
+  } */
+}
+
 
 provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea })
-// provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
 
 /* const handleToggle = () => {
 
