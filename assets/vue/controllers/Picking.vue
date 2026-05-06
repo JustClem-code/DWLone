@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col gap-8">
     <BorderedContent title="Road part">
-      <RoadPartHeader v-if="currentRoadPart" :title="currentRoadPartTitle" :notice="roadPartNotice"
-        actionTitle="Automating steps" @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="roadPartStats" />
-      <DashedEmptyState v-else @click="setUserToRoadPart()" title="Get a road Part"
+      <DashedEmptyState v-if="!currentRoadPart" @click="setUserToRoadPart()" title="Get a road Part"
         :disabled="setUserToRoadPartIsLoading">
         <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
         <AnimateSpin v-show="setUserToRoadPartIsLoading" class="absolute" />
       </DashedEmptyState>
+      <RoadPartHeader v-else :title="currentRoadPartTitle" :notice="roadPartNotice" actionTitle="Automating steps"
+        @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="roadPartStats" />
     </BorderedContent>
 
 
@@ -39,7 +39,7 @@
 
 <script setup>
 
-import { ref, provide, computed, watchEffect } from 'vue'
+import { ref, provide, computed, watchEffect, watch } from 'vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
@@ -85,23 +85,27 @@ const currentPairPackages = computed(() => {
   return data
 })
 
-const currentRoadPartTitle = computed(() => {
-  return `${currentRoadPart.value.road} #${currentRoadPart.value.number}`
-})
+const currentRoadPartTitle = computed(() =>
+  `${currentRoadPart.value.road} #${currentRoadPart.value.number}`
+)
 
-const nbOfBags = computed(() => {
-  return currentRoadPart.value ? currentRoadPart.value.bags.length : '0'
-})
+const nbOfBags = computed(() =>
+  currentRoadPart.value ? currentRoadPart.value?.bags?.length : '0'
+)
 
 const roadPartNotice = computed(() => {
-  return !currentRoadPart?.value.cart ? `Take a cart in the stagged area STG-${currentRoadPart?.value.stagging.name}` : 'Pick the next   bag'
+  !currentRoadPart.value.cart
+    ? `Take a cart in the stagged area STG-${currentRoadPart.value.stagging.name}`
+    : 'Pick the next bag'
 })
 
-const roadPartStats = computed(() => [
-  { 'title': 'Number of bags', 'number': `2`, 'number_2': `/${nbOfBags.value}` },
-  { 'title': 'Time to picking', 'number': `1'32 ` },
-  { 'title': 'Exemple', 'number': `50%` },
-])
+const roadPartStats = computed(() => {
+  [
+    { 'title': 'Number of bags', 'number': `2`, 'number_2': `/${nbOfBags.value}` },
+    { 'title': 'Time to picking', 'number': `1'32 ` },
+    { 'title': 'Exemple', 'number': `50%` },
+  ]
+})
 
 const setCurrentPair = (pair) => {
   currentPair.value = pair
@@ -199,26 +203,26 @@ async function staggingCart(stagging) {
 
   const { data, error } = await usePostFetch(`/staggingCart/${currentRoadPart.value.id}`, { staggingId: stagging?.id ?? null })
 
- /*  if (data.value) {
-    currentRoadPart.value = data.value
-    // updateCurrentPairPackages()
-    setTimeout(() => {
-      notifier('success', 'Cart', `The cart ...`)
-    }, 1000);
-    setTimeout(() => {
-      scanStaggingAreaIsLoading.value = false;
-    }, 1500);
-  }
+  /*  if (data.value) {
+     currentRoadPart.value = data.value
+     // updateCurrentPairPackages()
+     setTimeout(() => {
+       notifier('success', 'Cart', `The cart ...`)
+     }, 1000);
+     setTimeout(() => {
+       scanStaggingAreaIsLoading.value = false;
+     }, 1500);
+   }
 
-  if (error.value) {
-    setTimeout(() => {
-      notifier('error', 'Wrong cart', `${error.value}`)
-    }, 1000);
-    setTimeout(() => {
-      scanStaggingAreaIsLoading.value = false;
-      return
-    }, 1500);
-  } */
+   if (error.value) {
+     setTimeout(() => {
+       notifier('error', 'Wrong cart', `${error.value}`)
+     }, 1000);
+     setTimeout(() => {
+       scanStaggingAreaIsLoading.value = false;
+       return
+     }, 1500);
+   } */
 }
 
 
@@ -232,5 +236,13 @@ provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStagging
 }
 
 watchEffect(handleToggle) */
+
+/* watch(
+  errorCurrentRoadPart,
+  (val) => {
+    console.log('errorCurrentRoadPart', val)
+  },
+  { deep: true }
+) */
 
 </script>

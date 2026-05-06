@@ -31,6 +31,6 @@ const action = (staggingArea) => { scanStaggingArea(staggingArea);
 }
 
 const stagginAreaHighlighted = (staggingArea) => {
-  return props.roadPartStagging.name === staggingArea.name
+  return props?.roadPartStagging?.name === staggingArea.name
 }
 </script>

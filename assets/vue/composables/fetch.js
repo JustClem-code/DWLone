@@ -5,9 +5,15 @@ export function useFetch(url) {
   const error = ref(null)
 
   fetch(url)
-    .then((res) => res.json())
+    .then(async res => {
+      const resData = await res.json();
+      if (!res.ok) {
+        throw new Error(resData.error || 'Error');
+      }
+      return resData
+    })
     .then((json) => (data.value = json))
-    .catch((err) => (error.value = err))
+    .catch((err) => (error.value = err.message))
 
   return { data, error }
 }
