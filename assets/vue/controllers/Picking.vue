@@ -237,12 +237,12 @@ provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStagging
 
 watchEffect(handleToggle) */
 
-/* watch(
-  errorCurrentRoadPart,
+watch(
+  currentRoadPart,
   (val) => {
-    console.log('errorCurrentRoadPart', val)
+    console.log('currentRoadPart', val)
   },
   { deep: true }
-) */
+)
 
 </script>

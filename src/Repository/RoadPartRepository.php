@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Repository\Trait\RepositoryTrait;
 
 use App\Entity\RoadPart;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -70,7 +71,16 @@ class RoadPartRepository extends ServiceEntityRepository
     ;
   }
 
-  public function findOnHasUserNotStagged($user): ?RoadPart
+  public function findAllWithUser(): ?RoadPart
+  {
+    return $this->createQueryBuilder('r')
+      ->andWhere('r.user IS NOT NULL')
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
+  }
+
+  public function findOnHasUserNotStagged(User $user): ?RoadPart
   {
     return $this->createQueryBuilder('r')
       ->andWhere('r.stagged = FALSE')
@@ -80,6 +90,16 @@ class RoadPartRepository extends ServiceEntityRepository
       ->getQuery()
       ->getOneOrNullResult()
     ;
+  }
+
+   public function transformSome($entities): array
+  {
+    return $this->transFormEntities($entities, [$this, 'toArray']);
+  }
+
+   public function transformAll(): array
+  {
+    return $this->transFormEntities($this->findAll(), [$this, 'toArray']);
   }
 
 

@@ -20,6 +20,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Service\LocationArrayTransformerService;
 
+use App\Entity\Bag;
 use App\Entity\Road;
 use App\Entity\RoadPart;
 use App\Entity\Stagging;
@@ -96,7 +97,7 @@ final class PickingController extends AbstractController
     return $roadPart;
   }
 
-  private function getRoadPart($road): RoadPart
+  private function getRoadPart(Road $road): RoadPart
   {
     $roadPart = $this->roadPartRepository->findOneBy(
       ['road' => $road],
@@ -115,7 +116,7 @@ final class PickingController extends AbstractController
     return $roadPart;
   }
 
-  private function getOrCreateRoad($bag): Road
+  private function getOrCreateRoad(Bag $bag): Road
   {
     $postcode = $this->bagRepository->findBagPostcode($bag);
 
@@ -166,7 +167,7 @@ final class PickingController extends AbstractController
     $roadPart = $this->roadPartRepository->findOnHasUserNotStagged($user);
 
     if (!$roadPart) {
-      return $this->json(['error' => 'No road part available'], 404);
+      return $this->json([null], 204);
     }
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
@@ -275,6 +276,21 @@ final class PickingController extends AbstractController
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
+
+  #[Route('/hardResetPicking', name: 'hard_reset_picking', methods: ['POST'])]
+  public function hardResetPicking(
+    EntityManagerInterface $entityManager,
+  ): Response {
+    $roadParts = $this->roadPartRepository->findAllWithUser();
+
+    dump($roadParts);
+
+    foreach ($roadParts as $roadPart) {
+      $roadPart->resetPicking();
+    }
+
+    $entityManager->flush();
+
+    return $this->json($this->roadPartRepository->transformAll());
+  }
 }
-
-
