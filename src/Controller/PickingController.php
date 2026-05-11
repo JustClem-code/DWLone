@@ -277,20 +277,29 @@ final class PickingController extends AbstractController
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
 
+  private function resetPicking(RoadPart $roadPart): void
+  {
+    $roadPart->getCart()?->setRoadPart(null);
+    foreach ($roadPart->getBags() as $bag) {
+      $bag->setPicked(false);
+    }
+    $roadPart->resetPickingState();
+  }
+
   #[Route('/hardResetPicking', name: 'hard_reset_picking', methods: ['POST'])]
   public function hardResetPicking(
     EntityManagerInterface $entityManager,
   ): Response {
     $roadParts = $this->roadPartRepository->findAllWithUser();
 
-    dump($roadParts);
+    // dump($roadParts);
 
     foreach ($roadParts as $roadPart) {
-      $roadPart->resetPicking();
+      $this->resetPicking($roadPart);
     }
 
     $entityManager->flush();
 
-    return $this->json($this->roadPartRepository->transformAll());
+    return $this->json($this->roadPartRepository->transformAll($roadParts));
   }
 }

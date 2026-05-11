@@ -210,15 +210,8 @@ class RoadPart
     }
   }
 
-  public function resetPicking() : void
+  public function resetPickingState(): void
   {
-    $this->getCart()->setRoadPart(null);
-    $bags = $this->getBags();
-
-    foreach ($bags as $bag) {
-      $bag->setPicked(false);
-      $bag->setRoadPart(null);
-    }
     $this->setStagged(false);
     $this->setStaggedAt(null);
     $this->setPickingStartedAt(null);

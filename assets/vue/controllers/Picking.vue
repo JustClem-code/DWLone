@@ -94,13 +94,13 @@ const nbOfBags = computed(() =>
 )
 
 const roadPartNotice = computed(() => {
-  !currentRoadPart.value.cart
+  return !currentRoadPart.value.cart
     ? `Take a cart in the stagged area STG-${currentRoadPart.value.stagging.name}`
     : 'Pick the next bag'
 })
 
 const roadPartStats = computed(() => {
-  [
+  return [
     { 'title': 'Number of bags', 'number': `2`, 'number_2': `/${nbOfBags.value}` },
     { 'title': 'Time to picking', 'number': `1'32 ` },
     { 'title': 'Exemple', 'number': `50%` },
@@ -129,7 +129,7 @@ async function setUserToRoadPart() {
 
   if (data.value) {
     currentRoadPart.value = data.value
-    // updateCurrentPairPackages()
+    
     console.log('currentRoadPart', currentRoadPart.value);
 
     setTimeout(() => {

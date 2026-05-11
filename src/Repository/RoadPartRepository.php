@@ -71,12 +71,13 @@ class RoadPartRepository extends ServiceEntityRepository
     ;
   }
 
-  public function findAllWithUser(): ?RoadPart
+  public function findAllWithUser(): array
   {
     return $this->createQueryBuilder('r')
       ->andWhere('r.user IS NOT NULL')
+      ->orderBy('r.id', 'ASC')
       ->getQuery()
-      ->getOneOrNullResult()
+      ->getResult()
     ;
   }
 
@@ -92,15 +93,24 @@ class RoadPartRepository extends ServiceEntityRepository
     ;
   }
 
-   public function transformSome($entities): array
+  public function transformSome($entities): array
   {
     return $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
-   public function transformAll(): array
+  public function findAllOrderedByName(): array
   {
-    return $this->transFormEntities($this->findAll(), [$this, 'toArray']);
+    return $this->createQueryBuilder('r')
+      ->orderBy('r.name', 'ASC')
+      ->getQuery()
+      ->getResult();
   }
+
+  public function transformAll(iterable $entities): array
+  {
+    return $this->transformEntitiesNoSorting($entities, [$this, 'toArray']);
+  }
+
 
 
 
