@@ -86,7 +86,7 @@ final class PickingController extends AbstractController
     return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
   }
 
-  private function createRoadPart($road, $partNumber): RoadPart
+  private function createRoadPart(Road $road, int $partNumber): RoadPart
   {
     $roadPart = new RoadPart();
     $road->addRoadPart($roadPart);
@@ -249,9 +249,7 @@ final class PickingController extends AbstractController
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('staggingId');
-
     $roadPart = $entityManager->getRepository(RoadPart::class)->find($id);
-
     $stagging = $this->findOrNull($entityManager->getRepository(Stagging::class), $formData);
 
     if (!$roadPart) {
@@ -271,7 +269,6 @@ final class PickingController extends AbstractController
     }
 
     $roadPart->finishPicking();
-
     $entityManager->flush();
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
@@ -291,8 +288,6 @@ final class PickingController extends AbstractController
     EntityManagerInterface $entityManager,
   ): Response {
     $roadParts = $this->roadPartRepository->findAllWithUser();
-
-    // dump($roadParts);
 
     foreach ($roadParts as $roadPart) {
       $this->resetPicking($roadPart);

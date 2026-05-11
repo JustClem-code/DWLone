@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { inject } from 'vue'
+import { inject, onMounted, watch } from 'vue'
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 
 const props = defineProps({
@@ -27,4 +27,12 @@ const alleyHasPackages = (pair) => {
   // const ar = pair.locations.flatMap(row => row.packages.filter(p => p.userStow === null))
   return true
 }
+
+watch(
+  () => props.locations,  // Getter pour prop unique
+  (val) => {
+    console.log('locations watch:', val);
+  },
+  { immediate: true, deep: true }
+);
 </script>

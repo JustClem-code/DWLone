@@ -12,11 +12,9 @@
 
 
     <BorderedContent v-if="currentRoadPart" title="Floor" class="flex flex-col gap-8">
-      <!-- si Cart attribuer à USER -->
       <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
       <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging"
         :globalLoading="globalLoading" />
-      <!-- Else Component de choix de chariot avec avec stagging  -->
     </BorderedContent>
 
     <SidePanel ref="sidePanelRef" :title="currentPair ? currentPair?.id : 'title'" width="md:w-5/6">
@@ -85,6 +83,10 @@ const currentPairPackages = computed(() => {
   return data
 })
 
+const currentBag = computed(()=> {
+  return currentRoadPart.value?.bag
+})
+
 const currentRoadPartTitle = computed(() =>
   `${currentRoadPart.value.road} #${currentRoadPart.value.number}`
 )
@@ -129,7 +131,7 @@ async function setUserToRoadPart() {
 
   if (data.value) {
     currentRoadPart.value = data.value
-    
+
     console.log('currentRoadPart', currentRoadPart.value);
 
     setTimeout(() => {
@@ -172,7 +174,6 @@ async function setCartToRoadPart(stagging) {
 
   if (data.value) {
     currentRoadPart.value = data.value
-    // updateCurrentPairPackages()
     setTimeout(() => {
       notifier('success', 'Cart', `The cart ...`)
     }, 1000);
@@ -203,9 +204,8 @@ async function staggingCart(stagging) {
 
   const { data, error } = await usePostFetch(`/staggingCart/${currentRoadPart.value.id}`, { staggingId: stagging?.id ?? null })
 
-  /*  if (data.value) {
+   if (data.value) {
      currentRoadPart.value = data.value
-     // updateCurrentPairPackages()
      setTimeout(() => {
        notifier('success', 'Cart', `The cart ...`)
      }, 1000);
@@ -216,13 +216,13 @@ async function staggingCart(stagging) {
 
    if (error.value) {
      setTimeout(() => {
-       notifier('error', 'Wrong cart', `${error.value}`)
+       notifier('error', 'Error stagging', `${error.value}`)
      }, 1000);
      setTimeout(() => {
        scanStaggingAreaIsLoading.value = false;
        return
      }, 1500);
-   } */
+   }
 }
 
 

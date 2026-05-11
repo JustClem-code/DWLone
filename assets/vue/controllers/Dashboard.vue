@@ -36,7 +36,7 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// vérifier picking controller et mettre en place des resets 
+// retrouver les bag dans les allées avant de tester un snake path
 
 // creation d'un snake path
 
