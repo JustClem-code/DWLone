@@ -1,9 +1,9 @@
 <template>
   <div class="grid grid-flow-col grid-rows-6 gap-4">
 
-    <HorizontalLinkButton v-for="loc in orderedLocations" :key="loc.id" @click="stowPackage(loc)"
+    <HorizontalLinkButton v-for="loc in orderedLocations" :key="loc.id" @click="pickingBag(loc.bag)"
       :title="loc?.name || 'Location name'"
-      :focused="isCurrentLoc(loc?.name) ? getBagColor('currentPackage.bag?.name') : 'text-gray-300 dark:text-gray-700/90'" />
+      :focused="isCurrentLoc(loc?.name) ? getBagColor(currentBag?.name) : 'text-gray-300 dark:text-gray-700/90'" />
 
   </div>
 </template>
@@ -19,9 +19,9 @@ const props = defineProps({
   orderedLocations: Array,
 });
 
-// const { currentPackage, stowPackage } = inject('stow')
+const { currentBag, pickingBag } = inject('picking')
 
-const isCurrentLoc = (name) => 'currentPackage.value?.location?.name' === name
+const isCurrentLoc = (name) => currentBag.value?.location === name
 
 const getBagColor = (name) => {
   const prefix = getColor(name);

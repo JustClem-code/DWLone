@@ -55,6 +55,7 @@ class LocationRepository extends ServiceEntityRepository
     return [
       'id' => $location->getId(),
       'name' => $location->getName(),
+      'bag' => $location->getBag() ? $location->getBag()->getId() : null
     ];
   }
 

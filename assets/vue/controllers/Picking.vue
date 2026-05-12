@@ -45,7 +45,6 @@ import { useNotification } from '../composables/eventBus.js'
 import BorderedContent from './UI/BorderedContent.vue'
 import SidePanel from './UI/SidePanel.vue'
 
-// import PackageDrop from './StowComponents/PackageDrop.vue'
 import FloorAisles from './PickingComponents/FloorAisles.vue'
 import PairLocations from './PickingComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
@@ -83,8 +82,10 @@ const currentPairPackages = computed(() => {
   return data
 })
 
-const currentBag = computed(()=> {
-  return currentRoadPart.value?.bag
+const bagsNolLoaded = computed(() => currentRoadPart.value?.bags.filter(b => b.loaded !== true))
+
+const currentBag = computed(() => {
+  return bagsNolLoaded.value ? bagsNolLoaded.value[0] : null
 })
 
 const currentRoadPartTitle = computed(() =>
@@ -142,8 +143,6 @@ async function setUserToRoadPart() {
     }, 1500);
   }
 }
-
-
 
 const allBagsPicked = computed(() => {
   return currentRoadPart?.value.bags.every(bag => bag.picked === true)
@@ -204,29 +203,35 @@ async function staggingCart(stagging) {
 
   const { data, error } = await usePostFetch(`/staggingCart/${currentRoadPart.value.id}`, { staggingId: stagging?.id ?? null })
 
-   if (data.value) {
-     currentRoadPart.value = data.value
-     setTimeout(() => {
-       notifier('success', 'Cart', `The cart ...`)
-     }, 1000);
-     setTimeout(() => {
-       scanStaggingAreaIsLoading.value = false;
-     }, 1500);
-   }
+  if (data.value) {
+    currentRoadPart.value = data.value
+    setTimeout(() => {
+      notifier('success', 'Cart', `The cart ...`)
+    }, 1000);
+    setTimeout(() => {
+      scanStaggingAreaIsLoading.value = false;
+    }, 1500);
+  }
 
-   if (error.value) {
-     setTimeout(() => {
-       notifier('error', 'Error stagging', `${error.value}`)
-     }, 1000);
-     setTimeout(() => {
-       scanStaggingAreaIsLoading.value = false;
-       return
-     }, 1500);
-   }
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error stagging', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      scanStaggingAreaIsLoading.value = false;
+      return
+    }, 1500);
+  }
+}
+
+async function pickingBag(bagId) {
+  console.log('prout bad', bagId);
+  // stocker le bagId si il est bon pour scanner le Cart
+
 }
 
 
-provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea })
+provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea, currentBag, pickingBag })
 
 /* const handleToggle = () => {
 
@@ -238,9 +243,9 @@ provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStagging
 watchEffect(handleToggle) */
 
 watch(
-  currentRoadPart,
+  currentBag,
   (val) => {
-    console.log('currentRoadPart', val)
+    console.log('currentBag', val)
   },
   { deep: true }
 )

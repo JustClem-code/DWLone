@@ -4,8 +4,8 @@
     <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="flex flex-col gap-1 sm:gap-4 justify-center px-2 md:px-4">
 
       <HorizontalLinkButton v-for="(pair) in groupe" :key="pair" @click="setCurrentPair(pair)" :title="pair.id"
-        :focused="alleyHasPackages(pair) ? 'text-blue-400' : 'text-gray-300 dark:text-gray-700/90'"
-        :pingfocused="alleyHasPackages(pair)" />
+        :focused="alleyHasCurrentBag(pair) ? 'text-blue-400' : 'text-gray-300 dark:text-gray-700/90'"
+        :pingfocused="alleyHasCurrentBag(pair)" />
 
     </div>
 
@@ -21,11 +21,10 @@ const props = defineProps({
   locations: Object,
 });
 
-const { setCurrentPair } = inject('picking')
+const { setCurrentPair, currentBag } = inject('picking')
 
-const alleyHasPackages = (pair) => {
-  // const ar = pair.locations.flatMap(row => row.packages.filter(p => p.userStow === null))
-  return true
+const alleyHasCurrentBag = (pair) => {
+  return pair.locations.some(l => l.name === currentBag.value.location)
 }
 
 watch(

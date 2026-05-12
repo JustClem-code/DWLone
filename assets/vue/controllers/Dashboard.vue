@@ -38,9 +38,9 @@
 
 // retrouver les bag dans les allées avant de tester un snake path
 
-// creation d'un snake path
+// creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
 
-// ajouter des dates de début et de fin picking pour calculer le temps moyen de picking
+// test alleyHasPackages
 
 // 1. scanner le bag -> scanner le chariot -> pickingBag(idCart + idBag) pour vérifier pas de changement d'erreur
 //   -> double vérification front + back
