@@ -1,8 +1,9 @@
 <template>
   <div class="grid grid-flow-col grid-rows-6 gap-4">
 
-    <HorizontalLinkButton v-for="loc in orderedLocations" :key="loc.id" @click="pickingBag(loc.bag)"
+    <HorizontalLinkButton v-for="loc in orderedLocations" :key="loc.id" @click="scanBag(loc.bag)"
       :title="loc?.name || 'Location name'"
+      :isDisabled="!loc.bag"
       :focused="isCurrentLoc(loc?.name) ? getBagColor(currentBag?.name) : 'text-gray-300 dark:text-gray-700/90'" />
 
   </div>
@@ -19,7 +20,7 @@ const props = defineProps({
   orderedLocations: Array,
 });
 
-const { currentBag, pickingBag } = inject('picking')
+const { currentBag, scanBag } = inject('picking')
 
 const isCurrentLoc = (name) => currentBag.value?.location === name
 

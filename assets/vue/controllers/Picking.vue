@@ -37,7 +37,7 @@
 
 <script setup>
 
-import { ref, provide, computed, watchEffect, watch } from 'vue'
+import { ref, provide, computed, watchEffect, watch, onMounted } from 'vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
@@ -67,6 +67,16 @@ const scanStaggingAreaIsLoading = ref(false)
 const currentPair = ref(null)
 
 const sidePanelRef = ref(null)
+
+const STORAGE_KEY = 'currentBagPicked'
+
+const currentBagPicked = ref(null)
+
+onMounted(() => {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  currentBagPicked.value = raw ? JSON.parse(raw) : null
+  console.log('currentBagPicked onmounted', currentBagPicked.value);
+})
 
 const globalLoading = computed(() => {
   return scanStaggingAreaIsLoading.value
@@ -224,14 +234,14 @@ async function staggingCart(stagging) {
   }
 }
 
-async function pickingBag(bagId) {
-  console.log('prout bad', bagId);
+function scanBag(bagId) {
+  console.log('bag scanned', bagId);
   // stocker le bagId si il est bon pour scanner le Cart
 
 }
 
 
-provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea, currentBag, pickingBag })
+provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea, currentBag, scanBag })
 
 /* const handleToggle = () => {
 
@@ -243,9 +253,13 @@ provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStagging
 watchEffect(handleToggle) */
 
 watch(
-  currentBag,
+  currentBagPicked,
   (val) => {
-    console.log('currentBag', val)
+    if (val === null) {
+      localStorage.removeItem(STORAGE_KEY)
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
+    }
   },
   { deep: true }
 )
