@@ -24,6 +24,7 @@ use App\Entity\Bag;
 use App\Entity\Road;
 use App\Entity\RoadPart;
 use App\Entity\Stagging;
+use App\Entity\Cart;
 
 final class PickingController extends AbstractController
 {
@@ -160,11 +161,17 @@ final class PickingController extends AbstractController
     return $this->json($this->staggingRepository->getAllOrderedStagging());
   }
 
+  private function currentUserRoadpart() : Roadpart
+  {
+    $user = $this->security->getUser();
+
+    return $this->roadPartRepository->findOnHasUserNotStagged($user);
+  }
+
   #[Route('/getCurrentUserRoadpart', name: 'get_current_user_roadpart', methods: ['GET'])]
   public function getCurrentUserRoadpart(): Response
   {
-    $user = $this->security->getUser();
-    $roadPart = $this->roadPartRepository->findOnHasUserNotStagged($user);
+    $roadPart = $this->currentUserRoadpart();
 
     if (!$roadPart) {
       return $this->json([null], 204);
@@ -296,5 +303,25 @@ final class PickingController extends AbstractController
     $entityManager->flush();
 
     return $this->json($this->roadPartRepository->transformAll($roadParts));
+  }
+
+  #[Route('/pickingBag/{id}', name: 'pick_bag', methods: ['POST'])]
+  public function pickBag(
+    Request $request,
+    EntityManagerInterface $entityManager,
+    int $id,
+  ): Response {
+    $formData = $request->getPayload()->get('bagId');
+    $Cart = $entityManager->getRepository(Cart::class)->find($id);
+    $bag = $this->findOrNull($entityManager->getRepository(Bag::class), $formData);
+
+    $roadPart = $this->currentUserRoadpart();
+    $bagToPick = $roadPart->getBags()[1];
+
+    dump($bagToPick);
+    // vérifier que le cart est bien le cart de la roadpart du user
+    // Vérifier que le bag est bien le bag à picker
+
+    return $this->json('test');
   }
 }

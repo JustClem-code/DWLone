@@ -22,7 +22,7 @@
       <div v-if="currentPair" class="flex flex-col gap-8">
         <BorderedContent title="Cart">
           <!-- <PackageDrop :pairPackages="currentPairPackages" /> -->
-
+          <BaseButton title="Scan cart" @click="pickingBag(currentRoadPart?.cart)" styleColor="empty" />
         </BorderedContent>
 
         <BorderedContent title="Locations">
@@ -68,14 +68,14 @@ const currentPair = ref(null)
 
 const sidePanelRef = ref(null)
 
-const STORAGE_KEY = 'currentBagPicked'
+const STORAGE_KEY = 'currentBagPickedId'
 
-const currentBagPicked = ref(null)
+const currentBagPickedId = ref(null)
 
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)
-  currentBagPicked.value = raw ? JSON.parse(raw) : null
-  console.log('currentBagPicked onmounted', currentBagPicked.value);
+  currentBagPickedId.value = raw ? JSON.parse(raw) : null
+  console.log('currentBagPickedId onmounted', currentBagPickedId.value);
 })
 
 const globalLoading = computed(() => {
@@ -236,8 +236,17 @@ async function staggingCart(stagging) {
 
 function scanBag(bagId) {
   console.log('bag scanned', bagId);
-  // stocker le bagId si il est bon pour scanner le Cart
 
+  currentBagPickedId.value = bagId
+}
+
+async function pickingBag(cart) {
+
+  console.log("cart", cart);
+  console.log("currentBagPickedId.value", currentBagPickedId.value);
+
+
+  const { data, error } = await usePostFetch(`/pickingBag/${cart}`, { bagId: currentBagPickedId.value ?? null })
 }
 
 
@@ -253,13 +262,21 @@ provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStagging
 watchEffect(handleToggle) */
 
 watch(
-  currentBagPicked,
+  currentBagPickedId,
   (val) => {
     if (val === null) {
       localStorage.removeItem(STORAGE_KEY)
     } else {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
     }
+  },
+  { deep: true }
+)
+
+watch(
+  currentRoadPart,
+  (val) => {
+    console.log('currentRoadPart', val)
   },
   { deep: true }
 )
