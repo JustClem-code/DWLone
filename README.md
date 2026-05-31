@@ -1,3 +1,57 @@
+# DWLone
+
+A web-based Warehouse Management System (WMS) designed for a package sorting center.
+
+This application helps manage incoming packages delivered on pallets by truck, sort them by postal code, and assign them to delivery drivers using vans for redistribution.
+
+## Features
+
+- Receive packages arriving by pallet.
+- Register and track incoming shipments.
+- Sort packages according to postal code.
+- Prepare packages for redistribution.
+- Assign packages to drivers and vans.
+- Monitor warehouse operations in a simple and efficient workflow.
+
+## Project Goals
+
+The goal of this project is to provide a practical digital tool for a package sorting warehouse.
+It is designed to improve skills in fullstack developpement.
+
+## Tech Stack
+
+- **Backend:** Symfony
+- **Frontend:** Vue.js via Symfony UX Vue
+- **Database:** PostgreSQL
+- **CSS Framework:** Tailwind CSS
+- **Project Base:** Symfony Docker / Dunglas Symfony template
+
+Symfony UX Vue allows Vue components to be rendered from Twig and integrated directly into a Symfony application [web:4][web:10]. The Symfony Docker template provides a solid Docker-based setup for running and deploying Symfony projects consistently [web:3][web:9].
+
+## Architecture
+
+The application is structured as follows:
+
+- Symfony handles business logic, routing, security, and API or server-side operations.
+- Vue.js is used for interactive user interfaces.
+- PostgreSQL stores warehouse, package, and delivery data.
+- Tailwind CSS provides a clean and responsive design.
+
+## Main Use Case
+
+1. Packages arrive at the sorting center on pallets.
+2. Warehouse staff register the delivery.
+3. Packages are sorted by postal code.
+4. Packages are grouped for delivery routes.
+5. Drivers receive packages in vans for final redistribution.
+
+## Development Notes
+
+- Vue components are located in the Symfony frontend assets.
+- Symfony manages backend logic and persistence.
+- PostgreSQL is used as the main relational database.
+- Tailwind CSS is used for layout and styling.
+
 # Symfony Docker
 
 A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework,
@@ -13,39 +67,14 @@ with [FrankenPHP](https://frankenphp.dev) and [Caddy](https://caddyserver.com/) 
 4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
 5. Run `docker compose down --remove-orphans` to stop the Docker containers.
 
-## Features
-
-* Production, development and CI ready
-* Just 1 service by default
-* Blazing-fast performance thanks to [the worker mode of FrankenPHP](https://github.com/dunglas/frankenphp/blob/main/docs/worker.md) (automatically enabled in prod mode)
-* [Installation of extra Docker Compose services](docs/extra-services.md) with Symfony Flex
-* Automatic HTTPS (in dev and prod)
-* HTTP/3 and [Early Hints](https://symfony.com/blog/new-in-symfony-6-3-early-hints) support
-* Real-time messaging thanks to a built-in [Mercure hub](https://symfony.com/doc/current/mercure.html)
-* [Vulcain](https://vulcain.rocks) support
-* Native [XDebug](docs/xdebug.md) integration
-* Super-readable configuration
-
-**Enjoy!**
-
-## Docs
-
-1. [Options available](docs/options.md)
-2. [Using Symfony Docker with an existing project](docs/existing-project.md)
-3. [Support for extra services](docs/extra-services.md)
-4. [Deploying in production](docs/production.md)
-5. [Debugging with Xdebug](docs/xdebug.md)
-6. [TLS Certificates](docs/tls.md)
-7. [Using MySQL instead of PostgreSQL](docs/mysql.md)
-8. [Using Alpine Linux instead of Debian](docs/alpine.md)
-9. [Using a Makefile](docs/makefile.md)
-10. [Updating the template](docs/updating.md)
-11. [Troubleshooting](docs/troubleshooting.md)
-
 ## License
+
+This project is licensed under the MIT License.
 
 Symfony Docker is available under the MIT License.
 
 ## Credits
+
+* [Original readme of symfony docker](docs/README-symfony-docker.md)
 
 Created by [Kévin Dunglas](https://dunglas.dev), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
