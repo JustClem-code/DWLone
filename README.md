@@ -26,7 +26,7 @@ It is designed to improve skills in fullstack developpement.
 - **CSS Framework:** Tailwind CSS
 - **Project Base:** Symfony Docker / Dunglas Symfony template
 
-Symfony UX Vue allows Vue components to be rendered from Twig and integrated directly into a Symfony application [web:4][web:10]. The Symfony Docker template provides a solid Docker-based setup for running and deploying Symfony projects consistently [web:3][web:9].
+Symfony UX Vue allows Vue components to be rendered from Twig and integrated directly into a Symfony application. The Symfony Docker template provides a solid Docker-based setup for running and deploying Symfony projects consistently.
 
 ## Architecture
 
@@ -77,4 +77,4 @@ Symfony Docker is available under the MIT License.
 
 * [Original readme of symfony docker](docs/README-symfony-docker.md)
 
-Created by [Kévin Dunglas](https://dunglas.dev), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
+Symfony docker is created by [Kévin Dunglas](https://dunglas.dev), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
