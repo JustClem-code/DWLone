@@ -18,29 +18,29 @@ with [FrankenPHP](https://frankenphp.dev) and [Caddy](https://caddyserver.com/) 
 * Production, development and CI ready
 * Just 1 service by default
 * Blazing-fast performance thanks to [the worker mode of FrankenPHP](https://github.com/dunglas/frankenphp/blob/main/docs/worker.md) (automatically enabled in prod mode)
-* [Installation of extra Docker Compose services](/extra-services.md) with Symfony Flex
+* [Installation of extra Docker Compose services](extra-services.md) with Symfony Flex
 * Automatic HTTPS (in dev and prod)
 * HTTP/3 and [Early Hints](https://symfony.com/blog/new-in-symfony-6-3-early-hints) support
 * Real-time messaging thanks to a built-in [Mercure hub](https://symfony.com/doc/current/mercure.html)
 * [Vulcain](https://vulcain.rocks) support
-* Native [XDebug](/xdebug.md) integration
+* Native [XDebug](xdebug.md) integration
 * Super-readable configuration
 
 **Enjoy!**
 
 ## Docs
 
-1. [Options available](/options.md)
-2. [Using Symfony Docker with an existing project](/existing-project.md)
-3. [Support for extra services](/extra-services.md)
-4. [Deploying in production](/production.md)
-5. [Debugging with Xdebug](/xdebug.md)
-6. [TLS Certificates](/tls.md)
-7. [Using MySQL instead of PostgreSQL](/mysql.md)
-8. [Using Alpine Linux instead of Debian](/alpine.md)
-9. [Using a Makefile](/makefile.md)
-10. [Updating the template](/updating.md)
-11. [Troubleshooting](/troubleshooting.md)
+1. [Options available](options.md)
+2. [Using Symfony Docker with an existing project](existing-project.md)
+3. [Support for extra services](extra-services.md)
+4. [Deploying in production](production.md)
+5. [Debugging with Xdebug](xdebug.md)
+6. [TLS Certificates](tls.md)
+7. [Using MySQL instead of PostgreSQL](mysql.md)
+8. [Using Alpine Linux instead of Debian](alpine.md)
+9. [Using a Makefile](makefile.md)
+10. [Updating the template](updating.md)
+11. [Troubleshooting](troubleshooting.md)
 
 ## License
 
