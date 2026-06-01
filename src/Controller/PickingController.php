@@ -161,7 +161,7 @@ final class PickingController extends AbstractController
     return $this->json($this->staggingRepository->getAllOrderedStagging());
   }
 
-  private function currentUserRoadpart() : Roadpart
+  private function currentUserRoadpart(): Roadpart
   {
     $user = $this->security->getUser();
 
@@ -312,16 +312,25 @@ final class PickingController extends AbstractController
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('bagId');
-    $Cart = $entityManager->getRepository(Cart::class)->find($id);
+    $cart = $entityManager->getRepository(Cart::class)->find($id);
     $bag = $this->findOrNull($entityManager->getRepository(Bag::class), $formData);
 
     $roadPart = $this->currentUserRoadpart();
-    $bagToPick = $roadPart->getBags()[1];
 
-    dump($bagToPick);
-    // vérifier que le cart est bien le cart de la roadpart du user
-    // Vérifier que le bag est bien le bag à picker
+    $bagToPick = $roadPart->getBags()[0];
 
-    return $this->json('test');
+    if ($bag !== $bagToPick) {
+      return $this->json(['error' => 'Wrong bag'], 404);
+    }
+
+    if ($cart !== $roadPart->getCart()) {
+      return $this->json(['error' => 'Wrong cart'], 404);
+    }
+
+    $bag->setPicked(true);
+
+    $entityManager->flush();
+
+    return $this->json($this->roadPartRepository->toArray($roadPart));
   }
 }

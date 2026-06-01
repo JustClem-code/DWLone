@@ -36,6 +36,12 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
+// retirel le bag à picker du local storage ???
+
+// filtrer les bagToPicks côté symfony
+
+// empêcher les clics dans le mauvais ordre
+
 // retrouver les bag dans les allées avant de tester un snake path
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path

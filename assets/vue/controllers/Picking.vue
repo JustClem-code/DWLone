@@ -92,10 +92,10 @@ const currentPairPackages = computed(() => {
   return data
 })
 
-const bagsNolLoaded = computed(() => currentRoadPart.value?.bags.filter(b => b.loaded !== true))
+const bagsNoPicked = computed(() => currentRoadPart.value?.bags.filter(b => b.picked !== true))
 
 const currentBag = computed(() => {
-  return bagsNolLoaded.value ? bagsNolLoaded.value[0] : null
+  return bagsNoPicked.value ? bagsNoPicked.value[0] : null
 })
 
 const currentRoadPartTitle = computed(() =>
