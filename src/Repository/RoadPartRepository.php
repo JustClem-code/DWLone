@@ -26,12 +26,12 @@ class RoadPartRepository extends ServiceEntityRepository
   }
 
 
-  public function setBagsToNull(RoadPart $roadPart): void
+  /* public function setBagsToNull(RoadPart $roadPart): void
   {
     foreach ($roadPart->getBags() as $bag) {
       $bag->setRoadPart(null);
     }
-  }
+  } */
 
   public function toArray(RoadPart $roadPart): array
   {
@@ -93,7 +93,7 @@ class RoadPartRepository extends ServiceEntityRepository
     ;
   }
 
-  public function transformSome($entities): array
+  public function transformSome(array $entities): array
   {
     return $this->transFormEntities($entities, [$this, 'toArray']);
   }

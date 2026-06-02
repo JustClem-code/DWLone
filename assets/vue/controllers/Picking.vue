@@ -247,6 +247,8 @@ async function pickingBag(cart) {
 
 
   const { data, error } = await usePostFetch(`/pickingBag/${cart}`, { bagId: currentBagPickedId.value ?? null })
+
+  // mettre à jour currentRoadpart et si allBagsPicked vaut true, rediriger l'user vers le stagging area
 }
 
 

@@ -317,7 +317,7 @@ final class PickingController extends AbstractController
 
     $roadPart = $this->currentUserRoadpart();
 
-    $bagToPick = $roadPart->getBags()[0];
+    $bagToPick = $this->bagRepository->findUnpickedByRoadPart($roadPart)[0];
 
     if ($bag !== $bagToPick) {
       return $this->json(['error' => 'Wrong bag'], 404);

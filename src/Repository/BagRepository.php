@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Repository\Trait\RepositoryTrait;
 
 use App\Entity\Bag;
+use App\Entity\RoadPart;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -94,6 +95,19 @@ class BagRepository extends ServiceEntityRepository
       'picked' => $bag->isPicked(),
       'loaded' => $bag->isLoaded(),
     ];
+  }
+
+  // src/Repository/BagRepository.php
+
+  public function findUnpickedByRoadPart(RoadPart $roadPart): array
+  {
+    return $this->createQueryBuilder('b')
+      ->andWhere('b.roadPart = :roadPart')
+      ->andWhere('b.picked = :picked')
+      ->setParameter('roadPart', $roadPart)
+      ->setParameter('picked', false)
+      ->getQuery()
+      ->getResult();
   }
 
   public function transformAll(iterable $entities): array

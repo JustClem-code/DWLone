@@ -36,9 +36,11 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// retirel le bag à picker du local storage ???
-
 // filtrer les bagToPicks côté symfony
+//
+
+// retirel le bag à picker du local storage ??? Non mais le retirer si mauvais clic
+
 
 // empêcher les clics dans le mauvais ordre
 
