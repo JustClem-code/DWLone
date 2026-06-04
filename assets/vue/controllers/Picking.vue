@@ -22,7 +22,8 @@
       <div v-if="currentPair" class="flex flex-col gap-8">
         <BorderedContent title="Cart">
           <!-- <PackageDrop :pairPackages="currentPairPackages" /> -->
-          <BaseButton title="Scan cart" @click="pickingBag(currentRoadPart?.cart)" styleColor="empty" />
+          <BaseButton title="Scan cart" @click="pickingBag(currentRoadPart?.cart)" styleColor="empty"
+            :isDisabled="currentBagPickedId === null" />
         </BorderedContent>
 
         <BorderedContent title="Locations">
@@ -120,6 +121,10 @@ const roadPartStats = computed(() => {
   ]
 })
 
+const allBagsPicked = computed(() => {
+  return currentRoadPart?.value.bags.every(bag => bag.picked === true)
+})
+
 const setCurrentPair = (pair) => {
   currentPair.value = pair
   sidePanelRef.value?.toggleSidePanel()
@@ -153,10 +158,6 @@ async function setUserToRoadPart() {
     }, 1500);
   }
 }
-
-const allBagsPicked = computed(() => {
-  return currentRoadPart?.value.bags.every(bag => bag.picked === true)
-})
 
 const scanStaggingArea = (stagging) => {
   if (!currentRoadPart.value.cart) {
@@ -234,16 +235,30 @@ async function staggingCart(stagging) {
   }
 }
 
+function resetCurrentBagPickedId() {
+  currentBagPickedId.value = null
+}
+
 function scanBag(bagId) {
   console.log('bag scanned', bagId);
-
-  currentBagPickedId.value = bagId
+  if (currentBagPickedId.value) {
+    resetCurrentBagPickedId()
+    setTimeout(() => {
+      notifier('error', 'Error picking', `wrong cart`)
+    }, 500);
+  } else {
+    currentBagPickedId.value = bagId
+  }
 }
 
 async function pickingBag(cart) {
 
   console.log("cart", cart);
   console.log("currentBagPickedId.value", currentBagPickedId.value);
+
+  if (!currentBagPickedId.value) {
+    return
+  }
 
 
   const { data, error } = await usePostFetch(`/pickingBag/${cart}`, { bagId: currentBagPickedId.value ?? null })
@@ -252,16 +267,16 @@ async function pickingBag(cart) {
 }
 
 
-provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea, currentBag, scanBag })
+provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea, currentBag, currentBagPickedId, scanBag })
 
-/* const handleToggle = () => {
+const handleToggle = () => {
 
   if (!sidePanelRef.value?.isOpen) {
-    currentPackage.value = null
+    resetCurrentBagPickedId();
   }
 }
 
-watchEffect(handleToggle) */
+watchEffect(handleToggle)
 
 watch(
   currentBagPickedId,

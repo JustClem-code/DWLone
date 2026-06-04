@@ -2,15 +2,14 @@
   <div class="grid grid-flow-col grid-rows-6 gap-4">
 
     <HorizontalLinkButton v-for="loc in orderedLocations" :key="loc.id" @click="scanBag(loc.bag)"
-      :title="loc?.name || 'Location name'"
-      :isDisabled="!loc.bag"
+      :title="loc?.name || 'Location name'" :isDisabled="!loc.bag || isCurrentBagPickedId"
       :focused="isCurrentLoc(loc?.name) ? getBagColor(currentBag?.name) : 'text-gray-300 dark:text-gray-700/90'" />
 
   </div>
 </template>
 
 <script setup>
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 import { useLogic } from '../../composables/useLogic.js';
 
@@ -20,9 +19,11 @@ const props = defineProps({
   orderedLocations: Array,
 });
 
-const { currentBag, scanBag } = inject('picking')
+const { currentBag, scanBag, currentBagPickedId } = inject('picking')
 
 const isCurrentLoc = (name) => currentBag.value?.location === name
+
+const isCurrentBagPickedId = computed(() => currentBagPickedId.value !== null)
 
 const getBagColor = (name) => {
   const prefix = getColor(name);
