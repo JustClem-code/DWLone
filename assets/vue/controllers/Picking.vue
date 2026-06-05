@@ -23,7 +23,7 @@
         <BorderedContent title="Cart">
           <!-- <PackageDrop :pairPackages="currentPairPackages" /> -->
           <BaseButton title="Scan cart" @click="pickingBag(currentRoadPart?.cart)" styleColor="empty"
-            :isDisabled="currentBagPickedId === null" />
+            :isDisabled="currentBagPickedId === null" :isLoading="pickingBagIsLoading" />
         </BorderedContent>
 
         <BorderedContent title="Locations">
@@ -49,11 +49,11 @@ import SidePanel from './UI/SidePanel.vue'
 import FloorAisles from './PickingComponents/FloorAisles.vue'
 import PairLocations from './PickingComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
+import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
 import BaseButton from './UI/Buttons/BaseButton.vue'
 import DashedEmptyState from './UI/DashedEmptyState.vue'
 import AddDatabaseIcon from './UI/Icons/AddDatabaseIcon.vue'
 import AnimateSpin from './UI/AnimateSpin.vue'
-import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
 
 const { data: locations, error: errorLocations } = useFetch('/getLocationsLight')
 const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggingAreas')
@@ -61,9 +61,9 @@ const { data: currentRoadPart, error: errorCurrentRoadPart } = useFetch('/getCur
 
 const { notifier } = useNotification()
 
-const stowingIsLoading = ref(false)
 const setUserToRoadPartIsLoading = ref(false)
 const scanStaggingAreaIsLoading = ref(false)
+const pickingBagIsLoading = ref(false)
 
 const currentPair = ref(null)
 
@@ -253,21 +253,39 @@ function scanBag(bagId) {
 
 async function pickingBag(cart) {
 
-  console.log("cart", cart);
-  console.log("currentBagPickedId.value", currentBagPickedId.value);
-
   if (!currentBagPickedId.value) {
     return
   }
 
+  pickingBagIsLoading.value = true;
 
   const { data, error } = await usePostFetch(`/pickingBag/${cart}`, { bagId: currentBagPickedId.value ?? null })
 
-  // mettre à jour currentRoadpart et si allBagsPicked vaut true, rediriger l'user vers le stagging area
+  if (data.value) {
+    currentRoadPart.value = data.value
+    setTimeout(() => {
+      notifier('success', 'Bag', `The bag ${currentBag.value.name} is picked`)
+    }, 1000);
+    setTimeout(() => {
+      pickingBagIsLoading.value = false;
+      sidePanelRef.value?.toggleSidePanel();
+    }, 1500);
+  }
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error picking', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      pickingBagIsLoading.value = false;
+      return
+    }, 1500);
+  }
+
 }
 
 
-provide('picking', { setCurrentPair, currentPair, stowingIsLoading, scanStaggingArea, currentBag, currentBagPickedId, scanBag })
+provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentBag, currentBagPickedId, scanBag })
 
 const handleToggle = () => {
 

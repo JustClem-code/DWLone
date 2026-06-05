@@ -36,9 +36,10 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// faire cligonoter le bagToPick et mettre en lumière le prochain si dans la même allée ?
+// Terminer la fin du picking -> stagging-> stats -> timer
 
-// empêcher les clics dans le mauvais ordre
+// Travailler sur le bouton d'action du Cart
+// récupérer les durations de la roadpart
 
 // retrouver les bag dans les allées avant de tester un snake path
 
