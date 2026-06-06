@@ -13,8 +13,7 @@
 
     <BorderedContent v-if="currentRoadPart" title="Floor" class="flex flex-col gap-8">
       <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
-      <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging"
-        :globalLoading="globalLoading" />
+      <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging" />
     </BorderedContent>
 
     <SidePanel ref="sidePanelRef" :title="currentPair ? currentPair?.id : 'title'" width="md:w-5/6">
@@ -93,11 +92,13 @@ const currentPairPackages = computed(() => {
   return data
 })
 
-const bagsNoPicked = computed(() => currentRoadPart.value?.bags.filter(b => b.picked !== true))
+const bagsNoPicked = computed(() =>
+  currentRoadPart.value?.bags.filter(b => b.picked !== true) ?? []
+)
 
-const currentBag = computed(() => {
-  return bagsNoPicked.value ? bagsNoPicked.value[0] : null
-})
+const currentBag = computed(() =>
+  currentRoadPart.value?.bags.find(b => b.picked !== true) ?? null
+)
 
 const currentRoadPartTitle = computed(() =>
   `${currentRoadPart.value.road} #${currentRoadPart.value.number}`
@@ -108,8 +109,11 @@ const nbOfBags = computed(() =>
 )
 
 const roadPartNotice = computed(() => {
+  if (allBagsPicked.value) {
+    return `Go to stage in the area STG-${currentRoadPart.value.stagging.name}`
+  }
   return !currentRoadPart.value.cart
-    ? `Take a cart in the stagged area STG-${currentRoadPart.value.stagging.name}`
+    ? `Take a cart in the stagging area STG-${currentRoadPart.value.stagging.name}`
     : 'Pick the next bag'
 })
 
@@ -259,12 +263,14 @@ async function pickingBag(cart) {
 
   pickingBagIsLoading.value = true;
 
+  const currentBagPickedName = currentBag.value.name;
+
   const { data, error } = await usePostFetch(`/pickingBag/${cart}`, { bagId: currentBagPickedId.value ?? null })
 
   if (data.value) {
     currentRoadPart.value = data.value
     setTimeout(() => {
-      notifier('success', 'Bag', `The bag ${currentBag.value.name} is picked`)
+      notifier('success', 'Bag', `The bag ${currentBagPickedName} is picked`)
     }, 1000);
     setTimeout(() => {
       pickingBagIsLoading.value = false;
@@ -285,7 +291,7 @@ async function pickingBag(cart) {
 }
 
 
-provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentBag, currentBagPickedId, scanBag })
+provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentBag, currentBagPickedId, scanBag, allBagsPicked, globalLoading })
 
 const handleToggle = () => {
 

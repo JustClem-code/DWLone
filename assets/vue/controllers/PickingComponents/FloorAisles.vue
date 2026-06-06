@@ -24,7 +24,7 @@ const props = defineProps({
 const { setCurrentPair, currentBag } = inject('picking')
 
 const alleyHasCurrentBag = (pair) => {
-  return pair.locations.some(l => l.name === currentBag.value.location)
+  return pair.locations.some(l => l.name === currentBag.value?.location)
 }
 
 watch(

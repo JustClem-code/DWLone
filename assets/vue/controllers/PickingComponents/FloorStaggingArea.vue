@@ -5,7 +5,7 @@
 
       <HorizontalLinkButton v-for="(staggingArea) in groupe" :key="staggingArea" @click="action(staggingArea)" :title="staggingArea.name"
         :focused="stagginAreaHighlighted(staggingArea) ? 'text-blue-400' : 'text-gray-300 dark:text-gray-700/90'"
-        :pingfocused="stagginAreaHighlighted(staggingArea)" :isDisabled="globalLoading"/>
+        :pingfocused="stagginAreaHighlighted(staggingArea)" :isDisabled="!allBagsPicked" :isLoading="globalLoading"/>
 
     </div>
 
@@ -20,12 +20,11 @@ import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 const props = defineProps({
   staggingAreas: Object,
   roadPartStagging: Object,
-  globalLoading: Boolean
 });
 
 const emit = defineEmits(['click'])
 
-const { scanStaggingArea } = inject('picking')
+const { scanStaggingArea, allBagsPicked, globalLoading } = inject('picking')
 
 const action = (staggingArea) => { scanStaggingArea(staggingArea);
 }
