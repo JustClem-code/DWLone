@@ -37,7 +37,7 @@
 
 <script setup>
 
-import { ref, provide, computed, watchEffect, watch, onMounted } from 'vue'
+import { ref, provide, computed, watchEffect, watch, onMounted, onBeforeUnmount } from 'vue'
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
@@ -59,6 +59,10 @@ const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggin
 const { data: currentRoadPart, error: errorCurrentRoadPart } = useFetch('/getCurrentUserRoadpart')
 
 const { notifier } = useNotification()
+
+const minutes = ref(0)
+const seconds = ref(0)
+let intervalId = null
 
 const setUserToRoadPartIsLoading = ref(false)
 const scanStaggingAreaIsLoading = ref(false)
@@ -119,8 +123,8 @@ const roadPartNotice = computed(() => {
 
 const roadPartStats = computed(() => {
   return [
-    { 'title': 'Number of bags', 'number': `2`, 'number_2': `/${nbOfBags.value}` },
-    { 'title': 'Time to picking', 'number': `1'32 ` },
+    { 'title': 'Number of bags', 'number': `${nbOfBags.value - bagsNoPicked.value.length}`, 'number_2': `/${nbOfBags.value}` },
+    { 'title': 'Time to picking', 'number': `${minutes.value}'${String(seconds.value).padStart(2, '0')}` },
     { 'title': 'Exemple', 'number': `50%` },
   ]
 })
@@ -128,6 +132,20 @@ const roadPartStats = computed(() => {
 const allBagsPicked = computed(() => {
   return currentRoadPart?.value.bags.every(bag => bag.picked === true)
 })
+
+const startTimer = () => {
+  updateTimer()
+  intervalId = setInterval(updateTimer, 1000)
+}
+
+const updateTimer = () => {
+  const start = new Date(currentRoadPart?.value.pickingStartedAt.date)
+  const now = new Date()
+  const diff = Math.floor((now - start) / 1000)
+
+  minutes.value = Math.floor(diff / 60)
+  seconds.value = diff % 60
+}
 
 const setCurrentPair = (pair) => {
   currentPair.value = pair
@@ -293,6 +311,12 @@ async function pickingBag(cart) {
 
 provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentBag, currentBagPickedId, scanBag, allBagsPicked, globalLoading })
 
+onBeforeUnmount(() => {
+  if (intervalId) {
+    clearInterval(intervalId)
+  }
+})
+
 const handleToggle = () => {
 
   if (!sidePanelRef.value?.isOpen) {
@@ -322,4 +346,9 @@ watch(
   { deep: true }
 )
 
+watch(currentRoadPart, (newValue) => {
+  if (newValue?.pickingStartedAt?.date) {
+    startTimer()
+  }
+}, { immediate: true })
 </script>

@@ -43,7 +43,8 @@ class RoadPartRepository extends ServiceEntityRepository
       'bags' => $this->transFormEntities($roadPart->getBags(), [$this->bagRepository, 'toArrayRoadOriented']),
       'cart' => $roadPart->getCart() ? $roadPart->getCart()->getId() : null,
       'userName' => $roadPart->getUser() ? $roadPart->getUser()->getUsername() : null,
-      'stagged' => $roadPart->isStagged()
+      'stagged' => $roadPart->isStagged(),
+      'pickingStartedAt' => $roadPart->getPickingStartedAt(),
     ];
   }
 

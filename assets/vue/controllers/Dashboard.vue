@@ -36,6 +36,11 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
+// créer un composable timer
+// changer le timer par le pickingDurationSeconds
+// RESET la route
+
+
 // Terminer la fin du picking -> stagging-> stats -> timer
 
 // Travailler sur le bouton d'action du Cart
@@ -44,11 +49,6 @@
 // retrouver les bag dans les allées avant de tester un snake path
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
-
-// test alleyHasPackages
-
-// 1. scanner le bag -> scanner le chariot -> pickingBag(idCart + idBag) pour vérifier pas de changement d'erreur
-//   -> double vérification front + back
 
 
 
@@ -61,6 +61,8 @@
 //  -> lier les codes postaux en fonction de la localisation
 
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
+
+// Empêcher le Picking si le stow n'est pas fini
 
  /* GÉRER CE PROBLÈME
 
