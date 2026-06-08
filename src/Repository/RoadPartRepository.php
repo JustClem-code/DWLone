@@ -45,6 +45,7 @@ class RoadPartRepository extends ServiceEntityRepository
       'userName' => $roadPart->getUser() ? $roadPart->getUser()->getUsername() : null,
       'stagged' => $roadPart->isStagged(),
       'pickingStartedAt' => $roadPart->getPickingStartedAt(),
+      'pickingDurationSeconds' => $roadPart->getPickingDurationSeconds()
     ];
   }
 

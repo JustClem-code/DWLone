@@ -1,11 +1,13 @@
 <template>
   <div class="grid grid-flow-col grid-rows-2 gap-4">
 
-    <div v-for="(groupe, indexGroup) in staggingAreas" :key="indexGroup" class="grid grid-cols-4 gap-1 sm:gap-4 justify-center px-2 md:px-4">
+    <div v-for="(groupe, indexGroup) in staggingAreas" :key="indexGroup"
+      class="grid grid-cols-4 gap-1 sm:gap-4 justify-center px-2 md:px-4">
 
-      <HorizontalLinkButton v-for="(staggingArea) in groupe" :key="staggingArea" @click="action(staggingArea)" :title="staggingArea.name"
+      <HorizontalLinkButton v-for="(staggingArea) in groupe" :key="staggingArea" @click="action(staggingArea)"
+        :title="staggingArea.name"
         :focused="stagginAreaHighlighted(staggingArea) ? 'text-blue-400' : 'text-gray-300 dark:text-gray-700/90'"
-        :pingfocused="stagginAreaHighlighted(staggingArea)" :isDisabled="!allBagsPicked" :isLoading="globalLoading"/>
+        :pingfocused="stagginAreaHighlighted(staggingArea)" :isDisabled="disabledButton" :isLoading="globalLoading" />
 
     </div>
 
@@ -14,22 +16,27 @@
 </template>
 
 <script setup>
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 
 const props = defineProps({
   staggingAreas: Object,
-  roadPartStagging: Object,
 });
 
 const emit = defineEmits(['click'])
 
-const { scanStaggingArea, allBagsPicked, globalLoading } = inject('picking')
+const { currentRoadPart, scanStaggingArea, allBagsPicked, globalLoading } = inject('picking')
 
-const action = (staggingArea) => { scanStaggingArea(staggingArea);
+const disabledButton = computed(() => {
+  return !allBagsPicked.value && currentRoadPart.value.cart !== null
+})
+
+const action = (staggingArea) => {
+  scanStaggingArea(staggingArea);
 }
 
 const stagginAreaHighlighted = (staggingArea) => {
-  return props?.roadPartStagging?.name === staggingArea.name
+  return currentRoadPart.value?.stagging?.name === staggingArea.name
 }
+
 </script>

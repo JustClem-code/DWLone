@@ -13,14 +13,13 @@
 
     <BorderedContent v-if="currentRoadPart" title="Floor" class="flex flex-col gap-8">
       <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
-      <FloorStaggingArea :staggingAreas="staggingAreas" :roadPartStagging="currentRoadPart.stagging" />
+      <FloorStaggingArea :staggingAreas="staggingAreas" />
     </BorderedContent>
 
     <SidePanel ref="sidePanelRef" :title="currentPair ? currentPair?.id : 'title'" width="md:w-5/6">
 
       <div v-if="currentPair" class="flex flex-col gap-8">
         <BorderedContent title="Cart">
-          <!-- <PackageDrop :pairPackages="currentPairPackages" /> -->
           <BaseButton title="Scan cart" @click="pickingBag(currentRoadPart?.cart)" styleColor="empty"
             :isDisabled="currentBagPickedId === null" :isLoading="pickingBagIsLoading" />
         </BorderedContent>
@@ -121,10 +120,17 @@ const roadPartNotice = computed(() => {
     : 'Pick the next bag'
 })
 
+const timeToPick = computed(() => {
+  if (currentRoadPart.value) {
+    return currentRoadPart.value.pickingDurationSeconds ?? `${minutes.value}'${String(seconds.value).padStart(2, '0')}`
+  }
+})
+
+
 const roadPartStats = computed(() => {
   return [
     { 'title': 'Number of bags', 'number': `${nbOfBags.value - bagsNoPicked.value.length}`, 'number_2': `/${nbOfBags.value}` },
-    { 'title': 'Time to picking', 'number': `${minutes.value}'${String(seconds.value).padStart(2, '0')}` },
+    { 'title': 'Time to picking', 'number': `${timeToPick.value}` },
     { 'title': 'Exemple', 'number': `50%` },
   ]
 })
@@ -145,6 +151,12 @@ const updateTimer = () => {
 
   minutes.value = Math.floor(diff / 60)
   seconds.value = diff % 60
+}
+
+const clearTimer = () => {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
 }
 
 const setCurrentPair = (pair) => {
@@ -243,6 +255,7 @@ async function staggingCart(stagging) {
     }, 1000);
     setTimeout(() => {
       scanStaggingAreaIsLoading.value = false;
+      clearTimer();
     }, 1500);
   }
 
@@ -309,12 +322,10 @@ async function pickingBag(cart) {
 }
 
 
-provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentBag, currentBagPickedId, scanBag, allBagsPicked, globalLoading })
+provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentRoadPart, currentBag, currentBagPickedId, scanBag, allBagsPicked, globalLoading })
 
 onBeforeUnmount(() => {
-  if (intervalId) {
-    clearInterval(intervalId)
-  }
+  clearTimer();
 })
 
 const handleToggle = () => {
