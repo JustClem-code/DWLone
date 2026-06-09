@@ -59,8 +59,8 @@ const { data: currentRoadPart, error: errorCurrentRoadPart } = useFetch('/getCur
 
 const { notifier } = useNotification()
 
-const minutes = ref(0)
-const seconds = ref(0)
+const durationSeconds = ref(0)
+
 let intervalId = null
 
 const setUserToRoadPartIsLoading = ref(false)
@@ -121,9 +121,14 @@ const roadPartNotice = computed(() => {
 })
 
 const timeToPick = computed(() => {
-  if (currentRoadPart.value) {
-    return currentRoadPart.value.pickingDurationSeconds ?? `${minutes.value}'${String(seconds.value).padStart(2, '0')}`
+  if (currentRoadPart.value.pickingDurationSeconds !== null) {
+    durationSeconds.value = currentRoadPart.value.pickingDurationSeconds
   }
+
+  const minutes = Math.floor(durationSeconds.value / 60)
+  const seconds = durationSeconds.value % 60
+
+  return `${minutes}'${String(seconds).padStart(2, '0')}`
 })
 
 
@@ -149,8 +154,10 @@ const updateTimer = () => {
   const now = new Date()
   const diff = Math.floor((now - start) / 1000)
 
-  minutes.value = Math.floor(diff / 60)
-  seconds.value = diff % 60
+  durationSeconds.value = diff
+
+  // minutes.value = Math.floor(diff / 60)
+  // seconds.value = diff % 60
 }
 
 const clearTimer = () => {
@@ -162,6 +169,10 @@ const clearTimer = () => {
 const setCurrentPair = (pair) => {
   currentPair.value = pair
   sidePanelRef.value?.toggleSidePanel()
+}
+
+const scanStaggingArea = (stagging) => {
+  currentRoadPart.value.cart ? staggingCart(stagging) : setCartToRoadPart(stagging);
 }
 
 async function setUserToRoadPart() {
@@ -190,18 +201,6 @@ async function setUserToRoadPart() {
     setTimeout(() => {
       setUserToRoadPartIsLoading.value = false;
     }, 1500);
-  }
-}
-
-const scanStaggingArea = (stagging) => {
-  if (!currentRoadPart.value.cart) {
-    setCartToRoadPart(stagging)
-  } else if (currentRoadPart.value.cart) {
-    staggingCart(stagging);
-    console.log("finish");
-  } else {
-    console.log("entre deux");
-
   }
 }
 
@@ -302,11 +301,11 @@ async function pickingBag(cart) {
     currentRoadPart.value = data.value
     setTimeout(() => {
       notifier('success', 'Bag', `The bag ${currentBagPickedName} is picked`)
-    }, 1000);
+    }, 500);
     setTimeout(() => {
       pickingBagIsLoading.value = false;
       sidePanelRef.value?.toggleSidePanel();
-    }, 1500);
+    }, 600);
   }
 
   if (error.value) {
@@ -320,7 +319,6 @@ async function pickingBag(cart) {
   }
 
 }
-
 
 provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentRoadPart, currentBag, currentBagPickedId, scanBag, allBagsPicked, globalLoading })
 

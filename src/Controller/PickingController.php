@@ -263,6 +263,10 @@ final class PickingController extends AbstractController
       return $this->json(['error' => 'No road part available'], 404);
     }
 
+    if ($roadPart->isStagged()) {
+      return $this->json(['error' => 'Road part is already stagged'], 404);
+    }
+
     if (!$stagging) {
       return $this->json(['error' => 'No stagging area available'], 404);
     }
