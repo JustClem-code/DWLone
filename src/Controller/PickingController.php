@@ -63,6 +63,11 @@ final class PickingController extends AbstractController
 
     foreach ($allRoads as $road) {
       foreach ($road->getRoadParts() as $roadPart) {
+        $cart = $roadPart->getCart();
+        if ($cart !== null) {
+          $cart->setRoadPart(null);
+          $roadPart->setCart(null);
+        }
         $road->removeRoadPart($roadPart);
       }
       $this->entityManager->flush();
@@ -109,7 +114,7 @@ final class PickingController extends AbstractController
       $roadPart = $this->createRoadPart($road, 1);
     }
 
-    if (count($roadPart->getBags()) >= 6) {
+    if (count($roadPart->getBags()) > 6) {
       $incrementedNumber = $roadPart->getNumber() + 1;
       $roadPart = $this->createRoadPart($road, $incrementedNumber);
     }
@@ -320,7 +325,6 @@ final class PickingController extends AbstractController
     $bag = $this->findOrNull($entityManager->getRepository(Bag::class), $formData);
 
     $roadPart = $this->currentUserRoadpart();
-
     $bagToPick = $this->bagRepository->findUnpickedByRoadPart($roadPart)[0];
 
     if ($bag !== $bagToPick) {
