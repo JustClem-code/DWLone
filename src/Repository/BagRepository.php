@@ -97,15 +97,14 @@ class BagRepository extends ServiceEntityRepository
     ];
   }
 
-  // src/Repository/BagRepository.php
-
   public function findUnpickedByRoadPart(RoadPart $roadPart): array
   {
     return $this->createQueryBuilder('b')
       ->andWhere('b.roadPart = :roadPart')
-      ->andWhere('b.picked = :picked')
+      ->andWhere('b.picked = :picked OR b.picked IS NULL')
       ->setParameter('roadPart', $roadPart)
       ->setParameter('picked', false)
+      ->orderBy('b.id', 'ASC')
       ->getQuery()
       ->getResult();
   }

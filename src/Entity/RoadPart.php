@@ -34,7 +34,7 @@ class RoadPart
   #[ORM\OneToMany(targetEntity: Bag::class, mappedBy: 'roadPart')]
   private Collection $bags;
 
-  #[ORM\OneToOne(mappedBy: 'roadPart', cascade: ['persist', 'remove'])]
+  #[ORM\OneToOne(mappedBy: 'roadPart', cascade: ['persist'])]
   private ?Cart $cart = null;
 
   #[ORM\Column(nullable: true)]

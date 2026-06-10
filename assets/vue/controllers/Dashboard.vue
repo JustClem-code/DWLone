@@ -36,6 +36,9 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
+// Problème dans la génération de route, certaines roadparts n'ont pas de bags
+// 
+
 // créer un composable timer
 // changer le timer par le pickingDurationSeconds
 // RESET la route
