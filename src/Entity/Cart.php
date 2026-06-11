@@ -16,7 +16,7 @@ class Cart
   #[ORM\ManyToOne(inversedBy: 'carts')]
   private ?Stagging $stagging = null;
 
-  #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist', 'remove'])]
+  #[ORM\OneToOne(inversedBy: 'cart')]
   private ?RoadPart $roadPart = null;
 
   public function getId(): ?int

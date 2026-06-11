@@ -18,7 +18,7 @@ class Road
   #[ORM\Column(length: 255)]
   private ?string $name = null;
 
-  #[ORM\OneToOne(inversedBy: 'road', cascade: ['persist', 'remove'])]
+  #[ORM\OneToOne(inversedBy: 'road')]
   private ?Stagging $stagging = null;
 
   /**

@@ -19,7 +19,7 @@ class Stagging
   #[ORM\Column(length: 255)]
   private ?string $name = null;
 
-  #[ORM\OneToOne(mappedBy: 'stagging', cascade: ['persist', 'remove'])]
+  #[ORM\OneToOne(mappedBy: 'stagging')]
   private ?Road $road = null;
 
   /**
