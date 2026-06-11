@@ -166,7 +166,7 @@ final class PickingController extends AbstractController
     return $this->json($this->staggingRepository->getAllOrderedStagging());
   }
 
-  private function currentUserRoadpart(): Roadpart
+  private function currentUserRoadpart(): ?Roadpart
   {
     $user = $this->security->getUser();
 
