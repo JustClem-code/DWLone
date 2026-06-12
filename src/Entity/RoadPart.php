@@ -158,7 +158,7 @@ class RoadPart
 
   public function getPickingStartedAt(): ?\DateTimeImmutable
   {
-    return $this->pickingStartedAt;
+    return $this->pickingStartedAt->setTimezone(new \DateTimeZone('Europe/Berlin'));;
   }
 
   private function setPickingStartedAt(?\DateTimeImmutable $pickingStartedAt): static
@@ -195,7 +195,7 @@ class RoadPart
   public function startPicking(Cart $cart): void
   {
     $this->setCart($cart);
-    $this->setPickingStartedAt(new \DateTimeImmutable());
+    $this->setPickingStartedAt(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
     $this->setStagged(false);
   }
 

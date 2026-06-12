@@ -56,6 +56,29 @@ final class PickingController extends AbstractController
     return $this->json($this->locationArrayTransformerService->transformAllInPairLight());
   }
 
+  private function resetPicking(RoadPart $roadPart): void
+  {
+    $roadPart->getCart()?->setRoadPart(null);
+    foreach ($roadPart->getBags() as $bag) {
+      $bag->setPicked(false);
+    }
+    $roadPart->resetPickingState();
+  }
+
+  #[Route('/hardResetPicking', name: 'hard_reset_picking', methods: ['POST'])]
+  public function hardResetPicking(): Response
+  {
+    $roadParts = $this->roadPartRepository->findAllWithUser();
+
+    foreach ($roadParts as $roadPart) {
+      $this->resetPicking($roadPart);
+    }
+
+    $this->entityManager->flush();
+
+    return $this->json($this->roadPartRepository->transformAll($roadParts));
+  }
+
   #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['GET'])]
   public function deleteAllRoads(): Response
   {
@@ -63,14 +86,9 @@ final class PickingController extends AbstractController
 
     foreach ($allRoads as $road) {
       foreach ($road->getRoadParts() as $roadPart) {
-        $cart = $roadPart->getCart();
-        if ($cart !== null) {
-          $cart->setRoadPart(null);
-          $roadPart->setCart(null);
-        }
-        $road->removeRoadPart($roadPart);
+        $this->resetPicking($roadPart);
+        $this->entityManager->remove($roadPart);
       }
-      $this->entityManager->flush();
       $this->entityManager->remove($road);
     }
 
@@ -215,14 +233,13 @@ final class PickingController extends AbstractController
   #[Route('/setCartToRoadPart/{id}', name: 'set_cart_to_roadPart')]
   public function setCartToRoadPart(
     Request $request,
-    EntityManagerInterface $entityManager,
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('staggingId');
 
-    $roadPart = $entityManager->getRepository(RoadPart::class)->find($id);
+    $roadPart = $this->entityManager->getRepository(RoadPart::class)->find($id);
 
-    $stagging = $this->findOrNull($entityManager->getRepository(Stagging::class), $formData);
+    $stagging = $this->findOrNull($this->entityManager->getRepository(Stagging::class), $formData);
 
     if (!$roadPart) {
       return $this->json(['error' => 'No road part available'], 404);
@@ -244,7 +261,7 @@ final class PickingController extends AbstractController
 
     $roadPart->startPicking($cart);
 
-    $entityManager->flush();
+    $this->entityManager->flush();
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
@@ -257,12 +274,11 @@ final class PickingController extends AbstractController
   #[Route('/staggingCart/{id}', name: 'stagging_cart')]
   public function staggingCart(
     Request $request,
-    EntityManagerInterface $entityManager,
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('staggingId');
-    $roadPart = $entityManager->getRepository(RoadPart::class)->find($id);
-    $stagging = $this->findOrNull($entityManager->getRepository(Stagging::class), $formData);
+    $roadPart = $this->entityManager->getRepository(RoadPart::class)->find($id);
+    $stagging = $this->findOrNull($this->entityManager->getRepository(Stagging::class), $formData);
 
     if (!$roadPart) {
       return $this->json(['error' => 'No road part available'], 404);
@@ -285,44 +301,19 @@ final class PickingController extends AbstractController
     }
 
     $roadPart->finishPicking();
-    $entityManager->flush();
+    $this->entityManager->flush();
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
-  }
-
-  private function resetPicking(RoadPart $roadPart): void
-  {
-    $roadPart->getCart()?->setRoadPart(null);
-    foreach ($roadPart->getBags() as $bag) {
-      $bag->setPicked(false);
-    }
-    $roadPart->resetPickingState();
-  }
-
-  #[Route('/hardResetPicking', name: 'hard_reset_picking', methods: ['POST'])]
-  public function hardResetPicking(
-    EntityManagerInterface $entityManager,
-  ): Response {
-    $roadParts = $this->roadPartRepository->findAllWithUser();
-
-    foreach ($roadParts as $roadPart) {
-      $this->resetPicking($roadPart);
-    }
-
-    $entityManager->flush();
-
-    return $this->json($this->roadPartRepository->transformAll($roadParts));
   }
 
   #[Route('/pickingBag/{id}', name: 'pick_bag', methods: ['POST'])]
   public function pickBag(
     Request $request,
-    EntityManagerInterface $entityManager,
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('bagId');
-    $cart = $entityManager->getRepository(Cart::class)->find($id);
-    $bag = $this->findOrNull($entityManager->getRepository(Bag::class), $formData);
+    $cart = $this->entityManager->getRepository(Cart::class)->find($id);
+    $bag = $this->findOrNull($this->entityManager->getRepository(Bag::class), $formData);
 
     $roadPart = $this->currentUserRoadpart();
     $bagToPick = $this->bagRepository->findUnpickedByRoadPart($roadPart)[0];
@@ -337,7 +328,7 @@ final class PickingController extends AbstractController
 
     $bag->setPicked(true);
 
-    $entityManager->flush();
+    $this->entityManager->flush();
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
