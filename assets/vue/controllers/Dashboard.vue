@@ -44,7 +44,6 @@
 // Terminer la fin du picking -> stagging-> stats -> timer
 
 // Travailler sur le bouton d'action du Cart
-// récupérer les durations de la roadpart
 
 // retrouver les bag dans les allées avant de tester un snake path
 

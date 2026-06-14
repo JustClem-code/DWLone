@@ -40,18 +40,19 @@ import { ref, provide, computed, watchEffect, watch, onMounted, onBeforeUnmount 
 
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useNotification } from '../composables/eventBus.js'
+import { useTimer } from '../composables/useTimer.js'
 
 import BorderedContent from './UI/BorderedContent.vue'
 import SidePanel from './UI/SidePanel.vue'
+import BaseButton from './UI/Buttons/BaseButton.vue'
+import DashedEmptyState from './UI/DashedEmptyState.vue'
+import AddDatabaseIcon from './UI/Icons/AddDatabaseIcon.vue'
+import AnimateSpin from './UI/AnimateSpin.vue'
 
 import FloorAisles from './PickingComponents/FloorAisles.vue'
 import PairLocations from './PickingComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
 import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
-import BaseButton from './UI/Buttons/BaseButton.vue'
-import DashedEmptyState from './UI/DashedEmptyState.vue'
-import AddDatabaseIcon from './UI/Icons/AddDatabaseIcon.vue'
-import AnimateSpin from './UI/AnimateSpin.vue'
 
 const { data: locations, error: errorLocations } = useFetch('/getLocationsLight')
 const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggingAreas')
@@ -59,9 +60,11 @@ const { data: currentRoadPart, error: errorCurrentRoadPart } = useFetch('/getCur
 
 const { notifier } = useNotification()
 
-const durationSeconds = ref(0)
+const { durationSeconds, format: timeToPick, start, stop, update } = useTimer()
 
-let intervalId = null
+/* const durationSeconds = ref(0)
+
+let intervalId = null */
 
 const setUserToRoadPartIsLoading = ref(false)
 const scanStaggingAreaIsLoading = ref(false)
@@ -78,7 +81,6 @@ const currentBagPickedId = ref(null)
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)
   currentBagPickedId.value = raw ? JSON.parse(raw) : null
-  console.log('currentBagPickedId onmounted', currentBagPickedId.value);
 })
 
 const globalLoading = computed(() => {
@@ -120,7 +122,7 @@ const roadPartNotice = computed(() => {
     : 'Pick the next bag'
 })
 
-const timeToPick = computed(() => {
+/* const timeToPick = computed(() => {
   if (currentRoadPart.value.pickingDurationSeconds !== null) {
     durationSeconds.value = currentRoadPart.value.pickingDurationSeconds
   }
@@ -129,7 +131,7 @@ const timeToPick = computed(() => {
   const seconds = durationSeconds.value % 60
 
   return `${minutes}'${String(seconds).padStart(2, '0')}`
-})
+}) */
 
 
 const roadPartStats = computed(() => {
@@ -144,27 +146,24 @@ const allBagsPicked = computed(() => {
   return currentRoadPart?.value.bags.every(bag => bag.picked === true)
 })
 
-const startTimer = () => {
+/* const startTimer = () => {
   updateTimer()
   intervalId = setInterval(updateTimer, 1000)
-}
+} */
 
-const updateTimer = () => {
+/* const updateTimer = () => {
   const start = new Date(currentRoadPart?.value.pickingStartedAt.date)
   const now = new Date()
   const diff = Math.floor((now - start) / 1000)
 
   durationSeconds.value = diff
+} */
 
-  // minutes.value = Math.floor(diff / 60)
-  // seconds.value = diff % 60
-}
-
-const clearTimer = () => {
+/* const clearTimer = () => {
   if (intervalId) {
     clearInterval(intervalId);
   }
-}
+} */
 
 const setCurrentPair = (pair) => {
   currentPair.value = pair
@@ -173,6 +172,21 @@ const setCurrentPair = (pair) => {
 
 const scanStaggingArea = (stagging) => {
   currentRoadPart.value.cart ? staggingCart(stagging) : setCartToRoadPart(stagging);
+}
+
+const resetCurrentBagPickedId = () => {
+  currentBagPickedId.value = null
+}
+
+const scanBag = (bagId) => {
+  if (currentBagPickedId.value) {
+    resetCurrentBagPickedId()
+    setTimeout(() => {
+      notifier('error', 'Error picking', `wrong cart`)
+    }, 500);
+  } else {
+    currentBagPickedId.value = bagId
+  }
 }
 
 async function setUserToRoadPart() {
@@ -192,8 +206,6 @@ async function setUserToRoadPart() {
 
   if (data.value) {
     currentRoadPart.value = data.value
-
-    console.log('currentRoadPart', currentRoadPart.value);
 
     setTimeout(() => {
       notifier('success', 'RoadPart', `The road part  ${currentRoadPart.value.name} is ready to pick`)
@@ -215,16 +227,6 @@ async function setCartToRoadPart(stagging) {
 
   const { data, error } = await usePostFetch(`/setCartToRoadPart/${currentRoadPart.value.id}`, { staggingId: stagging?.id ?? null })
 
-  if (data.value) {
-    currentRoadPart.value = data.value
-    setTimeout(() => {
-      notifier('success', 'Cart', `The cart ...`)
-    }, 1000);
-    setTimeout(() => {
-      scanStaggingAreaIsLoading.value = false;
-    }, 1500);
-  }
-
   if (error.value) {
     setTimeout(() => {
       notifier('error', 'Wrong cart', `${error.value}`)
@@ -234,6 +236,17 @@ async function setCartToRoadPart(stagging) {
       return
     }, 1500);
   }
+
+  if (data.value) {
+    currentRoadPart.value = data.value
+    setTimeout(() => {
+      notifier('success', 'Cart', `The cart is set !`)
+    }, 1000);
+    setTimeout(() => {
+      scanStaggingAreaIsLoading.value = false;
+    }, 1500);
+  }
+
 }
 
 async function staggingCart(stagging) {
@@ -247,17 +260,6 @@ async function staggingCart(stagging) {
 
   const { data, error } = await usePostFetch(`/staggingCart/${currentRoadPart.value.id}`, { staggingId: stagging?.id ?? null })
 
-  if (data.value) {
-    currentRoadPart.value = data.value
-    setTimeout(() => {
-      notifier('success', 'Cart', `The cart ...`)
-    }, 1000);
-    setTimeout(() => {
-      scanStaggingAreaIsLoading.value = false;
-      clearTimer();
-    }, 1500);
-  }
-
   if (error.value) {
     setTimeout(() => {
       notifier('error', 'Error stagging', `${error.value}`)
@@ -267,22 +269,18 @@ async function staggingCart(stagging) {
       return
     }, 1500);
   }
-}
 
-function resetCurrentBagPickedId() {
-  currentBagPickedId.value = null
-}
-
-function scanBag(bagId) {
-  console.log('bag scanned', bagId);
-  if (currentBagPickedId.value) {
-    resetCurrentBagPickedId()
+  if (data.value) {
+    currentRoadPart.value = data.value
     setTimeout(() => {
-      notifier('error', 'Error picking', `wrong cart`)
-    }, 500);
-  } else {
-    currentBagPickedId.value = bagId
+      notifier('success', 'Cart', `The road ${currentRoadPartTitle.value} is stagged`)
+    }, 1000);
+    setTimeout(() => {
+      scanStaggingAreaIsLoading.value = false;
+      clearTimer();
+    }, 1500);
   }
+
 }
 
 async function pickingBag(cart) {
@@ -317,14 +315,13 @@ async function pickingBag(cart) {
       return
     }, 1500);
   }
-
 }
 
 provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentRoadPart, currentBag, currentBagPickedId, scanBag, allBagsPicked, globalLoading })
 
-onBeforeUnmount(() => {
+/* onBeforeUnmount(() => {
   clearTimer();
-})
+}) */
 
 const handleToggle = () => {
 
@@ -347,17 +344,27 @@ watch(
   { deep: true }
 )
 
-watch(
+/* watch(
   currentRoadPart,
   (val) => {
     console.log('currentRoadPart', val)
+
+    if (val?.pickingStartedAt?.date) {
+      startTimer()
+    }
   },
-  { deep: true }
+  { immediate: true, deep: true }
+) */
+
+watch(
+  currentRoadPart,
+  (val) => {
+    if (val?.pickingStartedAt?.date) {
+      durationSeconds.value = Math.floor((new Date() - new Date(val.pickingStartedAt.date)) / 1000)
+      start()
+    }
+  },
+  { immediate: true, deep: true }
 )
 
-watch(currentRoadPart, (newValue) => {
-  if (newValue?.pickingStartedAt?.date) {
-    startTimer()
-  }
-}, { immediate: true })
 </script>
