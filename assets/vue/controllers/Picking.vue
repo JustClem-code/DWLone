@@ -60,11 +60,7 @@ const { data: currentRoadPart, error: errorCurrentRoadPart } = useFetch('/getCur
 
 const { notifier } = useNotification()
 
-const { durationSeconds, format: timeToPick, start, stop, update } = useTimer()
-
-/* const durationSeconds = ref(0)
-
-let intervalId = null */
+const { durationSeconds, format: timeToPick, startTimer, stopTimer, updateTimer } = useTimer()
 
 const setUserToRoadPartIsLoading = ref(false)
 const scanStaggingAreaIsLoading = ref(false)
@@ -122,18 +118,6 @@ const roadPartNotice = computed(() => {
     : 'Pick the next bag'
 })
 
-/* const timeToPick = computed(() => {
-  if (currentRoadPart.value.pickingDurationSeconds !== null) {
-    durationSeconds.value = currentRoadPart.value.pickingDurationSeconds
-  }
-
-  const minutes = Math.floor(durationSeconds.value / 60)
-  const seconds = durationSeconds.value % 60
-
-  return `${minutes}'${String(seconds).padStart(2, '0')}`
-}) */
-
-
 const roadPartStats = computed(() => {
   return [
     { 'title': 'Number of bags', 'number': `${nbOfBags.value - bagsNoPicked.value.length}`, 'number_2': `/${nbOfBags.value}` },
@@ -145,25 +129,6 @@ const roadPartStats = computed(() => {
 const allBagsPicked = computed(() => {
   return currentRoadPart?.value.bags.every(bag => bag.picked === true)
 })
-
-/* const startTimer = () => {
-  updateTimer()
-  intervalId = setInterval(updateTimer, 1000)
-} */
-
-/* const updateTimer = () => {
-  const start = new Date(currentRoadPart?.value.pickingStartedAt.date)
-  const now = new Date()
-  const diff = Math.floor((now - start) / 1000)
-
-  durationSeconds.value = diff
-} */
-
-/* const clearTimer = () => {
-  if (intervalId) {
-    clearInterval(intervalId);
-  }
-} */
 
 const setCurrentPair = (pair) => {
   currentPair.value = pair
@@ -277,7 +242,7 @@ async function staggingCart(stagging) {
     }, 1000);
     setTimeout(() => {
       scanStaggingAreaIsLoading.value = false;
-      clearTimer();
+      stopTimer();
     }, 1500);
   }
 
@@ -319,10 +284,6 @@ async function pickingBag(cart) {
 
 provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentRoadPart, currentBag, currentBagPickedId, scanBag, allBagsPicked, globalLoading })
 
-/* onBeforeUnmount(() => {
-  clearTimer();
-}) */
-
 const handleToggle = () => {
 
   if (!sidePanelRef.value?.isOpen) {
@@ -344,24 +305,15 @@ watch(
   { deep: true }
 )
 
-/* watch(
-  currentRoadPart,
-  (val) => {
-    console.log('currentRoadPart', val)
-
-    if (val?.pickingStartedAt?.date) {
-      startTimer()
-    }
-  },
-  { immediate: true, deep: true }
-) */
-
 watch(
   currentRoadPart,
   (val) => {
+    console.log('currentRoadPart', val)
     if (val?.pickingStartedAt?.date) {
-      durationSeconds.value = Math.floor((new Date() - new Date(val.pickingStartedAt.date)) / 1000)
-      start()
+      startTimer(val.pickingStartedAt.date)
+    }
+    if (val?.pickingDurationSeconds !== null) {
+      durationSeconds.value = val?.pickingDurationSeconds
     }
   },
   { immediate: true, deep: true }

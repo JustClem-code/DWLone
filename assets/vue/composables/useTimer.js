@@ -1,32 +1,36 @@
 import { ref, computed, onBeforeUnmount } from 'vue'
 
-export function useTimer(startTimestamp = null) {
+export function useTimer() {
+  const startTimestamp = ref(null)
   const durationSeconds = ref(0)
   const intervalId = ref(null)
 
   const isRunning = computed(() => intervalId.value !== null)
 
-  const start = () => {
-    // if (intervalId.value) return
-    update()
-    intervalId.value = setInterval(update, 1000)
+  const startTimer = (timestamp) => {
+    if (intervalId.value) return
+    startTimestamp.value = timestamp
+    updateTimer()
+    intervalId.value = setInterval(() => updateTimer(), 1000)  // ← Fonction passée correctement
+    console.log('intervalId', intervalId.value)
   }
 
-  const stop = () => {
+  const stopTimer = () => {
     if (intervalId.value) {
       clearInterval(intervalId.value)
       intervalId.value = null
     }
   }
 
-  const reset = () => {
-    stop()
+  const resetTimer = () => {
+    stopTimer()
+    startTimestamp.value = null
     durationSeconds.value = 0
   }
 
-  const update = () => {
-    // if (!startTimestamp) return
-    const start = new Date(startTimestamp)
+  const updateTimer = () => {
+    if (!startTimestamp.value) return
+    const start = new Date(startTimestamp.value)
     const now = new Date()
     const diff = Math.floor((now - start) / 1000)
     durationSeconds.value = diff >= 0 ? diff : 0
@@ -38,22 +42,17 @@ export function useTimer(startTimestamp = null) {
     return `${minutes}'${String(seconds).padStart(2, '0')}`
   })
 
-  if (startTimestamp) {
-    durationSeconds.value = Math.floor((new Date() - new Date(startTimestamp)) / 1000)
-    start()
-  }
-
   onBeforeUnmount(() => {
-    stop()
+    stopTimer()
   })
 
   return {
     durationSeconds,
     isRunning,
     format,
-    start,
-    stop,
-    reset,
-    update
+    startTimer,
+    stopTimer,
+    resetTimer,
+    updateTimer
   }
 }
