@@ -60,7 +60,7 @@ const { data: currentRoadPart, error: errorCurrentRoadPart } = useFetch('/getCur
 
 const { notifier } = useNotification()
 
-const { durationSeconds, format: timeToPick, startTimer, stopTimer, updateTimer } = useTimer()
+const { isRunning, durationSeconds, format: timeToPick, startTimer, stopTimer, updateTimer } = useTimer()
 
 const setUserToRoadPartIsLoading = ref(false)
 const scanStaggingAreaIsLoading = ref(false)

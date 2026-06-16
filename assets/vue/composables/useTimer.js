@@ -11,8 +11,7 @@ export function useTimer() {
     if (intervalId.value) return
     startTimestamp.value = timestamp
     updateTimer()
-    intervalId.value = setInterval(() => updateTimer(), 1000)  // ← Fonction passée correctement
-    console.log('intervalId', intervalId.value)
+    intervalId.value = setInterval(() => updateTimer(), 1000)
   }
 
   const stopTimer = () => {
@@ -37,6 +36,9 @@ export function useTimer() {
   }
 
   const format = computed(() => {
+    if (!durationSeconds.value) {
+      return `0'00`
+    }
     const minutes = Math.floor(durationSeconds.value / 60)
     const seconds = durationSeconds.value % 60
     return `${minutes}'${String(seconds).padStart(2, '0')}`

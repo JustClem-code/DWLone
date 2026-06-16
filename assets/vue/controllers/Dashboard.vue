@@ -36,7 +36,7 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// créer un composable timer
+// testern le onMounted de useTimer
 
 // RESET la route
 
@@ -93,6 +93,7 @@ import { onMounted, provide } from 'vue'
 
 import { userStore } from '../composables/userStore.js'
 import { useFetch } from '../composables/fetch.js'
+import { useTimer } from '../composables/useTimer.js'
 
 import BorderedContent from './UI/BorderedContent.vue';
 import PackagesStats from './DashboardComponents/PackagesStats.vue'
@@ -107,8 +108,11 @@ const { userName } = userStore()
 
 const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
 
+const { isRunning } = useTimer()
+
 onMounted(() => {
   console.log(`the component is now mounted.`)
+  console.log(`isRunning`, isRunning.value)
 })
 
 provide('dashboard', { locations })

@@ -158,7 +158,7 @@ class RoadPart
 
   public function getPickingStartedAt(): ?\DateTimeImmutable
   {
-    return $this->pickingStartedAt->setTimezone(new \DateTimeZone('Europe/Berlin'));;
+    return $this->pickingStartedAt?->setTimezone(new \DateTimeZone('Europe/Berlin'));
   }
 
   private function setPickingStartedAt(?\DateTimeImmutable $pickingStartedAt): static
