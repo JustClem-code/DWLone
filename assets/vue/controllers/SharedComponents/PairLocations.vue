@@ -3,7 +3,7 @@
 
     <HorizontalLinkButton v-for="loc in orderedLocations" :key="loc.id" @click="clickButton(loc)"
       :title="loc?.name || 'Location name'" :isDisabled="!loc.bag || isDisabledButton"
-      :focused="isCurrentLoc(loc?.name) ? getBagColor(currentBagName) : 'text-gray-300 dark:text-gray-700/90'" />
+      :focused="isCurrentLoc(loc?.name) ? getBagColor : 'text-gray-300 dark:text-gray-700/90'" />
 
   </div>
 </template>
@@ -25,13 +25,16 @@ const props = defineProps({
 const emit = defineEmits(['click']);
 
 const clickButton = (loc) => {
-  emit('click', { loc: loc.value });
+  emit('click', loc);
 }
 
 const isCurrentLoc = (name) => props.currentLocName === name
 
-const getBagColor = (name) => {
-  const prefix = getColor(name);
+const getBagColor = computed(() => {
+  if (!props.currentBagName) {
+    return ''
+  }
+  const prefix = getColor(props.currentBagName);
   const colors = {
     'BLK': '',
     'NVY': 'outline-blue-700',
@@ -40,6 +43,6 @@ const getBagColor = (name) => {
     'GRN': 'outline-green-700',
   }
   return `outline-2 outline-offset-2 ${colors[prefix]}` ?? '';
-}
+})
 
 </script>

@@ -25,7 +25,10 @@
         </BorderedContent>
 
         <BorderedContent title="Locations">
-          <PairLocations :orderedLocations="currentPair.locations" />
+          <!-- <PairLocations :orderedLocations="currentPair.locations" /> -->
+          <PairLocations :orderedLocations="currentPair.locations" :isDisabledButton="currentBagPickedId !== null"
+            :currentLocName="currentBag?.location" :currentBagName="currentBag?.name"
+            @click="val => scanBag(val.bag)" />
         </BorderedContent>
       </div>
 
@@ -50,7 +53,8 @@ import AddDatabaseIcon from './UI/Icons/AddDatabaseIcon.vue'
 import AnimateSpin from './UI/AnimateSpin.vue'
 
 import FloorAisles from './PickingComponents/FloorAisles.vue'
-import PairLocations from './PickingComponents/PairLocations.vue'
+// import PairLocations from './PickingComponents/PairLocations.vue'
+import PairLocations from './SharedComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
 import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
 
@@ -144,10 +148,19 @@ const resetCurrentBagPickedId = () => {
 }
 
 const scanBag = (bagId) => {
-  if (currentBagPickedId.value) {
+  if (!bagId) {
+    return
+  }
+
+  if (currentBag.value?.id !== bagId) {
     resetCurrentBagPickedId()
     setTimeout(() => {
-      notifier('error', 'Error picking', `wrong cart`)
+      notifier('error', 'Error picking', `Wrong bag`)
+    }, 500);
+  } else if (currentBagPickedId.value) {
+    resetCurrentBagPickedId()
+    setTimeout(() => {
+      notifier('error', 'Error picking', `Scan your bag`)
     }, 500);
   } else {
     currentBagPickedId.value = bagId
@@ -260,6 +273,17 @@ async function pickingBag(cart) {
 
   const { data, error } = await usePostFetch(`/pickingBag/${cart}`, { bagId: currentBagPickedId.value ?? null })
 
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error picking', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      pickingBagIsLoading.value = false;
+      currentBagPickedId.value = null;
+      return
+    }, 1500);
+  }
+
   if (data.value) {
     currentRoadPart.value = data.value
     setTimeout(() => {
@@ -269,16 +293,6 @@ async function pickingBag(cart) {
       pickingBagIsLoading.value = false;
       sidePanelRef.value?.toggleSidePanel();
     }, 600);
-  }
-
-  if (error.value) {
-    setTimeout(() => {
-      notifier('error', 'Error picking', `${error.value}`)
-    }, 1000);
-    setTimeout(() => {
-      pickingBagIsLoading.value = false;
-      return
-    }, 1500);
   }
 }
 
