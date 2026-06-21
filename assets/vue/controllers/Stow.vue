@@ -13,7 +13,9 @@
         </BorderedContent>
 
         <BorderedContent title="Locations">
-          <PairLocations :orderedLocations="currentPair.locations" />
+          <PairLocations :orderedLocations="currentPair.locations" :isDisabledButton="false"
+            :currentLocName="currentPackage?.location.name" :currentBagName="currentPackage?.bag?.name"
+            @click="val => stowPackage(val)" />
         </BorderedContent>
       </div>
 
@@ -33,7 +35,7 @@ import BorderedContent from './UI/BorderedContent.vue'
 import SidePanel from './UI/SidePanel.vue'
 import PackageDrop from './StowComponents/PackageDrop.vue'
 import FloorAisles from './StowComponents/FloorAisles.vue'
-import PairLocations from './StowComponents/PairLocations.vue'
+import PairLocations from './SharedComponents/PairLocations.vue'
 
 const { data: locations, error: errorDock } = useFetch('/getlocations')
 

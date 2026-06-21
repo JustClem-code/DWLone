@@ -36,6 +36,8 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
+// gestion des erreur aux stow => stow wrong bag = éteindre l'emplacement
+
 // RESET la route
 
 

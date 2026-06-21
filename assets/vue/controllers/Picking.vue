@@ -10,7 +10,6 @@
         @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="roadPartStats" />
     </BorderedContent>
 
-
     <BorderedContent v-if="currentRoadPart" title="Floor" class="flex flex-col gap-8">
       <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
       <FloorStaggingArea :staggingAreas="staggingAreas" />
@@ -25,7 +24,6 @@
         </BorderedContent>
 
         <BorderedContent title="Locations">
-          <!-- <PairLocations :orderedLocations="currentPair.locations" /> -->
           <PairLocations :orderedLocations="currentPair.locations" :isDisabledButton="currentBagPickedId !== null"
             :currentLocName="currentBag?.location" :currentBagName="currentBag?.name"
             @click="val => scanBag(val.bag)" />
@@ -53,7 +51,6 @@ import AddDatabaseIcon from './UI/Icons/AddDatabaseIcon.vue'
 import AnimateSpin from './UI/AnimateSpin.vue'
 
 import FloorAisles from './PickingComponents/FloorAisles.vue'
-// import PairLocations from './PickingComponents/PairLocations.vue'
 import PairLocations from './SharedComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
 import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'

@@ -21,6 +21,7 @@ class LocationArrayTransformerService
       'id' => $location->getId(),
       'name' => $location->getName(),
       'packages' => $location->getPackages() ? $this->transFormEntities($location->getPackages(), [$this->packageRepository, 'toArray']) : null,
+      'bag' => $location->getBag() ? $location->getBag() : null,
     ];
   }
 

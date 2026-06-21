@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { inject, computed } from 'vue'
+import { inject, computed, watch } from 'vue'
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 import { useLogic } from '../../composables/useLogic.js';
 
@@ -44,5 +44,13 @@ const getBagColor = computed(() => {
   }
   return `outline-2 outline-offset-2 ${colors[prefix]}` ?? '';
 })
+
+watch(
+  () => props.orderedLocations,
+  (val) => {
+    console.log('orderedLocations watch:', val);
+  },
+  { immediate: true, deep: true }
+);
 
 </script>
