@@ -11,7 +11,7 @@
     </BorderedContent>
 
     <BorderedContent v-if="currentRoadPart" title="Floor" class="flex flex-col gap-8">
-      <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" />
+      <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" :currentBag="currentBag" @click="val => setCurrentPair(val)"/>
       <FloorStaggingArea :staggingAreas="staggingAreas" />
     </BorderedContent>
 
@@ -50,7 +50,7 @@ import DashedEmptyState from './UI/DashedEmptyState.vue'
 import AddDatabaseIcon from './UI/Icons/AddDatabaseIcon.vue'
 import AnimateSpin from './UI/AnimateSpin.vue'
 
-import FloorAisles from './PickingComponents/FloorAisles.vue'
+import FloorAisles from './SharedComponents/FloorAisles.vue'
 import PairLocations from './SharedComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
 import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
@@ -293,7 +293,7 @@ async function pickingBag(cart) {
   }
 }
 
-provide('picking', { setCurrentPair, currentPair, scanStaggingArea, currentRoadPart, currentBag, currentBagPickedId, scanBag, allBagsPicked, globalLoading })
+provide('picking', { currentPair, scanStaggingArea, currentRoadPart, currentBag, currentBagPickedId, allBagsPicked, globalLoading })
 
 const handleToggle = () => {
 

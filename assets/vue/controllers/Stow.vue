@@ -1,8 +1,8 @@
 <template>
   <div>
 
-    <BorderedContent title="Floor">
-      <FloorAisles :locations="locations" />
+    <BorderedContent title="Floor"> 
+      <FloorAisles :locations="locations" @click="val => setCurrentPair(val)" />
     </BorderedContent>
 
     <SidePanel ref="sidePanelRef" :title="currentPair ? currentPairPackages?.id : 'title'" width="md:w-5/6">
@@ -34,7 +34,7 @@ import { useNotification } from '../composables/eventBus.js'
 import BorderedContent from './UI/BorderedContent.vue'
 import SidePanel from './UI/SidePanel.vue'
 import PackageDrop from './StowComponents/PackageDrop.vue'
-import FloorAisles from './StowComponents/FloorAisles.vue'
+import FloorAisles from './SharedComponents/FloorAisles.vue'
 import PairLocations from './SharedComponents/PairLocations.vue'
 
 const { data: locations, error: errorDock } = useFetch('/getlocations')
@@ -118,7 +118,7 @@ async function stowPackage(loc) {
   }
 }
 
-provide('stow', { setCurrentPair, currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
+provide('stow', { currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
 
 const handleToggle = () => {
 
