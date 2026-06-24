@@ -9,13 +9,10 @@
           {{ notice }}
         </p>
       </div>
-      <div class="flex items-center gap-2">
-        <BaseButton :title="actionTitle" @click="emit('actionClick')" styleColor="empty" />
-      </div>
     </div>
 
     <div v-if="statistics"
-      class="grid grid-cols-1 sm:grid-cols-3 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
+      class="grid grid-cols-1 sm:grid-cols-2 max-sm:divide-y sm:divide-x divide-gray-200 dark:divide-gray-700/90">
       <div v-for="stat in statistics" :key="stat.title" class="py-6 px-8">
         <p class="text-sm text-gray-400">{{ stat.title }}</p>
         <p class="text-4xl pt-2">{{ stat.number }}<span v-if="stat.number_2" class="text-3xl ml-1">{{ stat.number_2 }}</span></p>

@@ -123,7 +123,6 @@ const roadPartStats = computed(() => {
   return [
     { 'title': 'Number of bags', 'number': `${nbOfBags.value - bagsNoPicked.value.length}`, 'number_2': `/${nbOfBags.value}` },
     { 'title': 'Time to picking', 'number': `${timeToPick.value}` },
-    { 'title': 'Exemple', 'number': `50%` },
   ]
 })
 
@@ -293,7 +292,7 @@ async function pickingBag(cart) {
   }
 }
 
-provide('picking', { currentPair, scanStaggingArea, currentRoadPart, currentBag, currentBagPickedId, allBagsPicked, globalLoading })
+provide('picking', { currentPair, scanStaggingArea, currentRoadPart, allBagsPicked, globalLoading })
 
 const handleToggle = () => {
 

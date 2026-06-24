@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <BorderedContent title="Floor"> 
+    <BorderedContent title="Floor">
       <FloorAisles :locations="locations" @click="val => setCurrentPair(val)" />
     </BorderedContent>
 
@@ -118,7 +118,7 @@ async function stowPackage(loc) {
   }
 }
 
-provide('stow', { currentPair, setCurrentPackage, currentPackage, stowPackage, stowingIsLoading })
+provide('stow', { currentPair, setCurrentPackage, currentPackage, stowingIsLoading })
 
 const handleToggle = () => {
 

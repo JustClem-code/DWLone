@@ -36,14 +36,12 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Clean les inject dans stow et picking
+// proposer de reprendre une route à la fin de la route s'il reste des routes
 
 // gestion des erreur aux stow => stow wrong bag = éteindre l'emplacement
 
 // RESET la route
 
-
-// Terminer la fin du picking -> stagging-> stats -> timer
 
 // Travailler sur le bouton d'action du Cart
 
