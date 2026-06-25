@@ -38,17 +38,13 @@
 
 // proposer de reprendre une route à la fin de la route s'il reste des routes
 
-// gestion des erreur aux stow => stow wrong bag = éteindre l'emplacement
-
-// RESET la route
-
-
-// Travailler sur le bouton d'action du Cart
+// RESET la route côté Dashboard
 
 // retrouver les bag dans les allées avant de tester un snake path
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
 
+// Reefacto SetUserToStow pour faire la vérification de la bonne location côté symfony
 
 
 // Afficher le plan des stagging avec les emplacements occupés

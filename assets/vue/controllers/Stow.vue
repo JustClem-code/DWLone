@@ -97,7 +97,7 @@ async function stowPackage(loc) {
   }
 
   if (loc.name !== currentPackage.value.location.name) {
-    currentPackage.value = false;
+    currentPackage.value = null;
     stowingIsLoading.value = false;
     notifier('error', 'Stow', 'Wrong bag')
     return
