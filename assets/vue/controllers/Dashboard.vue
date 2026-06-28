@@ -25,6 +25,10 @@
       <BagsProcessing />
     </BorderedContent>
 
+    <BorderedContent title="Picking">
+      <PickingProcessing />
+    </BorderedContent>
+
   </div>
 </template>
 
@@ -39,6 +43,10 @@
 // proposer de reprendre une route à la fin de la route s'il reste des routes
 
 // RESET la route côté Dashboard
+
+// mettre un soumenu avec #id sur les partis pour éviter de scroller ?
+
+// Ajouter l'état du picking par bag dans BagPprocessing (Dashboard)
 
 // retrouver les bag dans les allées avant de tester un snake path
 
@@ -94,6 +102,7 @@ import { useTimer } from '../composables/useTimer.js'
 import BorderedContent from './UI/BorderedContent.vue';
 import PackagesStats from './DashboardComponents/PackagesStats.vue'
 import BagsProcessing from './DashboardComponents/BagsProcessing.vue';
+import PickingProcessing from './DashboardComponents/PickingProcessing.vue';
 
 const props = defineProps({
   is_user: Boolean,
@@ -108,7 +117,6 @@ const { isRunning } = useTimer()
 
 onMounted(() => {
   console.log(`the component is now mounted.`)
-  console.log(`isRunning`, isRunning.value)
 })
 
 provide('dashboard', { locations })

@@ -105,4 +105,11 @@ final class DashboardController extends AbstractController
 
     return $this->buildLocationsResponse();
   }
+
+  //. route pour générer le sequencing des roads
+
+  // Route pour avoir toutes les roads avec le user et les timer pour pouvoir les filtrer
+
+  // Route pour reset les roads
+  // Route pour reset un road en cour seulement si aucun sac n'est pické
 }
