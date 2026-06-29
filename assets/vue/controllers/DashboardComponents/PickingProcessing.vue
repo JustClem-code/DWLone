@@ -36,8 +36,9 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
+import { ref, computed, inject, watch } from 'vue';
 import { useLogic } from '../../composables/useLogic.js'
+import { useFetch, usePostFetch } from '../../composables/fetch.js'
 
 import SidePanel from '../UI/SidePanel.vue';
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
@@ -47,7 +48,7 @@ import StatsHeader from './StatsHeader.vue';
 
 const { formatInt, getColor } = useLogic()
 
-const { locations } = inject('dashboard')
+const { data: allRoads, error: errorGetAllRoads } = useFetch('/getAllRoads')
 
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
@@ -71,12 +72,18 @@ const numberOfBags = computed(() =>
 )
 
 const pickingStats = computed(() => [
-  { 'title': 'Number of bags', 'number': `${numberOfBags.value}` },
+  { 'title': 'Number of roads', 'number': `${allRoads.value?.length}` },
   { 'title': 'Number of road', 'number': `0` },
   { 'title': 'Picking progress', 'number': `0` },
 ])
 
-
+watch(
+  () => allRoads,
+  (val) => {
+    console.log('allRoads watch:', val);
+  },
+  { immediate: true, deep: true }
+);
 
 
 

@@ -11,9 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
 use App\Repository\BagRepository;
-use App\Repository\RoadRepository;
 use App\Repository\RoadPartRepository;
-use App\Repository\PostcodesRepository;
 use App\Repository\StaggingRepository;
 use App\Repository\CartRepository;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,7 +19,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 use App\Service\LocationArrayTransformerService;
 
 use App\Entity\Bag;
-use App\Entity\Road;
 use App\Entity\RoadPart;
 use App\Entity\Stagging;
 use App\Entity\Cart;
@@ -30,9 +27,7 @@ final class PickingController extends AbstractController
 {
   public function __construct(
     private BagRepository $bagRepository,
-    private RoadRepository $roadRepository,
     private RoadPartRepository $roadPartRepository,
-    private PostcodesRepository $postcodesRepository,
     private StaggingRepository $staggingRepository,
     private CartRepository $cartRepository,
     private LocationArrayTransformerService $locationArrayTransformerService,
@@ -56,127 +51,7 @@ final class PickingController extends AbstractController
     return $this->json($this->locationArrayTransformerService->transformAllInPairLight());
   }
 
-  private function resetPicking(RoadPart $roadPart): void
-  {
-    $roadPart->getCart()?->setRoadPart(null);
-    foreach ($roadPart->getBags() as $bag) {
-      $bag->setPicked(false);
-    }
-    $roadPart->resetPickingState();
-  }
 
-  #[Route('/hardResetPicking', name: 'hard_reset_picking', methods: ['POST'])]
-  public function hardResetPicking(): Response
-  {
-    $roadParts = $this->roadPartRepository->findAllWithUser();
-
-    foreach ($roadParts as $roadPart) {
-      $this->resetPicking($roadPart);
-    }
-
-    $this->entityManager->flush();
-
-    return $this->json($this->roadPartRepository->transformAll($roadParts));
-  }
-
-  #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['GET'])]
-  public function deleteAllRoads(): Response
-  {
-    $allRoads = $this->roadRepository->findAll();
-
-    foreach ($allRoads as $road) {
-      foreach ($road->getRoadParts() as $roadPart) {
-        $this->resetPicking($roadPart);
-        $this->entityManager->remove($roadPart);
-      }
-      $this->entityManager->remove($road);
-    }
-
-    $this->entityManager->flush();
-
-    return $this->getAllRoads();
-  }
-
-  #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
-  public function getAllRoads(): Response
-  {
-    $allRoads = $this->roadRepository->findAllOrderedByName();
-
-    return $this->json($this->roadRepository->transformAll($allRoads));
-  }
-
-  private function getAllBagsWithPackages(): array
-  {
-    return $this->bagRepository->findAllHasLocationAndPackages() ?? [];
-  }
-
-  private function createRoadPart(Road $road, int $partNumber): RoadPart
-  {
-    $roadPart = new RoadPart();
-    $road->addRoadPart($roadPart);
-    $roadPart->setNumber($partNumber);
-    $roadPart->setStagged(false);
-    $this->entityManager->persist($roadPart);
-
-    return $roadPart;
-  }
-
-  private function getRoadPart(Road $road): RoadPart
-  {
-    $roadPart = $this->roadPartRepository->findOneBy(
-      ['road' => $road],
-      ['number' => 'DESC']
-    );
-
-    if (!$roadPart) {
-      $roadPart = $this->createRoadPart($road, 1);
-    }
-
-    if (count($roadPart->getBags()) > 6) {
-      $incrementedNumber = $roadPart->getNumber() + 1;
-      $roadPart = $this->createRoadPart($road, $incrementedNumber);
-    }
-
-    return $roadPart;
-  }
-
-  private function getOrCreateRoad(Bag $bag): Road
-  {
-    $postcode = $this->bagRepository->findBagPostcode($bag);
-
-    $postcodeEntity = $this->postcodesRepository->findOneBy(['name' => $postcode]);
-    $groupName = $postcodeEntity?->getGroupPostcodes()?->getName();
-
-    $road = $this->roadRepository->findOneBy(['name' => $groupName]);
-
-    if (!$road) {
-      $staggings = $this->staggingRepository->findWithoutRoad();
-      shuffle($staggings);
-      $road = new Road();
-      $road->setName($groupName);
-      $road->setStagging($staggings[0]);
-      $this->entityManager->persist($road);
-    }
-
-    return $road;
-  }
-
-  #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
-  public function generateAllRoads(): Response
-  {
-    $bags = $this->getAllBagsWithPackages();
-
-    foreach ($bags as $bag) {
-      $road = $this->getOrCreateRoad($bag);
-
-      $roadPart = $this->getRoadPart($road);
-      $roadPart->addBag($bag);
-
-      $this->entityManager->flush();
-    }
-
-    return $this->getAllRoads();
-  }
 
   #[Route('/getStaggingAreas', name: 'get_stagging_areas', methods: ['GET'])]
   public function getStaggingAreas(): Response
