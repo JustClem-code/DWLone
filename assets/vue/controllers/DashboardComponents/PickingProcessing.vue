@@ -4,15 +4,9 @@
     <StatsHeader title="Picking processing" notice="You can see the picking overview" actionTitle="Action on picking"
       @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="pickingStats" />
 
-    <!-- <div v-if="locations" class="grid grid-cols-4 gap-4 md:gap-10">
-      <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1">
-
-        <div v-for="location in groupe" :key="location.id" class="size-1"
-          :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : 'bg-gray-200 dark:bg-gray-700/90'">
-        </div>
-
-      </div>
-    </div> -->
+    <RoadPartsList v-if="allRoadParts" :allRoadParts="allRoadParts" />
+    <div v-else-if="errorGetAllRoadParts">Error: {{ errorGetAllRoadParts }}</div>
+    <div v-else>Loading...</div>
 
     <SidePanel ref="sidePanelRef" title="Action on picking" width="md:w-5/6">
 
@@ -45,10 +39,12 @@ import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from '../UI/Modals/InformationComponent.vue';
 import StatsHeader from './StatsHeader.vue';
+import RoadPartsList from '../PickingComponents/RoadPartsList.vue';
 
 const { formatInt, getColor } = useLogic()
 
 const { data: allRoads, error: errorGetAllRoads } = useFetch('/getAllRoads')
+const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
 
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
@@ -72,15 +68,15 @@ const numberOfBags = computed(() =>
 )
 
 const pickingStats = computed(() => [
-  { 'title': 'Number of roads', 'number': `${allRoads.value?.length}` },
+  { 'title': 'Number of roads', 'number': `${allRoadParts.value?.length}` },
   { 'title': 'Number of road', 'number': `0` },
   { 'title': 'Picking progress', 'number': `0` },
 ])
 
 watch(
-  () => allRoads,
+  () => allRoadParts,
   (val) => {
-    console.log('allRoads watch:', val);
+    console.log('allRoadParts watch:', val);
   },
   { immediate: true, deep: true }
 );

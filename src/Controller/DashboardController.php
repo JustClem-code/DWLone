@@ -124,6 +124,8 @@ final class DashboardController extends AbstractController
     return $this->buildLocationsResponse();
   }
 
+  // Picking
+
   private function resetPicking(RoadPart $roadPart): void
   {
     $roadPart->getCart()?->setRoadPart(null);
@@ -171,6 +173,14 @@ final class DashboardController extends AbstractController
     $allRoads = $this->roadRepository->findAllOrderedByName();
 
     return $this->json($this->roadRepository->transformAll($allRoads));
+  }
+
+  #[Route('/getAllRoadParts', name: 'get_all_road_parts', methods: ['GET'])]
+  public function getAllRoadParts(): Response
+  {
+    $allRoadParts = $this->roadPartRepository->findAllOrderedByName();
+
+    return $this->json($this->roadPartRepository->transformAll($allRoadParts));
   }
 
   private function getAllBagsWithPackages(): array

@@ -103,7 +103,8 @@ class RoadPartRepository extends ServiceEntityRepository
   public function findAllOrderedByName(): array
   {
     return $this->createQueryBuilder('r')
-      ->orderBy('r.name', 'ASC')
+      ->innerJoin('r.road', 'ro')
+      ->orderBy('ro.name', 'ASC')
       ->getQuery()
       ->getResult();
   }
