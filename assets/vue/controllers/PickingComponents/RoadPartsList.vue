@@ -1,6 +1,6 @@
 <template>
   <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700/90">
-    <li v-for="roadPart in allRoadParts" :key=roadPart.id @click="setCurrentRoadPart(roadPart)"
+    <li v-for="roadPart in roadParts" :key=roadPart.id @click="setCurrentRoadPart(roadPart)"
       class="flex items-center justify-between py-4">
       <div>
         <div class="flex items-center gap-4 text-base font-semibold">
@@ -16,7 +16,7 @@
   </ul>
 
   <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
-    <PalletInfo :currentRoadPart="currentRoadPart" />
+    <RoadPartInfo :currentRoadPart="currentRoadPart" />
   </DialogComponentSlot>
   <DialogComponentSlot ref="confirmResetDialogRef">
     <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
@@ -33,12 +33,11 @@ import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 
-// import PalletInfo from '../SharedComponents/PalletInfo.vue';
-
+import RoadPartInfo from '../DashboardComponents/RoadPartInfo.vue';
 
 const { handleMenuAction } = useLogic()
 
-const { unloadingPallet } = inject('unLoading')
+// const { unloadingPallet } = inject('unLoading')
 
 
 const props = defineProps({
@@ -51,12 +50,13 @@ const infoDialogRef = ref(null);
 
 const confirmResetDialogRef = ref(null);
 
-const badgeType = (pallet) => {
-  return getNumberOfPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
+const badgeType = (roadPart) => {
+  // return getNumberOfPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
+  return 
 }
 
 const badgeTitle = (pallet) => {
-  return getNumberOfPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getNumberOfPackagesNotInducted(pallet)}`;
+  // return getNumberOfPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getNumberOfPackagesNotInducted(pallet)}`;
 }
 
 const setCurrentRoadPart = (roadPart) => {
@@ -68,7 +68,8 @@ const menuItems = computed(() => [
     label: 'Reset',
     action: 'confirmResetItem',
     isDisabled:
-      getNumberOfPackagesNotInducted(currentRoadPart?.value) !== currentRoadPart.value?.packages.length
+      /* getNumberOfPackagesNotInducted(currentRoadPart?.value) !== currentRoadPart.value?.packages.length */
+      false
   },
   {
     label: 'Infos',
@@ -77,7 +78,7 @@ const menuItems = computed(() => [
 ])
 
 const resetItem = () => {
-  unloadingPallet(currentRoadPart.value, true)
+  // unloadingPallet(currentRoadPart.value, true)
   confirmResetDialogRef.value?.closeDialog()
 }
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()

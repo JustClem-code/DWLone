@@ -4,7 +4,7 @@
     <StatsHeader title="Picking processing" notice="You can see the picking overview" actionTitle="Action on picking"
       @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="pickingStats" />
 
-    <RoadPartsList v-if="allRoadParts" :allRoadParts="allRoadParts" />
+    <RoadPartsList v-if="allRoadParts" :roadParts="allRoadParts" />
     <div v-else-if="errorGetAllRoadParts">Error: {{ errorGetAllRoadParts }}</div>
     <div v-else>Loading...</div>
 
