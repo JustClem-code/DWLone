@@ -4,7 +4,7 @@
       class="flex items-center justify-between py-4">
       <div>
         <div class="flex items-center gap-4 text-base font-semibold">
-          <p>{{ roadPart.id }}</p>
+          <p>{{ roadPart.road }} #{{ roadPart.number }}</p>
           <BadgeComponent :type="badgeType(roadPart)" :title="badgeTitle(roadPart)" size="sm" />
         </div>
         <p class="text-sm font-light text-gray-800 dark:text-gray-400">{{ roadPart.truckName }}</p>
@@ -52,11 +52,18 @@ const confirmResetDialogRef = ref(null);
 
 const badgeType = (roadPart) => {
   // return getNumberOfPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
-  return 
+  if (!roadPart.pickingStartedAt) {
+    return 'danger'
+  }
+  return roadPart.stagged ? 'valid' : 'warning'
 }
 
-const badgeTitle = (pallet) => {
-  // return getNumberOfPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getNumberOfPackagesNotInducted(pallet)}`;
+const badgeTitle = (roadPart) => {
+  if (!roadPart.pickingStartedAt) {
+    return 'waiting'
+  }
+
+  return roadPart.stagged ? 'stagged' : 'pending'
 }
 
 const setCurrentRoadPart = (roadPart) => {
