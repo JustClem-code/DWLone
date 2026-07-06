@@ -39,7 +39,7 @@ import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from '../UI/Modals/InformationComponent.vue';
 import StatsHeader from './StatsHeader.vue';
-import RoadPartsList from '../PickingComponents/RoadPartsList.vue';
+import RoadPartsList from './RoadPartsList.vue';
 
 const { formatInt, getColor } = useLogic()
 
