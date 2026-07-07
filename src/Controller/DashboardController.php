@@ -135,6 +135,36 @@ final class DashboardController extends AbstractController
     $roadPart->resetPickingState();
   }
 
+  private function someBagPicked(iterable $bags): bool
+  {
+    return !empty(iterator_to_array($bags)) && array_any(
+      iterator_to_array($bags),
+      fn($bag) => $bag->isPicked()
+    );
+  }
+
+  #[Route('/resetRoadPart/{id}', name: 'reset_road_part')]
+  public function resetRoadPart(
+    int $id,
+  ): Response {
+
+    $roadPart = $this->entityManager->getRepository(RoadPart::class)->find($id);
+
+    if (!$roadPart) {
+      return $this->json(['error' => 'No road part available'], 404);
+    }
+
+    if ($this->someBagPicked($roadPart->getBags())) {
+      return $this->json(['error' => 'Some bags is picked'], 404);
+    }
+
+    $this->resetPicking($roadPart);
+
+    $this->entityManager->flush();
+
+    return $this->json($this->roadPartRepository->toArray($roadPart));
+  }
+
   #[Route('/hardResetPicking', name: 'hard_reset_picking', methods: ['POST'])]
   public function hardResetPicking(): Response
   {

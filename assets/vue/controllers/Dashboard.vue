@@ -40,8 +40,6 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// déplacer RoadPartList dans dashboardComponent
-
 // proposer de reprendre une route à la fin de la route s'il reste des routes
 
 // RESET la route côté Dashboard
@@ -117,7 +115,7 @@ const { userName } = userStore()
 
 const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
 
-const { isRunning } = useTimer()
+// const { isRunning } = useTimer()
 
 onMounted(() => {
   console.log(`the component is now mounted.`)

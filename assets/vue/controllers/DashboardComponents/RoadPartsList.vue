@@ -37,8 +37,7 @@ import RoadPartInfo from '../DashboardComponents/RoadPartInfo.vue';
 
 const { handleMenuAction } = useLogic()
 
-// const { unloadingPallet } = inject('unLoading')
-
+const { resetRoadpart, globalLoading } = inject('pickingProcessing')
 
 const props = defineProps({
   roadParts: Array,
@@ -75,8 +74,7 @@ const menuItems = computed(() => [
     label: 'Reset',
     action: 'confirmResetItem',
     isDisabled:
-      /* getNumberOfPackagesNotInducted(currentRoadPart?.value) !== currentRoadPart.value?.packages.length */
-      false
+      globalLoading.value
   },
   {
     label: 'Infos',
@@ -85,7 +83,7 @@ const menuItems = computed(() => [
 ])
 
 const resetItem = () => {
-  // unloadingPallet(currentRoadPart.value, true)
+  resetRoadpart(currentRoadPart.value, true)
   confirmResetDialogRef.value?.closeDialog()
 }
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()

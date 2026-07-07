@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watch } from 'vue';
+import { ref, computed, provide, watch } from 'vue';
 import { useLogic } from '../../composables/useLogic.js'
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 
@@ -50,6 +50,8 @@ const currentBag = ref(null)
 const infoDialogRef = ref(null)
 
 const sidePanelRef = ref(null)
+
+const globalLoading = ref(null)
 
 const setCurrentBag = (bag) => {
   if (!bag) {
@@ -72,6 +74,28 @@ const pickingStats = computed(() => [
   { 'title': 'Number of road', 'number': `0` },
   { 'title': 'Picking progress', 'number': `0` },
 ])
+
+async function resetRoadpart(roadPart) {
+  globalLoading.value = true;
+
+  const { data, error } = await usePostFetch(`/resetRoadPart/${roadPart.id}`)
+
+  if (data.value) {
+    // currentPackage.value = data.value
+    updateCurrentPallet()
+    setTimeout(() => {
+      globalLoading.value = false;
+    }, 500);
+    setTimeout(() => {
+      notifier('success', 'Induction', `The package (Id: ${currentPackage.value.id}) is inducted`)
+    }, 1000);
+    setTimeout(() => {
+      // currentPackage.value = null
+    }, 1500);
+  }
+}
+
+provide('pickingProcessing', { resetRoadpart, globalLoading })
 
 watch(
   () => allRoadParts,
