@@ -31,8 +31,10 @@
 
 <script setup>
 import { ref, computed, provide, watch } from 'vue';
+
 import { useLogic } from '../../composables/useLogic.js'
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
+import { useNotification } from '../../composables/eventBus.js'
 
 import SidePanel from '../UI/SidePanel.vue';
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
@@ -42,6 +44,8 @@ import StatsHeader from './StatsHeader.vue';
 import RoadPartsList from './RoadPartsList.vue';
 
 const { formatInt, getColor } = useLogic()
+
+const { notifier } = useNotification()
 
 const { data: allRoads, error: errorGetAllRoads } = useFetch('/getAllRoads')
 const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
@@ -80,14 +84,22 @@ async function resetRoadpart(roadPart) {
 
   const { data, error } = await usePostFetch(`/resetRoadPart/${roadPart.id}`)
 
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error reset picking  ', `${error.value}`)
+      globalLoading.value = false;
+    }, 1000);
+  }
+
+
   if (data.value) {
     // currentPackage.value = data.value
-    updateCurrentPallet()
+    // updateCurrentPallet()
     setTimeout(() => {
       globalLoading.value = false;
     }, 500);
     setTimeout(() => {
-      notifier('success', 'Induction', `The package (Id: ${currentPackage.value.id}) is inducted`)
+      notifier('success', 'Induction', `The roadpart (Id: ${roadPart.id}) is reseted`)
     }, 1000);
     setTimeout(() => {
       // currentPackage.value = null

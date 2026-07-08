@@ -50,15 +50,15 @@ const infoDialogRef = ref(null);
 const confirmResetDialogRef = ref(null);
 
 const badgeType = (roadPart) => {
-  // return getNumberOfPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
-  if (!roadPart.pickingStartedAt) {
+  if (!roadPart.userName) {
     return 'danger'
   }
+  
   return roadPart.stagged ? 'valid' : 'warning'
 }
 
 const badgeTitle = (roadPart) => {
-  if (!roadPart.pickingStartedAt) {
+  if (!roadPart.userName) {
     return 'waiting'
   }
 
