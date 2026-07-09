@@ -79,6 +79,15 @@ const pickingStats = computed(() => [
   { 'title': 'Picking progress', 'number': `0` },
 ])
 
+const updateRoadParts = (roadPart) => {
+  const index = allRoadParts.value.findIndex(item => item.id === roadPart.id);
+
+  if (index !== -1) {
+    allRoadParts.value.splice(index, 1, roadPart);
+  }
+
+}
+
 async function resetRoadpart(roadPart) {
   globalLoading.value = true;
 
@@ -91,19 +100,14 @@ async function resetRoadpart(roadPart) {
     }, 1000);
   }
 
-
   if (data.value) {
-    // currentPackage.value = data.value
-    // updateCurrentPallet()
     setTimeout(() => {
       globalLoading.value = false;
     }, 500);
     setTimeout(() => {
-      notifier('success', 'Induction', `The roadpart (Id: ${roadPart.id}) is reseted`)
+      updateRoadParts(data.value)
+      notifier('Picking', 'Induction', `The roadpart (Id: ${roadPart.id}) is reseted`)
     }, 1000);
-    setTimeout(() => {
-      // currentPackage.value = null
-    }, 1500);
   }
 }
 
