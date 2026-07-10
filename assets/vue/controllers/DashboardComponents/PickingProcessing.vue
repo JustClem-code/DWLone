@@ -9,22 +9,16 @@
     <div v-else>Loading...</div>
 
     <SidePanel ref="sidePanelRef" title="Action on picking" width="md:w-5/6">
+      <div class="flex flex-col gap-2 mb-8">
 
-      <!-- <div v-if="locations" class="divide-y divide-gray-200 dark:divide-gray-700/90">
-        <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1 sm:gap-4 py-8">
+        <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
 
-          <HorizontalLinkButton v-for="location in groupe" :key="location.id" @click="setCurrentBag(location.bag)"
-            :title="location.name"
-            :focused="location.bag?.packages?.length > 0 ? getBagColorZoom(location.bag?.name) : 'text-gray-200 dark:text-gray-700/90'" />
+        <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
+          :isDisabled="!selected" :isLoading="globalLoading" />
+      </div>
 
-        </div>
-      </div> -->
 
     </SidePanel>
-
-    <!-- <DialogComponentSlot ref="infoDialogRef" :hasCloseCross="true">
-      <InformationComponent :informations="bagInfos" />
-    </DialogComponentSlot> -->
 
   </div>
 </template>
@@ -42,6 +36,8 @@ import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from '../UI/Modals/InformationComponent.vue';
 import StatsHeader from './StatsHeader.vue';
 import RoadPartsList from './RoadPartsList.vue';
+import RadioCard from '../UI/Radios/RadioCard.vue';
+import BaseButton from '../UI/Buttons/BaseButton.vue';
 
 const { formatInt, getColor } = useLogic()
 
@@ -50,34 +46,58 @@ const { notifier } = useNotification()
 const { data: allRoads, error: errorGetAllRoads } = useFetch('/getAllRoads')
 const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
 
-const currentBag = ref(null)
-const infoDialogRef = ref(null)
+const selected = ref(null)
 
 const sidePanelRef = ref(null)
 
 const globalLoading = ref(null)
 
-const setCurrentBag = (bag) => {
-  if (!bag) {
-    return
-  }
-  currentBag.value = bag;
-  infoDialogRef.value?.openDialog()
-}
+const allRoadPartsNumber = computed(() => {
+  return allRoadParts.value ? allRoadParts.value.length : 0
+})
 
-const numberOfBags = computed(() =>
-  locations.value
-    ? locations.value
-      .flatMap(group => group.filter(loc => loc.bag !== null))
-      .length
-    : 0
-)
+const allRoadartsWithUser = computed(() => {
+  return allRoadParts.value ? allRoadParts.value.filter( r => r.userName ).length : 0
+})
+
+const allRoadartsStagged = computed(() => {
+  return allRoadParts.value ? allRoadParts.value.filter( r => r.stagged ).length : 0
+})
 
 const pickingStats = computed(() => [
-  { 'title': 'Number of roads', 'number': `${allRoadParts.value?.length}` },
-  { 'title': 'Number of road', 'number': `0` },
+  { 'title': 'Number of roads', 'number': `${allRoadPartsNumber.value}` },
+  { 'title': 'Number of road', 'number': `${allRoadartsWithUser.value}` },
   { 'title': 'Picking progress', 'number': `0` },
 ])
+
+
+const automaticOptions = computed(() => [
+  { 'value': 'Sequencing', 'notice': 'Generate roads', 'number': `not defined`, 'disabled': allRoadPartsNumber.value > 0 },
+  { 'value': 'Delete', 'notice': 'Delete all road parts', 'number': `${allRoadPartsNumber.value}`, 'disabled': allRoadPartsNumber.value === 0 },
+  { 'value': 'Hard reset', 'notice': 'Reset all road parts', 'number': `${allRoadartsWithUser.value}`, 'disabled': allRoadartsWithUser.value === 0 },
+])
+
+function submitAutomaticForm() {
+  /* const actions = {
+    'Induct': () => automaticInduct(true, false),
+    'Stow': () => automaticInduct(false, true),
+    'Hard reset': () => resetLocationsBagsPackages(),
+  }
+
+  const run = actions[selected.value]
+
+  if (!run) {
+    console.log('error')
+  } else {
+    run()
+  }
+
+  selected.value = null */
+}
+
+
+
+
 
 const updateRoadParts = (roadPart) => {
   const index = allRoadParts.value.findIndex(item => item.id === roadPart.id);

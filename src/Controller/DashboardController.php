@@ -144,10 +144,8 @@ final class DashboardController extends AbstractController
   }
 
   #[Route('/resetRoadPart/{id}', name: 'reset_road_part')]
-  public function resetRoadPart(
-    int $id,
-  ): Response {
-
+  public function resetRoadPart(int $id): Response
+  {
     $roadPart = $this->entityManager->getRepository(RoadPart::class)->find($id);
 
     if (!$roadPart) {
@@ -194,7 +192,7 @@ final class DashboardController extends AbstractController
 
     $this->entityManager->flush();
 
-    return $this->getAllRoads();
+    return $this->getAllRoadParts();
   }
 
   #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
