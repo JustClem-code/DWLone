@@ -177,7 +177,7 @@ final class DashboardController extends AbstractController
     return $this->json($this->roadPartRepository->transformAll($roadParts));
   }
 
-  #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['GET'])]
+  #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['POST'])]
   public function deleteAllRoads(): Response
   {
     $allRoads = $this->roadRepository->findAll();
@@ -267,7 +267,7 @@ final class DashboardController extends AbstractController
     return $road;
   }
 
-  #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['GET'])]
+  #[Route('/generateAllRoads', name: 'generate_all_roads', methods: ['POST'])]
   public function generateAllRoads(): Response
   {
     $bags = $this->getAllBagsWithPackages();
@@ -281,7 +281,7 @@ final class DashboardController extends AbstractController
       $this->entityManager->flush();
     }
 
-    return $this->getAllRoads();
+    return $this->getAllRoadParts();
   }
 
 

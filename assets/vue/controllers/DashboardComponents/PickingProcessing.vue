@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, computed, provide, watch } from 'vue';
+import { ref, computed, provide, watch, watchEffect } from 'vue';
 
 import { useLogic } from '../../composables/useLogic.js'
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
@@ -57,16 +57,16 @@ const allRoadPartsNumber = computed(() => {
 })
 
 const allRoadartsWithUser = computed(() => {
-  return allRoadParts.value ? allRoadParts.value.filter( r => r.userName ).length : 0
+  return allRoadParts.value ? allRoadParts.value.filter(r => r.userName).length : 0
 })
 
 const allRoadartsStagged = computed(() => {
-  return allRoadParts.value ? allRoadParts.value.filter( r => r.stagged ).length : 0
+  return allRoadParts.value ? allRoadParts.value.filter(r => r.stagged).length : 0
 })
 
 const pickingStats = computed(() => [
   { 'title': 'Number of roads', 'number': `${allRoadPartsNumber.value}` },
-  { 'title': 'Number of road', 'number': `${allRoadartsWithUser.value}` },
+  { 'title': 'In progress', 'number': `${allRoadartsWithUser.value}` },
   { 'title': 'Picking progress', 'number': `0` },
 ])
 
@@ -78,10 +78,10 @@ const automaticOptions = computed(() => [
 ])
 
 function submitAutomaticForm() {
-  /* const actions = {
-    'Induct': () => automaticInduct(true, false),
-    'Stow': () => automaticInduct(false, true),
-    'Hard reset': () => resetLocationsBagsPackages(),
+  const actions = {
+    'Sequencing': () => generateAllRoads(),
+    'Delete': () => deleteAllRoads(),
+    'Hard reset': () => hardResetPicking(),
   }
 
   const run = actions[selected.value]
@@ -92,12 +92,80 @@ function submitAutomaticForm() {
     run()
   }
 
-  selected.value = null */
+  selected.value = null
 }
 
+async function generateAllRoads() {
+  globalLoading.value = true;
 
+  const { data, error } = await usePostFetch(`/generateAllRoads`)
 
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Picking', `Error generating roads`)
+      globalLoading.value = false;
+    }, 1000);
+  }
 
+  if (data.value) {
+    setTimeout(() => {
+      globalLoading.value = false;
+    }, 500);
+    setTimeout(() => {
+      allRoadParts.value = data.value
+      notifier('success', 'Picking', `${allRoadPartsNumber.value} generated`)
+      sidePanelRef.value?.toggleSidePanel()
+    }, 1000);
+  }
+}
+
+async function deleteAllRoads() {
+  globalLoading.value = true;
+
+  const { data, error } = await usePostFetch(`/deleteAllRoads`)
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Picking', `Error deleting roads`)
+      globalLoading.value = false;
+    }, 1000);
+  }
+
+  if (data.value) {
+    setTimeout(() => {
+      globalLoading.value = false;
+    }, 500);
+    setTimeout(() => {
+      allRoadParts.value = data.value
+      notifier('success', 'Picking', `All roads deleted`)
+      sidePanelRef.value?.toggleSidePanel()
+    }, 1000);
+  }
+}
+
+async function hardResetPicking() {
+  globalLoading.value = true;
+
+  const { data, error } = await usePostFetch(`/hardResetPicking`)
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Picking', `Error hard reseting`)
+      globalLoading.value = false;
+    }, 1000);
+  }
+
+  if (data.value) {
+    setTimeout(() => {
+      globalLoading.value = false;
+    }, 500);
+    setTimeout(() => {
+      allRoadParts.value = data.value
+      notifier('success', 'Picking', `All roads reseted`)
+      sidePanelRef.value?.toggleSidePanel()
+    }, 1000);
+  }
+}
 
 const updateRoadParts = (roadPart) => {
   const index = allRoadParts.value.findIndex(item => item.id === roadPart.id);
@@ -126,12 +194,21 @@ async function resetRoadpart(roadPart) {
     }, 500);
     setTimeout(() => {
       updateRoadParts(data.value)
-      notifier('Picking', 'Induction', `The roadpart (Id: ${roadPart.id}) is reseted`)
+      notifier('success', 'Picking', `The roadpart (Id: ${roadPart.id}) is reseted`)
     }, 1000);
   }
 }
 
 provide('pickingProcessing', { resetRoadpart, globalLoading })
+
+const handleToggle = () => {
+
+  if (!sidePanelRef.value?.isOpen) {
+    selected.value = null
+  }
+}
+
+watchEffect(handleToggle)
 
 watch(
   () => allRoadParts,
@@ -140,7 +217,5 @@ watch(
   },
   { immediate: true, deep: true }
 );
-
-
 
 </script>
