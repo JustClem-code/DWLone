@@ -42,7 +42,7 @@
 
 // proposer de reprendre une route à la fin de la route s'il reste des routes
 
-// RESET la route côté Dashboard
+// Ne pas pouvoir générer de routes si le stow n'est pas fini
 
 // transformer les fonction pour calculer des état en computed (ex: focusedPairs)
 

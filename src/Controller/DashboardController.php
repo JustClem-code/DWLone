@@ -174,7 +174,7 @@ final class DashboardController extends AbstractController
 
     $this->entityManager->flush();
 
-    return $this->json($this->roadPartRepository->transformAll($roadParts));
+    return $this->getAllRoadParts();
   }
 
   #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['POST'])]
@@ -283,12 +283,4 @@ final class DashboardController extends AbstractController
 
     return $this->getAllRoadParts();
   }
-
-
-
-  // Route pour avoir toutes les roads avec le user et les timer pour pouvoir les filtrer
-
-  // Route pour reset les roads
-
-  // Route pour reset un road en cour seulement si aucun sac n'est pické donc seulement le user et le cart
 }

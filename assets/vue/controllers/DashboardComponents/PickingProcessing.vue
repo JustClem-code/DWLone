@@ -72,7 +72,7 @@ const pickingStats = computed(() => [
 
 
 const automaticOptions = computed(() => [
-  { 'value': 'Sequencing', 'notice': 'Generate roads', 'number': `not defined`, 'disabled': allRoadPartsNumber.value > 0 },
+  { 'value': 'Sequencing', 'notice': 'Generate roads', 'number': '', 'disabled': allRoadPartsNumber.value > 0 },
   { 'value': 'Delete', 'notice': 'Delete all road parts', 'number': `${allRoadPartsNumber.value}`, 'disabled': allRoadPartsNumber.value === 0 },
   { 'value': 'Hard reset', 'notice': 'Reset all road parts', 'number': `${allRoadartsWithUser.value}`, 'disabled': allRoadartsWithUser.value === 0 },
 ])
