@@ -69,6 +69,8 @@
 
 // Empêcher le Picking si le stow n'est pas fini
 
+// Nettoyage de tous les console.log (oui oui)
+
  /* GÉRER CE PROBLÈME
 
  [WARNING] You have 6 previously executed migrations in the database that are

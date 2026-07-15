@@ -53,7 +53,7 @@ const badgeType = (roadPart) => {
   if (!roadPart.userName) {
     return 'danger'
   }
-  
+
   return roadPart.stagged ? 'valid' : 'warning'
 }
 
@@ -74,7 +74,7 @@ const menuItems = computed(() => [
     label: 'Reset',
     action: 'confirmResetItem',
     isDisabled:
-      globalLoading.value
+      globalLoading.value || !currentRoadPart.value?.userName
   },
   {
     label: 'Infos',

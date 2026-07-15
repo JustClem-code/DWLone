@@ -17,7 +17,6 @@
           :isDisabled="!selected" :isLoading="globalLoading" />
       </div>
 
-
     </SidePanel>
 
   </div>
@@ -183,7 +182,7 @@ async function resetRoadpart(roadPart) {
 
   if (error.value) {
     setTimeout(() => {
-      notifier('error', 'Error reset picking  ', `${error.value}`)
+      notifier('error', 'Picking  ', `${error.value}`)
       globalLoading.value = false;
     }, 1000);
   }
