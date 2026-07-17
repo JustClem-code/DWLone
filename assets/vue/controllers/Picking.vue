@@ -11,7 +11,8 @@
     </BorderedContent>
 
     <BorderedContent v-if="currentRoadPart" title="Floor" class="flex flex-col gap-8">
-      <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" :currentBag="currentBag" @click="val => setCurrentPair(val)"/>
+      <FloorAisles v-if="currentRoadPart?.cart" :locations="locations" :currentBag="currentBag"
+        @click="val => setCurrentPair(val)" />
       <FloorStaggingArea :staggingAreas="staggingAreas" />
     </BorderedContent>
 
@@ -32,6 +33,11 @@
 
     </SidePanel>
 
+    <DialogComponentSlot ref="confirmFinishPickDialogRef">
+      <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
+        @cancel="confirmFinishPickDialogRef?.closeDialog()" />
+    </DialogComponentSlot>
+
   </div>
 </template>
 
@@ -49,6 +55,8 @@ import BaseButton from './UI/Buttons/BaseButton.vue'
 import DashedEmptyState from './UI/DashedEmptyState.vue'
 import AddDatabaseIcon from './UI/Icons/AddDatabaseIcon.vue'
 import AnimateSpin from './UI/AnimateSpin.vue'
+import DialogComponentSlot from './UI/Modals/DialogComponentSlot.vue'
+import ConfirmationComponent from './UI/Modals/ConfirmationComponent.vue'
 
 import FloorAisles from './SharedComponents/FloorAisles.vue'
 import PairLocations from './SharedComponents/PairLocations.vue'
@@ -74,6 +82,8 @@ const sidePanelRef = ref(null)
 const STORAGE_KEY = 'currentBagPickedId'
 
 const currentBagPickedId = ref(null)
+
+const confirmFinishPickDialogRef = ref(null);
 
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)
@@ -218,6 +228,7 @@ async function setCartToRoadPart(stagging) {
     }, 1000);
     setTimeout(() => {
       scanStaggingAreaIsLoading.value = false;
+      // Proposer de prendre une route
     }, 1500);
   }
 
@@ -245,11 +256,12 @@ async function staggingCart(stagging) {
   }
 
   if (data.value) {
-    currentRoadPart.value = data.value
+    currentRoadPart.value = data.value.roadPart
     setTimeout(() => {
       notifier('success', 'Cart', `The road ${currentRoadPartTitle.value} is stagged`)
     }, 1000);
     setTimeout(() => {
+      // Question to finish picking
       scanStaggingAreaIsLoading.value = false;
       stopTimer();
     }, 1500);

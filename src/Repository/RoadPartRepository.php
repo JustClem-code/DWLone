@@ -25,14 +25,6 @@ class RoadPartRepository extends ServiceEntityRepository
     parent::__construct($registry, RoadPart::class);
   }
 
-
-  /* public function setBagsToNull(RoadPart $roadPart): void
-  {
-    foreach ($roadPart->getBags() as $bag) {
-      $bag->setRoadPart(null);
-    }
-  } */
-
   public function toArray(RoadPart $roadPart): array
   {
     return [
@@ -107,6 +99,17 @@ class RoadPartRepository extends ServiceEntityRepository
       ->orderBy('ro.name', 'ASC')
       ->getQuery()
       ->getResult();
+  }
+
+  public function hasUnpickedRoadParts(): bool
+  {
+    return null !== $this->createQueryBuilder('r')
+      ->select('1')
+      ->andWhere('r.stagged = FALSE')
+      ->andWhere('r.user IS NULL')
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult();
   }
 
   public function transformAll(iterable $entities): array

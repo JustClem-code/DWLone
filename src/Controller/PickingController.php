@@ -178,7 +178,12 @@ final class PickingController extends AbstractController
     $roadPart->finishPicking();
     $this->entityManager->flush();
 
-    return $this->json($this->roadPartRepository->toArray($roadPart));
+    return $this->json(
+      [
+        'hasUnpickedRoadParts' => $this->roadPartRepository->hasUnpickedRoadParts(),
+        'roadPart' => $this->roadPartRepository->toArray($roadPart)
+      ]
+    );
   }
 
   #[Route('/pickingBag/{id}', name: 'pick_bag', methods: ['POST'])]
