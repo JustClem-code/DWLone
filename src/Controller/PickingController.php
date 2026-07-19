@@ -51,8 +51,6 @@ final class PickingController extends AbstractController
     return $this->json($this->locationArrayTransformerService->transformAllInPairLight());
   }
 
-
-
   #[Route('/getStaggingAreas', name: 'get_stagging_areas', methods: ['GET'])]
   public function getStaggingAreas(): Response
   {
@@ -64,6 +62,12 @@ final class PickingController extends AbstractController
     $user = $this->security->getUser();
 
     return $this->roadPartRepository->findOnHasUserNotStagged($user);
+  }
+
+  #[Route('/getHasUnpickedRoadParts', name: 'get_has_unpicked_road_parts', methods: ['GET'])]
+  public function getHasUnpickedRoadParts(): Response
+  {
+    return $this->json($this->roadPartRepository->hasUnpickedRoadParts());
   }
 
   #[Route('/getCurrentUserRoadpart', name: 'get_current_user_roadpart', methods: ['GET'])]

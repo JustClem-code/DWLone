@@ -34,8 +34,7 @@
     </SidePanel>
 
     <DialogComponentSlot ref="confirmFinishPickDialogRef">
-      <ConfirmationComponent question="Are you sure to reset ?" @confirm="resetItem"
-        @cancel="confirmFinishPickDialogRef?.closeDialog()" />
+      <ConfirmationComponent :question="finishPickQuestion" @confirm="confirmFinishPickQuestion()" @cancel="basicFinishPicking()" />
     </DialogComponentSlot>
 
   </div>
@@ -66,6 +65,7 @@ import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
 const { data: locations, error: errorLocations } = useFetch('/getLocationsLight')
 const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggingAreas')
 const { data: currentRoadPart, error: errorCurrentRoadPart } = useFetch('/getCurrentUserRoadpart')
+const { data: hasUnpickedRoadParts, error: errorHasUnpickedRoadParts } = useFetch('/getHasUnpickedRoadParts')
 
 const { notifier } = useNotification()
 
@@ -139,6 +139,11 @@ const roadPartStats = computed(() => {
 const allBagsPicked = computed(() => {
   return currentRoadPart?.value.bags.every(bag => bag.picked === true)
 })
+
+const basicFinishPicking = () => {
+  confirmFinishPickDialogRef.value?.closeDialog();
+  currentRoadPart.value = null;
+}
 
 const setCurrentPair = (pair) => {
   currentPair.value = pair
@@ -234,6 +239,21 @@ async function setCartToRoadPart(stagging) {
 
 }
 
+// FINISH PICKING LOGIC
+
+const finishPickQuestion = ref(null);
+
+const confirmFinishPickQuestion = () => {
+  
+console.log('hasUnpickedRoadParts.value', hasUnpickedRoadParts.value);
+
+if (hasUnpickedRoadParts.value) {
+finishPickQuestion.value = 'Do you want pick again ?'
+} else {
+
+}
+}
+
 async function staggingCart(stagging) {
 
   scanStaggingAreaIsLoading.value = true
@@ -261,9 +281,11 @@ async function staggingCart(stagging) {
       notifier('success', 'Cart', `The road ${currentRoadPartTitle.value} is stagged`)
     }, 1000);
     setTimeout(() => {
-      // Question to finish picking
+      //console.log('data', data.value);
       scanStaggingAreaIsLoading.value = false;
       stopTimer();
+      hasUnpickedRoadParts.value = data.value.hasUnpickedRoadParts
+      confirmFinishPickQuestion();
     }, 1500);
   }
 
