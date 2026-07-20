@@ -34,7 +34,8 @@
     </SidePanel>
 
     <DialogComponentSlot ref="confirmFinishPickDialogRef">
-      <ConfirmationComponent :question="finishPickQuestion" @confirm="confirmFinishPickQuestion()" @cancel="basicFinishPicking()" />
+      <ConfirmationComponent :question="finishPickQuestion" @confirm="confirmFinishPickQuestion()"
+        @cancel="basicFinishPicking()" />
     </DialogComponentSlot>
 
   </div>
@@ -61,6 +62,7 @@ import FloorAisles from './SharedComponents/FloorAisles.vue'
 import PairLocations from './SharedComponents/PairLocations.vue'
 import FloorStaggingArea from './PickingComponents/FloorStaggingArea.vue'
 import RoadPartHeader from './PickingComponents/RoadPartHeader.vue'
+
 
 const { data: locations, error: errorLocations } = useFetch('/getLocationsLight')
 const { data: staggingAreas, error: errorStaggingAreas } = useFetch('/getStaggingAreas')
@@ -140,6 +142,10 @@ const allBagsPicked = computed(() => {
   return currentRoadPart?.value.bags.every(bag => bag.picked === true)
 })
 
+const finishPickQuestion = computed(() => {
+  return hasUnpickedRoadParts.value ? 'Do you want pick again?' : 'Do you want to quit picking?'
+});
+
 const basicFinishPicking = () => {
   confirmFinishPickDialogRef.value?.closeDialog();
   currentRoadPart.value = null;
@@ -175,6 +181,15 @@ const scanBag = (bagId) => {
     }, 500);
   } else {
     currentBagPickedId.value = bagId
+  }
+}
+
+const confirmFinishPickQuestion = () => {
+  if (hasUnpickedRoadParts.value) {
+    basicFinishPicking();
+    setUserToRoadPart();
+  } else {
+    window.location.href = '/';
   }
 }
 
@@ -233,25 +248,9 @@ async function setCartToRoadPart(stagging) {
     }, 1000);
     setTimeout(() => {
       scanStaggingAreaIsLoading.value = false;
-      // Proposer de prendre une route
     }, 1500);
   }
 
-}
-
-// FINISH PICKING LOGIC
-
-const finishPickQuestion = ref(null);
-
-const confirmFinishPickQuestion = () => {
-  
-console.log('hasUnpickedRoadParts.value', hasUnpickedRoadParts.value);
-
-if (hasUnpickedRoadParts.value) {
-finishPickQuestion.value = 'Do you want pick again ?'
-} else {
-
-}
 }
 
 async function staggingCart(stagging) {
@@ -281,11 +280,10 @@ async function staggingCart(stagging) {
       notifier('success', 'Cart', `The road ${currentRoadPartTitle.value} is stagged`)
     }, 1000);
     setTimeout(() => {
-      //console.log('data', data.value);
       scanStaggingAreaIsLoading.value = false;
       stopTimer();
       hasUnpickedRoadParts.value = data.value.hasUnpickedRoadParts
-      confirmFinishPickQuestion();
+      confirmFinishPickDialogRef.value?.openDialog();
     }, 1500);
   }
 
