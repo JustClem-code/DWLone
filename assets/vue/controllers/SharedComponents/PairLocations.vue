@@ -3,7 +3,7 @@
 
     <HorizontalLinkButton v-for="loc in orderedLocations" :key="loc.id" @click="clickButton(loc)"
       :title="loc?.name || 'Location name'" :isDisabled="!loc.bag || isDisabledButton"
-      :focused="isCurrentLoc(loc?.name) ? getBagColor : 'text-gray-300 dark:text-gray-700/90'" />
+      :focused="isCurrentLoc.has(loc?.id) ? getBagColor : 'text-gray-300 dark:text-gray-700/90'" />
 
   </div>
 </template>
@@ -28,7 +28,20 @@ const clickButton = (loc) => {
   emit('click', loc);
 }
 
-const isCurrentLoc = (name) => props.currentLocName === name
+const isCurrentLoc = computed(() => {
+  const currentLocName = props.currentLocName;
+  const set = new Set();
+
+  for (const loc of props.orderedLocations) {
+    const isFocused = loc.name === currentLocName
+
+    if (isFocused) {
+      set.add(loc.id)
+    }
+  }
+
+  return set
+})
 
 const getBagColor = computed(() => {
   if (!props.currentBagName) {
