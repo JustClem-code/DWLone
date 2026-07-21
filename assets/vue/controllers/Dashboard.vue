@@ -40,10 +40,6 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// proposer de reprendre une route à la fin de la route s'il reste des routes
-
-// Ne pas pouvoir générer de routes si le stow n'est pas fini
-
 // transformer les fonction pour calculer des état en computed (ex: focusedPairs)
 
 // mettre un sous-menu avec #id sur les partis pour éviter de scroller ?

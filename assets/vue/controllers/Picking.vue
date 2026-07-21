@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col gap-8">
     <BorderedContent title="Road part">
-      <DashedEmptyState v-if="!currentRoadPart" @click="setUserToRoadPart()" title="Get a road Part"
-        :disabled="setUserToRoadPartIsLoading">
+      <DashedEmptyState v-if="!currentRoadPart" @click="setUserToRoadPart()" :title="hasUnpickedRoadParts ? 'Get a road Part' : 'No road part'"
+        :disabled="setUserToRoadPartIsLoading || !hasUnpickedRoadParts">
         <AddDatabaseIcon size="size-16" color="text-gray-200 dark:text-gray-700/90" />
         <AnimateSpin v-show="setUserToRoadPartIsLoading" class="absolute" />
       </DashedEmptyState>
