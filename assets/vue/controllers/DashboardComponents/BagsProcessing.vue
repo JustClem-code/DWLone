@@ -8,9 +8,8 @@
       <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1">
 
         <div v-for="location in groupe" :key="location.id" class="size-1"
-          :class="location.bag?.packages?.length > 0 ? getBagColor(location.bag?.name) : 'bg-gray-200 dark:bg-gray-700/90'">
+          :class="location.bag?.packages?.length > 0 ? bagColorClass(location.bag?.name) : 'bg-gray-200 dark:bg-gray-700/90'">
         </div>
-
       </div>
     </div>
 
@@ -21,7 +20,7 @@
 
           <HorizontalLinkButton v-for="location in groupe" :key="location.id" @click="setCurrentBag(location.bag)"
             :title="location.name"
-            :focused="location.bag?.packages?.length > 0 ? getBagColorZoom(location.bag?.name) : 'text-gray-200 dark:text-gray-700/90'" />
+            :focused="location.bag?.packages?.length > 0 ? bagColorClass(location.bag?.name, true) : 'text-gray-200 dark:text-gray-700/90'" />
 
         </div>
       </div>
@@ -89,29 +88,29 @@ const bagInfos = computed(() => {
   }
 })
 
-const getBagColorZoom = (name) => {
-  const prefix = getColor(name);
-  const colors = {
-    'BLK': '',
-    'NVY': 'outline-blue-700',
-    'ORG': 'outline-orange-700',
-    'YLO': 'outline-yellow-700',
-    'GRN': 'outline-green-700',
-  }
-  return `outline sm:outline-2  outline-offset sm:outline-offset-2 ${colors[prefix]}` ?? '';
-}
+const bagColorMap = computed(() => ({
+  BLK: '',
+  NVY: 'outline-blue-700 bg-blue-700',
+  ORG: 'outline-orange-700 bg-orange-700',
+  YLO: 'outline-yellow-700 bg-yellow-700',
+  GRN: 'outline-green-700 bg-green-700',
+}))
 
+const bagColorZoomMap = computed(() => ({
+  BLK: '',
+  NVY: 'outline-blue-700',
+  ORG: 'outline-orange-700',
+  YLO: 'outline-yellow-700',
+  GRN: 'outline-green-700',
+}))
 
-const getBagColor = (name) => {
-  const prefix = getColor(name);
-  const colors = {
-    'BLK': '',
-    'NVY': 'outline-blue-700 bg-blue-700',
-    'ORG': 'outline-orange-700 bg-orange-700',
-    'YLO': 'outline-yellow-700 bg-yellow-700',
-    'GRN': 'outline-green-700 bg-green-700',
+const bagColorClass = computed(() => {
+  return (name, zoom = false) => {
+    const prefix = getColor(name)
+    return zoom ?
+      `outline sm:outline-2  outline-offset sm:outline-offset-2 ${bagColorZoomMap.value[prefix] || ''}`.trim() :
+      `outline outline-offset-1 ${bagColorMap.value[prefix] || ''}`.trim()
   }
-  return `outline outline-offset-1 ${colors[prefix]}` ?? '';
-}
+})
 
 </script>
