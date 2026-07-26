@@ -49,6 +49,19 @@ const infoDialogRef = ref(null);
 
 const confirmResetDialogRef = ref(null);
 
+const menuItems = computed(() => [
+  {
+    label: 'Reset',
+    action: 'confirmResetItem',
+    isDisabled:
+      globalLoading.value || !currentRoadPart.value?.userName
+  },
+  {
+    label: 'Infos',
+    action: 'openInfos',
+  },
+])
+
 const badgeType = (roadPart) => {
   if (!roadPart.userName) {
     return 'danger'
@@ -68,19 +81,6 @@ const badgeTitle = (roadPart) => {
 const setCurrentRoadPart = (roadPart) => {
   currentRoadPart.value = roadPart
 }
-
-const menuItems = computed(() => [
-  {
-    label: 'Reset',
-    action: 'confirmResetItem',
-    isDisabled:
-      globalLoading.value || !currentRoadPart.value?.userName
-  },
-  {
-    label: 'Infos',
-    action: 'openInfos',
-  },
-])
 
 const resetItem = () => {
   resetRoadpart(currentRoadPart.value, true)
