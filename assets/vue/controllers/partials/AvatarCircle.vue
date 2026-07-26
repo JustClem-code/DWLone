@@ -14,5 +14,8 @@ const props = defineProps({
   size: String
 })
 
-const userNameFirstLetter = computed(() => userName.value?.[0]?.toUpperCase() ?? '?')
+const userNameFirstLetter = computed(() => {
+  return userName.value?.[0]?.toUpperCase() ?? '?'
+});
+
 </script>

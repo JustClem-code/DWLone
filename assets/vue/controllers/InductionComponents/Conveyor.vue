@@ -29,16 +29,16 @@ const { setLocation, setLocationLoading } = inject('induction')
 
 const { getDraggedItem } = useDragStore();
 
-function onDragOver(event) {
+const onDragOver = (event) => {
   event.preventDefault();
   event.dataTransfer.dropEffect = 'move';
 }
 
-function onDrop(event) {
+const onDrop = (event) => {
   event.preventDefault();
   const item = getDraggedItem();
   if (!item) return;
 
-  setLocation(item)
+  setLocation(item);
 }
 </script>

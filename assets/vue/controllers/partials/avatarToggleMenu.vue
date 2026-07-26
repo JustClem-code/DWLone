@@ -40,6 +40,7 @@ const props = defineProps({
   items: Array,})
 
 const isOpen = ref(false)
+
 const toggleMenu = () => (
   isOpen.value = !isOpen.value
 )

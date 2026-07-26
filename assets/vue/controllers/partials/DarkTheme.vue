@@ -12,4 +12,5 @@ import DarkIcon from '../UI/Icons/DarkIcon.vue';
 import LightIcon from '../UI/Icons/LightIcon.vue';
 
 const { isDark, toggleTheme } = useTheme();
+
 </script>

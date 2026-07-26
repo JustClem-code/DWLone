@@ -49,12 +49,13 @@ const { isUser, setIsUser, setUserName, logOut } = userStore()
 const { isDark, toggleTheme } = useTheme();
 
 onMounted(() => {
-  console.log(`the component is now mounted`)
   setUserName(props.user_name)
   setIsUser(props.is_user)
 })
 
 const open = ref(false)
+
+const currentItem = ref(navigations[0])
 
 const navigations = computed(() => [
   { name: 'Dashboard', href: '/', show: true },
@@ -75,15 +76,13 @@ const avatarNavigations = computed(() => [
   { name: 'Sign out', click: logOut, icon: SignOutIcon, sizeIcon: 'size-6' },
 ])
 
-const currentItem = ref(navigations[0])
 
-provide('navigation', { navigations, currentItem, authNavigations })
 
 const toggleSideBar = () => {
   open.value = !open.value
   open.value
-    ? (document.body.style.overflow = "hidden")
-    : (document.body.style.overflow = "auto");
+  ? (document.body.style.overflow = "hidden")
+  : (document.body.style.overflow = "auto");
 }
 
 const updateCurrentItem = () => {
@@ -93,6 +92,8 @@ const updateCurrentItem = () => {
 
   currentItem.value = (found || found2) || navigations[0] // fallback to first if not found
 }
+
+provide('navigation', { navigations, currentItem, authNavigations })
 
 // Initial set
 updateCurrentItem()

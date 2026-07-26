@@ -55,6 +55,7 @@ const props = defineProps({
 });
 
 const { getNumberOfPackagesNotInducted } = useLogic()
+const { setDraggedItem } = useDragStore();
 
 const { palletsOnfloorOptions, addPalletLoading, addPallet, setLocationLoading } = inject('induction')
 
@@ -84,20 +85,6 @@ const cursorType = computed(() => {
   return isDragging.value ? 'cursor-grabbing' : 'cursor-grab'
 })
 
-const { setDraggedItem } = useDragStore();
-
-function onDragStart(event, item) {
-  isDragging.value = true;
-  document.documentElement.classList.add("grabbing");
-  setDraggedItem(item);
-  event.dataTransfer.effectAllowed = 'move';
-}
-
-function onDragEnd() {
-  isDragging.value = false
-  document.documentElement.classList.remove("grabbing");
-}
-
 const menuItems = computed(() => [
   {
     label: 'Infos',
@@ -110,6 +97,18 @@ const menuItems = computed(() => [
       palletsOnfloorOptions.value?.length === 0
   },
 ])
+
+const onDragStart = (event, item) => {
+  isDragging.value = true;
+  document.documentElement.classList.add("grabbing");
+  setDraggedItem(item);
+  event.dataTransfer.effectAllowed = 'move';
+}
+
+const onDragEnd = () => {
+  isDragging.value = false
+  document.documentElement.classList.remove("grabbing");
+}
 
 const selectOptions = () => SelectOptionRef.value?.openDialog()
 
