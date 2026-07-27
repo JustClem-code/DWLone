@@ -1,6 +1,6 @@
 <template>
-  <aside class="fixed w-full h-screen top-0 bg-gray-100 dark:bg-gray-900 shadow-lg z-50"
-    :class="open ? 'left-0' : '-left-full'">
+  <aside class="fixed w-full h-screen top-0 bg-gray-100 dark:bg-gray-900 shadow-lg z-50 transition-transform duration-300 ease-in-out"
+    :class="open ? 'translate-x-0' : '-translate-x-full'">
     <div
       class="flex items-center justify-between flex-wrap border-b border-solid bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700/90 p-6">
       <LogoTitle />
@@ -28,9 +28,3 @@ const props = defineProps({
 const emit = defineEmits(['open'])
 
 </script>
-
-<style scoped>
-aside {
-  transition: left 0.3s ease-in-out;
-}
-</style>
