@@ -19,15 +19,21 @@
 
 <script setup>
 
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 import { userStore } from '../../composables/userStore.js'
 
 const { navigations, currentItem, authNavigations } = inject('navigation')
 
 const { isUser } = userStore()
 
+const currentName = computed(() => currentItem.value?.name)
+
 const navStyle = (item) => {
-  return [item.name === currentItem.value.name ? 'bg-gray-50 dark:bg-gray-950 text-blue-700 dark:text-gray-300' : 'text-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-gray-300', 'rounded-md px-3 py-2 text-sm font-medium']
+  return [item.name === currentName.value
+    ? 'bg-gray-50 dark:bg-gray-950 text-blue-700 dark:text-gray-300'
+    : 'text-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-gray-300',
+    'rounded-md px-3 py-2 text-sm font-medium'
+  ]
 }
 
 const hasBorder = (item) => {
