@@ -55,8 +55,6 @@ onMounted(() => {
 
 const open = ref(false)
 
-const currentItem = ref(navigations[0])
-
 const navigations = computed(() => [
   { name: 'Dashboard', href: '/', show: true },
   { name: 'Yard Truck', href: '/yard/truck', show: isUser.value },
@@ -65,6 +63,8 @@ const navigations = computed(() => [
   { name: 'Stow', href: '/warehouse/stow', show: isUser.value },
   { name: 'Picking', href: '/warehouse/picking', show: isUser.value },
 ])
+
+const currentItem = ref(navigations[0])
 
 const authNavigations = computed(() => [
   { name: 'Sign in', href: '/login', show: !isUser.value },
@@ -75,8 +75,6 @@ const avatarNavigations = computed(() => [
   { name: isDark.value ? 'Dark theme' : 'Light theme', click: toggleTheme, icon: isDark.value ? DarkIcon : LightIcon, sizeIcon: 'size-6' },
   { name: 'Sign out', click: logOut, icon: SignOutIcon, sizeIcon: 'size-6' },
 ])
-
-
 
 const toggleSideBar = () => {
   open.value = !open.value
