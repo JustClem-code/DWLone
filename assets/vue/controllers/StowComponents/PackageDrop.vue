@@ -5,14 +5,15 @@
       :actions="null" :numberOfPackages="pairPackages.packages.length" />
 
     <div class="relative w-full min-h-70 flex items-center justify-center">
-      <transition v-if="!stowingIsLoading" name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
-        enter-from-class="opacity-0" enter-to-class="opacity-100">
+      <transition v-if="!stowingIsLoading" name="fade-slide" tag="div"
+        enter-active-class="transition-all duration-500 ease-out" enter-from-class="opacity-0"
+        enter-to-class="opacity-100">
         <div v-if="pairPackages.packages.length !== 0" class="absolute top-0 w-full z-10 cursor-pointer"
           v-on:click="setCurrentPackage(pairPackages.packages[0])">
           <Package :package="pairPackages.packages[0]" :borderColor="currentPackage ? 'border-blue-500' : ''" />
         </div>
       </transition>
-      <p v-else  class="animate-pulse">Wait for another package</p>
+      <p v-else class="animate-pulse">Wait for another package</p>
     </div>
   </div>
 </template>
@@ -26,9 +27,10 @@ const props = defineProps({
   pairPackages: Object,
 });
 
+const { setCurrentPackage, currentPackage, stowingIsLoading } = inject('stow')
+
 const noticeHeader = computed(() => {
   return props.pairPackages.packages.length === 0 ? 'The drop is empty' : 'Click on the package, then on its location.'
 })
 
-const { setCurrentPackage, currentPackage, stowingIsLoading } = inject('stow')
 </script>

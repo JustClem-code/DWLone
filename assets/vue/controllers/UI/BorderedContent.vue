@@ -9,8 +9,10 @@
 </template>
 
 <script setup>
-defineProps({
+
+const props = defineProps({
   title: String,
   width: String
 });
+
 </script>

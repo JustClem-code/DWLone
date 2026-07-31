@@ -29,6 +29,6 @@ const props = defineProps({
 
 const emit = defineEmits(['click'])
 
-const disabled = computed(() => props.isDisabled || props.isLoading ? true : false)
+const disabled = computed(() => props.isDisabled || props.isLoading)
 
 </script>

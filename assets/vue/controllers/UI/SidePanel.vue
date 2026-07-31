@@ -28,9 +28,8 @@
   </div>
 </template>
 
-
-
 <script setup>
+
 import { ref } from 'vue';
 import IconButton from './Buttons/IconButton.vue';
 import CrossIcon from './Icons/CrossIcon.vue';
@@ -51,4 +50,5 @@ const toggleSidePanel = () => {
 }
 
 defineExpose({ toggleSidePanel, isOpen });
+
 </script>

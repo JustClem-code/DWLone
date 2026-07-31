@@ -1,10 +1,11 @@
 <template>
   <div class="relative inline-block text-left">
-    <IconButton :isExpanded="isOpen.toString()" @click="toggleMenu" >
+    <IconButton :isExpanded="isOpen.toString()" @click="toggleMenu">
       <RoundBurgerIcon />
     </IconButton>
 
     <OverlayInvisible v-show="isOpen" @click="toggleMenu" />
+
     <div v-show="isOpen"
       class="absolute right-0 mt-2 w-44 origin-top-right z-10 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-0 dark:border-1 dark:border-gray-700/90"
       role="menu">
@@ -43,4 +44,5 @@ const onSelect = (item) => {
   }
   toggleMenu()
 }
+
 </script>

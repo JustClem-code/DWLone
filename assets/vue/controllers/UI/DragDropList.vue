@@ -19,11 +19,11 @@ const items = ref([
 
 const draggedIndex = ref(null)
 
-function onDragStart(index) {
+const onDragStart = (index) => {
   draggedIndex.value = index
 }
 
-function onDrop(index) {
+const onDrop = (index) => {
   if (draggedIndex.value === null || draggedIndex.value === index) return
 
   const moved = items.value[draggedIndex.value]

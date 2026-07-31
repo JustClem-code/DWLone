@@ -3,5 +3,7 @@
 </template>
 
 <script setup>
+
 const emit = defineEmits(['click'])
+
 </script>

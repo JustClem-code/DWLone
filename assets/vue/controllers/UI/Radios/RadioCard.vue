@@ -24,10 +24,6 @@ const props = defineProps({
   modelValue: String,
 })
 
-onMounted(() => {
-  // console.log('option', props.option);
-})
-
 const emit = defineEmits(['update:modelValue'])
 
 </script>
