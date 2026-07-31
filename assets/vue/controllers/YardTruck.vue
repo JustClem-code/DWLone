@@ -20,6 +20,7 @@
 <script setup>
 
 import { ref, provide, computed } from 'vue'
+
 import BorderedContent from './UI/BorderedContent.vue'
 import DockCardComponent from './YardTruckComponents/DockCardComponent.vue'
 import TruckListComponent from './YardTruckComponents/TruckListComponent.vue'
@@ -40,12 +41,6 @@ const notDepartedTrucks = computed(() => {
   if (!trucks.value) return
   return trucks.value.filter(truck => truck.departureDate === null);
 })
-
-provide('yardTruck', { notDepartedTrucks, trucks, dockingTruck, dockingIsLoading })
-
-console.log("trucks", trucks);
-console.log("docks", docks);
-console.log("notDepartedTrucks", notDepartedTrucks);
 
 
 const freeDocks = computed(() => {
@@ -118,5 +113,7 @@ async function dockingTruck(truck, dock, reset) {
 
   }
 }
+
+provide('yardTruck', { notDepartedTrucks, trucks, dockingTruck, dockingIsLoading })
 
 </script>

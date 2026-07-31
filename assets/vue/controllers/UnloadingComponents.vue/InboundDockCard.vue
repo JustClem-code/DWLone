@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+
 import { inject, ref, computed } from 'vue'
 
 import BadgeComponent from '../UI/BadgeComponent.vue';
@@ -42,12 +43,12 @@ const props = defineProps({
   dock: Object
 })
 
+const SelectOptionRef = ref(null)
+
 const nbOfPallets = computed(() => {
   if (!props.dock) return
   return getPalletsNotUnloaded(props.dock?.pallets).length
 })
-
-const SelectOptionRef = ref(null)
 
 const badgeType = computed(() => {
   if (!props.dock) return null;
@@ -58,6 +59,5 @@ const badgeTitle = computed(() => {
   if (!props.dock) return null;
   return nbOfPallets.value === 0 ? 'Empty' : `${nbOfPallets.value}`;
 })
-
 
 </script>

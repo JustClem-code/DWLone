@@ -40,7 +40,7 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// transformer les fonction pour calculer des état en computed (ex: focusedPairs)
+// Faire un refacto des async functions dans stow par exemple
 
 // mettre un sous-menu avec #id sur les partis pour éviter de scroller ?
 

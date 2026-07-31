@@ -13,6 +13,7 @@
 <script setup>
 
 import { ref, computed, provide, watch, onMounted } from 'vue'
+
 import { useFetch, usePostFetch } from '../composables/fetch.js'
 import { useLogic } from '../composables/useLogic.js'
 import { useNotification } from '../composables/eventBus.js'
@@ -38,9 +39,11 @@ const currentPackage = ref(null)
 onMounted(() => {
   const raw = localStorage.getItem(STORAGE_KEY)
   currentPallet.value = raw ? JSON.parse(raw) : null
-  console.log('current pallet onmounted', currentPallet.value);
 })
 
+const palletsOnfloorOptions = computed(() => {
+  return palletsOnFloorWithPackages.value?.filter(p => p.id !== currentPallet.value?.id)
+})
 
 const addPallet = (val) => {
   addPalletLoading.value = true
@@ -51,12 +54,6 @@ const addPallet = (val) => {
     addPalletLoading.value = false
   }, 1000);
 }
-
-const palletsOnfloorOptions = computed(() => {
-  return palletsOnFloorWithPackages.value?.filter(p => p.id !== currentPallet.value?.id)
-})
-
-provide('induction', { palletsOnfloorOptions, addPallet, addPalletLoading, setLocation, setLocationLoading })
 
 const updateCurrentPallet = () => {
   currentPallet.value.packages = currentPallet.value.packages.filter((i) => i.id !== currentPackage.value.id);
@@ -85,6 +82,8 @@ async function setLocation(inductedPackage) {
     }, 1500);
   }
 }
+
+provide('induction', { palletsOnfloorOptions, addPallet, addPalletLoading, setLocation, setLocationLoading })
 
 watch(
   currentPallet,

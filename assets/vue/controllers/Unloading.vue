@@ -20,6 +20,7 @@
 <script setup>
 
 import { ref, provide, computed } from 'vue'
+
 import BorderedContent from './UI/BorderedContent.vue'
 import InboundDockCard from './UnloadingComponents.vue/InboundDockCard.vue'
 import PalletList from './UnloadingComponents.vue/PalletList.vue'
@@ -38,10 +39,6 @@ const unLoadingError = ref(null)
 const unLoadingIsLoading = ref(false)
 
 provide('unLoading', { unloadingPallet, unLoadingIsLoading })
-
-console.log("occupied docks", docks);
-console.log("unloaded pallet", palletsOnFloor);
-
 
 const updateListElements = () => {
 

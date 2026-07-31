@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+
 import { inject, ref, computed } from 'vue'
 import { useLogic } from '../../composables/useLogic.js'
 
@@ -35,11 +36,9 @@ import ConfirmationComponent from '../UI/Modals/ConfirmationComponent.vue';
 
 import PalletInfo from '../SharedComponents/PalletInfo.vue';
 
-
 const { getNumberOfPackagesNotInducted, handleMenuAction } = useLogic()
 
 const { unloadingPallet } = inject('unLoading')
-
 
 const props = defineProps({
   pallets: Array,
@@ -50,18 +49,6 @@ const currentPallet = ref(null)
 const infoDialogRef = ref(null);
 
 const confirmResetDialogRef = ref(null);
-
-const badgeType = (pallet) => {
-  return getNumberOfPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
-}
-
-const badgeTitle = (pallet) => {
-  return getNumberOfPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getNumberOfPackagesNotInducted(pallet)}`;
-}
-
-const setCurrentPallet = (pallet) => {
-  currentPallet.value = pallet
-}
 
 const menuItems = computed(() => [
   {
@@ -76,11 +63,24 @@ const menuItems = computed(() => [
   },
 ])
 
+const badgeType = (pallet) => {
+  return getNumberOfPackagesNotInducted(pallet) === 0 ? 'warning' : 'valid';
+}
+
+const badgeTitle = (pallet) => {
+  return getNumberOfPackagesNotInducted(pallet) === 0 ? 'Empty' : `${getNumberOfPackagesNotInducted(pallet)}`;
+}
+
+const setCurrentPallet = (pallet) => {
+  currentPallet.value = pallet
+}
+
 const resetItem = () => {
   unloadingPallet(currentPallet.value, true)
   confirmResetDialogRef.value?.closeDialog()
 }
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
+
 const openInfos = () => {
   infoDialogRef.value?.openDialog()
 }

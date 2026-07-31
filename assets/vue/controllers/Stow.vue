@@ -121,7 +121,6 @@ async function stowPackage(loc) {
 provide('stow', { currentPair, setCurrentPackage, currentPackage, stowingIsLoading })
 
 const handleToggle = () => {
-
   if (!sidePanelRef.value?.isOpen) {
     currentPackage.value = null
   }

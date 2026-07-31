@@ -18,6 +18,7 @@
       </div>
     </li>
   </ul>
+  
   <DialogComponentSlot ref="SelectOptionRef">
     <SelectOptionComponent :options="docks" :isLoading="dockingIsLoading"
       @submitOption="val => dockingTruck(currentTruck, val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" />
@@ -37,7 +38,9 @@
 </template>
 
 <script setup>
+
 import { inject, ref, toRef, computed } from 'vue'
+
 import BadgeComponent from '../UI/BadgeComponent.vue';
 import MinimalToggleMenu from '../UI/MinimalToggleMenu.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
@@ -70,31 +73,6 @@ const infoDialogRef = ref(null);
 const confirmUndockDialogRef = ref(null);
 
 const confirmResetDialogRef = ref(null);
-
-const badgeType = (truck) => {
-  if (truck.departureDate) {
-    return 'danger'
-  }
-  return truck.dock ? 'warning' : 'valid';
-}
-
-const badgeTitle = (truck) => {
-  if (truck.departureDate) {
-    return 'finish'
-  }
-  return truck.dock ?? 'Waiting dock'
-}
-
-const dateInfo = (truck) => {
-  if (truck.departureDate) {
-    return formattedDateFr(truck.departureDate)
-  }
-  return formattedDateFr(truck.deliveryDate ?? truck.expectedDate)
-}
-
-const setCurrentTruck = (truck) => {
-  currentTruck.value = truck
-}
 
 const truckInfos = computed(() => {
   return {
@@ -148,6 +126,31 @@ const menuItems = computed(() => [
   },
 ])
 
+const badgeType = (truck) => {
+  if (truck.departureDate) {
+    return 'danger'
+  }
+  return truck.dock ? 'warning' : 'valid';
+}
+
+const badgeTitle = (truck) => {
+  if (truck.departureDate) {
+    return 'finish'
+  }
+  return truck.dock ?? 'Waiting dock'
+}
+
+const dateInfo = (truck) => {
+  if (truck.departureDate) {
+    return formattedDateFr(truck.departureDate)
+  }
+  return formattedDateFr(truck.deliveryDate ?? truck.expectedDate)
+}
+
+const setCurrentTruck = (truck) => {
+  currentTruck.value = truck
+}
+
 const unDocking = () => {
   dockingTruck(currentTruck.value, null)
   confirmUndockDialogRef.value?.closeDialog()
@@ -156,6 +159,7 @@ const resetItem = () => {
   dockingTruck(currentTruck.value, null, true)
   confirmResetDialogRef.value?.closeDialog()
 }
+
 const confirmUndocking = () => confirmUndockDialogRef.value?.openDialog()
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()
 const openInfos = () => infoDialogRef.value?.openDialog()
