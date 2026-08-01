@@ -23,7 +23,7 @@ class TruckRepository extends ServiceEntityRepository
     parent::__construct($registry, Truck::class);
   }
 
-  private function toArray(Truck $truck): array
+  public function toArray(Truck $truck): array
   {
     return [
       'id' => $truck->getId(),

@@ -143,37 +143,45 @@ class Truck
 
   public function getDepartureDate(): ?\DateTime
   {
-      return $this->DepartureDate;
+    return $this->DepartureDate;
   }
 
   public function setDepartureDate(?\DateTime $DepartureDate): static
   {
-      $this->DepartureDate = $DepartureDate;
+    $this->DepartureDate = $DepartureDate;
 
-      return $this;
+    return $this;
   }
 
   public function getUserDelDate(): ?User
   {
-      return $this->userDelDate;
+    return $this->userDelDate;
   }
 
   public function setUserDelDate(?User $userDelDate): static
   {
-      $this->userDelDate = $userDelDate;
+    $this->userDelDate = $userDelDate;
 
-      return $this;
+    return $this;
   }
 
   public function getUserDepDate(): ?User
   {
-      return $this->userDepDate;
+    return $this->userDepDate;
   }
 
   public function setUserDepDate(?User $userDepDate): static
   {
-      $this->userDepDate = $userDepDate;
+    $this->userDepDate = $userDepDate;
 
-      return $this;
+    return $this;
+  }
+
+  public function resetTruck(): void
+  {
+    $this->setDeliveryDate(null);
+    $this->setUserDelDate(null);
+    $this->setDepartureDate(null);
+    $this->setUserDepDate(null);
   }
 }

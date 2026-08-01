@@ -34,6 +34,14 @@ class DockRepository extends ServiceEntityRepository
     ];
   }
 
+  public function toArrayLight(Dock $dock): array
+  {
+    return [
+      'id' => $dock->getId(),
+      'name' => $dock->getName(),
+    ];
+  }
+
   public function transformAll(): array
   {
     return  $this->transFormEntities($this->findAll(), [$this, 'toArray']);

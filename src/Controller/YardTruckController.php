@@ -22,7 +22,12 @@ use Symfony\Bundle\SecurityBundle\Security;
 final class YardTruckController extends AbstractController
 {
 
-  public function __construct(private Security $security) {}
+  public function __construct(
+    private Security $security,
+    private EntityManagerInterface $entityManager,
+    private DockRepository $dockRepository,
+    private TruckRepository $truckRepository,
+  ) {}
 
   use RepositoryTrait;
 
@@ -35,38 +40,35 @@ final class YardTruckController extends AbstractController
   }
 
   #[Route('/getdocks', name: 'get_docks_list', methods: ['GET'])]
-  public function getDocks(DockRepository $repository): Response
+  public function getDocks(): Response
   {
-    return $this->json($repository->transformAll());
+    return $this->json($this->dockRepository->transformAll());
   }
 
   #[Route('/gettrucks', name: 'get_trucks_list', methods: ['GET'])]
-  public function getTrucks(TruckRepository $repository): Response
+  public function getTrucks(): Response
   {
-    return $this->json($repository->transformAll());
+    return $this->json($this->truckRepository->transformAll());
   }
 
   #[Route('/dockingTruck/{id}', name: 'docking_truck')]
   public function dockingTruck(
     Request $request,
-    EntityManagerInterface $entityManager,
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('id');
     $reset = $request->getPayload()->get('reset');
 
-    $truck = $entityManager->getRepository(Truck::class)->find($id);
-    $dock = $this->findOrNull($entityManager->getRepository(Dock::class), $formData);
+    $truck = $this->entityManager->getRepository(Truck::class)->find($id);
+    $dock = $this->findOrNull($this->entityManager->getRepository(Dock::class), $formData);
     $previousDock = null;
 
     if (!$truck) {
-      throw $this->createNotFoundException(
-        'No truck found for id ' . $id
-      );
+      return $this->json(['error' => 'No truck found for id ' . $id], 404);
     }
 
     if ($dock?->getTruck()) {
-      return $this->json(['status' => 'error', 'message' => 'Dock is not available'], 400);
+      return $this->json(['error' => 'Dock is not available'], 404);
     }
 
     if ($truck->getDock()) {
@@ -76,10 +78,7 @@ final class YardTruckController extends AbstractController
     $truck->setDock($dock);
 
     if ($reset) {
-      $truck->setDeliveryDate(null);
-      $truck->setUserDelDate(null);
-      $truck->setDepartureDate(null);
-      $truck->setUserDepDate(null);
+      $truck->resetTruck();
     } else {
       $date = new \DateTime();
       if ($truck->getDock()) {
@@ -91,9 +90,9 @@ final class YardTruckController extends AbstractController
       }
     }
 
-    $entityManager->flush();
+    $this->entityManager->flush();
 
-    return $this->json(
+    /* return $this->json(
       [
         'dockId' => $dock?->getId() ?? null,
         'dockName' => $dock?->getName() ?? null,
@@ -105,6 +104,14 @@ final class YardTruckController extends AbstractController
         'userDelDate' => $truck->getUserDelDate()?->getUsername() ?? null,
         'departureDate' => $truck->getDepartureDate(),
         'userDepDate' => $truck->getUserDepDate()?->getUsername() ?? null,
+      ]
+    ); */
+
+    return $this->json(
+      [
+        'dock' => $dock ? $this->dockRepository->toArrayLight($dock) : null,
+        'previousDock' => $previousDock ? $this->dockRepository->toArrayLight($previousDock) : null,
+        'truck' => $this->truckRepository->toArray($truck)
       ]
     );
   }
