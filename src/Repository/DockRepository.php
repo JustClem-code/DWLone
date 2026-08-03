@@ -23,7 +23,7 @@ class DockRepository extends ServiceEntityRepository
     parent::__construct($registry, Dock::class);
   }
 
-  private function toArray(Dock $dock): array
+  public function toArray(Dock $dock): array
   {
     return [
       'id' => $dock->getId(),
@@ -31,14 +31,6 @@ class DockRepository extends ServiceEntityRepository
       'truckId' => $dock->getTruck()?->getId(),
       'truckName' => $dock->getTruck()?->getName(),
       'pallets' => $dock->getTruck() ? $this->transFormEntities($dock->getTruck()?->getPallets(), [$this->palletRepository, 'toArray']) : null,
-    ];
-  }
-
-  public function toArrayLight(Dock $dock): array
-  {
-    return [
-      'id' => $dock->getId(),
-      'name' => $dock->getName(),
     ];
   }
 

@@ -31,6 +31,7 @@ import { useNotification } from '../composables/eventBus.js'
 const { data: docks, error: errorDock } = useFetch('/getdocks')
 const { data: trucks, error: errorTruck } = useFetch('/gettrucks')
 
+
 const { notifier } = useNotification()
 
 const dockingData = ref(null)
@@ -49,43 +50,33 @@ const freeDocks = computed(() => {
 })
 
 const updateListElements = () => {
+
   const {
-    truckId,
-    previousDockId,
-    dockId,
-    dockName,
-    truckName,
-    deliveryDate,
-    userDelDate,
-    departureDate,
-    userDepDate
+    dock,
+    previousDock,
+    truck
   } = dockingData.value
 
-  const truck = trucks.value.find(t => t.id === truckId)
+  const currentTruck = trucks.value.find(t => t.id === truck.id)
 
-  if (!truck) return
+  if (!currentTruck) return
 
-  if (previousDockId) {
-    const previousDock = docks.value.find(d => d.id === previousDockId)
-    if (previousDock) {
-      previousDock.truckName = null
-      previousDock.truckId = null
+  Object.assign(currentTruck, truck)
+
+  if (previousDock) {
+    const currentPreviousDock = docks.value.find(d => d.id === previousDock.id)
+    if (currentPreviousDock) {
+      Object.assign(currentPreviousDock, previousDock)
     }
   }
 
-  if (dockId) {
-    const newDock = docks.value.find(d => d.id === dockId)
+  if (dock) {
+    const newDock = docks.value.find(d => d.id === dock.id)
     if (newDock) {
-      newDock.truckName = truckName
-      newDock.truckId = truckId
+      Object.assign(newDock, dock)
     }
   }
 
-  truck.dock = dockName || null
-  truck.deliveryDate = deliveryDate || null
-  truck.userDelDate = userDelDate || null
-  truck.departureDate = departureDate || null
-  truck.userDepDate = userDepDate || null
 }
 
 async function dockingTruck(truck, dock, reset) {
