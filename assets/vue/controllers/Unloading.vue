@@ -35,10 +35,7 @@ const { data: docks, error: errorDock } = useFetch('/getoccupieddocks')
 const { data: palletsOnFloor, error: errorPallet } = useFetch('/getpalletsonfloor')
 
 const unLoadingData = ref(null)
-const unLoadingError = ref(null)
 const unLoadingIsLoading = ref(false)
-
-provide('unLoading', { unloadingPallet, unLoadingIsLoading })
 
 const updateListElements = () => {
 
@@ -48,13 +45,12 @@ const updateListElements = () => {
 
   if (!palletInTruck) return
 
-  palletInTruck.userId = unLoadingData.value.userId || null
-  palletInTruck.userName = unLoadingData.value.userName || null
+  Object.assign(palletInTruck, unLoadingData.value)
 
-  const palletOnFloorIndex = palletsOnFloor.value.findIndex(p => p.id === unLoadingData.value.id)
+  const palletOnFloorIndex = palletsOnFloor.value.findIndex(p => p.id === palletInTruck.id)
 
   if (palletOnFloorIndex === -1) {
-    palletsOnFloor.value.push(unLoadingData.value)
+    palletsOnFloor.value.push(palletInTruck)
   } else {
     palletsOnFloor.value.splice(palletOnFloorIndex, 1)
   }
@@ -66,10 +62,19 @@ async function unloadingPallet(pallet, reset) {
 
   const { data, error } = await usePostFetch(`/unloadingPallet/${pallet.id}`, { reset: reset ?? false })
 
-  unLoadingData.value = data.value;
-  unLoadingError.value = error.value;
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error unloading', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      unLoadingIsLoading.value = false;
+      unLoadingData.value = data.value;
+      return
+    }, 1500);
+  }
 
-  if (unLoadingData.value) {
+  if (data.value) {
+    unLoadingData.value = data.value;
     updateListElements()
     unLoadingIsLoading.value = false;
 
@@ -78,9 +83,9 @@ async function unloadingPallet(pallet, reset) {
     } else {
       notifier('success', 'Unloading', `The pallet (Id: ${unLoadingData.value.id}) is undloaded`)
     }
-
   }
 }
 
+provide('unLoading', { unloadingPallet, unLoadingIsLoading })
 
 </script>

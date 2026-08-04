@@ -82,9 +82,11 @@ final class YardTruckController extends AbstractController
     } else {
       $date = new \DateTime();
       if ($truck->getDock()) {
+        // Docking truck
         $truck->setDeliveryDate($date);
         $truck->setUserDelDate($this->security->getUser());
       } else {
+        // Undocking truck
         $truck->setDepartureDate($date);
         $truck->setUserDepDate($this->security->getUser());
       }

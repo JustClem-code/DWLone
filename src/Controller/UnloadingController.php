@@ -19,7 +19,12 @@ use App\Repository\PalletRepository;
 
 final class UnloadingController extends AbstractController
 {
-  public function __construct(private Security $security) {}
+  public function __construct(
+    private Security $security,
+    private EntityManagerInterface $entityManager,
+    private DockRepository $dockRepository,
+    private PalletRepository $palletRepository
+  ) {}
 
   use RepositoryTrait;
 
@@ -32,32 +37,27 @@ final class UnloadingController extends AbstractController
   }
 
   #[Route('/getoccupieddocks', name: 'get_occupied_docks_list', methods: ['GET'])]
-  public function getDocks(DockRepository $repository): Response
+  public function getDocks(): Response
   {
-    return $this->json($repository->transformOccupiedDocks());
+    return $this->json($this->dockRepository->transformOccupiedDocks());
   }
 
   #[Route('/getpalletsonfloor', name: 'get_pallets_on_floor_list', methods: ['GET'])]
-  public function getPalletsOnFloor(PalletRepository $repository): Response
+  public function getPalletsOnFloor(): Response
   {
-    return $this->json($repository->findAllHasUser());
+    return $this->json($this->palletRepository->findAllHasUser());
   }
 
   #[Route('/unloadingPallet/{id}', name: 'unloading_pallet')]
   public function unloadingPallet(
     Request $request,
-    EntityManagerInterface $entityManager,
-    int $id,
-    PalletRepository $repository
+    int $id
   ): Response {
     $reset = $request->getPayload()->get('reset');
-
-    $pallet = $entityManager->getRepository(Pallet::class)->find($id);
+    $pallet = $this->entityManager->getRepository(Pallet::class)->find($id);
 
     if (!$pallet) {
-      throw $this->createNotFoundException(
-        'No pallet found for id ' . $id
-      );
+      return $this->json(['error' => 'No pallet found for id ' . $id], 404);
     }
 
     if ($reset) {
@@ -66,10 +66,10 @@ final class UnloadingController extends AbstractController
       $pallet->setUserId($this->security->getUser());
     }
 
-    $entityManager->flush();
+    $this->entityManager->flush();
 
     return $this->json(
-      $repository->toArray($pallet)
+      $this->palletRepository->toArray($pallet)
     );
   }
 }
