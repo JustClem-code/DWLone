@@ -105,6 +105,17 @@ async function stowPackage(loc) {
 
   const { data, error } = await usePostFetch(`/setUserStow/${currentPackage.value.id}`)
 
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error stow', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      stowingIsLoading.value = false;
+      currentPackage.value = null;
+      return
+    }, 1500);
+  }
+
   if (data.value) {
     currentPackage.value = data.value
     updateCurrentPairPackages()

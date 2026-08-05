@@ -68,7 +68,7 @@ async function unloadingPallet(pallet, reset) {
     }, 1000);
     setTimeout(() => {
       unLoadingIsLoading.value = false;
-      unLoadingData.value = data.value;
+      unLoadingData.value = null;
       return
     }, 1500);
   }

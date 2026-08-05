@@ -16,7 +16,9 @@ final class StowController extends AbstractController
 {
   public function __construct(
     private LocationArrayTransformerService $locationArrayTransformerService,
-    private SetPackageLocationService $setPackageLocationService
+    private SetPackageLocationService $setPackageLocationService,
+    private EntityManagerInterface $entityManager,
+    private PackageRepository $packageRepository
   ) {}
 
   #[Route('/warehouse/stow', name: 'app_stow')]
@@ -35,21 +37,16 @@ final class StowController extends AbstractController
 
   #[Route('/setUserStow/{id}', name: 'set_user_stow', methods: ['POST'])]
   public function setUserStow(
-    Package $package,
-    EntityManagerInterface $entityManager,
-    PackageRepository $packageRepository,
     int $id,
   ): Response {
-    $package = $entityManager->getRepository(Package::class)->find($id);
+    $package = $this->entityManager->getRepository(Package::class)->find($id);
 
     if (!$package) {
-      throw $this->createNotFoundException(
-        'No package found for id ' . $id
-      );
+      return $this->json(['error' => 'No package found for id ' . $id], 404);
     }
 
-    $package =$this->setPackageLocationService->setPackageUserStow($package);
+    $package = $this->setPackageLocationService->setPackageUserStow($package);
 
-    return $this->json($packageRepository->toArray($package));
+    return $this->json($this->packageRepository->toArray($package));
   }
 }

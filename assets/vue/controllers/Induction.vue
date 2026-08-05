@@ -68,6 +68,17 @@ async function setLocation(inductedPackage) {
 
   const { data, error } = await usePostFetch(`/setLocation/${inductedPackage.id}`)
 
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error induction', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      setLocationLoading.value = false;
+      currentPackage.value = null;
+      return
+    }, 1500);
+  }
+
   if (data.value) {
     currentPackage.value = data.value
     updateCurrentPallet()
