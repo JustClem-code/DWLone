@@ -40,19 +40,16 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Refacto yardTruck? la logique de docking et et undocking n'est pas claire, il faut approfondir le refacto
-
-// Faire un refacto des async functions dans stow par exemple
+// retrouver les bag dans les allées avant de tester un snake path
+// creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
+// Reefacto SetUserToStow pour faire la vérification de la bonne location côté symfony
 
 // mettre un sous-menu avec #id sur les partis pour éviter de scroller ?
 
 // Ajouter l'état du picking par bag dans BagPprocessing (Dashboard)
 
-// retrouver les bag dans les allées avant de tester un snake path
 
-// creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
 
-// Reefacto SetUserToStow pour faire la vérification de la bonne location côté symfony
 
 
 // Afficher le plan des stagging avec les emplacements occupés

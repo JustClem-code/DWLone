@@ -18,7 +18,7 @@
       </div>
     </li>
   </ul>
-  
+
   <DialogComponentSlot ref="SelectOptionRef">
     <SelectOptionComponent :options="docks" :isLoading="dockingIsLoading"
       @submitOption="val => dockingTruck(currentTruck, val.selected)" @closeDialog="SelectOptionRef?.closeDialog()" />
@@ -54,7 +54,7 @@ import { useLogic } from '../../composables/useLogic.js'
 
 const { getPalletsNotUnloaded, handleMenuAction } = useLogic()
 
-const { trucks, dockingTruck } = inject('yardTruck')
+const { trucks, resetDockingTruck, dockingTruck, unDockingTruck } = inject('yardTruck')
 
 const yardTruck = inject('yardTruck')
 const dockingIsLoading = toRef(yardTruck, 'dockingIsLoading')
@@ -152,11 +152,11 @@ const setCurrentTruck = (truck) => {
 }
 
 const unDocking = () => {
-  dockingTruck(currentTruck.value, null)
+  unDockingTruck(currentTruck.value)
   confirmUndockDialogRef.value?.closeDialog()
 }
 const resetItem = () => {
-  dockingTruck(currentTruck.value, null, true)
+  resetDockingTruck()
   confirmResetDialogRef.value?.closeDialog()
 }
 

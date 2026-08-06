@@ -79,11 +79,35 @@ const updateListElements = () => {
 
 }
 
-async function dockingTruck(truck, dock, reset) {
+async function resetDockingTruck(truck) {
 
   dockingIsLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/dockingTruck/${truck.id}`, { id: dock?.id ?? null, reset: reset ?? false })
+  const { data, error } = await usePostFetch(`/resetDockingTruck/${truck.id}`)
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error rest docking', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      dockingIsLoading.value = false;
+      dockingData.value = null;
+      return
+    }, 1500);
+  }
+
+  if (data.value) {
+    dockingData.value = data.value;
+    updateListElements()
+    dockingIsLoading.value = false;
+    notifier('success', 'Reset', `The truck (Vrid: ${dockingData.value.truck.name}) is reset`)
+  }
+}
+async function dockingTruck(truck, dock) {
+
+  dockingIsLoading.value = true;
+
+  const { data, error } = await usePostFetch(`/dockingTruck/${truck.id}`, { id: dock.id })
 
   if (error.value) {
     setTimeout(() => {
@@ -100,19 +124,35 @@ async function dockingTruck(truck, dock, reset) {
     dockingData.value = data.value;
     updateListElements()
     dockingIsLoading.value = false;
-
-    console.log(dockingData.value);
-    if (reset) {
-      notifier('success', 'Reset', `The truck (Vrid: ${dockingData.value.truck.name}) is reset`)
-    } else if (!dockingData.value.dock) {
-      notifier('success', 'Undocking', `The truck (Vrid: ${dockingData.value.truck.name}) departure from the dock ${dockingData.value.previousDock.name}`)
-    } else {
-      notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truck.name}) docking ${dockingData.value.dock.name}`)
-    }
-
+    notifier('success', 'Docking', `The truck (Vrid: ${dockingData.value.truck.name}) docking ${dockingData.value.dock.name}`)
   }
 }
 
-provide('yardTruck', { notDepartedTrucks, trucks, dockingTruck, dockingIsLoading })
+async function unDockingTruck(truck) {
+
+  dockingIsLoading.value = true;
+
+  const { data, error } = await usePostFetch(`/unDockingTruck/${truck.id}`)
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error unDocking', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      dockingIsLoading.value = false;
+      dockingData.value = null;
+      return
+    }, 1500);
+  }
+
+  if (data.value) {
+    dockingData.value = data.value;
+    updateListElements()
+    dockingIsLoading.value = false;
+    notifier('success', 'Undocking', `The truck (Vrid: ${dockingData.value.truck.name}) departure from the dock ${dockingData.value.previousDock.name}`)
+  }
+}
+
+provide('yardTruck', { notDepartedTrucks, trucks, dockingTruck, unDockingTruck, dockingIsLoading })
 
 </script>

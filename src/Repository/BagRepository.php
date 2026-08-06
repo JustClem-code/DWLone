@@ -81,7 +81,7 @@ class BagRepository extends ServiceEntityRepository
     return [
       'id' => $bag->getId(),
       'name' => $bag->getName(),
-      'location' => $bag->getLocation()->getId(),
+      'location' => $bag->getLocation() ? $bag->getLocation()->getId() : null,
       'roadPart' => $bag->getRoadPart(),
     ];
   }
@@ -91,7 +91,7 @@ class BagRepository extends ServiceEntityRepository
     return [
       'id' => $bag->getId(),
       'name' => $bag->getName(),
-      'location' => $bag->getLocation()->getName(),
+      'location' => $bag->getLocation() ? $bag->getLocation()->getName() : null,
       'picked' => $bag->isPicked(),
       'loaded' => $bag->isLoaded(),
     ];

@@ -51,6 +51,8 @@ final class YardTruckController extends AbstractController
     return $this->json($this->truckRepository->transformAll());
   }
 
+
+  // TODO: SPLIT la fonction
   #[Route('/dockingTruck/{id}', name: 'docking_truck')]
   public function dockingTruck(
     Request $request,
