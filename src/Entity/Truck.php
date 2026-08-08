@@ -179,6 +179,7 @@ class Truck
 
   public function resetTruck(): void
   {
+    $this->setDock(null);
     $this->setDeliveryDate(null);
     $this->setUserDelDate(null);
     $this->setDepartureDate(null);

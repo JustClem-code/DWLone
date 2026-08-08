@@ -51,19 +51,44 @@ final class YardTruckController extends AbstractController
     return $this->json($this->truckRepository->transformAll());
   }
 
+  private function truckResponse(
+    Truck $truck,
+    ?Dock $dock = null,
+    ?Dock $previousDock = null,
+  ) {
+    return $this->json([
+      'truck' => $this->truckRepository->toArray($truck),
+      'dock' => $dock ? $this->dockRepository->toArray($dock) : null,
+      'previousDock' => $previousDock ? $this->dockRepository->toArray($previousDock) : null,
+    ]);
+  }
 
-  // TODO: SPLIT la fonction
+  #[Route('/resetDockingTruck/{id}', name: 'reset_docking_truck')]
+  public function resetDockingTruck(int $id): Response
+  {
+
+    $truck = $this->truckRepository->find($id);
+
+    if (!$truck) {
+      return $this->json(['error' => 'No truck found for id ' . $id], 404);
+    }
+
+    $truck->resetTruck();
+
+    $this->entityManager->flush();
+
+    return $this->truckResponse($truck);
+  }
+
   #[Route('/dockingTruck/{id}', name: 'docking_truck')]
   public function dockingTruck(
     Request $request,
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('id');
-    $reset = $request->getPayload()->get('reset');
 
-    $truck = $this->entityManager->getRepository(Truck::class)->find($id);
-    $dock = $this->findOrNull($this->entityManager->getRepository(Dock::class), $formData);
-    $previousDock = null;
+    $truck = $this->truckRepository->find($id);
+    $dock = $this->findOrNull($this->dockRepository, $formData);
 
     if (!$truck) {
       return $this->json(['error' => 'No truck found for id ' . $id], 404);
@@ -73,35 +98,48 @@ final class YardTruckController extends AbstractController
       return $this->json(['error' => 'Dock is not available'], 404);
     }
 
-    if ($truck->getDock()) {
-      $previousDock = $truck->getDock();
-    }
+    $previousDock = $truck->getDock() ? $truck->getDock() : null;
+    $date = new \DateTime();
 
     $truck->setDock($dock);
-
-    if ($reset) {
-      $truck->resetTruck();
-    } else {
-      $date = new \DateTime();
-      if ($truck->getDock()) {
-        // Docking truck
-        $truck->setDeliveryDate($date);
-        $truck->setUserDelDate($this->security->getUser());
-      } else {
-        // Undocking truck
-        $truck->setDepartureDate($date);
-        $truck->setUserDepDate($this->security->getUser());
-      }
-    }
+    $truck->setDeliveryDate($date);
+    $truck->setUserDelDate($this->security->getUser());
 
     $this->entityManager->flush();
 
-    return $this->json(
-      [
-        'dock' => $dock ? $this->dockRepository->toArray($dock) : null,
-        'previousDock' => $previousDock ? $this->dockRepository->toArray($previousDock) : null,
-        'truck' => $this->truckRepository->toArray($truck)
-      ]
+    return $this->truckResponse(
+      truck: $truck,
+      dock: $dock,
+      previousDock: $previousDock,
+    );
+  }
+
+  #[Route('/unDockingTruck/{id}', name: 'undocking_truck')]
+  public function unDockingTruck(int $id): Response
+  {
+
+    $truck = $this->truckRepository->find($id);
+
+    if (!$truck) {
+      return $this->json(['error' => 'No truck found for id ' . $id], 404);
+    }
+
+    if (!$truck->getDock()) {
+      return $this->json(['error' => 'Truck is not docked'], 404);
+    }
+
+    $previousDock = $truck->getDock();
+    $date = new \DateTime();
+
+    $truck->setDock(null);
+    $truck->setDepartureDate($date);
+    $truck->setUserDepDate($this->security->getUser());
+
+    $this->entityManager->flush();
+
+    return $this->truckResponse(
+      previousDock: $previousDock,
+      truck: $truck,
     );
   }
 }

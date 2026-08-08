@@ -153,6 +153,6 @@ async function unDockingTruck(truck) {
   }
 }
 
-provide('yardTruck', { notDepartedTrucks, trucks, dockingTruck, unDockingTruck, dockingIsLoading })
+provide('yardTruck', { notDepartedTrucks, trucks, resetDockingTruck, dockingTruck, unDockingTruck, dockingIsLoading })
 
 </script>

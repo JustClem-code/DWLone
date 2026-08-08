@@ -156,7 +156,7 @@ const unDocking = () => {
   confirmUndockDialogRef.value?.closeDialog()
 }
 const resetItem = () => {
-  resetDockingTruck()
+  resetDockingTruck(currentTruck.value)
   confirmResetDialogRef.value?.closeDialog()
 }
 
