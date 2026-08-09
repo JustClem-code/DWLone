@@ -12,8 +12,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
-use App\Entity\Pallet;
-
 use App\Repository\DockRepository;
 use App\Repository\PalletRepository;
 
@@ -54,7 +52,7 @@ final class UnloadingController extends AbstractController
     int $id
   ): Response {
     $reset = $request->getPayload()->get('reset');
-    $pallet = $this->entityManager->getRepository(Pallet::class)->find($id);
+    $pallet = $this->palletRepository->find($id);
 
     if (!$pallet) {
       return $this->json(['error' => 'No pallet found for id ' . $id], 404);

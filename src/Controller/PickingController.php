@@ -18,10 +18,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Service\LocationArrayTransformerService;
 
-use App\Entity\Bag;
 use App\Entity\RoadPart;
-use App\Entity\Stagging;
-use App\Entity\Cart;
 
 final class PickingController extends AbstractController
 {
@@ -116,9 +113,9 @@ final class PickingController extends AbstractController
   ): Response {
     $formData = $request->getPayload()->get('staggingId');
 
-    $roadPart = $this->entityManager->getRepository(RoadPart::class)->find($id);
+    $roadPart = $this->roadPartRepository->find($id);
 
-    $stagging = $this->findOrNull($this->entityManager->getRepository(Stagging::class), $formData);
+    $stagging = $this->findOrNull($this->staggingRepository, $formData);
 
     if (!$roadPart) {
       return $this->json(['error' => 'No road part available'], 404);
@@ -156,8 +153,8 @@ final class PickingController extends AbstractController
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('staggingId');
-    $roadPart = $this->entityManager->getRepository(RoadPart::class)->find($id);
-    $stagging = $this->findOrNull($this->entityManager->getRepository(Stagging::class), $formData);
+    $roadPart = $this->roadPartRepository->find($id);
+    $stagging = $this->findOrNull($this->staggingRepository, $formData);
 
     if (!$roadPart) {
       return $this->json(['error' => 'No road part available'], 404);
@@ -196,8 +193,8 @@ final class PickingController extends AbstractController
     int $id,
   ): Response {
     $formData = $request->getPayload()->get('bagId');
-    $cart = $this->entityManager->getRepository(Cart::class)->find($id);
-    $bag = $this->findOrNull($this->entityManager->getRepository(Bag::class), $formData);
+    $cart = $this->cartRepository->find($id);
+    $bag = $this->findOrNull($this->bagRepository, $formData);
 
     $roadPart = $this->currentUserRoadpart();
     $bagToPick = $this->bagRepository->findUnpickedByRoadPart($roadPart)[0];

@@ -2,9 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Package;
-use App\Repository\PackageRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,12 +9,13 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Service\LocationArrayTransformerService;
 use App\Service\SetPackageLocationService;
 
+use App\Repository\PackageRepository;
+
 final class StowController extends AbstractController
 {
   public function __construct(
     private LocationArrayTransformerService $locationArrayTransformerService,
     private SetPackageLocationService $setPackageLocationService,
-    private EntityManagerInterface $entityManager,
     private PackageRepository $packageRepository
   ) {}
 
@@ -39,7 +37,7 @@ final class StowController extends AbstractController
   public function setUserStow(
     int $id,
   ): Response {
-    $package = $this->entityManager->getRepository(Package::class)->find($id);
+    $package = $this->packageRepository->find($id);
 
     if (!$package) {
       return $this->json(['error' => 'No package found for id ' . $id], 404);

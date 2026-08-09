@@ -40,7 +40,6 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// remplacer $this->entityManager->getRepository(Truck::class)->find($id); par le repository déjà injecter dans les controller
 // Update les liste de palette après un reset !!!!
 // Automatiser dans dashboard le yard et unloaded
 

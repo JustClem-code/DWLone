@@ -146,7 +146,7 @@ final class DashboardController extends AbstractController
   #[Route('/resetRoadPart/{id}', name: 'reset_road_part')]
   public function resetRoadPart(int $id): Response
   {
-    $roadPart = $this->entityManager->getRepository(RoadPart::class)->find($id);
+    $roadPart = $this->roadPartRepository->find($id);
 
     if (!$roadPart) {
       return $this->json(['error' => 'No road part available'], 404);

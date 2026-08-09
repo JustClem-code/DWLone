@@ -46,7 +46,7 @@ final class InductionController extends AbstractController
     int $id,
   ): Response {
 
-    $package = $this->entityManager->getRepository(Package::class)->find($id);
+    $package = $this->packageRepository->find($id);
 
     if (!$package) {
       return $this->json(['error' => 'No package found for id ' . $id], 404);
