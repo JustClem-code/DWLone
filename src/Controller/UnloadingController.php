@@ -7,7 +7,6 @@ use App\Repository\Trait\RepositoryTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -46,23 +45,33 @@ final class UnloadingController extends AbstractController
     return $this->json($this->palletRepository->findAllHasUser());
   }
 
-  #[Route('/unloadingPallet/{id}', name: 'unloading_pallet')]
-  public function unloadingPallet(
-    Request $request,
-    int $id
-  ): Response {
-    $reset = $request->getPayload()->get('reset');
+  #[Route('/resetUnloadingPallet/{id}', name: 'reset_unloading_pallet')]
+  public function resetUnloadingPallet(int $id): Response
+  {
     $pallet = $this->palletRepository->find($id);
 
     if (!$pallet) {
       return $this->json(['error' => 'No pallet found for id ' . $id], 404);
     }
 
-    if ($reset) {
-      $pallet->setUserId(null);
-    } else {
-      $pallet->setUserId($this->security->getUser());
+    $pallet->setUserId(null);
+
+    $this->entityManager->flush();
+
+    return $this->json(
+      $this->palletRepository->toArray($pallet)
+    );
+  }
+
+  #[Route('/unloadingPallet/{id}', name: 'unloading_pallet')]
+  public function unloadingPallet(int $id): Response {
+    $pallet = $this->palletRepository->find($id);
+
+    if (!$pallet) {
+      return $this->json(['error' => 'No pallet found for id ' . $id], 404);
     }
+
+    $pallet->setUserId($this->security->getUser());
 
     $this->entityManager->flush();
 

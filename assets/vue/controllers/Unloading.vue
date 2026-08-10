@@ -57,10 +57,34 @@ const updateListElements = () => {
 
 }
 
-async function unloadingPallet(pallet, reset) {
+async function resetUnloadingPallet(pallet) {
   unLoadingIsLoading.value = true;
 
-  const { data, error } = await usePostFetch(`/unloadingPallet/${pallet.id}`, { reset: reset ?? false })
+  const { data, error } = await usePostFetch(`/resetUnloadingPallet/${pallet.id}`)
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Error reset unloading', `${error.value}`)
+    }, 1000);
+    setTimeout(() => {
+      unLoadingIsLoading.value = false;
+      unLoadingData.value = null;
+      return
+    }, 1500);
+  }
+
+  if (data.value) {
+    unLoadingData.value = data.value;
+    updateListElements()
+    unLoadingIsLoading.value = false;
+    notifier('success', 'Reset', `The pallet (Id: ${unLoadingData.value.id}) is reset`)
+  }
+}
+
+async function unloadingPallet(pallet) {
+  unLoadingIsLoading.value = true;
+
+  const { data, error } = await usePostFetch(`/unloadingPallet/${pallet.id}`)
 
   if (error.value) {
     setTimeout(() => {
@@ -77,15 +101,10 @@ async function unloadingPallet(pallet, reset) {
     unLoadingData.value = data.value;
     updateListElements()
     unLoadingIsLoading.value = false;
-
-    if (reset) {
-      notifier('success', 'Reset', `The pallet (Id: ${unLoadingData.value.id}) is reset`)
-    } else {
-      notifier('success', 'Unloading', `The pallet (Id: ${unLoadingData.value.id}) is undloaded`)
-    }
+    notifier('success', 'Unloading', `The pallet (Id: ${unLoadingData.value.id}) is undloaded`)
   }
 }
 
-provide('unLoading', { unloadingPallet, unLoadingIsLoading })
+provide('unLoading', { resetUnloadingPallet, unloadingPallet, unLoadingIsLoading })
 
 </script>

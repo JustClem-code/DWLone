@@ -38,7 +38,7 @@ import PalletInfo from '../SharedComponents/PalletInfo.vue';
 
 const { getNumberOfPackagesNotInducted, handleMenuAction } = useLogic()
 
-const { unloadingPallet } = inject('unLoading')
+const { resetUnloadingPallet, unloadingPallet } = inject('unLoading')
 
 const props = defineProps({
   pallets: Array,
@@ -76,7 +76,7 @@ const setCurrentPallet = (pallet) => {
 }
 
 const resetItem = () => {
-  unloadingPallet(currentPallet.value, true)
+  resetUnloadingPallet(currentPallet.value)
   confirmResetDialogRef.value?.closeDialog()
 }
 const confirmResetItem = () => confirmResetDialogRef.value?.openDialog()

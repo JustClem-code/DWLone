@@ -40,8 +40,8 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Update les liste de palette après un reset !!!!
 // Automatiser dans dashboard le yard et unloaded
+// afficher les stats des pallet attentu, truckc, ect...
 
 // retrouver les bag dans les allées avant de tester un snake path
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
@@ -50,8 +50,6 @@
 // mettre un sous-menu avec #id sur les partis pour éviter de scroller ?
 
 // Ajouter l'état du picking par bag dans BagPprocessing (Dashboard)
-
-
 
 
 
@@ -69,6 +67,9 @@
 
 // Nettoyage de tous les console.log (oui oui)
 
+
+
+
  /* GÉRER CE PROBLÈME
 
  [WARNING] You have 6 previously executed migrations in the database that are
@@ -84,11 +85,8 @@
 
  */
 
-// afficher les stats des pallet attentu, truckc, ect...
 
 // Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
-
-// Refacto certaines fonctions trop longue -> YardTruckController
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
 
