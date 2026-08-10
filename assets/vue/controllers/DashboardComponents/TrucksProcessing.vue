@@ -1,0 +1,194 @@
+<template>
+  <div class="flex flex-col gap-2">
+
+    <StatsHeader title="Trucks processing" notice="You can automate the steps" actionTitle="Automating steps"
+      @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="trucksAndPalletsStats" />
+
+    <SidePanel ref="sidePanelRef" title="Automating steps">
+
+      <div class="flex flex-col gap-2 mb-8">
+
+        <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
+
+        <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
+          :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading" />
+      </div>
+    </SidePanel>
+
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, inject, watch, watchEffect, onMounted } from 'vue';
+import { useFetch, usePostFetch } from '../../composables/fetch.js'
+import { useNotification } from '../../composables/eventBus.js'
+
+import BaseButton from '../UI/Buttons/BaseButton.vue';
+import RadioCard from '../UI/Radios/RadioCard.vue';
+import SidePanel from '../UI/SidePanel.vue';
+import StatsHeader from './StatsHeader.vue';
+
+// const { data: allPackagesOnfloor, error: errorAllPackages } = useFetch('/getAllPackagesOnFloor')
+// const { data: allPackagesStats, error: errorPackagesStats } = useFetch('/getPackagesStats')
+
+const { notifier } = useNotification()
+
+onMounted(() => {
+
+})
+
+const sidePanelRef = ref(null)
+
+const selected = ref(null)
+const automaticInductIsLoading = ref(null)
+const hardResetIsLoading = ref(null)
+
+const allPackagesNumber = computed(() => {
+  return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackagesNumber : 0
+})
+
+const packagesWithoutLocationNumber = computed(() => {
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithoutLocationNumber : 0
+})
+
+const packagesWithLocationNotStowedNumber = computed(() => {
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationNotStowedNumber : 0
+})
+
+const packagesWithLocationNumber = computed(() => {
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationNumber : 0
+})
+
+const packagesWithLocationAndStowedNumber = computed(() => {
+  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationAndStowedNumber : 0
+})
+
+const packagesToResetNumber = computed(() => {
+  return allPackagesStats.value ? packagesWithLocationNumber.value : 0
+})
+
+const packagesFullAutomatingNumber = computed(() => {
+  return allPackagesStats.value ?
+    (packagesWithLocationNotStowedNumber.value >= packagesWithoutLocationNumber.value ?
+      packagesWithLocationNotStowedNumber.value : packagesWithoutLocationNumber.value
+    ) : 0
+})
+
+const inductPercentage = computed(() => {
+  if (allPackagesNumber.value === 0) return 0
+  return Math.round((packagesWithLocationNumber.value / allPackagesNumber.value) * 100)
+})
+
+const stowPercentage = computed(() =>
+  !allPackagesNumber.value || !inductPercentage.value
+    ? 0
+    : Math.round((packagesWithLocationAndStowedNumber.value / packagesWithLocationNumber.value) * 100)
+)
+
+const trucksAndPalletsStats = computed(() => [
+  { 'title': 'Number of packages', 'number': `${allPackagesNumber.value}` },
+  { 'title': 'Induct progress', 'number': `${inductPercentage.value}%` },
+  { 'title': 'Stow progress', 'number': `${stowPercentage.value}%` },
+])
+
+/* const automaticOptions = computed(() => [
+  { 'value': 'Induct', 'notice': 'Automating of pallet induct on floor', 'number': `${packagesWithoutLocationNumber.value}`, 'disabled': packagesWithoutLocationNumber.value === 0 },
+  { 'value': 'Stow', 'notice': 'Automating of packages stow', 'number': `${packagesWithLocationNotStowedNumber.value}`, 'disabled': packagesWithLocationNotStowedNumber.value === 0 },
+  { 'value': 'Full', 'notice': 'Automating every step', 'number': `${packagesFullAutomatingNumber.value}`, 'disabled': packagesFullAutomatingNumber.value === 0 },
+  { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': `${packagesToResetNumber.value}`, 'disabled': packagesToResetNumber.value === 0 },
+]) */
+
+/* function submitAutomaticForm() {
+  const actions = {
+    'Induct': () => automaticInduct(true, false),
+    'Stow': () => automaticInduct(false, true),
+    'Full': () => automaticInduct(true, true),
+    'Hard reset': () => resetLocationsBagsPackages(),
+  }
+
+  const run = actions[selected.value]
+
+  if (!run) {
+    console.log('error')
+  } else {
+    run()
+  }
+
+  selected.value = null
+} */
+
+/* const updatePackagesData = (data) => {
+  locations.value = data.value.locations
+  allPackagesStats.value = data.value.allPackagesStats
+}  */
+
+/* async function automaticInduct(induct = false, stow = false) {
+  if (!induct && !stow) return
+
+  automaticInductIsLoading.value = true
+  resetLocalStorage()
+
+  try {
+    const { data, error } = await usePostFetch('/automaticInductAndStow', {
+      induct,
+      stow
+    })
+
+    if (error.value) {
+      notifier('error', 'Automatic induct & stow', 'An error occurred')
+      return
+    }
+
+    if (!data.value) {
+      notifier('error', 'Automatic induct & stow', 'No data returned')
+      return
+    }
+
+    const actions = []
+    if (induct) actions.push('induct')
+    if (stow) actions.push('stow')
+
+    const title =
+      actions.length === 2
+        ? 'Induct & stow'
+        : actions[0].charAt(0).toUpperCase() + actions[0].slice(1)
+
+    const message =
+      actions.length === 2
+        ? 'The automatic induct & stow are finished'
+        : `The automatic ${actions[0]} is finished`
+
+    notifier('success', title, message)
+
+    updatePackagesData(data)
+
+  } finally {
+    automaticInductIsLoading.value = false
+    sidePanelRef.value?.toggleSidePanel()
+  }
+} */
+
+/* async function resetLocationsBagsPackages() {
+  hardResetIsLoading.value = true;
+  const { data, error } = await usePostFetch('/hardResetLocationsBagsPackages');
+
+  if (data.value) {
+    resetLocalStorage()
+    hardResetIsLoading.value = false;
+    notifier('success', 'Hard reset', `The reset is finished`)
+
+    updatePackagesData(data)
+    sidePanelRef.value?.toggleSidePanel()
+  }
+} */
+
+const handleToggle = () => {
+
+  if (!sidePanelRef.value?.isOpen) {
+    selected.value = null
+  }
+}
+
+watchEffect(handleToggle)
+
+</script>

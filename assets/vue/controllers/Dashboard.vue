@@ -17,6 +17,10 @@
 
     </div>
 
+    <BorderedContent title="Trucks">
+      <TrucksProcessing />
+    </BorderedContent>
+
     <BorderedContent title="Statistics">
       <PackagesStats />
     </BorderedContent>
@@ -103,6 +107,7 @@ import BorderedContent from './UI/BorderedContent.vue';
 import PackagesStats from './DashboardComponents/PackagesStats.vue'
 import BagsProcessing from './DashboardComponents/BagsProcessing.vue';
 import PickingProcessing from './DashboardComponents/PickingProcessing.vue';
+import TrucksProcessing from './DashboardComponents/TrucksProcessing.vue';
 
 const props = defineProps({
   is_user: Boolean,
