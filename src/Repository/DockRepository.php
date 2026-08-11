@@ -34,6 +34,17 @@ class DockRepository extends ServiceEntityRepository
     ];
   }
 
+  public function findFirstWithNoTruck(): ?Dock
+  {
+    return $this->createQueryBuilder('d')
+      ->andWhere('d.truck IS NULL')
+      ->orderBy('d.name', 'ASC')
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
+  }
+
   public function transformAll(): array
   {
     return  $this->transFormEntities($this->findAll(), [$this, 'toArray']);

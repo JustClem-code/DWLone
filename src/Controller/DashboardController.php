@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
+use App\Repository\TruckRepository;
+use App\Repository\PalletRepository;
 use App\Repository\PackageRepository;
 use App\Repository\RoadRepository;
 use App\Repository\PostcodesRepository;
@@ -27,6 +29,8 @@ use App\Entity\Bag;
 final class DashboardController extends AbstractController
 {
   public function __construct(
+    private TruckRepository $truckRepository,
+    private PalletRepository $palletRepository,
     private LocationArrayTransformerService $locationArrayTransformerService,
     private SetPackageLocationService $setPackageLocationService,
     private PackageRepository $packageRepository,
@@ -45,6 +49,29 @@ final class DashboardController extends AbstractController
       'controller_name' => 'DashboardController',
     ]);
   }
+
+  // Yard truck and unloading
+
+  #[Route('/gettrucks', name: 'get_trucks_list', methods: ['GET'])]
+  public function getTrucks(): Response
+  {
+    return $this->json($this->truckRepository->transformAll());
+  }
+
+  #[Route('/getexpectedpallet', name: 'get_expected_pallet', methods: ['GET'])]
+  public function getExpectedPallet(): Response
+  {
+    return $this->json($this->palletRepository->transformAll());
+  }
+
+  public function automaticDockingTrucks()
+  {
+    // Find all trucks with no dock and no departure date
+    // truckRepo->findAllWithoutDock()
+    // for each set a free dock dockRepo->findFirstWithNoTruck
+  }
+
+  // Induct and Stow
 
   private function packagesStats(): array
   {

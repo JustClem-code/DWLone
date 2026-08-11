@@ -43,7 +43,7 @@ const selected = ref(null)
 const automaticInductIsLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
-const allPackagesNumber = computed(() => {
+/* const allPackagesNumber = computed(() => {
   return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackagesNumber : 0
 })
 
@@ -83,17 +83,17 @@ const stowPercentage = computed(() =>
   !allPackagesNumber.value || !inductPercentage.value
     ? 0
     : Math.round((packagesWithLocationAndStowedNumber.value / packagesWithLocationNumber.value) * 100)
-)
+) */
 
 const trucksAndPalletsStats = computed(() => [
-  { 'title': 'Number of packages', 'number': `${allPackagesNumber.value}` },
-  { 'title': 'Induct progress', 'number': `${inductPercentage.value}%` },
-  { 'title': 'Stow progress', 'number': `${stowPercentage.value}%` },
+  { 'title': 'Number of packages', 'number': `10` },
+  { 'title': 'Induct progress', 'number': `10%` },
+  { 'title': 'Stow progress', 'number': `10%` },
 ])
 
 /* const automaticOptions = computed(() => [
-  { 'value': 'Induct', 'notice': 'Automating of pallet induct on floor', 'number': `${packagesWithoutLocationNumber.value}`, 'disabled': packagesWithoutLocationNumber.value === 0 },
-  { 'value': 'Stow', 'notice': 'Automating of packages stow', 'number': `${packagesWithLocationNotStowedNumber.value}`, 'disabled': packagesWithLocationNotStowedNumber.value === 0 },
+  { 'value': 'Docking', 'notice': 'Automating of trucks docking', 'number': `${packagesWithoutLocationNumber.value}`, 'disabled': packagesWithoutLocationNumber.value === 0 },
+  { 'value': 'Unloading', 'notice': 'Automating of pallets unloading', 'number': `${packagesWithLocationNotStowedNumber.value}`, 'disabled': packagesWithLocationNotStowedNumber.value === 0 },
   { 'value': 'Full', 'notice': 'Automating every step', 'number': `${packagesFullAutomatingNumber.value}`, 'disabled': packagesFullAutomatingNumber.value === 0 },
   { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': `${packagesToResetNumber.value}`, 'disabled': packagesToResetNumber.value === 0 },
 ]) */

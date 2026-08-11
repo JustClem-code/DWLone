@@ -58,6 +58,11 @@ class PalletRepository extends ServiceEntityRepository
     return $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
+  public function transformAll(): array
+  {
+    return $this->transFormEntities($this->findAll(), [$this, 'toArray']);
+  }
+
   //    /**
   //     * @return Pallet[] Returns an array of Pallet objects
   //     */
