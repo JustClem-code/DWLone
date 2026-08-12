@@ -46,6 +46,9 @@
 
 // Automatiser dans dashboard le yard et unloaded
 // afficher les stats des pallet attentu, truckc, ect...
+// creation de services pour regrouper des function de docking et unloading
+
+// refacto automatic stow packages 
 
 // retrouver les bag dans les allées avant de tester un snake path
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path

@@ -99,11 +99,8 @@ final class YardTruckController extends AbstractController
     }
 
     $previousDock = $truck->getDock() ? $truck->getDock() : null;
-    $date = new \DateTime();
 
-    $truck->setDock($dock);
-    $truck->setDeliveryDate($date);
-    $truck->setUserDelDate($this->security->getUser());
+    $truck->dockTruck($dock, $this->security->getUser());
 
     $this->entityManager->flush();
 
@@ -129,11 +126,8 @@ final class YardTruckController extends AbstractController
     }
 
     $previousDock = $truck->getDock();
-    $date = new \DateTime();
 
-    $truck->setDock(null);
-    $truck->setDepartureDate($date);
-    $truck->setUserDepDate($this->security->getUser());
+    $truck->undockTruck($this->security->getUser());
 
     $this->entityManager->flush();
 

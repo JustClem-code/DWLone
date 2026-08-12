@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
 use App\Repository\TruckRepository;
+use App\Repository\DockRepository;
 use App\Repository\PalletRepository;
 use App\Repository\PackageRepository;
 use App\Repository\RoadRepository;
@@ -25,11 +26,14 @@ use App\Entity\Road;
 use App\Entity\RoadPart;
 use App\Entity\Bag;
 
+use Symfony\Bundle\SecurityBundle\Security;
 
 final class DashboardController extends AbstractController
 {
   public function __construct(
+    private Security $security,
     private TruckRepository $truckRepository,
+    private DockRepository $dockRepository,
     private PalletRepository $palletRepository,
     private LocationArrayTransformerService $locationArrayTransformerService,
     private SetPackageLocationService $setPackageLocationService,
@@ -64,11 +68,22 @@ final class DashboardController extends AbstractController
     return $this->json($this->palletRepository->transformAll());
   }
 
-  public function automaticDockingTrucks()
+  #[Route('/automaticdockingtrucks', name: 'automatic_docking_trucks', methods: ['POST'])]
+  public function automaticDockingTrucks(): Response
   {
-    // Find all trucks with no dock and no departure date
-    // truckRepo->findAllWithoutDock()
-    // for each set a free dock dockRepo->findFirstWithNoTruck
+    $trucks = $this->truckRepository->findAllWithoutDock();
+
+    foreach ($trucks as $truck) {
+      $dock = $this->dockRepository->findFirstWithNoTruck();
+
+      $truck->dockTruck($dock, $this->security->getUser());
+
+      $this->entityManager->flush();
+
+    }
+
+// TODO: faire une vrai r
+    return $this->json('trnkjqsndj');
   }
 
   // Induct and Stow

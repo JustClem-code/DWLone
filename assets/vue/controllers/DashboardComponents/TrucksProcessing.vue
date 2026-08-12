@@ -11,7 +11,7 @@
         <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
 
         <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
-          :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading" />
+          :isDisabled="!selected" :isLoading="globalLoading" />
       </div>
     </SidePanel>
 
@@ -40,7 +40,7 @@ onMounted(() => {
 const sidePanelRef = ref(null)
 
 const selected = ref(null)
-const automaticInductIsLoading = ref(null)
+const globalLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
 /* const allPackagesNumber = computed(() => {
@@ -91,19 +91,20 @@ const trucksAndPalletsStats = computed(() => [
   { 'title': 'Stow progress', 'number': `10%` },
 ])
 
-/* const automaticOptions = computed(() => [
-  { 'value': 'Docking', 'notice': 'Automating of trucks docking', 'number': `${packagesWithoutLocationNumber.value}`, 'disabled': packagesWithoutLocationNumber.value === 0 },
-  { 'value': 'Unloading', 'notice': 'Automating of pallets unloading', 'number': `${packagesWithLocationNotStowedNumber.value}`, 'disabled': packagesWithLocationNotStowedNumber.value === 0 },
-  { 'value': 'Full', 'notice': 'Automating every step', 'number': `${packagesFullAutomatingNumber.value}`, 'disabled': packagesFullAutomatingNumber.value === 0 },
-  { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': `${packagesToResetNumber.value}`, 'disabled': packagesToResetNumber.value === 0 },
-]) */
+const automaticOptions = computed(() => [
+  { 'value': 'Docking', 'notice': 'Automating of trucks docking', 'number': `0`, 'disabled': false },
+  // { 'value': 'Docking', 'notice': 'Automating of trucks docking', 'number': `${packagesWithoutLocationNumber.value}`, 'disabled': packagesWithoutLocationNumber.value === 0 },
+  // { 'value': 'Unloading', 'notice': 'Automating of pallets unloading', 'number': `${packagesWithLocationNotStowedNumber.value}`, 'disabled': packagesWithLocationNotStowedNumber.value === 0 },
+  // { 'value': 'Full', 'notice': 'Automating every step', 'number': `${packagesFullAutomatingNumber.value}`, 'disabled': packagesFullAutomatingNumber.value === 0 },
+  // { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': `${packagesToResetNumber.value}`, 'disabled': packagesToResetNumber.value === 0 },
+])
 
-/* function submitAutomaticForm() {
+function submitAutomaticForm() {
   const actions = {
-    'Induct': () => automaticInduct(true, false),
-    'Stow': () => automaticInduct(false, true),
-    'Full': () => automaticInduct(true, true),
-    'Hard reset': () => resetLocationsBagsPackages(),
+    'Docking': () => automaticDockingTrucks(),
+    // 'Stow': () => automaticInduct(false, true),
+    // 'Full': () => automaticInduct(true, true),
+    // 'Hard reset': () => resetLocationsBagsPackages(),
   }
 
   const run = actions[selected.value]
@@ -115,58 +116,30 @@ const trucksAndPalletsStats = computed(() => [
   }
 
   selected.value = null
-} */
+}
 
 /* const updatePackagesData = (data) => {
   locations.value = data.value.locations
   allPackagesStats.value = data.value.allPackagesStats
 }  */
 
-/* async function automaticInduct(induct = false, stow = false) {
-  if (!induct && !stow) return
+async function automaticDockingTrucks() {
 
-  automaticInductIsLoading.value = true
-  resetLocalStorage()
+  globalLoading.value = true
 
-  try {
-    const { data, error } = await usePostFetch('/automaticInductAndStow', {
-      induct,
-      stow
-    })
+  const { data, error } = await usePostFetch('/automaticdockingtrucks')
 
-    if (error.value) {
-      notifier('error', 'Automatic induct & stow', 'An error occurred')
-      return
-    }
+  if (error.value) {
+    notifier('error', 'Automatic docking trucks', 'An error occurred')
+    return
+  }
 
-    if (!data.value) {
-      notifier('error', 'Automatic induct & stow', 'No data returned')
-      return
-    }
-
-    const actions = []
-    if (induct) actions.push('induct')
-    if (stow) actions.push('stow')
-
-    const title =
-      actions.length === 2
-        ? 'Induct & stow'
-        : actions[0].charAt(0).toUpperCase() + actions[0].slice(1)
-
-    const message =
-      actions.length === 2
-        ? 'The automatic induct & stow are finished'
-        : `The automatic ${actions[0]} is finished`
-
-    notifier('success', title, message)
-
-    updatePackagesData(data)
-
-  } finally {
-    automaticInductIsLoading.value = false
+  if (data.value) {
+    notifier('success', 'Automatic docking trucks', 'all trucks are docked!!!')
+    globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()
   }
-} */
+}
 
 /* async function resetLocationsBagsPackages() {
   hardResetIsLoading.value = true;

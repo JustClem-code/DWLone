@@ -185,4 +185,18 @@ class Truck
     $this->setDepartureDate(null);
     $this->setUserDepDate(null);
   }
+
+  public function dockTruck(Dock $dock, User $user): void
+  {
+    $this->setDock($dock);
+    $this->setDeliveryDate(new \DateTime());
+    $this->setUserDelDate($user);
+  }
+
+  public function undockTruck(User $user): void
+  {
+    $this->setDock(null);
+    $this->setDepartureDate(new \DateTime());
+    $this->setUserDepDate($user);
+  }
 }
