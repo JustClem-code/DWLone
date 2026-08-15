@@ -79,11 +79,9 @@ final class DashboardController extends AbstractController
       $truck->dockTruck($dock, $this->security->getUser());
 
       $this->entityManager->flush();
-
     }
 
-// TODO: faire une vrai r
-    return $this->json('trnkjqsndj');
+    return $this->json($this->truckRepository->transformSome($trucks));
   }
 
   // Induct and Stow

@@ -73,6 +73,10 @@ final class YardTruckController extends AbstractController
       return $this->json(['error' => 'No truck found for id ' . $id], 404);
     }
 
+    if ($this->truckRepository->hasPalletUnloaded($truck)) {
+      return $this->json(['error' => 'Some pallets are unloaded'], 404);
+    }
+
     $truck->resetTruck();
 
     $this->entityManager->flush();

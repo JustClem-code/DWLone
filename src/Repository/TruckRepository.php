@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Repository\Trait\RepositoryTrait;
 
 use App\Entity\Truck;
+use App\Entity\Pallet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,6 +39,30 @@ class TruckRepository extends ServiceEntityRepository
     ];
   }
 
+
+
+  public function hasPalletUnloaded(Truck $truck): bool
+  {
+    $qb = $this->createQueryBuilder('t');
+
+    $subQuery = $this->getEntityManager()
+      ->createQueryBuilder()
+      ->select('1')
+      ->from(Pallet::class, 'p')
+      ->andWhere('p.truck = t')
+      ->andWhere('p.UserId IS NOT NULL');
+
+    return null !== $qb
+      ->select('t.id')
+      ->andWhere('t = :truck')
+      ->andWhere($qb->expr()->exists($subQuery->getDQL()))
+      ->setParameter('truck', $truck)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
+
+
+
   public function findAllWithoutDock(): array
   {
     return $this->createQueryBuilder('t')
@@ -48,6 +73,11 @@ class TruckRepository extends ServiceEntityRepository
       ->orderBy('t.id', 'ASC')
       ->getQuery()
       ->getResult();
+  }
+
+  public function transformSome(array $entities): array
+  {
+    return $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
   public function transformAll(): array
