@@ -44,8 +44,8 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Empêcher les reset côté symf (ex: getPalletsNotUnloaded)
-// -> ne pas reset unload si des packages sont inductés
+// regrouper les trucks stats dans une seule requête et faire les calculs côté symfony
+
 // Automatiser dans dashboard le yard et unloaded
 // afficher les stats des pallet attentu, truckc, ect...
 // creation de services pour regrouper des function de docking et unloading

@@ -56,8 +56,8 @@ final class DashboardController extends AbstractController
 
   // Yard truck and unloading
 
-  #[Route('/gettrucks', name: 'get_trucks_list', methods: ['GET'])]
-  public function getTrucks(): Response
+  #[Route('/getexpectedtrucks', name: 'get_expected_trucks', methods: ['GET'])]
+  public function getExpectedTrucks(): Response
   {
     return $this->json($this->truckRepository->transformAll());
   }

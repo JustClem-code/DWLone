@@ -28,14 +28,10 @@ import RadioCard from '../UI/Radios/RadioCard.vue';
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 
-// const { data: allPackagesOnfloor, error: errorAllPackages } = useFetch('/getAllPackagesOnFloor')
+const { data: allTrucks, error: errorAllTrucks } = useFetch('/getexpectedtrucks')
 // const { data: allPackagesStats, error: errorPackagesStats } = useFetch('/getPackagesStats')
 
 const { notifier } = useNotification()
-
-onMounted(() => {
-
-})
 
 const sidePanelRef = ref(null)
 
@@ -43,10 +39,11 @@ const selected = ref(null)
 const globalLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
-/* const allPackagesNumber = computed(() => {
-  return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackagesNumber : 0
+const allTrucksNumber = computed(() => {
+  return allTrucks.value ? allTrucks.value.length : 0
 })
 
+/*
 const packagesWithoutLocationNumber = computed(() => {
   return allPackagesStats.value ? allPackagesStats.value.packagesWithoutLocationNumber : 0
 })
@@ -86,7 +83,7 @@ const stowPercentage = computed(() =>
 ) */
 
 const trucksAndPalletsStats = computed(() => [
-  { 'title': 'Number of packages', 'number': `10` },
+  { 'title': 'Number of trucks', 'number': `${allTrucksNumber.value}` },
   { 'title': 'Induct progress', 'number': `10%` },
   { 'title': 'Stow progress', 'number': `10%` },
 ])
