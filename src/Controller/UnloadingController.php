@@ -54,6 +54,10 @@ final class UnloadingController extends AbstractController
       return $this->json(['error' => 'No pallet found for id ' . $id], 404);
     }
 
+    if ($this->palletRepository->hasInductedPackages($pallet)) {
+      return $this->json(['error' => 'Some packages are inducted'], 404);
+    }
+
     $pallet->setUserId(null);
 
     $this->entityManager->flush();

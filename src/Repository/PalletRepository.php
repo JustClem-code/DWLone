@@ -34,6 +34,18 @@ class PalletRepository extends ServiceEntityRepository
     ];
   }
 
+  public function hasInductedPackages(Pallet $pallet): bool
+  {
+    return null !== $this->createQueryBuilder('p')
+      ->select('p.id')
+      ->andWhere('p = :pallet')
+      ->leftJoin('p.packages', 'pa')
+      ->andWhere('pa.location IS NOT NULL')
+      ->setParameter('pallet', $pallet)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
+
   public function findAllHasUserAndPackageWithoutLocation(): array
   {
     $entities = $this->createQueryBuilder('p')
