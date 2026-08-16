@@ -39,29 +39,17 @@ class TruckRepository extends ServiceEntityRepository
     ];
   }
 
-
-
   public function hasPalletUnloaded(Truck $truck): bool
   {
-    $qb = $this->createQueryBuilder('t');
-
-    $subQuery = $this->getEntityManager()
-      ->createQueryBuilder()
-      ->select('1')
-      ->from(Pallet::class, 'p')
-      ->andWhere('p.truck = t')
-      ->andWhere('p.UserId IS NOT NULL');
-
-    return null !== $qb
+    return null !== $this->createQueryBuilder('t')
       ->select('t.id')
       ->andWhere('t = :truck')
-      ->andWhere($qb->expr()->exists($subQuery->getDQL()))
+      ->leftJoin('t.pallets', 'p')
+      ->andWhere('p.UserId IS NOT NULL')
       ->setParameter('truck', $truck)
       ->getQuery()
       ->getOneOrNullResult();
   }
-
-
 
   public function findAllWithoutDock(): array
   {
