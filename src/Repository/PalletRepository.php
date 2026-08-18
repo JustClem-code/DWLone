@@ -59,15 +59,27 @@ class PalletRepository extends ServiceEntityRepository
     return  $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
-  public function findAllHasUser(): array
+  public function findAllWithUser(): array
   {
-    $entities = $this->createQueryBuilder('p')
+    return $this->createQueryBuilder('p')
       ->andWhere('p.UserId IS NOT NULL')
       ->orderBy('p.id', 'ASC')
       ->getQuery()
       ->getResult();
+  }
 
-    return $this->transFormEntities($entities, [$this, 'toArray']);
+  public function findAllWithoutUser(): array
+  {
+    return $this->createQueryBuilder('p')
+      ->andWhere('p.UserId IS NULL')
+      ->orderBy('p.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  public function transformAllWithUser(): array
+  {
+    return $this->transFormEntities($this->findAllWithUser(), [$this, 'toArray']);
   }
 
   public function transformAll(): array

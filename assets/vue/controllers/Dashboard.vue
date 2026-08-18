@@ -44,7 +44,10 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// regrouper les trucks stats dans une seule requête et faire les calculs côté symfony
+// Dans les repository, nommer les functions "find" normalement et transform si elle renvoie un array clé - valeur
+
+// refacto packages stats pour de vrai !!!
+
 
 // Automatiser dans dashboard le yard et unloaded
 // afficher les stats des pallet attentu, truckc, ect...

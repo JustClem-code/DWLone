@@ -42,7 +42,7 @@ final class UnloadingController extends AbstractController
   #[Route('/getpalletsonfloor', name: 'get_pallets_on_floor_list', methods: ['GET'])]
   public function getPalletsOnFloor(): Response
   {
-    return $this->json($this->palletRepository->findAllHasUser());
+    return $this->json($this->palletRepository->transformAllWithUser());
   }
 
   #[Route('/resetUnloadingPallet/{id}', name: 'reset_unloading_pallet')]

@@ -56,20 +56,28 @@ final class DashboardController extends AbstractController
 
   // Yard truck and unloading
 
-  #[Route('/getexpectedtrucks', name: 'get_expected_trucks', methods: ['GET'])]
-  public function getExpectedTrucks(): Response
+  private function yardTruckStats(): array
   {
-    return $this->json($this->truckRepository->transformAll());
+    return [
+      'expectedTrucks' => count(
+        $this->truckRepository->findAll()
+      ),
+      'expectedPallets' => count(
+        $this->palletRepository->findAll()
+      ),
+      'waitingTrucks' => count(
+        $this->truckRepository->findAllWithoutDock()
+      ),
+      'waitingPallets' => count(
+        $this->palletRepository->findAllWithoutUser()
+      ),
+      'unloadingPallets' => count(
+        $this->palletRepository->findAllWithUser()
+      ),
+    ];
   }
 
-  #[Route('/getexpectedpallet', name: 'get_expected_pallet', methods: ['GET'])]
-  public function getExpectedPallet(): Response
-  {
-    return $this->json($this->palletRepository->transformAll());
-  }
-
-  #[Route('/automaticdockingtrucks', name: 'automatic_docking_trucks', methods: ['POST'])]
-  public function automaticDockingTrucks(): Response
+  private function dockingAllTrucks(): void
   {
     $trucks = $this->truckRepository->findAllWithoutDock();
 
@@ -80,8 +88,39 @@ final class DashboardController extends AbstractController
 
       $this->entityManager->flush();
     }
+  }
 
-    return $this->json($this->truckRepository->transformSome($trucks));
+  private function unloadingAllPallets(): void
+  {
+    $pallets = $this->palletRepository->findAllWithoutUser();
+
+    foreach ($pallets as $pallet) {
+      $pallet->setUserId($this->security->getUser());
+    }
+
+    $this->entityManager->flush();
+  }
+
+  #[Route('/getyardtruckstats', name: 'get_yard_truck_stats', methods: ['GET'])]
+  public function getYardTruckStats(): Response
+  {
+    return $this->json($this->yardTruckStats());
+  }
+
+  #[Route('/automaticdockingtrucks', name: 'automatic_docking_trucks', methods: ['POST'])]
+  public function automaticDockingTrucks(): Response
+  {
+    $this->dockingAllTrucks();
+
+    return $this->json($this->yardTruckStats());
+  }
+
+  #[Route('/automaticunloadingpallets', name: 'automatic_unloading_pallets', methods: ['POST'])]
+  public function automaticUnloadingPallets(): Response
+  {
+    $this->unloadingAllPallets();
+
+    return $this->json($this->yardTruckStats());
   }
 
   // Induct and Stow

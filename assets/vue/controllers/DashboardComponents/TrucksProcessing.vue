@@ -28,8 +28,7 @@ import RadioCard from '../UI/Radios/RadioCard.vue';
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 
-const { data: allTrucks, error: errorAllTrucks } = useFetch('/getexpectedtrucks')
-// const { data: allPackagesStats, error: errorPackagesStats } = useFetch('/getPackagesStats')
+const { data: yardTruckStats, error: errorYardTruckStats } = useFetch('/getyardtruckstats')
 
 const { notifier } = useNotification()
 
@@ -39,59 +38,40 @@ const selected = ref(null)
 const globalLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
-const allTrucksNumber = computed(() => {
-  return allTrucks.value ? allTrucks.value.length : 0
+const expectedTrucksNumber = computed(() => {
+  return yardTruckStats.value ? yardTruckStats.value.expectedTrucks : 0
 })
 
-/*
-const packagesWithoutLocationNumber = computed(() => {
-  return allPackagesStats.value ? allPackagesStats.value.packagesWithoutLocationNumber : 0
+const expectedPalletsNumber = computed(() => {
+  return yardTruckStats.value ? yardTruckStats.value.expectedPallets : 0
 })
 
-const packagesWithLocationNotStowedNumber = computed(() => {
-  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationNotStowedNumber : 0
+const waitingTrucksNumber = computed(() => {
+  return yardTruckStats.value ? yardTruckStats.value.waitingTrucks : 0
 })
 
-const packagesWithLocationNumber = computed(() => {
-  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationNumber : 0
+const waitingPalletsNumber = computed(() => {
+  return yardTruckStats.value ? yardTruckStats.value.waitingPallets : 0
 })
 
-const packagesWithLocationAndStowedNumber = computed(() => {
-  return allPackagesStats.value ? allPackagesStats.value.packagesWithLocationAndStowedNumber : 0
+const unloadingPalletsNumber = computed(() => {
+  return yardTruckStats.value ? yardTruckStats.value.unloadingPallets : 0
 })
 
-const packagesToResetNumber = computed(() => {
-  return allPackagesStats.value ? packagesWithLocationNumber.value : 0
+const unloadingPercentage = computed(() => {
+  if (expectedPalletsNumber.value === 0) return 0
+  return Math.round((unloadingPalletsNumber.value / expectedPalletsNumber.value) * 100)
 })
-
-const packagesFullAutomatingNumber = computed(() => {
-  return allPackagesStats.value ?
-    (packagesWithLocationNotStowedNumber.value >= packagesWithoutLocationNumber.value ?
-      packagesWithLocationNotStowedNumber.value : packagesWithoutLocationNumber.value
-    ) : 0
-})
-
-const inductPercentage = computed(() => {
-  if (allPackagesNumber.value === 0) return 0
-  return Math.round((packagesWithLocationNumber.value / allPackagesNumber.value) * 100)
-})
-
-const stowPercentage = computed(() =>
-  !allPackagesNumber.value || !inductPercentage.value
-    ? 0
-    : Math.round((packagesWithLocationAndStowedNumber.value / packagesWithLocationNumber.value) * 100)
-) */
 
 const trucksAndPalletsStats = computed(() => [
-  { 'title': 'Number of trucks', 'number': `${allTrucksNumber.value}` },
-  { 'title': 'Induct progress', 'number': `10%` },
-  { 'title': 'Stow progress', 'number': `10%` },
+  { 'title': 'Number of trucks', 'number': `${expectedTrucksNumber.value}` },
+  { 'title': 'Number of waiting trucks', 'number': `${waitingTrucksNumber.value}` },
+  { 'title': 'Unloading progress', 'number': `${unloadingPercentage.value}%` },
 ])
 
 const automaticOptions = computed(() => [
-  { 'value': 'Docking', 'notice': 'Automating of trucks docking', 'number': `0`, 'disabled': false },
-  // { 'value': 'Docking', 'notice': 'Automating of trucks docking', 'number': `${packagesWithoutLocationNumber.value}`, 'disabled': packagesWithoutLocationNumber.value === 0 },
-  // { 'value': 'Unloading', 'notice': 'Automating of pallets unloading', 'number': `${packagesWithLocationNotStowedNumber.value}`, 'disabled': packagesWithLocationNotStowedNumber.value === 0 },
+  { 'value': 'Docking', 'notice': 'Automating of trucks docking', 'number': `${waitingTrucksNumber.value}`, 'disabled': waitingTrucksNumber.value === 0 },
+  { 'value': 'Unloading', 'notice': 'Automating of pallets unloading', 'number': `${waitingPalletsNumber.value}`, 'disabled': waitingPalletsNumber.value === 0 },
   // { 'value': 'Full', 'notice': 'Automating every step', 'number': `${packagesFullAutomatingNumber.value}`, 'disabled': packagesFullAutomatingNumber.value === 0 },
   // { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': `${packagesToResetNumber.value}`, 'disabled': packagesToResetNumber.value === 0 },
 ])
@@ -99,7 +79,7 @@ const automaticOptions = computed(() => [
 function submitAutomaticForm() {
   const actions = {
     'Docking': () => automaticDockingTrucks(),
-    // 'Stow': () => automaticInduct(false, true),
+    'Unloading': () => automaticUnloadingPallets(),
     // 'Full': () => automaticInduct(true, true),
     // 'Hard reset': () => resetLocationsBagsPackages(),
   }
@@ -115,10 +95,9 @@ function submitAutomaticForm() {
   selected.value = null
 }
 
-/* const updatePackagesData = (data) => {
-  locations.value = data.value.locations
-  allPackagesStats.value = data.value.allPackagesStats
-}  */
+const updateYardTruckStats = (data) => {
+  yardTruckStats.value = data.value
+}
 
 async function automaticDockingTrucks() {
 
@@ -132,7 +111,27 @@ async function automaticDockingTrucks() {
   }
 
   if (data.value) {
+    updateYardTruckStats(data)
     notifier('success', 'Automatic docking trucks', 'all trucks are docked!!!')
+    globalLoading.value = false
+    sidePanelRef.value?.toggleSidePanel()
+  }
+}
+
+async function automaticUnloadingPallets() {
+
+  globalLoading.value = true
+
+  const { data, error } = await usePostFetch('/automaticunloadingpallets')
+
+  if (error.value) {
+    notifier('error', 'Automatic unloading pallets', 'An error occurred')
+    return
+  }
+
+  if (data.value) {
+    updateYardTruckStats(data)
+    notifier('success', 'Automatic unloading pallets', 'all pallets are unloaded!!!')
     globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()
   }
