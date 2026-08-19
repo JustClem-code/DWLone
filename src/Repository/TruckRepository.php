@@ -63,6 +63,28 @@ class TruckRepository extends ServiceEntityRepository
       ->getResult();
   }
 
+  public function findAllWithDock(): array
+  {
+    return $this->createQueryBuilder('t')
+      ->leftJoin('t.dock', 'd')
+      ->andWhere('d.id IS NOT NULL')
+      ->orderBy('t.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  public function findAllOut(): array
+  {
+    return $this->createQueryBuilder('t')
+      ->leftJoin('t.dock', 'd')
+      ->andWhere('d.id IS NULL')
+      ->andWhere('t.userDepDate IS NOT NULL')
+      ->andWhere('t.DepartureDate IS NOT NULL')
+      ->orderBy('t.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
   public function transformSome(array $entities): array
   {
     return $this->transFormEntities($entities, [$this, 'toArray']);

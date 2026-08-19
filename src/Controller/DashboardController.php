@@ -68,11 +68,19 @@ final class DashboardController extends AbstractController
       'waitingTrucks' => count(
         $this->truckRepository->findAllWithoutDock()
       ),
+      'processedTrucks' => count(
+        $this->truckRepository->findAllOut()
+      ) + count(
+        $this->truckRepository->findAllWithDock()
+      ),
       'waitingPallets' => count(
         $this->palletRepository->findAllWithoutUser()
       ),
       'unloadingPallets' => count(
         $this->palletRepository->findAllWithUser()
+      ),
+      'unloadingPalletsClean' => count(
+        $this->palletRepository->findAllWithUserAndWithoutPackageInducted()
       ),
     ];
   }
@@ -119,6 +127,35 @@ final class DashboardController extends AbstractController
   public function automaticUnloadingPallets(): Response
   {
     $this->unloadingAllPallets();
+
+    return $this->json($this->yardTruckStats());
+  }
+
+  #[Route('/autodockingandunloading', name: 'auto_docking_and_unloading', methods: ['POST'])]
+  public function autoDockingAndUnloading(): Response
+  {
+    $this->dockingAllTrucks();
+    $this->unloadingAllPallets();
+
+    return $this->json($this->yardTruckStats());
+  }
+
+  #[Route('/resetdockingandunloading', name: 'reset_docking_and_unloading', methods: ['POST'])]
+  public function resetDockingAndUnloading(): Response
+  {
+    $pallets = $this->palletRepository->findAllWithUserAndWithoutPackageInducted();
+
+    foreach ($pallets as $pallet) {
+      $pallet->setUserId(null);
+      $this->entityManager->flush();
+    }
+
+    $trucks = $this->truckRepository->findAll();
+
+    foreach ($trucks as $truck) {
+      $truck->resetTruck();
+      $this->entityManager->flush();
+    }
 
     return $this->json($this->yardTruckStats());
   }

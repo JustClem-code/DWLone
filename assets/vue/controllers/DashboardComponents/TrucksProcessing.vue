@@ -50,12 +50,20 @@ const waitingTrucksNumber = computed(() => {
   return yardTruckStats.value ? yardTruckStats.value.waitingTrucks : 0
 })
 
+const processedTrucksNumber = computed(() => {
+  return yardTruckStats.value ? yardTruckStats.value.processedTrucks : 0
+})
+
 const waitingPalletsNumber = computed(() => {
   return yardTruckStats.value ? yardTruckStats.value.waitingPallets : 0
 })
 
 const unloadingPalletsNumber = computed(() => {
   return yardTruckStats.value ? yardTruckStats.value.unloadingPallets : 0
+})
+
+const unloadingPalletsCleanNumber = computed(() => {
+  return yardTruckStats.value ? yardTruckStats.value.unloadingPalletsClean : 0
 })
 
 const unloadingPercentage = computed(() => {
@@ -70,18 +78,38 @@ const trucksAndPalletsStats = computed(() => [
 ])
 
 const automaticOptions = computed(() => [
-  { 'value': 'Docking', 'notice': 'Automating of trucks docking', 'number': `${waitingTrucksNumber.value}`, 'disabled': waitingTrucksNumber.value === 0 },
-  { 'value': 'Unloading', 'notice': 'Automating of pallets unloading', 'number': `${waitingPalletsNumber.value}`, 'disabled': waitingPalletsNumber.value === 0 },
-  // { 'value': 'Full', 'notice': 'Automating every step', 'number': `${packagesFullAutomatingNumber.value}`, 'disabled': packagesFullAutomatingNumber.value === 0 },
-  // { 'value': 'Hard reset', 'notice': 'Reset all steps', 'number': `${packagesToResetNumber.value}`, 'disabled': packagesToResetNumber.value === 0 },
+  {
+    'value': 'Docking',
+    'notice': 'Automating of trucks docking',
+    'number': `${waitingTrucksNumber.value}`,
+    'disabled': waitingTrucksNumber.value === 0
+  },
+  {
+    'value': 'Unloading',
+    'notice': 'Automating of pallets unloading',
+    'number': `${waitingPalletsNumber.value}`,
+    'disabled': waitingPalletsNumber.value === 0
+  },
+  {
+    'value': 'Full',
+    'notice': 'Automating every step',
+    'number': `${waitingTrucksNumber.value} & ${waitingPalletsNumber.value}`,
+    'disabled': waitingTrucksNumber.value === 0 || waitingPalletsNumber.value === 0
+  },
+  {
+    'value': 'Hard reset',
+    'notice': 'Reset all steps',
+    'number': `${processedTrucksNumber.value} - ${unloadingPalletsCleanNumber.value}`,
+    'disabled': unloadingPalletsCleanNumber.value === 0 && processedTrucksNumber.value === 0
+  },
 ])
 
 function submitAutomaticForm() {
   const actions = {
     'Docking': () => automaticDockingTrucks(),
     'Unloading': () => automaticUnloadingPallets(),
-    // 'Full': () => automaticInduct(true, true),
-    // 'Hard reset': () => resetLocationsBagsPackages(),
+    'Full': () => autoDockingAndUnloading(),
+    'Hard reset': () => resetDockingAndUnloading(),
   }
 
   const run = actions[selected.value]
@@ -137,19 +165,43 @@ async function automaticUnloadingPallets() {
   }
 }
 
-/* async function resetLocationsBagsPackages() {
-  hardResetIsLoading.value = true;
-  const { data, error } = await usePostFetch('/hardResetLocationsBagsPackages');
+async function autoDockingAndUnloading() {
+
+  globalLoading.value = true
+
+  const { data, error } = await usePostFetch('/autodockingandunloading')
+
+  if (error.value) {
+    notifier('error', 'Automatic docking and unloading', 'An error occurred')
+    return
+  }
 
   if (data.value) {
-    resetLocalStorage()
-    hardResetIsLoading.value = false;
-    notifier('success', 'Hard reset', `The reset is finished`)
-
-    updatePackagesData(data)
+    updateYardTruckStats(data)
+    notifier('success', 'Automatic docking and unloading', 'Docking and unloading are finished!!!')
+    globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()
   }
-} */
+}
+
+async function resetDockingAndUnloading() {
+
+  globalLoading.value = true
+
+  const { data, error } = await usePostFetch('/resetdockingandunloading');
+
+  if (error.value) {
+    notifier('error', 'Hard reset', 'An error occurred')
+    return
+  }
+
+  if (data.value) {
+    updateYardTruckStats(data)
+    notifier('success', 'Hard reset', `The reset is finished`)
+    globalLoading.value = false
+    sidePanelRef.value?.toggleSidePanel()
+  }
+}
 
 const handleToggle = () => {
 

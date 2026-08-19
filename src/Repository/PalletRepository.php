@@ -59,6 +59,22 @@ class PalletRepository extends ServiceEntityRepository
     return  $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
+  public function findAllWithUserAndWithoutPackageInducted(): array
+  {
+    return $this->createQueryBuilder('p')
+      ->andWhere('p.UserId IS NOT NULL')
+      ->leftJoin(
+        'p.packages',
+        'pa',
+        'WITH',
+        'pa.location IS NOT NULL'
+      )
+      ->andWhere('pa.id IS NULL')
+      ->orderBy('p.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
   public function findAllWithUser(): array
   {
     return $this->createQueryBuilder('p')
