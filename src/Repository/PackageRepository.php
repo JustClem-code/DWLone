@@ -123,12 +123,6 @@ class PackageRepository extends ServiceEntityRepository
     ];
   }
 
-  // Not used
-  public function transformCollection($entities): array
-  {
-    return $this->transFormEntities($entities, [$this, 'toArray']);
-  }
-
   //    /**
   //     * @return Package[] Returns an array of Package objects
   //     */

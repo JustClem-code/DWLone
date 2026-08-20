@@ -18,8 +18,10 @@ class DockRepository extends ServiceEntityRepository
 
   use RepositoryTrait;
 
-  public function __construct(ManagerRegistry $registry, private PalletRepository $palletRepository)
-  {
+  public function __construct(
+    ManagerRegistry $registry,
+    private PalletRepository $palletRepository
+  ) {
     parent::__construct($registry, Dock::class);
   }
 
@@ -30,7 +32,9 @@ class DockRepository extends ServiceEntityRepository
       'name' => $dock->getName(),
       'truckId' => $dock->getTruck()?->getId(),
       'truckName' => $dock->getTruck()?->getName(),
-      'pallets' => $dock->getTruck() ? $this->transFormEntities($dock->getTruck()?->getPallets(), [$this->palletRepository, 'toArray']) : null,
+      'pallets' => $dock->getTruck() ?
+        $this->transFormEntities($dock->getTruck()?->getPallets(), [$this->palletRepository, 'toArray'])
+        : null,
     ];
   }
 
@@ -45,6 +49,16 @@ class DockRepository extends ServiceEntityRepository
     ;
   }
 
+  private function findOccupiedDocks(): array
+  {
+    return $this->createQueryBuilder('d')
+      ->innerJoin('d.truck', 't')
+      ->addSelect('t')
+      ->orderBy('d.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
   public function transformAll(): array
   {
     return  $this->transFormEntities($this->findAll(), [$this, 'toArray']);
@@ -52,14 +66,7 @@ class DockRepository extends ServiceEntityRepository
 
   public function transformOccupiedDocks(): array
   {
-    $entities = $this->createQueryBuilder('d')
-      ->innerJoin('d.truck', 't')
-      ->addSelect('t')
-      ->orderBy('d.id', 'ASC')
-      ->getQuery()
-      ->getResult();
-
-    return  $this->transFormEntities($entities, [$this, 'toArray']);
+    return  $this->transFormEntities($this->findOccupiedDocks(), [$this, 'toArray']);
   }
 
 

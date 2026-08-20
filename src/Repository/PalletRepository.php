@@ -46,17 +46,15 @@ class PalletRepository extends ServiceEntityRepository
       ->getOneOrNullResult();
   }
 
-  public function findAllHasUserAndPackageWithoutLocation(): array
+  private function findAllHasUserAndPackageWithoutLocation(): array
   {
-    $entities = $this->createQueryBuilder('p')
+    return $this->createQueryBuilder('p')
       ->leftJoin('p.packages', 'pa')
       ->andWhere('p.UserId IS NOT NULL')
       ->andWhere('pa.location IS NULL')
       ->orderBy('p.id', 'ASC')
       ->getQuery()
       ->getResult();
-
-    return  $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
   public function findAllWithUserAndWithoutPackageInducted(): array
@@ -96,6 +94,11 @@ class PalletRepository extends ServiceEntityRepository
   public function transformAllWithUser(): array
   {
     return $this->transFormEntities($this->findAllWithUser(), [$this, 'toArray']);
+  }
+
+  public function transformAllHasUserAndPackageWithoutLocation(): array
+  {
+    return $this->transFormEntities($this->findAllHasUserAndPackageWithoutLocation(), [$this, 'toArray']);
   }
 
   public function transformAll(): array

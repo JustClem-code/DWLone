@@ -8,9 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\ORM\EntityManagerInterface;
-
-use App\Entity\Package;
 
 use App\Repository\PackageRepository;
 use App\Repository\PalletRepository;
@@ -23,8 +20,8 @@ final class InductionController extends AbstractController
 
   public function __construct(
     private SetPackageLocationService $setPackageLocationService,
-    private EntityManagerInterface $entityManager,
     private PackageRepository $packageRepository,
+    private PalletRepository $palletRepository
   ) {}
 
   #[Route('/warehouse/induction', name: 'app_induction')]
@@ -36,9 +33,9 @@ final class InductionController extends AbstractController
   }
 
   #[Route('/getpalletsonfloorwithpackages', name: 'get_pallets_on_floor_with_packages_list', methods: ['GET'])]
-  public function getPalletsOnFloorWithPackages(PalletRepository $repository): Response
+  public function getPalletsOnFloorWithPackages(): Response
   {
-    return $this->json($repository->findAllHasUserAndPackageWithoutLocation());
+    return $this->json($this->palletRepository->transformAllHasUserAndPackageWithoutLocation());
   }
 
   #[Route('/setLocation/{id}', name: 'set_location', methods: ['POST'])]

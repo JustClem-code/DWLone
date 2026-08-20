@@ -85,6 +85,7 @@ class TruckRepository extends ServiceEntityRepository
       ->getResult();
   }
 
+  // Not used
   public function transformSome(array $entities): array
   {
     return $this->transFormEntities($entities, [$this, 'toArray']);

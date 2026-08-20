@@ -20,17 +20,9 @@ class RoadRepository extends ServiceEntityRepository
 
   public function __construct(
     ManagerRegistry $registry,
-    private BagRepository $bagRepository,
     private RoadPartRepository $roadPartRepository
   ) {
     parent::__construct($registry, Road::class);
-  }
-
-  public function removeRoadParts(Road $road): void
-  {
-    foreach ($road->getRoadParts() as $roadPart) {
-      $roadPart->setRoad(null);
-    }
   }
 
   public function toArray(Road $road): array
@@ -43,7 +35,7 @@ class RoadRepository extends ServiceEntityRepository
     ];
   }
 
-  public function findAllOrderedByName(): array
+  private function findAllOrderedByName(): array
   {
     return $this->createQueryBuilder('r')
       ->orderBy('r.name', 'ASC')
@@ -51,9 +43,9 @@ class RoadRepository extends ServiceEntityRepository
       ->getResult();
   }
 
-  public function transformAll(iterable $entities): array
+  public function transformAllOrderedByName(): array
   {
-    return $this->transformEntitiesNoSorting($entities, [$this, 'toArray']);
+    return $this->transformEntitiesNoSorting($this->findAllOrderedByName(), [$this, 'toArray']);
   }
 
   //    /**

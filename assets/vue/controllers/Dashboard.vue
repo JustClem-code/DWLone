@@ -44,6 +44,8 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
+// TODO: Ne pas pouvoir unloaded les pallet si les truck n'on pas de docks
+
 // Dans les repository, nommer les functions "find" normalement et transform si elle renvoie un array clé - valeur
 
 // refacto packages stats pour de vrai !!!

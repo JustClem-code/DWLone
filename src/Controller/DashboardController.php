@@ -314,17 +314,13 @@ final class DashboardController extends AbstractController
   #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
   public function getAllRoads(): Response
   {
-    $allRoads = $this->roadRepository->findAllOrderedByName();
-
-    return $this->json($this->roadRepository->transformAll($allRoads));
+    return $this->json($this->roadRepository->transformAllOrderedByName());
   }
 
   #[Route('/getAllRoadParts', name: 'get_all_road_parts', methods: ['GET'])]
   public function getAllRoadParts(): Response
   {
-    $allRoadParts = $this->roadPartRepository->findAllOrderedByName();
-
-    return $this->json($this->roadPartRepository->transformAll($allRoadParts));
+    return $this->json($this->roadPartRepository->transformAllOrderedByName());
   }
 
   private function getAllBagsWithPackages(): array

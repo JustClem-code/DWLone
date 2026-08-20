@@ -87,12 +87,7 @@ class RoadPartRepository extends ServiceEntityRepository
     ;
   }
 
-  public function transformSome(array $entities): array
-  {
-    return $this->transFormEntities($entities, [$this, 'toArray']);
-  }
-
-  public function findAllOrderedByName(): array
+  private function findAllOrderedByName(): array
   {
     return $this->createQueryBuilder('r')
       ->innerJoin('r.road', 'ro')
@@ -112,14 +107,16 @@ class RoadPartRepository extends ServiceEntityRepository
       ->getOneOrNullResult();
   }
 
-  public function transformAll(iterable $entities): array
+  // Not used
+  public function transformSome(array $entities): array
   {
-    return $this->transformEntitiesNoSorting($entities, [$this, 'toArray']);
+    return $this->transFormEntities($entities, [$this, 'toArray']);
   }
 
-
-
-
+  public function transformAllOrderedByName(): array
+  {
+    return $this->transformEntitiesNoSorting($this->findAllOrderedByName(), [$this, 'toArray']);
+  }
 
   //    /**
   //     * @return RoadPart[] Returns an array of RoadPart objects

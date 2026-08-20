@@ -109,11 +109,6 @@ class BagRepository extends ServiceEntityRepository
       ->getResult();
   }
 
-  public function transformAll(iterable $entities): array
-  {
-    return  $this->transFormEntities($entities, [$this, 'toArray']);
-  }
-
   //    /**
   //     * @return Bag[] Returns an array of Bag objects
   //     */
