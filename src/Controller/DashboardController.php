@@ -76,6 +76,9 @@ final class DashboardController extends AbstractController
       'waitingPallets' => count(
         $this->palletRepository->findAllWithoutUser()
       ),
+      'waitingPalletsDocked' => count(
+        $this->palletRepository->findAllWithoutUserInTruckDocked()
+      ),
       'unloadingPallets' => count(
         $this->palletRepository->findAllWithUser()
       ),
@@ -100,7 +103,7 @@ final class DashboardController extends AbstractController
 
   private function unloadingAllPallets(): void
   {
-    $pallets = $this->palletRepository->findAllWithoutUser();
+    $pallets = $this->palletRepository->findAllWithoutUserInTruckDocked();
 
     foreach ($pallets as $pallet) {
       $pallet->setUserId($this->security->getUser());

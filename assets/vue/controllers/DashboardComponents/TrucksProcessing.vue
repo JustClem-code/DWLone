@@ -58,6 +58,10 @@ const waitingPalletsNumber = computed(() => {
   return yardTruckStats.value ? yardTruckStats.value.waitingPallets : 0
 })
 
+const waitingPalletsDockedNumber = computed(() => {
+  return yardTruckStats.value ? yardTruckStats.value.waitingPalletsDocked : 0
+})
+
 const unloadingPalletsNumber = computed(() => {
   return yardTruckStats.value ? yardTruckStats.value.unloadingPallets : 0
 })
@@ -87,8 +91,8 @@ const automaticOptions = computed(() => [
   {
     'value': 'Unloading',
     'notice': 'Automating of pallets unloading',
-    'number': `${waitingPalletsNumber.value}`,
-    'disabled': waitingPalletsNumber.value === 0
+    'number': `${waitingPalletsDockedNumber.value}`,
+    'disabled': false //waitingPalletsDockedNumber.value === 0
   },
   {
     'value': 'Full',

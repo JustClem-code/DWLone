@@ -91,6 +91,18 @@ class PalletRepository extends ServiceEntityRepository
       ->getResult();
   }
 
+  public function findAllWithoutUserInTruckDocked(): array
+  {
+    return $this->createQueryBuilder('p')
+      ->leftJoin('p.truck', 't')
+      ->andWhere('p.UserId IS NULL')
+      ->andWhere('t.userDelDate IS NOT NULL')
+      ->andWhere('t.userDepDate IS NULL')
+      ->orderBy('p.id', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
+
   public function transformAllWithUser(): array
   {
     return $this->transFormEntities($this->findAllWithUser(), [$this, 'toArray']);
