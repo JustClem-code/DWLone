@@ -22,18 +22,16 @@
 import { ref, computed, inject, watch, watchEffect, onMounted } from 'vue';
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
+import { dashboardStore } from '../../composables/dashboardStore.js'
 
 import BaseButton from '../UI/Buttons/BaseButton.vue';
 import RadioCard from '../UI/Radios/RadioCard.vue';
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 
-const { data: allPackagesOnfloor, error: errorAllPackages } = useFetch('/getAllPackagesOnFloor')
-const { data: allPackagesStats, error: errorPackagesStats } = useFetch('/getPackagesStats')
+const { locations, allPackagesStats, updateDashboardData } = dashboardStore()
 
 const { notifier } = useNotification()
-
-const { locations } = inject('dashboard')
 
 onMounted(() => {
   console.log('locations', locations)
@@ -48,7 +46,7 @@ const automaticInductIsLoading = ref(null)
 const hardResetIsLoading = ref(null)
 
 const allPackagesNumber = computed(() => {
-  return allPackagesOnfloor.value ? allPackagesOnfloor.value.allPackagesNumber : 0
+  return allPackagesStats.value ? allPackagesStats.value.allPackagesNumber : 0
 })
 
 const packagesWithoutLocationNumber = computed(() => {
@@ -125,11 +123,6 @@ const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PALLET)
 }
 
-const updatePackagesData = (data) => {
-  locations.value = data.value.locations
-  allPackagesStats.value = data.value.allPackagesStats
-}
-
 async function automaticInduct(induct = false, stow = false) {
   if (!induct && !stow) return
 
@@ -168,7 +161,7 @@ async function automaticInduct(induct = false, stow = false) {
 
     notifier('success', title, message)
 
-    updatePackagesData(data)
+    updateDashboardData(data)
 
   } finally {
     automaticInductIsLoading.value = false
@@ -185,7 +178,7 @@ async function resetLocationsBagsPackages() {
     hardResetIsLoading.value = false;
     notifier('success', 'Hard reset', `The reset is finished`)
 
-    updatePackagesData(data)
+    updateDashboardData(data)
     sidePanelRef.value?.toggleSidePanel()
   }
 }

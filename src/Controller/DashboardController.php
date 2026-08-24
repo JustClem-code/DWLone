@@ -54,6 +54,17 @@ final class DashboardController extends AbstractController
     ]);
   }
 
+  // Dashboard Response
+
+  private function buildDashboardResponse(): Response
+  {
+    return $this->json(
+      ['locations' => $this->locationArrayTransformerService->transformAllBagOriented()] +
+      ['allPackagesStats' => $this->packagesStats()] +
+      ['yardTruckStats' => $this->yardTruckStats()])
+      ;
+  }
+
   // Yard truck and unloading
 
   private function yardTruckStats(): array
@@ -123,7 +134,7 @@ final class DashboardController extends AbstractController
   {
     $this->dockingAllTrucks();
 
-    return $this->json($this->yardTruckStats());
+    return $this->buildDashboardResponse();
   }
 
   #[Route('/automaticunloadingpallets', name: 'automatic_unloading_pallets', methods: ['POST'])]
@@ -131,7 +142,7 @@ final class DashboardController extends AbstractController
   {
     $this->unloadingAllPallets();
 
-    return $this->json($this->yardTruckStats());
+    return $this->buildDashboardResponse();
   }
 
   #[Route('/autodockingandunloading', name: 'auto_docking_and_unloading', methods: ['POST'])]
@@ -140,7 +151,7 @@ final class DashboardController extends AbstractController
     $this->dockingAllTrucks();
     $this->unloadingAllPallets();
 
-    return $this->json($this->yardTruckStats());
+    return $this->buildDashboardResponse();
   }
 
   #[Route('/resetdockingandunloading', name: 'reset_docking_and_unloading', methods: ['POST'])]
@@ -160,7 +171,7 @@ final class DashboardController extends AbstractController
       $this->entityManager->flush();
     }
 
-    return $this->json($this->yardTruckStats());
+    return $this->buildDashboardResponse();
   }
 
   // Induct and Stow
@@ -168,6 +179,9 @@ final class DashboardController extends AbstractController
   private function packagesStats(): array
   {
     return [
+      'allPackagesNumber' => count(
+        $this->packageRepository->findAllFromPalletsWithUser()
+      ),
       'packagesWithoutLocationNumber' => count(
         $this->packageRepository->findAllWithoutLocationFromPalletsWithUser()
       ),
@@ -183,14 +197,6 @@ final class DashboardController extends AbstractController
     ];
   }
 
-  #[Route('/getAllPackagesOnFloor', name: 'get_all_packages_on_floor', methods: ['GET'])]
-  public function getAllPackagesOnFloor(): Response
-  {
-    return $this->json([
-      'allPackagesNumber' => count($this->packageRepository->findAllFromPalletsWithUser()),
-    ]);
-  }
-
   #[Route('/getPackagesStats', name: 'get_packages_stats', methods: ['GET'])]
   public function getPackagesStats(): Response
   {
@@ -201,13 +207,6 @@ final class DashboardController extends AbstractController
   public function getBagsInLocations(): Response
   {
     return $this->json($this->locationArrayTransformerService->transformAllBagOriented());
-  }
-
-  private function buildLocationsResponse(): Response
-  {
-    return $this->json([
-      'locations' => $this->locationArrayTransformerService->transformAllBagOriented()
-    ] + ['allPackagesStats' => $this->packagesStats()]);
   }
 
   #[Route('/automaticInductAndStow', name: 'automatic_induct_and_stow', methods: ['POST'])]
@@ -232,7 +231,7 @@ final class DashboardController extends AbstractController
       }
     }
 
-    return $this->buildLocationsResponse();
+    return $this->buildDashboardResponse();
   }
 
   #[Route('/hardResetLocationsBagsPackages', name: 'hard_reset_locations_bags_packages', methods: ['POST'])]
@@ -240,7 +239,7 @@ final class DashboardController extends AbstractController
   {
     $this->setPackageLocationService->resetLocationsBagsPackages();
 
-    return $this->buildLocationsResponse();
+    return $this->buildDashboardResponse();
   }
 
   // Picking

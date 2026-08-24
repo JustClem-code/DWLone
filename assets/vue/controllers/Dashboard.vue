@@ -44,16 +44,10 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Oui mais il faut trouver un moyen d'update les packagesStats et yardTrucks stats en globalement
-//   -> dans le composant parent DASHBOARD
-
-// Dans les repository, nommer les functions "find" normalement et transform si elle renvoie un array clé - valeur
+// Encore un problème de reset truck si certains packages sont stow ou inductés
 
 // refacto packages stats pour de vrai !!!
 
-
-// Automatiser dans dashboard le yard et unloaded
-// afficher les stats des pallet attentu, truckc, ect...
 // creation de services pour regrouper des function de docking et unloading
 
 // refacto automatic stow packages
@@ -127,15 +121,11 @@ const props = defineProps({
 
 const { userName } = userStore()
 
-const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
-
 // const { isRunning } = useTimer()
 
 onMounted(() => {
   console.log(`the component is now mounted.`)
 })
-
-provide('dashboard', { locations })
 
 /* watch(
   locations,

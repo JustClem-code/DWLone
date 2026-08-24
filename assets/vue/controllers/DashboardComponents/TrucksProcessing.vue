@@ -22,13 +22,14 @@
 import { ref, computed, inject, watch, watchEffect, onMounted } from 'vue';
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
+import { dashboardStore } from '../../composables/dashboardStore.js'
 
 import BaseButton from '../UI/Buttons/BaseButton.vue';
 import RadioCard from '../UI/Radios/RadioCard.vue';
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 
-const { data: yardTruckStats, error: errorYardTruckStats } = useFetch('/getyardtruckstats')
+const { yardTruckStats, updateDashboardData } = dashboardStore()
 
 const { notifier } = useNotification()
 
@@ -36,7 +37,6 @@ const sidePanelRef = ref(null)
 
 const selected = ref(null)
 const globalLoading = ref(null)
-const hardResetIsLoading = ref(null)
 
 const expectedTrucksNumber = computed(() => {
   return yardTruckStats.value ? yardTruckStats.value.expectedTrucks : 0
@@ -92,7 +92,7 @@ const automaticOptions = computed(() => [
     'value': 'Unloading',
     'notice': 'Automating of pallets unloading',
     'number': `${waitingPalletsDockedNumber.value}`,
-    'disabled': false //waitingPalletsDockedNumber.value === 0
+    'disabled': waitingPalletsDockedNumber.value === 0
   },
   {
     'value': 'Full',
@@ -127,10 +127,6 @@ function submitAutomaticForm() {
   selected.value = null
 }
 
-const updateYardTruckStats = (data) => {
-  yardTruckStats.value = data.value
-}
-
 async function automaticDockingTrucks() {
 
   globalLoading.value = true
@@ -143,7 +139,7 @@ async function automaticDockingTrucks() {
   }
 
   if (data.value) {
-    updateYardTruckStats(data)
+    updateDashboardData(data)
     notifier('success', 'Automatic docking trucks', 'all trucks are docked!!!')
     globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()
@@ -162,7 +158,7 @@ async function automaticUnloadingPallets() {
   }
 
   if (data.value) {
-    updateYardTruckStats(data)
+    updateDashboardData(data)
     notifier('success', 'Automatic unloading pallets', 'all pallets are unloaded!!!')
     globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()
@@ -181,7 +177,7 @@ async function autoDockingAndUnloading() {
   }
 
   if (data.value) {
-    updateYardTruckStats(data)
+    updateDashboardData(data)
     notifier('success', 'Automatic docking and unloading', 'Docking and unloading are finished!!!')
     globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()
@@ -200,7 +196,7 @@ async function resetDockingAndUnloading() {
   }
 
   if (data.value) {
-    updateYardTruckStats(data)
+    updateDashboardData(data)
     notifier('success', 'Hard reset', `The reset is finished`)
     globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()

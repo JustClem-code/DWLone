@@ -35,8 +35,9 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
+import { ref, computed } from 'vue';
 import { useLogic } from '../../composables/useLogic.js'
+import { dashboardStore } from '../../composables/dashboardStore.js'
 
 import SidePanel from '../UI/SidePanel.vue';
 import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
@@ -46,7 +47,7 @@ import StatsHeader from './StatsHeader.vue';
 
 const { formatInt, getColor } = useLogic()
 
-const { locations } = inject('dashboard')
+const { locations } = dashboardStore()
 
 const currentBag = ref(null)
 const infoDialogRef = ref(null)
