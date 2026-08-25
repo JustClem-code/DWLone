@@ -44,8 +44,6 @@
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
 
-// Encore un problème de reset truck si certains packages sont stow ou inductés
-
 // refacto packages stats pour de vrai !!!
 
 // creation de services pour regrouper des function de docking et unloading

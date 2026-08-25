@@ -60,9 +60,9 @@ final class DashboardController extends AbstractController
   {
     return $this->json(
       ['locations' => $this->locationArrayTransformerService->transformAllBagOriented()] +
-      ['allPackagesStats' => $this->packagesStats()] +
-      ['yardTruckStats' => $this->yardTruckStats()])
-      ;
+        ['allPackagesStats' => $this->packagesStats()] +
+        ['yardTruckStats' => $this->yardTruckStats()]
+    );
   }
 
   // Yard truck and unloading
@@ -159,7 +159,24 @@ final class DashboardController extends AbstractController
   {
     $pallets = $this->palletRepository->findAllWithUserAndWithoutPackageInducted();
 
+
     foreach ($pallets as $pallet) {
+
+      $packages = $pallet->getPackages();
+
+      $hasLocation = false;
+
+      foreach ($packages as $package) {
+        if ($package->getLocation() !== null) {
+          $hasLocation = true;
+          break;
+        }
+      }
+
+      if ($hasLocation) {
+        return $this->json(['error' => 'Some packages arre inducted'], 404);
+      }
+
       $pallet->setUserId(null);
       $this->entityManager->flush();
     }

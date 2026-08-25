@@ -104,7 +104,7 @@ const automaticOptions = computed(() => [
     'value': 'Hard reset',
     'notice': 'Reset all steps',
     'number': `${processedTrucksNumber.value} - ${unloadingPalletsCleanNumber.value}`,
-    'disabled': unloadingPalletsCleanNumber.value === 0 && processedTrucksNumber.value === 0
+    'disabled': unloadingPalletsCleanNumber.value === 0 || processedTrucksNumber.value === 0
   },
 ])
 
