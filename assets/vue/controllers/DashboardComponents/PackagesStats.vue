@@ -11,7 +11,7 @@
         <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
 
         <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
-          :isDisabled="!selected" :isLoading="hardResetIsLoading || automaticInductIsLoading" />
+          :isDisabled="!selected" :isLoading="globalLoading" />
       </div>
     </SidePanel>
 
@@ -19,8 +19,8 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watch, watchEffect, onMounted } from 'vue';
-import { useFetch, usePostFetch } from '../../composables/fetch.js'
+import { ref, computed, watchEffect, onMounted } from 'vue';
+import { usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 import { dashboardStore } from '../../composables/dashboardStore.js'
 
@@ -42,8 +42,7 @@ const STORAGE_KEY_PALLET = 'currentPallet'
 const sidePanelRef = ref(null)
 
 const selected = ref(null)
-const automaticInductIsLoading = ref(null)
-const hardResetIsLoading = ref(null)
+const globalLoading = ref(null)
 
 const allPackagesNumber = computed(() => {
   return allPackagesStats.value ? allPackagesStats.value.allPackagesNumber : 0
@@ -102,9 +101,9 @@ const automaticOptions = computed(() => [
 
 function submitAutomaticForm() {
   const actions = {
-    'Induct': () => automaticInduct(true, false),
-    'Stow': () => automaticInduct(false, true),
-    'Full': () => automaticInduct(true, true),
+    'Induct': () => automaticInduction(),
+    'Stow': () => automaticStow(),
+    'Full': () => autoInductionAndStow(),
     'Hard reset': () => resetLocationsBagsPackages(),
   }
 
@@ -123,59 +122,70 @@ const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PALLET)
 }
 
-async function automaticInduct(induct = false, stow = false) {
-  if (!induct && !stow) return
+async function automaticInduction() {
 
-  automaticInductIsLoading.value = true
-  resetLocalStorage()
+  globalLoading.value = true
 
-  try {
-    const { data, error } = await usePostFetch('/automaticInductAndStow', {
-      induct,
-      stow
-    })
+  const { data, error } = await usePostFetch('/automaticinduction')
 
-    if (error.value) {
-      notifier('error', 'Automatic induct & stow', 'An error occurred')
-      return
-    }
+  if (error.value) {
+    notifier('error', 'Automatic induction', 'An error occurred')
+    return
+  }
 
-    if (!data.value) {
-      notifier('error', 'Automatic induct & stow', 'No data returned')
-      return
-    }
-
-    const actions = []
-    if (induct) actions.push('induct')
-    if (stow) actions.push('stow')
-
-    const title =
-      actions.length === 2
-        ? 'Induct & stow'
-        : actions[0].charAt(0).toUpperCase() + actions[0].slice(1)
-
-    const message =
-      actions.length === 2
-        ? 'The automatic induct & stow are finished'
-        : `The automatic ${actions[0]} is finished`
-
-    notifier('success', title, message)
-
+  if (data.value) {
     updateDashboardData(data)
+    notifier('success', 'Automatic induction', 'Induction is finished!!!')
+    globalLoading.value = false
+    sidePanelRef.value?.toggleSidePanel()
+  }
+}
 
-  } finally {
-    automaticInductIsLoading.value = false
+async function automaticStow() {
+
+  globalLoading.value = true
+
+  const { data, error } = await usePostFetch('/automaticstow')
+
+  if (error.value) {
+    notifier('error', 'Automatic stow', 'An error occurred')
+    return
+  }
+
+  if (data.value) {
+    updateDashboardData(data)
+    notifier('success', 'Automatic stow', 'Stow is finished!!!')
+    globalLoading.value = false
+    sidePanelRef.value?.toggleSidePanel()
+  }
+}
+
+async function autoInductionAndStow() {
+
+  globalLoading.value = true
+
+  const { data, error } = await usePostFetch('/autoinductionandstow')
+
+  if (error.value) {
+    notifier('error', 'Automatic induct and stow', 'An error occurred')
+    return
+  }
+
+  if (data.value) {
+    updateDashboardData(data)
+    notifier('success', 'Automatic induct and stow', 'Induct and stow are finished!!!')
+    globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()
   }
 }
 
 async function resetLocationsBagsPackages() {
-  hardResetIsLoading.value = true;
+  globalLoading.value = true;
   const { data, error } = await usePostFetch('/hardResetLocationsBagsPackages');
 
   if (data.value) {
     resetLocalStorage()
-    hardResetIsLoading.value = false;
+    globalLoading.value = false;
     notifier('success', 'Hard reset', `The reset is finished`)
 
     updateDashboardData(data)

@@ -214,6 +214,24 @@ final class DashboardController extends AbstractController
     ];
   }
 
+  private function inductAllPackages(): void
+  {
+    $packages = $this->packageRepository->findAllWithoutLocationFromPalletsWithUser();
+
+    foreach ($packages as $package) {
+      $this->setPackageLocationService->setPackageLocation($package);
+    }
+  }
+
+  private function stowAllPackages(): void
+  {
+    $packages = $this->packageRepository->findAllWithLocationAndNotStowed();
+
+    foreach ($packages as $package) {
+      $this->setPackageLocationService->setPackageUserStow($package);
+    }
+  }
+
   #[Route('/getPackagesStats', name: 'get_packages_stats', methods: ['GET'])]
   public function getPackagesStats(): Response
   {
@@ -226,27 +244,27 @@ final class DashboardController extends AbstractController
     return $this->json($this->locationArrayTransformerService->transformAllBagOriented());
   }
 
-  #[Route('/automaticInductAndStow', name: 'automatic_induct_and_stow', methods: ['POST'])]
-  public function automaticInductAndStow(Request $request): Response
+  #[Route('/automaticinduction', name: 'automatic_induction', methods: ['POST'])]
+  public function automaticInduction(): Response
   {
-    $induct = $request->getPayload()->get('induct');
-    $stow = $request->getPayload()->get('stow');
+    $this->inductAllPackages();
 
-    if ($induct) {
-      $packages = $this->packageRepository->findAllWithoutLocationFromPalletsWithUser();
+    return $this->buildDashboardResponse();
+  }
 
-      foreach ($packages as $package) {
-        $this->setPackageLocationService->setPackageLocation($package);
-      }
-    }
+  #[Route('/automaticstow', name: 'automatic_stow', methods: ['POST'])]
+  public function automaticStow(): Response
+  {
+    $this->stowAllPackages();
 
-    if ($stow) {
-      $packages = $this->packageRepository->findAllWithLocationAndNotStowed();
+    return $this->buildDashboardResponse();
+  }
 
-      foreach ($packages as $package) {
-        $this->setPackageLocationService->setPackageUserStow($package);
-      }
-    }
+  #[Route('/autoinductionandstow', name: 'auto_induction_and_stow', methods: ['POST'])]
+  public function autoInductionAndStow(): Response
+  {
+    $this->inductAllPackages();
+    $this->stowAllPackages();
 
     return $this->buildDashboardResponse();
   }
