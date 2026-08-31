@@ -15,6 +15,8 @@
 
     <SidePanel ref="sidePanelRef" title="Zoom on bags" width="md:w-5/6">
 
+      <SearchComponent></SearchComponent>
+
       <div v-if="locations" class="divide-y divide-gray-200 dark:divide-gray-700/90">
         <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1 sm:gap-4 py-8">
 
@@ -44,6 +46,7 @@ import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import InformationComponent from '../UI/Modals/InformationComponent.vue';
 import StatsHeader from './StatsHeader.vue';
+import SearchComponent from '../UI/Modals/SearchComponent.vue';
 
 const { formatInt, getColor } = useLogic()
 
