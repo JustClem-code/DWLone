@@ -43,6 +43,7 @@
 // STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
 // PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
 // DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
+// SEARCHBAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/command-palettes
 
 // retrouver les bag dans les allées avant de tester un snake path
 // Automatiser le picking
