@@ -46,6 +46,9 @@
 // SEARCHBAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/command-palettes
 
 // retrouver les bag dans les allées avant de tester un snake path
+// Continuer sur la recherche dans les locations -> props et emit le value de l'input
+
+
 // Automatiser le picking
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
