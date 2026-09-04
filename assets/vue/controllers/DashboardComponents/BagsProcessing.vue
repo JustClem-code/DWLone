@@ -15,7 +15,7 @@
 
     <SidePanel ref="sidePanelRef" title="Zoom on bags" width="md:w-5/6">
 
-      <SearchComponent></SearchComponent>
+      <SearchComponent :items="allBags"></SearchComponent>
 
       <div v-if="locations" class="divide-y divide-gray-200 dark:divide-gray-700/90">
         <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1 sm:gap-4 py-8">
@@ -72,6 +72,13 @@ const numberOfBags = computed(() =>
       .length
     : 0
 )
+
+const allBags = computed(() => {
+  return locations.value
+    ? locations.value
+        .flatMap(group => group.filter(loc => loc.bag !== null))
+    : []
+})
 
 const bagsStats = computed(() => [
   { 'title': 'Number of bags', 'number': `${numberOfBags.value}` },

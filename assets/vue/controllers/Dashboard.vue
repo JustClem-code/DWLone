@@ -47,6 +47,8 @@
 
 // retrouver les bag dans les allées avant de tester un snake path
 // Continuer sur la recherche dans les locations -> props et emit le value de l'input
+// changer la couler du hover en fonction de la couleur du bag
+// rendre le component réutilisable ? ou alors le custom pour les packages bags ?
 
 
 // Automatiser le picking
