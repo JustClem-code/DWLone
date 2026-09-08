@@ -40,15 +40,12 @@
 
 //TODO:
 
-// STAT UI : https://tailwindcss.com/plus/ui-blocks/application-ui/data-display/stats
-// PROGRESS BAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/progress-bars
-// DRAWERS : https://tailwindcss.com/plus/ui-blocks/application-ui/overlays/drawers
-// SEARCHBAR : https://tailwindcss.com/plus/ui-blocks/application-ui/navigation/command-palettes
-
-// retrouver les bag dans les allées avant de tester un snake path
+// TailWind plus n'est plus accessible
+// 
 // Continuer sur la recherche dans les locations -> props et emit le value de l'input
 // changer la couler du hover en fonction de la couleur du bag
 // rendre le component réutilisable ? ou alors le custom pour les packages bags ?
+// retrouver les bag dans les allées avant de tester un snake path
 
 
 // Automatiser le picking
@@ -105,8 +102,6 @@
 import { onMounted, provide } from 'vue'
 
 import { userStore } from '../composables/userStore.js'
-import { useFetch } from '../composables/fetch.js'
-import { useTimer } from '../composables/useTimer.js'
 
 import BorderedContent from './UI/BorderedContent.vue';
 import PackagesStats from './DashboardComponents/PackagesStats.vue'
