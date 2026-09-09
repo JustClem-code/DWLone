@@ -20,6 +20,7 @@
       <div ref="itemsContainer" role="listbox"
         class="flex flex-col gap-1 max-h-80 scroll-py-10 scroll-pb-2 overflow-y-auto pt-1 pb-2"
         :class="!isFocused ? 'hidden' : ''">
+
         <div aria-labelledby="projects-label">
           <h2 class="px-2 font-semibold text-sm">Projects</h2>
 
@@ -33,11 +34,12 @@
                   d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
                   stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
-              <span class="flex-auto ml-3 text-ellipsis whitespace-nowrap overflow-hidden">{{ item.bag.name }}</span>
+              <span class="flex-auto ml-3 text-ellipsis whitespace-nowrap overflow-hidden">{{ item.label }}</span>
             </a>
           </div>
 
         </div>
+
       </div>
     </div>
   </div>
@@ -76,8 +78,9 @@ function onKeydown(event) {
     scrollToActiveItem()
   } else if (event.key === 'Enter' && activeIndex.value >= 0) {
     event.preventDefault()
-    const item = items.value[activeIndex.value]
-    window.location.href = item.href
+    const item = props.items[activeIndex.value]
+    console.log('Selected item:', item)
+    // window.location.href = item.href
   } else if (event.key === 'Escape') {
     isFocused.value = false
   }

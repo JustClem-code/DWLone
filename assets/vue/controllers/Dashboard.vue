@@ -41,7 +41,9 @@
 //TODO:
 
 // TailWind plus n'est plus accessible
-// 
+
+// autoriser le select à la souris aussi bien que au clavier
+// regrouper les recherches et faire un foreach pour packages et bags
 // Continuer sur la recherche dans les locations -> props et emit le value de l'input
 // changer la couler du hover en fonction de la couleur du bag
 // rendre le component réutilisable ? ou alors le custom pour les packages bags ?
