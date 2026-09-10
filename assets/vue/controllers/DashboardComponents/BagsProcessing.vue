@@ -15,7 +15,7 @@
 
     <SidePanel ref="sidePanelRef" title="Zoom on bags" width="md:w-5/6">
 
-      <SearchComponent :items="allPackagesItems"></SearchComponent>
+      <SearchComponent :items="allBagsItems" @click="val => setCurrentBag(val)"></SearchComponent>
 
       <div v-if="locations" class="divide-y divide-gray-200 dark:divide-gray-700/90">
         <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1 sm:gap-4 py-8">
