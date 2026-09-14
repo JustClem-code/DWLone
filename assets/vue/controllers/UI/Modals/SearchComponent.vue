@@ -6,7 +6,7 @@
       rounded-lg shadow-xs dark:shadow-none transition-all">
       <div>
         <div class="grid grid-cols-[repeat(1,minmax(0,1fr))]">
-          <input id="searchInput" ref="commandInput" type="text" autofocus placeholder="Search..."
+          <input id="searchInput" ref="commandInput" :value="modelValue" @input="onInput" type="text" autofocus placeholder="Search..."
             class="col-start-1 row-start-1 h-12 w-full pr-4 pl-11 outline-none text-base bg-white/40 dark:bg-gray-800/50"
             role="combobox" aria-autocomplete="list" autocomplete="off" aria-controls="command-items-1"
             :aria-activedescendant="activeItemId" @focus="isFocused = true" @blur="handleBlur" @keydown="onKeydown" />
@@ -20,7 +20,7 @@
           class="flex flex-col gap-1 max-h-80 scroll-py-10 scroll-pb-2 overflow-y-auto pt-1 pb-2 bg-white/40 dark:bg-gray-800/50"
           :class="!isFocused ? 'hidden' : ''">
           <div aria-labelledby="projects-label">
-            <h2 class="px-2 font-semibold text-sm">Projects</h2>
+            <!-- <h2 class="px-2 font-semibold text-sm">Projects</h2> -->
 
             <div v-for="(item, index) in items" :key="item.id" class="px-2 mt-2 text-sm"
               :class="{ 'bg-purple-600': activeIndex === index }" @mouseenter="onMouseEnter(index)" role="option"
@@ -52,15 +52,26 @@
 import { ref, computed, nextTick, watch } from 'vue'
 import SearchIcon from '../Icons/SearchIcon.vue'
 
-const emit = defineEmits(['click'])
+const emit = defineEmits(['click', 'update:modelValue', 'search'])
 
 const props = defineProps({
   items: Array,
+  modelValue: {
+    type: String,
+    default: '',
+  },
 })
+
 
 const isFocused = ref(false)
 const activeIndex = ref(-1)
 const itemsContainer = ref(null)
+
+const onInput = (event) => {
+  const value = event.target.value
+  emit('update:modelValue', value)   // pour v-model côté parent
+  emit('search', value)              // si tu veux un événement dédié "search"
+}
 
 const activeItemId = computed(() => {
   if (activeIndex.value < 0 || activeIndex.value >= props.items.length) return ''

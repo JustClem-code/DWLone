@@ -15,7 +15,7 @@
 
     <SidePanel ref="sidePanelRef" title="Zoom on bags" width="md:w-5/6">
 
-      <SearchComponent :items="allBagsItems" @click="val => setCurrentBag(val)"></SearchComponent>
+      <SearchComponent :items="filteredBagsItems" v-model="searchQuery" @click="val => setCurrentBag(val)"></SearchComponent>
 
       <div v-if="locations" class="divide-y divide-gray-200 dark:divide-gray-700/90">
         <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1 sm:gap-4 py-8">
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useLogic } from '../../composables/useLogic.js'
 import { dashboardStore } from '../../composables/dashboardStore.js'
 
@@ -56,6 +56,8 @@ const currentBag = ref(null)
 const infoDialogRef = ref(null)
 
 const sidePanelRef = ref(null)
+
+const searchQuery = ref('')
 
 const setCurrentBag = (bag) => {
   if (!bag) {
@@ -85,6 +87,21 @@ const allBagsItems = computed(() => {
           }))
       )
     : []
+})
+
+const filteredBagsItems = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+
+  if (!query) {
+    return allBagsItems.value
+  }
+
+  return allBagsItems.value.filter(bag => {
+    return (
+      bag.label?.toLowerCase().includes(query) ||
+      bag.name?.toLowerCase().includes(query)
+    )
+  })
 })
 
 const allPackagesItems = computed(() => {
@@ -139,5 +156,13 @@ const bagColorClass = computed(() => {
       `outline outline-offset-1 ${bagColorMap.value[prefix] || ''}`.trim()
   }
 })
+
+watch(
+  () => searchQuery.value,
+  (val) => {
+    console.log('searchQuery watch:', val)
+  },
+  { immediate: true, deep: true }
+)
 
 </script>
