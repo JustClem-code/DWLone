@@ -23,10 +23,10 @@
             <!-- <h2 class="px-2 font-semibold text-sm">Projects</h2> -->
 
             <div v-for="(item, index) in items" :key="item.id" class="px-2 mt-2 text-sm"
-              :class="{ 'bg-purple-600': activeIndex === index }" @mouseenter="onMouseEnter(index)" role="option"
+              :class="{ [itemColorClass(item)]: activeIndex === index }" @mouseenter="onMouseEnter(index)" role="option"
               tabindex="-1" :aria-selected="activeIndex === index">
               <button type="button" @click="onClickItem(item)" :data-type="item.type"
-                class="flex items-center w-full cursor-default px-1 py-2 select-none rounded-md text-gray-900 dark:text-gray-200 hover:bg-purple-600 hover:text-white"
+                class="flex items-center w-full cursor-default px-1 py-2 select-none rounded-md text-gray-900 dark:text-gray-200 hover:text-white"
                 :id="`item-${item.id}`">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
                   aria-hidden="true" class="size-6">
@@ -130,6 +130,11 @@ const onClickItem = (item) => {
   setTimeout(() => {
     emit('click', item)
   }, 150)
+}
+
+const itemColorClass = (item) => {
+  if (!item || !item.color) return 'bg-purple-700'
+  return item.color
 }
 
 watch(

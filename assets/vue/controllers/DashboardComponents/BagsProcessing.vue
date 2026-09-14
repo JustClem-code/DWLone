@@ -15,7 +15,8 @@
 
     <SidePanel ref="sidePanelRef" title="Zoom on bags" width="md:w-5/6">
 
-      <SearchComponent :items="filteredBagsItems" v-model="searchQuery" @click="val => setCurrentBag(val)"></SearchComponent>
+      <SearchComponent :items="filteredBagsItems" v-model="searchQuery" @click="val => setCurrentBag(val)">
+      </SearchComponent>
 
       <div v-if="locations" class="divide-y divide-gray-200 dark:divide-gray-700/90">
         <div v-for="(groupe, indexGroup) in locations" :key="indexGroup" class="grid grid-cols-6 gap-1 sm:gap-4 py-8">
@@ -83,6 +84,7 @@ const allBagsItems = computed(() => {
           .filter(loc => loc.bag !== null)
           .map(loc => ({
             label: loc.bag.name,
+            color: bagColorSearchClass.value(loc.bag.name),
             ...loc.bag
           }))
       )
@@ -147,6 +149,21 @@ const bagColorZoomMap = computed(() => ({
   YLO: 'outline-yellow-700',
   GRN: 'outline-green-700',
 }))
+
+const bagColorSearchMap = computed(() => ({
+  BLK: 'bg-gray-900',
+  NVY: 'bg-blue-700',
+  ORG: 'bg-orange-700',
+  YLO: 'bg-yellow-700',
+  GRN: 'bg-green-700',
+}))
+
+const bagColorSearchClass = computed(() => {
+  return (name) => {
+    const prefix = getColor(name)
+    return `${bagColorSearchMap.value[prefix] || null}`.trim();
+  }
+})
 
 const bagColorClass = computed(() => {
   return (name, zoom = false) => {
