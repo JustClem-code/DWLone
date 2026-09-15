@@ -127,9 +127,13 @@ const bagInfos = computed(() => {
     datas: [
       { 'Bag': currentBag.value?.name },
       { 'Location': currentBag.value?.locationName },
+      { 'Road': currentBag.value?.road ? currentBag.value?.road : 'No road assigned' },
       { 'Number of packages': currentBag.value?.packages.length },
       { 'Number of packages in bag': currentBag.value?.packages.filter(p => p.userStow !== null).length },
       { 'Total Weight': `${formatInt(currentBag.value?.totalBagWeight)} kg` },
+      { 'Picked': currentBag.value?.isPicked ? 'Yes' : 'No' },
+      { 'Stagged': currentBag.value?.isStagged ? 'Yes' : 'No' },
+      { 'Stagging Area': currentBag.value?.staggingArea ? currentBag.value?.staggingArea : 'No stagging area assigned' },
     ]
   }
 })
@@ -151,7 +155,7 @@ const bagColorZoomMap = computed(() => ({
 }))
 
 const bagColorSearchMap = computed(() => ({
-  BLK: 'bg-gray-900',
+  BLK: 'dark:bg-gray-900 bg-gray-900/50',
   NVY: 'bg-blue-700',
   ORG: 'bg-orange-700',
   YLO: 'bg-yellow-700',

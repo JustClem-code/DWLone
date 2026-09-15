@@ -20,13 +20,14 @@
           class="flex flex-col gap-1 max-h-80 scroll-py-10 scroll-pb-2 overflow-y-auto pt-1 pb-2 bg-white/40 dark:bg-gray-800/50"
           :class="!isFocused ? 'hidden' : ''">
           <div aria-labelledby="projects-label">
+            <!-- Title -->
             <!-- <h2 class="px-2 font-semibold text-sm">Projects</h2> -->
 
-            <div v-for="(item, index) in items" :key="item.id" class="px-2 mt-2 text-sm"
+            <div v-for="(item, index) in items" :key="item.id" class="px-2 mt-2 text-sm text-gray-900 dark:text-gray-200"
               :class="{ [itemColorClass(item)]: activeIndex === index }" @mouseenter="onMouseEnter(index)" role="option"
               tabindex="-1" :aria-selected="activeIndex === index">
               <button type="button" @click="onClickItem(item)" :data-type="item.type"
-                class="flex items-center w-full cursor-default px-1 py-2 select-none rounded-md text-gray-900 dark:text-gray-200 hover:text-white"
+                class="flex items-center w-full cursor-default px-1 py-2 select-none rounded-md"
                 :id="`item-${item.id}`">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
                   aria-hidden="true" class="size-6">
@@ -69,8 +70,7 @@ const itemsContainer = ref(null)
 
 const onInput = (event) => {
   const value = event.target.value
-  emit('update:modelValue', value)   // pour v-model côté parent
-  emit('search', value)              // si tu veux un événement dédié "search"
+  emit('update:modelValue', value)
 }
 
 const activeItemId = computed(() => {
@@ -134,14 +134,14 @@ const onClickItem = (item) => {
 
 const itemColorClass = (item) => {
   if (!item || !item.color) return 'bg-purple-700'
-  return item.color
+  return item.color + ' text-white'
 }
 
-watch(
+/* watch(
   () => props.items,
   (val) => {
     console.log('items search watch:', val)
   },
   { immediate: true, deep: true }
-)
+) */
 </script>

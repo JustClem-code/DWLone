@@ -34,10 +34,15 @@ class BagArrayTransformer
     return [
       'id' => $bag->getId(),
       'name' => $bag->getName(),
-      'road' => $bag->getRoadPart() ? $bag->getRoadPart()->getRoad()->getName() : null,
       'locationName' => $bag->getLocation() ? $bag->getLocation()->getName() : null,
       'packages' => $packages,
       'totalBagWeight' => $this->computeTotalWeight($packages),
+      'road' => $bag->getRoadPart() ? $bag->getRoadPart()->getRoad()->getName() : null,
+      'isPicked' => $bag->isPicked(),
+      'isStagged' => $bag->getRoadPart()?->isStagged(),
+      'staggingArea' => $bag->getRoadPart()?->getRoad()?->getStagging() ?
+        $bag->getRoadPart()?->getRoad()?->getStagging()?->getName()
+        : null,
     ];
   }
 }
