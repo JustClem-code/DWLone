@@ -65,6 +65,18 @@ class RoadPartRepository extends ServiceEntityRepository
     ;
   }
 
+  public function findAllWithNoUser(): array
+  {
+    return $this->createQueryBuilder('r')
+      ->innerJoin('r.road', 'ro')
+      ->andWhere('r.user IS NULL')
+      ->andWhere('r.stagged = FALSE')
+      ->orderBy('ro.name', 'ASC')
+      ->getQuery()
+      ->getResult()
+    ;
+  }
+
   public function findAllWithUser(): array
   {
     return $this->createQueryBuilder('r')

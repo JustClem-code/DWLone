@@ -142,6 +142,33 @@ final class PickingController extends AbstractController
     return $this->json($this->roadPartRepository->toArray($roadPart));
   }
 
+  #[Route('/pickingBag/{id}', name: 'pick_bag', methods: ['POST'])]
+  public function pickBag(
+    Request $request,
+    int $id,
+  ): Response {
+    $formData = $request->getPayload()->get('bagId');
+    $cart = $this->cartRepository->find($id);
+    $bag = $this->findOrNull($this->bagRepository, $formData);
+
+    $roadPart = $this->currentUserRoadpart();
+    $bagToPick = $this->bagRepository->findUnpickedByRoadPart($roadPart)[0];
+
+    if ($bag !== $bagToPick) {
+      return $this->json(['error' => 'Wrong bag'], 404);
+    }
+
+    if ($cart !== $roadPart->getCart()) {
+      return $this->json(['error' => 'Wrong cart'], 404);
+    }
+
+    $bag->setPicked(true);
+
+    $this->entityManager->flush();
+
+    return $this->json($this->roadPartRepository->toArray($roadPart));
+  }
+
   private function allBagsPicked(iterable $bags): bool
   {
     return empty($bags) || array_all(iterator_to_array($bags), fn($bag) => $bag->isPicked());
@@ -185,32 +212,5 @@ final class PickingController extends AbstractController
         'roadPart' => $this->roadPartRepository->toArray($roadPart)
       ]
     );
-  }
-
-  #[Route('/pickingBag/{id}', name: 'pick_bag', methods: ['POST'])]
-  public function pickBag(
-    Request $request,
-    int $id,
-  ): Response {
-    $formData = $request->getPayload()->get('bagId');
-    $cart = $this->cartRepository->find($id);
-    $bag = $this->findOrNull($this->bagRepository, $formData);
-
-    $roadPart = $this->currentUserRoadpart();
-    $bagToPick = $this->bagRepository->findUnpickedByRoadPart($roadPart)[0];
-
-    if ($bag !== $bagToPick) {
-      return $this->json(['error' => 'Wrong bag'], 404);
-    }
-
-    if ($cart !== $roadPart->getCart()) {
-      return $this->json(['error' => 'Wrong cart'], 404);
-    }
-
-    $bag->setPicked(true);
-
-    $this->entityManager->flush();
-
-    return $this->json($this->roadPartRepository->toArray($roadPart));
   }
 }

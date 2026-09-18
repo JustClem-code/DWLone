@@ -15,6 +15,7 @@ use App\Repository\PackageRepository;
 use App\Repository\RoadRepository;
 use App\Repository\PostcodesRepository;
 use App\Repository\RoadPartRepository;
+use App\Repository\CartRepository;
 use App\Repository\BagRepository;
 use App\Repository\StaggingRepository;
 
@@ -41,6 +42,7 @@ final class DashboardController extends AbstractController
     private RoadRepository $roadRepository,
     private PostcodesRepository $postcodesRepository,
     private RoadPartRepository $roadPartRepository,
+    private CartRepository $cartRepository,
     private BagRepository $bagRepository,
     private StaggingRepository $staggingRepository,
     private EntityManagerInterface $entityManager,
@@ -296,6 +298,12 @@ final class DashboardController extends AbstractController
     );
   }
 
+  #[Route('/getAllRoadParts', name: 'get_all_road_parts', methods: ['GET'])]
+  public function getAllRoadParts(): Response
+  {
+    return $this->json($this->roadPartRepository->transformAllOrderedByName());
+  }
+
   #[Route('/resetRoadPart/{id}', name: 'reset_road_part')]
   public function resetRoadPart(int $id): Response
   {
@@ -346,18 +354,6 @@ final class DashboardController extends AbstractController
     $this->entityManager->flush();
 
     return $this->getAllRoadParts();
-  }
-
-  #[Route('/getAllRoads', name: 'get_all_roads', methods: ['GET'])]
-  public function getAllRoads(): Response
-  {
-    return $this->json($this->roadRepository->transformAllOrderedByName());
-  }
-
-  #[Route('/getAllRoadParts', name: 'get_all_road_parts', methods: ['GET'])]
-  public function getAllRoadParts(): Response
-  {
-    return $this->json($this->roadPartRepository->transformAllOrderedByName());
   }
 
   private function getAllBagsWithPackages(): array
@@ -428,6 +424,52 @@ final class DashboardController extends AbstractController
       $roadPart->addBag($bag);
 
       $this->entityManager->flush();
+    }
+
+    return $this->getAllRoadParts();
+  }
+
+  private function setUserToRoadPart(RoadPart $roadPart): void
+  {
+    $roadPart->setUser($this->security->getUser());
+    $this->entityManager->flush();
+  }
+
+  private function setCartToRoadPart(RoadPart $roadPart): void
+  {
+    $cart = $this->cartRepository->findOneWithoutRoadPart($roadPart->getRoad()->getStagging());
+
+    $roadPart->startPicking($cart);
+
+    $this->entityManager->flush();
+  }
+
+  private function pickingAllBags(RoadPart $roadPart): void
+  {
+    foreach ($roadPart->getBags() as $bag) {
+      $bag->setPicked(true);
+    }
+
+    $this->entityManager->flush();
+  }
+
+  private function staggingCart(RoadPart $roadPart): void
+  {
+    $roadPart->finishPicking();
+
+    $this->entityManager->flush();
+  }
+
+  #[Route('/automatingpicking', name: 'automating_picking', methods: ['POST'])]
+  public function automatingPicking(): Response
+  {
+    $roadParts = $this->roadPartRepository->findAllWithNoUser();
+
+    foreach ($roadParts as $roadPart) {
+      $this->setUserToRoadPart($roadPart);
+      $this->setCartToRoadPart($roadPart);
+      $this->pickingAllBags($roadPart);
+      $this->staggingCart($roadPart);
     }
 
     return $this->getAllRoadParts();

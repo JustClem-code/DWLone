@@ -30,9 +30,6 @@ import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 
 import SidePanel from '../UI/SidePanel.vue';
-import HorizontalLinkButton from '../UI/Buttons/HorizontalLinkButton.vue';
-import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
-import InformationComponent from '../UI/Modals/InformationComponent.vue';
 import StatsHeader from './StatsHeader.vue';
 import RoadPartsList from './RoadPartsList.vue';
 import RadioCard from '../UI/Radios/RadioCard.vue';
@@ -42,7 +39,6 @@ const { formatInt, getColor } = useLogic()
 
 const { notifier } = useNotification()
 
-const { data: allRoads, error: errorGetAllRoads } = useFetch('/getAllRoads')
 const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
 
 const selected = ref(null)
@@ -55,17 +51,21 @@ const allRoadPartsNumber = computed(() => {
   return allRoadParts.value ? allRoadParts.value.length : 0
 })
 
-const allRoadartsWithUser = computed(() => {
+const allRoadPartsWithUser = computed(() => {
   return allRoadParts.value ? allRoadParts.value.filter(r => r.userName).length : 0
 })
 
-const allRoadartsStagged = computed(() => {
+const allRoadPartsWithoutUser = computed(() => {
+  return allRoadParts.value ? allRoadParts.value.filter(r => !r.userName).length : 0
+})
+
+const allRoadPartsStagged = computed(() => {
   return allRoadParts.value ? allRoadParts.value.filter(r => r.stagged).length : 0
 })
 
 const pickingStats = computed(() => [
   { 'title': 'Number of roads', 'number': `${allRoadPartsNumber.value}` },
-  { 'title': 'In progress', 'number': `${allRoadartsWithUser.value}` },
+  { 'title': 'In progress', 'number': `${allRoadPartsWithUser.value}` },
   { 'title': 'Picking progress', 'number': `0` },
 ])
 
@@ -73,13 +73,15 @@ const pickingStats = computed(() => [
 const automaticOptions = computed(() => [
   { 'value': 'Sequencing', 'notice': 'Generate roads', 'number': '', 'disabled': allRoadPartsNumber.value > 0 },
   { 'value': 'Delete', 'notice': 'Delete all road parts', 'number': `${allRoadPartsNumber.value}`, 'disabled': allRoadPartsNumber.value === 0 },
-  { 'value': 'Hard reset', 'notice': 'Reset all road parts', 'number': `${allRoadartsWithUser.value}`, 'disabled': allRoadartsWithUser.value === 0 },
+  { 'value': 'Automatic picking', 'notice': 'Automatically pick all road parts', 'number': `${allRoadPartsWithoutUser.value}`, 'disabled': allRoadPartsWithoutUser.value === 0 },
+  { 'value': 'Hard reset', 'notice': 'Reset all road parts', 'number': `${allRoadPartsWithUser.value}`, 'disabled': allRoadPartsWithUser.value === 0 },
 ])
 
 function submitAutomaticForm() {
   const actions = {
     'Sequencing': () => generateAllRoads(),
     'Delete': () => deleteAllRoads(),
+    'Automatic picking': () => automatingPicking(),
     'Hard reset': () => hardResetPicking(),
   }
 
@@ -139,6 +141,25 @@ async function deleteAllRoads() {
       notifier('success', 'Picking', `All roads deleted`)
       sidePanelRef.value?.toggleSidePanel()
     }, 1000);
+  }
+}
+
+async function automatingPicking() {
+
+  globalLoading.value = true
+
+  const { data, error } = await usePostFetch('/automatingpicking')
+
+  if (error.value) {
+    notifier('error', 'Automatic picking', 'An error occurred')
+    return
+  }
+
+  if (data.value) {
+    allRoadParts.value = data.value
+    notifier('success', 'Automatic picking', 'Picking is finished!!!')
+    globalLoading.value = false
+    sidePanelRef.value?.toggleSidePanel()
   }
 }
 
