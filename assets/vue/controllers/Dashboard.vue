@@ -40,15 +40,14 @@
 
 //TODO:
 
-// TailWind plus n'est plus accessible
+// TailWind plus n'est plus accessible => https://headlessui.com
 
-
-// Automatiser le picking
+// La touche enter ne fonctionne pas pour valider les formulaire d'automation
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
-// Reefacto SetUserToStow pour faire la vérification de la bonne location côté symfony
 
 // mettre un sous-menu avec #id sur les partis pour éviter de scroller ?
+// -> https://headlessui.com/v1/react/tabs
 
 // Ajouter l'état du picking par bag dans BagPprocessing (Dashboard)
 

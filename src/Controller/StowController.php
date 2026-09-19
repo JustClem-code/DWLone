@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 use App\Service\LocationArrayTransformerService;
@@ -36,11 +37,17 @@ final class StowController extends AbstractController
   #[Route('/setUserStow/{id}', name: 'set_user_stow', methods: ['POST'])]
   public function setUserStow(
     int $id,
+    Request $request,
   ): Response {
     $package = $this->packageRepository->find($id);
+    $locationName = $request->getPayload()->get('locationName');
 
     if (!$package) {
       return $this->json(['error' => 'No package found for id ' . $id], 404);
+    }
+
+    if ($locationName !== $package->getLocation()?->getName()) {
+      return $this->json(['error' => 'Wrong bag'], 400);
     }
 
     $package = $this->setPackageLocationService->setPackageUserStow($package);

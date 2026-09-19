@@ -96,24 +96,17 @@ async function stowPackage(loc) {
     return
   }
 
-  if (loc.name !== currentPackage.value.location.name) {
-    currentPackage.value = null;
-    stowingIsLoading.value = false;
-    notifier('error', 'Stow', 'Wrong bag')
-    return
-  }
-
-  const { data, error } = await usePostFetch(`/setUserStow/${currentPackage.value.id}`)
+  const { data, error } = await usePostFetch(`/setUserStow/${currentPackage.value.id}` , { locationName: loc.name })
 
   if (error.value) {
     setTimeout(() => {
       notifier('error', 'Error stow', `${error.value}`)
-    }, 1000);
+    }, 500);
     setTimeout(() => {
       stowingIsLoading.value = false;
       currentPackage.value = null;
       return
-    }, 1500);
+    }, 600);
   }
 
   if (data.value) {
