@@ -1,20 +1,16 @@
 <template>
   <div class="flex flex-col gap-2">
-
     <StatsHeader title="Packages statistics" notice="You can automate the steps" actionTitle="Automating steps"
       @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="packagesStats" />
 
     <SidePanel ref="sidePanelRef" title="Automating steps">
-
-      <div class="flex flex-col gap-2 mb-8">
-
+      <form @submit.prevent="submitAutomaticForm" class="flex flex-col gap-2 mb-8">
         <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
 
-        <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
-          :isDisabled="!selected" :isLoading="globalLoading" />
-      </div>
+        <BaseButton type="submit" class="mt-4" title="Automatic program" styleColor="primary" :isDisabled="!selected"
+          :isLoading="globalLoading" />
+      </form>
     </SidePanel>
-
   </div>
 </template>
 
