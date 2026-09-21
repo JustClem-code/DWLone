@@ -1,39 +1,18 @@
 <template>
   <div class="flex flex-col gap-2">
-    <StatsHeader
-      title="Packages statistics"
-      notice="You can automate the steps"
-      actionTitle="Automating steps"
-      @actionClick="sidePanelRef?.toggleSidePanel()"
-      :statistics="packagesStats"
-    />
+    <StatsHeader title="Packages statistics" notice="You can automate the steps" actionTitle="Automating steps"
+      @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="packagesStats" />
 
     <SidePanel ref="sidePanelRef" title="Automating steps">
-      <form
-        @submit.prevent="submitAutomaticForm"
-        class="flex flex-col gap-2 mb-8 z-10"
-        role="radiogroup"
-        aria-label="Automatic options"
-      >
-        <RadioCard
-          v-for="(option, index) in automaticOptions"
-          :key="option.value"
-          :option="option"
-          v-model="selected"
-          :group-name="'automaticOptions'"
-          :ref="el => { if (index === 0) firstRadioCardRef = el }"
-          @keydown="onRadioKeydown"
-          tabindex="0"
-        />
+      <form @submit.prevent="submitAutomaticForm" class="flex flex-col gap-2 mb-8 z-10" role="radiogroup"
+        aria-label="Automatic options">
 
-        <BaseButton
-          type="submit"
-          class="mt-4"
-          title="Automatic program"
-          styleColor="primary"
-          :isDisabled="!selected"
-          :isLoading="globalLoading"
-        />
+        <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected"
+          group-name="automaticOptions" :ref="el => setRadioCardRef(el, option.value)" :tabindex="getTabIndex(option)"
+          @radio-keydown="onRadioKeydown" />
+
+        <BaseButton type="submit" class="mt-4" title="Automatic program" styleColor="primary" :isDisabled="!selected"
+          :isLoading="globalLoading" />
       </form>
     </SidePanel>
   </div>
@@ -56,9 +35,9 @@ const { notifier } = useNotification();
 const STORAGE_KEY_PALLET = 'currentPallet';
 
 const sidePanelRef = ref(null);
-const firstRadioCardRef = ref(null);
 
 const selected = ref(null);
+
 const globalLoading = ref(null);
 
 /* ------------------ Stats & options ------------------ */
@@ -104,8 +83,8 @@ const stowPercentage = computed(() =>
   !allPackagesNumber.value || !inductPercentage.value
     ? 0
     : Math.round(
-        (packagesWithLocationAndStowedNumber.value / packagesWithLocationNumber.value) * 100
-      )
+      (packagesWithLocationAndStowedNumber.value / packagesWithLocationNumber.value) * 100
+    )
 );
 
 const packagesStats = computed(() => [
@@ -159,7 +138,6 @@ function submitAutomaticForm() {
   }
 
   run();
-  selected.value = null;
 }
 
 const resetLocalStorage = () => {
@@ -239,75 +217,158 @@ async function resetLocationsBagsPackages() {
 
 /* ------------------ Navigation clavier ------------------ */
 
+const radioCardRefs = ref({});
+
 const firstEnabledOption = computed(() =>
-  automaticOptions.value.find(o => !o.disabled)
+  automaticOptions.value.find(option => !option.disabled)
 );
 
-// Options activables (valeurs)
 const enabledOptions = computed(() =>
-  automaticOptions.value.filter(o => !o.disabled).map(o => o.value)
+  automaticOptions.value.filter(option => !option.disabled)
 );
 
-// Index de l'option sélectionnée dans enabledOptions
-const currentEnabledIndex = computed(() =>
-  selected.value ? enabledOptions.value.indexOf(selected.value) : -1
+const selectedEnabledIndex = computed(() =>
+  enabledOptions.value.findIndex(option => option.value === selected.value)
 );
 
-function onRadioKeydown(e) {
-  if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return;
+function setRadioCardRef(component, value) {
+  if (component) {
+    radioCardRefs.value[value] = component;
+  } else {
+    delete radioCardRefs.value[value];
+  }
+}
 
-  e.preventDefault();
+function getTabIndex(option) {
+  if (option.disabled) return -1;
+
+  // La radio sélectionnée est prioritaire.
+  if (selected.value === option.value) return 0;
+
+  // Au chargement, aucune sélection n'est encore définie.
+  if (!selected.value && firstEnabledOption.value?.value === option.value) {
+    return 0;
+  }
+
+  return -1;
+}
+
+function focusRadioCard(value) {
+  const radioCard = radioCardRefs.value[value];
+
+  if (!radioCard) return;
+
+  radioCard.$el?.focus();
+}
+
+
+function selectAndFocus(value) {
+  const option = automaticOptions.value.find(
+    option => option.value === value
+  );
+
+  if (!option || option.disabled) return;
+
+  selected.value = option.value;
+
+  nextTick(() => {
+    focusRadioCard(option.value);
+  });
+}
+
+function onRadioKeydown(event) {
+  // Entrée : exécute le submit du formulaire.
+  if (event.key === 'Enter') {
+    event.preventDefault();
+
+    if (selected.value && !globalLoading.value) {
+      submitAutomaticForm();
+    }
+
+    return;
+  }
+
+  // Espace : sélectionne la radio actuellement focalisée.
+  if (event.key === ' ') {
+    event.preventDefault();
+
+    const focusedCard = Object.entries(radioCardRefs.value).find(
+      ([, radioCard]) => radioCard?.$el === document.activeElement
+    );
+
+    if (focusedCard) {
+      selectAndFocus(focusedCard[0]);
+    }
+
+    return;
+  }
+
+  if (!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+    return;
+  }
+
+  event.preventDefault();
 
   if (!enabledOptions.value.length) return;
 
-  let nextIndex = currentEnabledIndex.value;
+  let currentIndex = selectedEnabledIndex.value;
 
-  // Si rien n'est sélectionné, on part du premier
-  if (nextIndex === -1) nextIndex = 0;
-
-  if (e.key === 'ArrowDown') {
-    nextIndex = (nextIndex + 1) % enabledOptions.value.length;
-  } else if (e.key === 'ArrowUp') {
-    nextIndex = (nextIndex - 1 + enabledOptions.value.length) % enabledOptions.value.length;
+  if (currentIndex === -1) {
+    currentIndex = 0;
   }
 
-  const nextValue = enabledOptions.value[nextIndex];
-  if (nextValue) {
-    selected.value = nextValue;
-  }
+  const isNext = ['ArrowDown', 'ArrowRight'].includes(event.key);
+  const offset = isNext ? 1 : -1;
+
+  const nextIndex =
+    (currentIndex + offset + enabledOptions.value.length) %
+    enabledOptions.value.length;
+
+  selectAndFocus(enabledOptions.value[nextIndex].value);
 }
 
 /* ------------------ Watchers ------------------ */
 
-const handleToggle = () => {
-  if (!sidePanelRef.value?.isOpen) {
-    selected.value = null;
+watch(
+  () => automaticOptions.value,
+  options => {
+    const firstEnabled = options.find(option => !option.disabled);
+
+    if (!firstEnabled) {
+      selected.value = null;
+      return;
+    }
+
+    // La sélection actuelle est-elle encore disponible ?
+    const selectedOption = options.find(
+      option => option.value === selected.value
+    );
+
+    if (!selectedOption || selectedOption.disabled) {
+      selected.value = firstEnabled.value;
+    }
+  },
+  {
+    immediate: true,
+    deep: true,
   }
-};
+);
 
-watchEffect(handleToggle);
-
-// Sélectionner la première option disponible au chargement
-watchEffect(() => {
-  if (!selected.value && firstEnabledOption.value) {
-    selected.value = firstEnabledOption.value.value;
-  }
-});
-
-// Focus sur le premier radio à l'ouverture du panel
 watch(
   () => sidePanelRef.value?.isOpen,
-  async (isOpen) => {
-    if (!isOpen) return;
+  async isOpen => {
+    if (!isOpen) {
+      selected.value = null;
+      return;
+    }
+
     await nextTick();
 
-    if (!firstEnabledOption.value) return;
-    if (!firstRadioCardRef.value) return;
+    const firstEnabled = firstEnabledOption.value;
 
-    // RadioCard expose radioEl (ref sur l'input)
-    const input = firstRadioCardRef.value.radioEl;
-    input?.focus();
-  },
-  { immediate: false }
+    if (firstEnabled) {
+      selectAndFocus(firstEnabled.value);
+    }
+  }
 );
 </script>

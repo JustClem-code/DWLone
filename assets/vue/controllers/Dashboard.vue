@@ -42,7 +42,7 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
-// La touche enter ne fonctionne pas pour valider les formulaire d'automation -> sur packagesStats.vue c'est ok mais la naviqation clavier ne fonctionne pas pour les radios
+// le formulaire radiocard fonctionne bien avec les flèches et la souris, créer un composant réutilisable pour les autres formulaires radio
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
 
