@@ -219,6 +219,8 @@ async function resetLocationsBagsPackages() {
 
 const radioCardRefs = ref({});
 
+const focusedOption = ref(null);
+
 const firstEnabledOption = computed(() =>
   automaticOptions.value.find(option => !option.disabled)
 );
@@ -242,11 +244,18 @@ function setRadioCardRef(component, value) {
 function getTabIndex(option) {
   if (option.disabled) return -1;
 
-  // La radio sélectionnée est prioritaire.
-  if (selected.value === option.value) return 0;
+  // L'option actuellement focus est accessible avec Tab.
+  if (focusedOption.value === option.value) return 0;
 
-  // Au chargement, aucune sélection n'est encore définie.
-  if (!selected.value && firstEnabledOption.value?.value === option.value) {
+  // Après une sélection, la radio sélectionnée devient le point d'entrée.
+  if (!focusedOption.value && selected.value === option.value) return 0;
+
+  // Sans focus ni sélection : première option active.
+  if (
+    !focusedOption.value &&
+    !selected.value &&
+    firstEnabledOption.value?.value === option.value
+  ) {
     return 0;
   }
 
@@ -262,7 +271,21 @@ function focusRadioCard(value) {
 }
 
 
-function selectAndFocus(value) {
+function focusOption(value) {
+  const option = automaticOptions.value.find(
+    option => option.value === value
+  );
+
+  if (!option || option.disabled) return;
+
+  focusedOption.value = option.value;
+
+  nextTick(() => {
+    focusRadioCard(option.value);
+  });
+}
+
+function selectOption(value) {
   const option = automaticOptions.value.find(
     option => option.value === value
   );
@@ -270,14 +293,12 @@ function selectAndFocus(value) {
   if (!option || option.disabled) return;
 
   selected.value = option.value;
-
-  nextTick(() => {
-    focusRadioCard(option.value);
-  });
 }
 
 function onRadioKeydown(event) {
-  // Entrée : exécute le submit du formulaire.
+  const focusedValue = focusedOption.value;
+
+  // Entrée : conserve ton comportement actuel de submit.
   if (event.key === 'Enter') {
     event.preventDefault();
 
@@ -288,16 +309,12 @@ function onRadioKeydown(event) {
     return;
   }
 
-  // Espace : sélectionne la radio actuellement focalisée.
-  if (event.key === ' ') {
+  // Espace : sélectionne uniquement la carte focus.
+  if (event.key === ' ' || event.key === 'Spacebar') {
     event.preventDefault();
 
-    const focusedCard = Object.entries(radioCardRefs.value).find(
-      ([, radioCard]) => radioCard?.$el === document.activeElement
-    );
-
-    if (focusedCard) {
-      selectAndFocus(focusedCard[0]);
+    if (focusedValue) {
+      selectOption(focusedValue);
     }
 
     return;
@@ -311,20 +328,22 @@ function onRadioKeydown(event) {
 
   if (!enabledOptions.value.length) return;
 
-  let currentIndex = selectedEnabledIndex.value;
+  const currentIndex = enabledOptions.value.findIndex(
+    option => option.value === focusedValue
+  );
 
-  if (currentIndex === -1) {
-    currentIndex = 0;
-  }
+  const safeCurrentIndex = currentIndex === -1 ? 0 : currentIndex;
 
   const isNext = ['ArrowDown', 'ArrowRight'].includes(event.key);
   const offset = isNext ? 1 : -1;
 
   const nextIndex =
-    (currentIndex + offset + enabledOptions.value.length) %
+    (safeCurrentIndex + offset + enabledOptions.value.length) %
     enabledOptions.value.length;
 
-  selectAndFocus(enabledOptions.value[nextIndex].value);
+  // Ici on déplace seulement le focus :
+  // aucune modification de selected.value.
+  focusOption(enabledOptions.value[nextIndex].value);
 }
 
 /* ------------------ Watchers ------------------ */
@@ -336,16 +355,27 @@ watch(
 
     if (!firstEnabled) {
       selected.value = null;
+      focusedOption.value = null;
       return;
     }
 
-    // La sélection actuelle est-elle encore disponible ?
     const selectedOption = options.find(
       option => option.value === selected.value
     );
 
+    // Une option devenue indisponible est désélectionnée.
     if (!selectedOption || selectedOption.disabled) {
-      selected.value = firstEnabled.value;
+      selected.value = null;
+    }
+
+    const focusedCardOption = options.find(
+      option => option.value === focusedOption.value
+    );
+
+    // Si la carte focus devient désactivée, on replace le focus
+    // sur la première option encore disponible.
+    if (!focusedCardOption || focusedCardOption.disabled) {
+      focusedOption.value = firstEnabled.value;
     }
   },
   {
@@ -359,6 +389,7 @@ watch(
   async isOpen => {
     if (!isOpen) {
       selected.value = null;
+      focusedOption.value = null;
       return;
     }
 
@@ -367,7 +398,7 @@ watch(
     const firstEnabled = firstEnabledOption.value;
 
     if (firstEnabled) {
-      selectAndFocus(firstEnabled.value);
+      focusOption(firstEnabled.value);
     }
   }
 );

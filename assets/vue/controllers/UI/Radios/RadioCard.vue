@@ -1,16 +1,16 @@
 <template>
   <div
-    class="w-full min-h-30 p-4 relative flex bg-white/40 dark:bg-gray-800/50 border shadow-xs dark:shadow-none border-gray-300 dark:border-gray-700/90 rounded-lg"
+    class="w-full min-h-30 p-4 relative flex bg-white/40 dark:bg-gray-800/50 border shadow-xs dark:shadow-none border-gray-300 dark:border-gray-700/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 rounded-lg"
     :class="[
       modelValue === option.value
-        ? 'outline-2 -outline-offset-2 outline-blue-500'
+        ? 'inset-ring-2 -inset-ring-offset-2 inset-ring-blue-500'
         : '',
       option.disabled
         ? 'cursor-not-allowed pointer-events-none opacity-50'
         : 'cursor-pointer',
     ]" :tabindex="option.disabled ? -1 : tabindex" role="radio" :aria-checked="modelValue === option.value"
     :aria-disabled="option.disabled" @click="selectOption" @keydown="handleKeydown">
-    
+
     <input :id="radioId" ref="radioEl" type="radio" :name="groupName" :value="option.value"
       :checked="modelValue === option.value" :disabled="option.disabled" tabindex="-1"
       class="pointer-events-none absolute top-6 right-6 size-1 appearance-none" />
@@ -72,13 +72,13 @@ const radioEl = ref(null);
 
 const radioId = computed(() => `radio-${props.option.value}`);
 
-function selectOption() {
+const selectOption = () => {
   if (props.option.disabled) return;
 
   emit('update:modelValue', props.option.value);
 }
 
-function handleKeydown(event) {
+const handleKeydown = (event) => {
   emit('radio-keydown', event);
 }
 
