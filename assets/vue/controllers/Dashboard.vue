@@ -42,6 +42,8 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
+// creer un composant radioform
+// vérifier le composant radio card et son accessibilité (aria-label, aria-description, aria-checked, role="radio", role="radiogroup", tabindex, focus, keydown, click)
 // le formulaire radiocard fonctionne bien avec les flèches et la souris, créer un composant réutilisable pour les autres formulaires radio
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
