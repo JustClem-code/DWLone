@@ -4,32 +4,25 @@
       @actionClick="sidePanelRef?.toggleSidePanel()" :statistics="packagesStats" />
 
     <SidePanel ref="sidePanelRef" title="Automating steps">
-      <form @submit.prevent="submitAutomaticForm" class="flex flex-col gap-2 mb-8 z-10" role="radiogroup"
-        aria-label="Automatic options">
 
-        <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected"
-          group-name="automaticOptions" :ref="el => setRadioCardRef(el, option.value)" :tabindex="getTabIndex(option)"
-          @radio-keydown="onRadioKeydown" />
+      <RadioForm :options="automaticOptions" v-model="selected" :isLoading="globalLoading"
+        @submitForm="submitAutomaticForm" :sidePanelRef="sidePanelRef" />
 
-        <BaseButton type="submit" class="mt-4" title="Automatic program" styleColor="primary" :isDisabled="!selected"
-          :isLoading="globalLoading" />
-      </form>
     </SidePanel>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, watchEffect, nextTick } from 'vue';
+import { ref, computed } from 'vue';
 import { usePostFetch } from '../../composables/fetch.js';
 import { useNotification } from '../../composables/eventBus.js';
 import { dashboardStore } from '../../composables/dashboardStore.js';
 
-import BaseButton from '../UI/Buttons/BaseButton.vue';
-import RadioCard from '../UI/Radios/RadioCard.vue';
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
+import RadioForm from '../UI/RadioForm.vue';
 
-const { locations, allPackagesStats, updateDashboardData } = dashboardStore();
+const { allPackagesStats, updateDashboardData } = dashboardStore();
 const { notifier } = useNotification();
 
 const STORAGE_KEY_PALLET = 'currentPallet';
@@ -122,7 +115,7 @@ const automaticOptions = computed(() => [
 
 /* ------------------ Actions ------------------ */
 
-function submitAutomaticForm() {
+const submitAutomaticForm = () => {
   const actions = {
     Induct: () => automaticInduction(),
     Stow: () => automaticStow(),
@@ -215,191 +208,4 @@ async function resetLocationsBagsPackages() {
   }
 }
 
-/* ------------------ Navigation clavier ------------------ */
-
-const radioCardRefs = ref({});
-
-const focusedOption = ref(null);
-
-const firstEnabledOption = computed(() =>
-  automaticOptions.value.find(option => !option.disabled)
-);
-
-const enabledOptions = computed(() =>
-  automaticOptions.value.filter(option => !option.disabled)
-);
-
-const selectedEnabledIndex = computed(() =>
-  enabledOptions.value.findIndex(option => option.value === selected.value)
-);
-
-function setRadioCardRef(component, value) {
-  if (component) {
-    radioCardRefs.value[value] = component;
-  } else {
-    delete radioCardRefs.value[value];
-  }
-}
-
-function getTabIndex(option) {
-  if (option.disabled) return -1;
-
-  // L'option actuellement focus est accessible avec Tab.
-  if (focusedOption.value === option.value) return 0;
-
-  // Après une sélection, la radio sélectionnée devient le point d'entrée.
-  if (!focusedOption.value && selected.value === option.value) return 0;
-
-  // Sans focus ni sélection : première option active.
-  if (
-    !focusedOption.value &&
-    !selected.value &&
-    firstEnabledOption.value?.value === option.value
-  ) {
-    return 0;
-  }
-
-  return -1;
-}
-
-function focusRadioCard(value) {
-  const radioCard = radioCardRefs.value[value];
-
-  if (!radioCard) return;
-
-  radioCard.$el?.focus();
-}
-
-
-function focusOption(value) {
-  const option = automaticOptions.value.find(
-    option => option.value === value
-  );
-
-  if (!option || option.disabled) return;
-
-  focusedOption.value = option.value;
-
-  nextTick(() => {
-    focusRadioCard(option.value);
-  });
-}
-
-function selectOption(value) {
-  const option = automaticOptions.value.find(
-    option => option.value === value
-  );
-
-  if (!option || option.disabled) return;
-
-  selected.value = option.value;
-}
-
-function onRadioKeydown(event) {
-  const focusedValue = focusedOption.value;
-
-  // Entrée : conserve ton comportement actuel de submit.
-  if (event.key === 'Enter') {
-    event.preventDefault();
-
-    if (selected.value && !globalLoading.value) {
-      submitAutomaticForm();
-    }
-
-    return;
-  }
-
-  // Espace : sélectionne uniquement la carte focus.
-  if (event.key === ' ' || event.key === 'Spacebar') {
-    event.preventDefault();
-
-    if (focusedValue) {
-      selectOption(focusedValue);
-    }
-
-    return;
-  }
-
-  if (!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-    return;
-  }
-
-  event.preventDefault();
-
-  if (!enabledOptions.value.length) return;
-
-  const currentIndex = enabledOptions.value.findIndex(
-    option => option.value === focusedValue
-  );
-
-  const safeCurrentIndex = currentIndex === -1 ? 0 : currentIndex;
-
-  const isNext = ['ArrowDown', 'ArrowRight'].includes(event.key);
-  const offset = isNext ? 1 : -1;
-
-  const nextIndex =
-    (safeCurrentIndex + offset + enabledOptions.value.length) %
-    enabledOptions.value.length;
-
-  // Ici on déplace seulement le focus :
-  // aucune modification de selected.value.
-  focusOption(enabledOptions.value[nextIndex].value);
-}
-
-/* ------------------ Watchers ------------------ */
-
-watch(
-  () => automaticOptions.value,
-  options => {
-    const firstEnabled = options.find(option => !option.disabled);
-
-    if (!firstEnabled) {
-      selected.value = null;
-      focusedOption.value = null;
-      return;
-    }
-
-    const selectedOption = options.find(
-      option => option.value === selected.value
-    );
-
-    // Une option devenue indisponible est désélectionnée.
-    if (!selectedOption || selectedOption.disabled) {
-      selected.value = null;
-    }
-
-    const focusedCardOption = options.find(
-      option => option.value === focusedOption.value
-    );
-
-    // Si la carte focus devient désactivée, on replace le focus
-    // sur la première option encore disponible.
-    if (!focusedCardOption || focusedCardOption.disabled) {
-      focusedOption.value = firstEnabled.value;
-    }
-  },
-  {
-    immediate: true,
-    deep: true,
-  }
-);
-
-watch(
-  () => sidePanelRef.value?.isOpen,
-  async isOpen => {
-    if (!isOpen) {
-      selected.value = null;
-      focusedOption.value = null;
-      return;
-    }
-
-    await nextTick();
-
-    const firstEnabled = firstEnabledOption.value;
-
-    if (firstEnabled) {
-      focusOption(firstEnabled.value);
-    }
-  }
-);
 </script>
