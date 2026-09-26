@@ -1,9 +1,9 @@
 <template>
-    <form @submit.prevent="('submitForm')" class="flex flex-col gap-2 mb-8 z-10" role="radiogroup"
+    <form @submit.prevent="emit('submitForm')" class="flex flex-col gap-2 mb-8 z-10" role="radiogroup"
         aria-label="Automatic options">
 
         <RadioCard v-for="option in options" :key="option.value" :option="option" :model-value="modelValue"
-            @update:model-value="selectOption" group-name="options" :ref="el => setRadioCardRef(el, option.value)"
+            @update:model-value="selectOption" :ref="el => setRadioCardRef(el, option.value)"
             :tabindex="getTabIndex(option)" @radio-keydown="onRadioKeydown" />
 
         <BaseButton type="submit" class="mt-4" title="Automatic program" styleColor="primary" :isDisabled="!modelValue"

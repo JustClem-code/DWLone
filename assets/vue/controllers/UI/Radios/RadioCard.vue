@@ -1,39 +1,32 @@
 <template>
-  <div
-    class="w-full min-h-30 p-4 relative flex bg-white/40 dark:bg-gray-800/50 border shadow-xs dark:shadow-none border-gray-300 dark:border-gray-700/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 rounded-lg"
+  <div :id="radioId" role="radio" :tabindex="option.disabled ? -1 : tabindex" :aria-checked="isSelected"
+    :aria-disabled="option.disabled ? 'true' : 'false'" :aria-labelledby="labelId" :aria-describedby="noticeId"
+    class="relative flex w-full min-h-30 rounded-lg border bg-white/40 p-4 shadow-xs transition dark:border-gray-700/90 dark:bg-gray-800/50 dark:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
     :class="[
-      modelValue === option.value
-        ? 'inset-ring-2 -inset-ring-offset-2 inset-ring-blue-500'
-        : '',
+      isSelected
+        ? 'border-blue-500 inset-ring-2 -inset-ring-offset-2 inset-ring-blue-500'
+        : 'border-gray-300',
       option.disabled
-        ? 'cursor-not-allowed pointer-events-none opacity-50'
+        ? 'cursor-not-allowed opacity-50'
         : 'cursor-pointer',
-    ]" :tabindex="option.disabled ? -1 : tabindex" role="radio" :aria-checked="modelValue === option.value"
-    :aria-disabled="option.disabled" @click="selectOption" @keydown="handleKeydown">
-
-    <input :id="radioId" ref="radioEl" type="radio" :name="groupName" :value="option.value"
-      :checked="modelValue === option.value" :disabled="option.disabled" tabindex="-1"
-      class="pointer-events-none absolute top-6 right-6 size-1 appearance-none" />
-
-    <div class="flex-1 pl-8" :aria-label="option.value" :aria-description="option.notice">
-      <span class="block text-sm font-medium">
+    ]" @click="selectOption" @keydown="handleKeydown">
+    <div class="flex-1 pr-8">
+      <span :id="labelId" class="block text-sm font-medium">
         {{ option.value }}
       </span>
 
-      <span class="block text-sm mt-1 text-gray-500 dark:text-gray-400">
+      <span v-if="option.notice" :id="noticeId" class="mt-1 block text-sm text-gray-500 dark:text-gray-400">
         {{ option.notice }}
       </span>
 
-      <span class="block text-sm mt-4">
+      <span v-if="option.number" class="mt-4 block text-sm">
         {{ option.number }}
       </span>
     </div>
 
-    <CheckCircleFillIcon v-if="modelValue === option.value" size="size-5" color="text-blue-500"
-      class="z-10 absolute top-4 right-4" />
+    <CheckCircleFillIcon v-if="isSelected" aria-hidden="true" size="size-5" color="text-blue-500"
+      class="absolute top-4 right-4" />
 
-    <CheckCircleFillIcon v-else-if="!option.disabled" size="size-5" color="text-red-500"
-      class="z-10 absolute top-4 right-4" />
   </div>
 </template>
 
@@ -52,11 +45,6 @@ const props = defineProps({
     default: null,
   },
 
-  groupName: {
-    type: String,
-    default: 'automaticOptions',
-  },
-
   tabindex: {
     type: Number,
     default: -1,
@@ -70,17 +58,30 @@ const emit = defineEmits([
 
 const radioEl = ref(null);
 
-const radioId = computed(() => `radio-${props.option.value}`);
+const normalizedValue = computed(() =>
+  String(props.option.value)
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-'),
+);
+
+const radioId = computed(() => `radio-${normalizedValue.value}`);
+const labelId = computed(() => `${radioId.value}-label`);
+const noticeId = computed(() => `${radioId.value}-notice`);
+
+const isSelected = computed(() =>
+  props.modelValue === props.option.value,
+);
 
 const selectOption = () => {
   if (props.option.disabled) return;
 
   emit('update:modelValue', props.option.value);
-}
+};
 
 const handleKeydown = (event) => {
   emit('radio-keydown', event);
-}
+};
 
 defineExpose({
   radioEl,
