@@ -8,13 +8,12 @@
     <div v-else-if="errorGetAllRoadParts">Error: {{ errorGetAllRoadParts }}</div>
     <div v-else>Loading...</div>
 
-    <SidePanel ref="sidePanelRef" title="Action on picking" width="md:w-5/6">
+    <SidePanel ref="sidePanelRef" title="Action on picking">
       <div class="flex flex-col gap-2 mb-8">
 
-        <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
+        <RadioForm :options="automaticOptions" v-model="selected" :isLoading="globalLoading"
+          @submitForm="submitAutomaticForm" :sidePanelRef="sidePanelRef" />
 
-        <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
-          :isDisabled="!selected" :isLoading="globalLoading" />
       </div>
 
     </SidePanel>
@@ -25,17 +24,13 @@
 <script setup>
 import { ref, computed, provide, watch, watchEffect } from 'vue';
 
-import { useLogic } from '../../composables/useLogic.js'
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 import RoadPartsList from './RoadPartsList.vue';
-import RadioCard from '../UI/Radios/RadioCard.vue';
-import BaseButton from '../UI/Buttons/BaseButton.vue';
-
-const { formatInt, getColor } = useLogic()
+import RadioForm from '../UI/RadioForm.vue';
 
 const { notifier } = useNotification()
 
@@ -77,7 +72,7 @@ const automaticOptions = computed(() => [
   { 'value': 'Hard reset', 'notice': 'Reset all road parts', 'number': `${allRoadPartsWithUser.value}`, 'disabled': allRoadPartsWithUser.value === 0 },
 ])
 
-function submitAutomaticForm() {
+const submitAutomaticForm = () => {
   const actions = {
     'Sequencing': () => generateAllRoads(),
     'Delete': () => deleteAllRoads(),
@@ -88,15 +83,14 @@ function submitAutomaticForm() {
   const run = actions[selected.value]
 
   if (!run) {
-    console.log('error')
-  } else {
-    run()
+    console.log('error');
+    return;
   }
 
-  selected.value = null
+  run();
 }
 
-async function generateAllRoads() {
+const generateAllRoads = async () => {
   globalLoading.value = true;
 
   const { data, error } = await usePostFetch(`/generateAllRoads`)
@@ -120,7 +114,7 @@ async function generateAllRoads() {
   }
 }
 
-async function deleteAllRoads() {
+const deleteAllRoads = async () => {
   globalLoading.value = true;
 
   const { data, error } = await usePostFetch(`/deleteAllRoads`)
@@ -144,7 +138,7 @@ async function deleteAllRoads() {
   }
 }
 
-async function automatingPicking() {
+const automatingPicking = async () => {
 
   globalLoading.value = true
 
@@ -163,7 +157,7 @@ async function automatingPicking() {
   }
 }
 
-async function hardResetPicking() {
+const hardResetPicking = async () => {
   globalLoading.value = true;
 
   const { data, error } = await usePostFetch(`/hardResetPicking`)
@@ -196,7 +190,7 @@ const updateRoadParts = (roadPart) => {
 
 }
 
-async function resetRoadpart(roadPart) {
+const resetRoadpart = async (roadPart) => {
   globalLoading.value = true;
 
   const { data, error } = await usePostFetch(`/resetRoadPart/${roadPart.id}`)
@@ -220,15 +214,6 @@ async function resetRoadpart(roadPart) {
 }
 
 provide('pickingProcessing', { resetRoadpart, globalLoading })
-
-const handleToggle = () => {
-
-  if (!sidePanelRef.value?.isOpen) {
-    selected.value = null
-  }
-}
-
-watchEffect(handleToggle)
 
 watch(
   () => allRoadParts,

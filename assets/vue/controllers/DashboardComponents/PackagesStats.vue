@@ -137,7 +137,7 @@ const resetLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY_PALLET);
 };
 
-async function automaticInduction() {
+const automaticInduction = async () => {
   globalLoading.value = true;
 
   const { data, error } = await usePostFetch('/automaticinduction');
@@ -156,7 +156,7 @@ async function automaticInduction() {
   }
 }
 
-async function automaticStow() {
+const automaticStow = async () => {
   globalLoading.value = true;
 
   const { data, error } = await usePostFetch('/automaticstow');
@@ -175,7 +175,7 @@ async function automaticStow() {
   }
 }
 
-async function autoInductionAndStow() {
+const autoInductionAndStow = async () => {
   globalLoading.value = true;
 
   const { data, error } = await usePostFetch('/autoinductionandstow');
@@ -194,10 +194,16 @@ async function autoInductionAndStow() {
   }
 }
 
-async function resetLocationsBagsPackages() {
+const resetLocationsBagsPackages = async () => {
   globalLoading.value = true;
 
   const { data, error } = await usePostFetch('/hardResetLocationsBagsPackages');
+
+  if (error.value) {
+    notifier('error', 'Hard reset', 'An error occurred');
+    globalLoading.value = false;
+    return;
+  }
 
   if (data.value) {
     resetLocalStorage();

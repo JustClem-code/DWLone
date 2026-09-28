@@ -8,10 +8,9 @@
 
       <div class="flex flex-col gap-2 mb-8">
 
-        <RadioCard v-for="option in automaticOptions" :key="option.value" :option="option" v-model="selected" />
+        <RadioForm :options="automaticOptions" v-model="selected" :isLoading="globalLoading"
+          @submitForm="submitAutomaticForm" :sidePanelRef="sidePanelRef" />
 
-        <BaseButton class="mt-4" @click="submitAutomaticForm" title="Automatic program" styleColor="primary"
-          :isDisabled="!selected" :isLoading="globalLoading" />
       </div>
     </SidePanel>
 
@@ -19,15 +18,14 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watch, watchEffect, onMounted } from 'vue';
-import { useFetch, usePostFetch } from '../../composables/fetch.js'
+import { ref, computed } from 'vue';
+import { usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
 import { dashboardStore } from '../../composables/dashboardStore.js'
 
-import BaseButton from '../UI/Buttons/BaseButton.vue';
-import RadioCard from '../UI/Radios/RadioCard.vue';
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
+import RadioForm from '../UI/RadioForm.vue';
 
 const { yardTruckStats, updateDashboardData } = dashboardStore()
 
@@ -108,7 +106,7 @@ const automaticOptions = computed(() => [
   },
 ])
 
-function submitAutomaticForm() {
+const submitAutomaticForm = () => {
   const actions = {
     'Docking': () => automaticDockingTrucks(),
     'Unloading': () => automaticUnloadingPallets(),
@@ -119,15 +117,14 @@ function submitAutomaticForm() {
   const run = actions[selected.value]
 
   if (!run) {
-    console.log('error')
-  } else {
-    run()
+    console.log('error');
+    return;
   }
 
-  selected.value = null
+  run();
 }
 
-async function automaticDockingTrucks() {
+const automaticDockingTrucks = async () => {
 
   globalLoading.value = true
 
@@ -146,7 +143,7 @@ async function automaticDockingTrucks() {
   }
 }
 
-async function automaticUnloadingPallets() {
+const automaticUnloadingPallets = async () => {
 
   globalLoading.value = true
 
@@ -165,7 +162,7 @@ async function automaticUnloadingPallets() {
   }
 }
 
-async function autoDockingAndUnloading() {
+const autoDockingAndUnloading = async () => {
 
   globalLoading.value = true
 
@@ -184,7 +181,7 @@ async function autoDockingAndUnloading() {
   }
 }
 
-async function resetDockingAndUnloading() {
+const resetDockingAndUnloading = async () => {
 
   globalLoading.value = true
 
@@ -202,14 +199,5 @@ async function resetDockingAndUnloading() {
     sidePanelRef.value?.toggleSidePanel()
   }
 }
-
-const handleToggle = () => {
-
-  if (!sidePanelRef.value?.isOpen) {
-    selected.value = null
-  }
-}
-
-watchEffect(handleToggle)
 
 </script>

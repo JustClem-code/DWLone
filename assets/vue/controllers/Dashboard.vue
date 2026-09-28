@@ -42,16 +42,7 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
-// creer un composant radioform
-// vérifier le composant radio card et son accessibilité (aria-label, aria-description, aria-checked, role="radio", role="radiogroup", tabindex, focus, keydown, click)
-// le formulaire radiocard fonctionne bien avec les flèches et la souris, créer un composant réutilisable pour les autres formulaires radio
-
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
-
-// mettre un sous-menu avec #id sur les partis pour éviter de scroller ?
-// -> https://headlessui.com/v1/react/tabs
-
-// Ajouter l'état du picking par bag dans BagPprocessing (Dashboard)
 
 
 
@@ -65,11 +56,11 @@
 
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
 
-// Empêcher le Picking si le stow n'est pas fini
 
 // Nettoyage de tous les console.log (oui oui)
 
-
+// mettre un sous-menu avec #id sur les partis pour éviter de scroller ?
+// -> https://headlessui.com/v1/react/tabs
 
 
  /* GÉRER CE PROBLÈME
