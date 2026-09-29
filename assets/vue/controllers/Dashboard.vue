@@ -11,8 +11,8 @@
         </div>
       </BorderedContent>
 
-      <BorderedContent title="Exemple" width="w-1/2">
-        <h2>Exemple</h2>
+      <BorderedContent title="Setting" width="w-1/2">
+        <ProccessSetting />
       </BorderedContent>
 
     </div>
@@ -42,17 +42,19 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
+// dans le proccessSetting -> gérer les groupPostcodes, l'ouverture des allée et la gestion du snake path
+
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
 
+//  -> lier les codes postaux en fonction de la localisation
+// dans le dashboard, touver un moyen d'étider les groupPostcodes
 
-
-// Afficher le plan des stagging avec les emplacements occupés
 
 //  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
 //      pour les mettres dans la même aislepair
 
 
-//  -> lier les codes postaux en fonction de la localisation
+// Afficher le plan des stagging avec les emplacements occupés
 
 //  -> revoir la manière d'afficher la pairLocation le "&" est moche
 
@@ -63,23 +65,21 @@
 // -> https://headlessui.com/v1/react/tabs
 
 
- /* GÉRER CE PROBLÈME
+/* GÉRER CE PROBLÈME
 
- [WARNING] You have 6 previously executed migrations in the database that are
-           not registered migrations.
-
-
- >> 2026-03-20 15:59:45 (DoctrineMigrations\Version20260320155942)
- >> 2026-03-20 16:02:58 (DoctrineMigrations\Version20260320160251)
- >> 2026-03-20 16:04:22 (DoctrineMigrations\Version20260320160419)
- >> 2026-03-20 16:08:40 (DoctrineMigrations\Version20260320160836)
- >> 2026-03-20 16:09:47 (DoctrineMigrations\Version20260320160945)
- >> 2026-03-20 16:11:36 (DoctrineMigrations\Version20260320161133)
-
- */
+[WARNING] You have 6 previously executed migrations in the database that are
+          not registered migrations.
 
 
-// Pouvoir faire une recherche sur les bags et trouver une routes ou l'emplacement
+>> 2026-03-20 15:59:45 (DoctrineMigrations\Version20260320155942)
+>> 2026-03-20 16:02:58 (DoctrineMigrations\Version20260320160251)
+>> 2026-03-20 16:04:22 (DoctrineMigrations\Version20260320160419)
+>> 2026-03-20 16:08:40 (DoctrineMigrations\Version20260320160836)
+>> 2026-03-20 16:09:47 (DoctrineMigrations\Version20260320160945)
+>> 2026-03-20 16:11:36 (DoctrineMigrations\Version20260320161133)
+
+*/
+
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée
 
@@ -95,6 +95,7 @@ import PackagesStats from './DashboardComponents/PackagesStats.vue'
 import BagsProcessing from './DashboardComponents/BagsProcessing.vue';
 import PickingProcessing from './DashboardComponents/PickingProcessing.vue';
 import TrucksProcessing from './DashboardComponents/TrucksProcessing.vue';
+import ProccessSetting from './DashboardComponents/ProccessSetting.vue';
 
 const props = defineProps({
   is_user: Boolean,
