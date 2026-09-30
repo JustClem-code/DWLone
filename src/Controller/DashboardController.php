@@ -14,6 +14,7 @@ use App\Repository\PalletRepository;
 use App\Repository\PackageRepository;
 use App\Repository\RoadRepository;
 use App\Repository\PostcodesRepository;
+use App\Repository\GroupPostcodesRepository;
 use App\Repository\RoadPartRepository;
 use App\Repository\CartRepository;
 use App\Repository\BagRepository;
@@ -40,6 +41,7 @@ final class DashboardController extends AbstractController
     private SetPackageLocationService $setPackageLocationService,
     private PackageRepository $packageRepository,
     private RoadRepository $roadRepository,
+    private GroupPostcodesRepository $groupPostcodesRepository,
     private PostcodesRepository $postcodesRepository,
     private RoadPartRepository $roadPartRepository,
     private CartRepository $cartRepository,
@@ -64,6 +66,16 @@ final class DashboardController extends AbstractController
       ['locations' => $this->locationArrayTransformerService->transformAllBagOriented()] +
         ['allPackagesStats' => $this->packagesStats()] +
         ['yardTruckStats' => $this->yardTruckStats()]
+    );
+  }
+
+  // Setting proccess
+
+  #[Route('/getgrouppostcodes', name: 'get_group_postcodes', methods: ['GET'])]
+  public function getGroupPostcodes(): Response
+  {
+    return $this->json(
+      ['groupPostcodes' => $this->groupPostcodesRepository->transformAll()]
     );
   }
 

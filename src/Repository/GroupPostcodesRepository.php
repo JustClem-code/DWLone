@@ -2,18 +2,39 @@
 
 namespace App\Repository;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use App\Entity\GroupPostcodes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
+use App\Repository\PostcodesRepository;
 
 /**
  * @extends ServiceEntityRepository<GroupPostcodes>
  */
 class GroupPostcodesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    use RepositoryTrait;
+
+    public function __construct(ManagerRegistry $registry, private PostcodesRepository $postcodesRepository)
     {
         parent::__construct($registry, GroupPostcodes::class);
+    }
+
+    public function toArray(GroupPostcodes $groupPostcodes): array
+    {
+        return [
+            'id' => $groupPostcodes->getId(),
+            'name' => $groupPostcodes->getName(),
+            'postcodes' => $this->transFormEntities($groupPostcodes->getPostcodes(), [$this->postcodesRepository, 'toArray']),
+        ];
+    }
+
+    public function transformAll(): array
+    {
+        return $this->transFormEntities($this->findAll(), [$this, 'toArray']);
     }
 
     //    /**

@@ -2,7 +2,7 @@
   <div
     class="w-full bg-white dark:bg-gray-800 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
 
-    <div class="flex items-center justify-between py-6 px-8 border-b border-gray-200 dark:border-gray-700/90">
+    <div class="flex items-center justify-between py-6 px-8 border-gray-200 dark:border-gray-700/90" :class="statistics ? 'border-b': ''">
       <div>
         <h2>{{ title }}</h2>
         <p class="text-xs text-gray-400 mt-2">
