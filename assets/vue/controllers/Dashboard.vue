@@ -12,7 +12,7 @@
       </BorderedContent>
 
       <BorderedContent title="Setting" width="w-1/2">
-        <ProccessSetting />
+        <ProcessSetting />
       </BorderedContent>
 
     </div>
@@ -95,7 +95,7 @@ import PackagesStats from './DashboardComponents/PackagesStats.vue'
 import BagsProcessing from './DashboardComponents/BagsProcessing.vue';
 import PickingProcessing from './DashboardComponents/PickingProcessing.vue';
 import TrucksProcessing from './DashboardComponents/TrucksProcessing.vue';
-import ProccessSetting from './DashboardComponents/ProccessSetting.vue';
+import ProcessSetting from './DashboardComponents/ProcessSetting.vue';
 
 const props = defineProps({
   is_user: Boolean,

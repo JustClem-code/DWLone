@@ -69,14 +69,12 @@ final class DashboardController extends AbstractController
     );
   }
 
-  // Setting proccess
+  // Setting process
 
   #[Route('/getgrouppostcodes', name: 'get_group_postcodes', methods: ['GET'])]
   public function getGroupPostcodes(): Response
   {
-    return $this->json(
-      ['groupPostcodes' => $this->groupPostcodesRepository->transformAll()]
-    );
+    return $this->json($this->groupPostcodesRepository->transformAll());
   }
 
   // Yard truck and unloading
