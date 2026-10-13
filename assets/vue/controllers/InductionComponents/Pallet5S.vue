@@ -55,7 +55,7 @@ const props = defineProps({
 });
 
 const { getNumberOfPackagesNotInducted } = useLogic()
-const { setDraggedItem } = useDragStore();
+const { setDraggedItem, getDraggedItem } = useDragStore();
 
 const { palletsOnfloorOptions, addPalletLoading, addPallet, setLocationLoading } = inject('induction')
 
