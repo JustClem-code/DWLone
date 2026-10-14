@@ -42,6 +42,8 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
+// Afficher un état de mise à jour des modifications en header du processetiing à la places des notifications pour plus de fluidité
+
 // dans le proccessSetting -> gérer les groupPostcodes, l'ouverture des allée et la gestion du snake path
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path

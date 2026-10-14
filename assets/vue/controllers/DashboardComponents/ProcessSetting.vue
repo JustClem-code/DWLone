@@ -8,16 +8,15 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 mb-4">
 
-        <div v-for="group in allGroupPostcodes" :key=group.id
-          class="w-full bg-white dark:bg-gray-800/50 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
+        <div v-for="group in allGroupPostcodes" :key=group.id @dragover="onDragOver" @drop="onDrop($event, group.id)"
+          class="drop-container w-full bg-white dark:bg-gray-800/50 border border-0 dark:border-1 rounded-md shadow-sm dark:shadow-none dark:border-gray-700/90">
           <div class="border-b border-gray-300 dark:border-gray-700/90 p-4">
             <div class="flex justify-between">
               <h3 class="text-sm font-semibold">{{ group?.name || 'Group name' }}</h3>
             </div>
           </div>
 
-          <div class="drop-container w-full grid grid-cols-3 gap-1 p-2 text-gray-800 dark:text-gray-400"
-            @dragover="onDragOver" @drop="onDrop($event, group.id)">
+          <div class="w-full grid grid-cols-3 gap-1 p-2 text-gray-800 dark:text-gray-400">
             <div v-for="postcode in group?.postcodes" :key=postcode.id>
 
               <transition name="fade-slide" tag="div" enter-active-class="transition-all duration-500 ease-out"
@@ -47,12 +46,14 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useDragStore } from '../../composables/useDragStore.js';
+import { useNotification } from '../../composables/eventBus.js'
 
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 
+const { notifier } = useNotification()
 const { setDraggedItem, getDraggedItem } = useDragStore();
 
 const { data: allGroupPostcodes, error: errorGroupPostcodes } = useFetch('/getgrouppostcodes')
@@ -111,7 +112,28 @@ const movePostcodeToGroup = (postcodeId, targetGroupId) => {
 
   const [postcode] = sourceGroup.postcodes.splice(index, 1);
   targetGroup.postcodes.push(postcode);
-};
+
+  const { error } = movePostCode(postcode, targetGroup);
+  if (error) {
+    // TODO: Handle error (e.g., revert changes, show notification)
+  };
+}
+
+const movePostCode = async (postCodes, group) => {
+
+  const { data, error } = await usePostFetch(`/movePostCode/${postCodes.id}`, { id: group.id })
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Postcodes  ', `${error.value}`)
+      return { error }
+    }, 1000);
+  }
+
+  if (data.value) {
+    console.log(data.value)
+  }
+}
 
 watch(
   () => allGroupPostcodes.value,

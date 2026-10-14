@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,6 +52,8 @@ final class DashboardController extends AbstractController
     private EntityManagerInterface $entityManager,
   ) {}
 
+  use RepositoryTrait;
+
   #[Route('/', name: 'app_dashboard')]
   public function index(): Response
   {
@@ -75,6 +79,25 @@ final class DashboardController extends AbstractController
   public function getGroupPostcodes(): Response
   {
     return $this->json($this->groupPostcodesRepository->transformAll());
+  }
+
+  #[Route('/movePostCode/{id}', name: 'move_postcode')]
+  public function movePostCode(int $id, Request $request): Response
+  {
+    $formData = $request->getPayload()->get('id');
+    $postCodes = $this->postcodesRepository->find($id);
+
+    $groupPostcodes = $this->findOrNull($this->groupPostcodesRepository, $formData);
+
+    if (!$postCodes) {
+      return $this->json(['error' => 'No postcodes available'], 404);
+    }
+
+    $postCodes->setGroupPostcodes($groupPostcodes);
+
+    $this->entityManager->flush();
+
+    return $this->json($this->postcodesRepository->toArray($postCodes));
   }
 
   // Yard truck and unloading
