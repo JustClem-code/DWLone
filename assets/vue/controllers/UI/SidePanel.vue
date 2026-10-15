@@ -7,9 +7,16 @@
       leave-active-class="transition-all duration-500 ease-in-out transform" leave-from-class="translate-x-0"
       leave-to-class="translate-x-full">
       <aside v-show="isOpen"
-        class="fixed inset-y-0 right-0 w-full bg-gray-100 dark:bg-gray-900 shadow-2xl z-50 border-l-0 dark:border-l dark:border-gray-700/90 flex flex-col" :class="width ?? 'md:w-1/2'">
+        class="fixed inset-y-0 right-0 w-full bg-gray-100 dark:bg-gray-900 shadow-2xl z-50 border-l-0 dark:border-l dark:border-gray-700/90 flex flex-col"
+        :class="width ?? 'md:w-1/2'">
         <header class="h-24 p-8 flex items-center justify-between shrink-0">
           <p class="text-base">{{ title ?? 'Panel title' }}</p>
+          <div v-if="synchronized !== null" class="flex items-center gap-2"
+            :class="!synchronized ? 'animate-pulse' : ''">
+            <span class="w-2 h-2 rounded-full" :class="synchronized ? 'bg-green-500/50' : 'bg-yellow-500/50'"></span>
+            <p class="font-light text-gray-300 dark:text-gray-600/90 tracking-wide">{{
+              synchronized ? 'synchronized' : 'pending' }}</p>
+          </div>
           <div class="p-2">
             <IconButton @click="toggleSidePanel">
               <CrossIcon />
@@ -38,6 +45,10 @@ import OverlayInvisible from './OverlayInvisible.vue';
 const props = defineProps({
   title: String,
   width: String,
+  synchronized: {
+    type: Boolean,
+    default: null,
+  },
 })
 
 const isOpen = ref(false)

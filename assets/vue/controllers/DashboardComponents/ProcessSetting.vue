@@ -4,7 +4,7 @@
     <StatsHeader title="Postcodes group" notice="Choose group for each postcode" actionTitle="Choose"
       @actionClick="sidePanelRef?.toggleSidePanel()" />
 
-    <SidePanel ref="sidePanelRef" title="Choose group" width="md:w-5/6">
+    <SidePanel ref="sidePanelRef" title="Choose group" :synchronized=synchronized width="md:w-5/6">
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 mb-4">
 
@@ -62,6 +62,8 @@ const sidePanelRef = ref(null)
 
 const isDragging = ref(false)
 
+const synchronized = ref(true)
+
 const cursorType = computed(() => {
   return isDragging.value ? 'cursor-grabbing' : 'cursor-grab'
 })
@@ -92,7 +94,7 @@ const onDragEnd = () => {
   document.documentElement.classList.remove("grabbing");
 };
 
-const movePostcodeToGroup = (postcodeId, targetGroupId) => {
+const movePostcodeToGroup = async (postcodeId, targetGroupId) => {
   const groups = allGroupPostcodes.value;
   if (!Array.isArray(groups)) return;
 
@@ -104,34 +106,56 @@ const movePostcodeToGroup = (postcodeId, targetGroupId) => {
 
   if (!sourceGroup || !targetGroup || sourceGroup.id === targetGroup.id) return;
 
-  const index = sourceGroup.postcodes.findIndex(
+  const originalIndex = sourceGroup.postcodes.findIndex(
     postcode => postcode.id === postcodeId
   );
 
-  if (index === -1) return;
+  if (originalIndex === -1) return;
 
-  const [postcode] = sourceGroup.postcodes.splice(index, 1);
+  const [postcode] = sourceGroup.postcodes.splice(originalIndex, 1);
   targetGroup.postcodes.push(postcode);
 
-  const { error } = movePostCode(postcode, targetGroup);
-  if (error) {
-    // TODO: Handle error (e.g., revert changes, show notification)
-  };
-}
+  try {
+    const {data, error} = await movePostCode(postcode, targetGroup);
+
+    console.log('Result of movePostCode:', data.value);
+
+    if (error) {
+      throw new Error(error.value);
+    }
+  } catch (error) {
+    const targetIndex = targetGroup.postcodes.findIndex(
+      item => item.id === postcode.id
+    );
+
+    if (targetIndex !== -1) {
+      targetGroup.postcodes.splice(targetIndex, 1);
+    }
+
+    sourceGroup.postcodes.splice(originalIndex, 0, postcode);
+
+    console.error('Rollback du déplacement du postcode :', error);
+  }
+};
 
 const movePostCode = async (postCodes, group) => {
+
+  synchronized.value = false
 
   const { data, error } = await usePostFetch(`/movePostCode/${postCodes.id}`, { id: group.id })
 
   if (error.value) {
     setTimeout(() => {
       notifier('error', 'Postcodes  ', `${error.value}`)
+      synchronized.value = true
       return { error }
     }, 1000);
   }
 
   if (data.value) {
     console.log(data.value)
+    synchronized.value = true
+    return { data };
   }
 }
 
