@@ -22,7 +22,6 @@ use App\Repository\CartRepository;
 use App\Repository\BagRepository;
 use App\Repository\StaggingRepository;
 
-
 use App\Service\LocationArrayTransformerService;
 use App\Service\SetPackageLocationService;
 

@@ -28,6 +28,7 @@ class SetPackageLocationService
 
       if (!$location) {
         $location = $this->locationRepository->findRandomWithoutPackage();
+        // TODO: snake path
       }
 
       if (!$location->getBag()) {

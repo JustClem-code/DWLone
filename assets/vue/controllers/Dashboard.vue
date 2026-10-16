@@ -42,9 +42,12 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
-// Afficher un état de mise à jour des modifications en header du processetiing à la places des notifications pour plus de fluidité
-
 // dans le proccessSetting -> gérer les groupPostcodes, l'ouverture des allée et la gestion du snake path
+
+// -> attribuer un groupPostCode à une allée qui peut être ouverte
+// -> ajouter un champs boolean open à l'entité location
+// -> trouver un moyen de lier groupPostcode et location
+// -> créer une entité Alley > location->getAlley() > groupPostcode->getAlley() pour lier les deux
 
 // creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
 
