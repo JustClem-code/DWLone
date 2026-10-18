@@ -27,6 +27,10 @@ class Location
     #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'location')]
     private Collection $packages;
 
+    #[ORM\ManyToOne(inversedBy: 'locations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Aisle $aisle = null;
+
     public function __construct()
     {
         $this->packages = new ArrayCollection();
@@ -97,6 +101,18 @@ class Location
                 $package->setLocation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAisle(): ?aisle
+    {
+        return $this->aisle;
+    }
+
+    public function setAisle(?aisle $aisle): static
+    {
+        $this->aisle = $aisle;
 
         return $this;
     }

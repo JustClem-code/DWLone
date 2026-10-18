@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use Faker\Factory;
 use App\Entity\Bag;
 use App\Entity\Location;
+use App\Entity\Aisle;
 use App\Entity\Stagging;
 use App\Entity\DeliveryPerson;
 use App\Entity\DeliveryCompany;
@@ -370,25 +371,41 @@ class AppFixtures extends Fixture
     }
   }
 
-  private function generateLocations(mixed $manager): void
+  private function generateAisles(mixed $manager): void
   {
     $alleys = ['B', 'C'];
-    $letters = ['A', 'B', 'C', 'D', 'E', 'G'];
 
     foreach ($alleys as $alley) {
       $alleyNumber = 1;
       for ($i = 0; $i < 52; $i++) {
-        $alleyName = $alley . '-' . $alleyNumber;
-        foreach ($letters as $letter) {
-          $locationNumber = 1;
-          for ($j = 0; $j < 2; $j++) {
-            $location = new Location();
-            $location->setName($alleyName . '-' . $letter . '-' . $locationNumber);
-            $locationNumber++;
-            $manager->persist($location);
-          }
-        }
+        $alleyName = $alley . $alleyNumber;
+        $aisle = new Aisle();
+        $aisle->setName($alleyName);
+        $aisle->setEnabled(true);
+        $manager->persist($aisle);
         $alleyNumber++;
+      }
+    }
+  }
+
+  private function generateLocations(mixed $manager): void
+  {
+    $aisleRepository = $manager->getRepository(Aisle::class);
+    $aisles = $aisleRepository->findAll();
+
+    $letters = ['A', 'B', 'C', 'D', 'E', 'G'];
+
+    foreach ($aisles as $aisle) {
+      $alleyName = $aisle->getName();
+      foreach ($letters as $letter) {
+        $locationNumber = 1;
+        for ($j = 0; $j < 2; $j++) {
+          $location = new Location();
+          $location->setAisle($aisle);
+          $location->setName($alleyName . '-' . $letter . $locationNumber);
+          $locationNumber++;
+          $manager->persist($location);
+        }
       }
     }
   }
@@ -458,6 +475,7 @@ class AppFixtures extends Fixture
     // $this->generateOrders($manager);
     // $this->generateDeliveryCompany($manager);
     // $this->generateStaggings($manager);
+    // $this->generateAisles($manager);
     // $this->generateLocations($manager);
     // $this->generateBags($manager);
     // $this->generateGroupPostcodes($manager);
