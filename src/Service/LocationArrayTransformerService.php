@@ -36,23 +36,32 @@ class LocationArrayTransformerService
 
   private function getPairKey(string $name): ?string
   {
-    $parts = explode('-', $name);
+    $base = strtok($name, '-');
 
-    if (!isset($parts[1]) || !ctype_digit($parts[1])) {
+    if ($base === false || $base === '') {
       return null;
     }
 
-    $n = (int) $parts[1];
-    $pairBase = $n % 2 === 0 ? $n - 1 : $n;
-    $parts[1] = (string) $pairBase;
+    if (!preg_match('/^(?<letter>[a-zA-Z]+)(?<num>\d+)$/', $base, $matches)) {
+      return null;
+    }
 
-    return implode('-', array_slice($parts, 0, 2));
+    $n = (int) $matches['num'];
+
+    $pairBase = $n % 2 === 0 ? $n - 1 : $n;
+
+    return sprintf('%s%d', $matches['letter'], $pairBase);
   }
 
   private function getPairName(string $name): string
   {
-    [$letter, $num] = explode('-', $name);
-    $n = (int) $num;
+    if (!preg_match('/^(?<letter>[a-zA-Z]+)\s*-?\s*(?<num>\d+)$/', $name, $matches)) {
+      throw new \InvalidArgumentException(sprintf('Invalid location name: "%s"', $name));
+    }
+
+    $letter = $matches['letter'];
+    $n = (int) $matches['num'];
+
     return sprintf('%s%d & %s%d', $letter, $n, $letter, $n + 1);
   }
 
@@ -95,40 +104,24 @@ class LocationArrayTransformerService
         continue;
       }
 
-      [$letter, $num] = explode('-', $key);
+      if (!preg_match('/^([a-zA-Z]+)\s*-?\s*(\d+)$/', $key, $matches)) {
+        continue;
+      }
 
-      $aisleNumber = (int) $num;
+      $letter = $matches[1];
+      $aisleNumber = (int) $matches[2];
 
       if ($aisleNumber > 26) {
-
         $locationsArray = $this->reverseOrderOfLocation($locationsArray);
       }
 
       $result[] = [
-        'id'      => $this->getPairName($key),
+        'id'        => $this->getPairName($key),
         'locations' => $locationsArray,
       ];
     }
 
     return $result;
-  }
-
-  public function mapAllInPair(iterable $locations): array
-  {
-    $finalResult = [[], [], [], []];
-    $index = 0;
-
-    foreach ($locations as $aisles) {
-
-      $grouped = $this->groupByPair($aisles);
-
-      $result = $this->getPairLocations($grouped);
-
-      $finalResult[$index] = $result;
-      $index++;
-    }
-
-    return $finalResult;
   }
 
   private function indexLocationsByName(iterable $locations): array
@@ -182,7 +175,9 @@ class LocationArrayTransformerService
 
         foreach ($specs as $spec) {
           foreach ($letters as $letter) {
-            $key = sprintf('%s-%d-%s-%s', $aisleLet, $floor, $letter, $spec['side']);
+            $key = sprintf('%s%d-%s%s', $aisleLet, $floor, $letter, $spec['side']);
+
+
 
             if (isset($byKey[$key])) {
               $arrayIndex = intdiv($indexGlobal, 312);
@@ -198,6 +193,26 @@ class LocationArrayTransformerService
     }
 
     return $result;
+  }
+
+  public function mapAllInPair(iterable $locations): array
+  {
+    $finalResult = [[], [], [], []];
+    $index = 0;
+
+    foreach ($locations as $aisles) {
+
+      $grouped = $this->groupByPair($aisles);
+
+
+
+      $result = $this->getPairLocations($grouped);
+
+      $finalResult[$index] = $result;
+      $index++;
+    }
+
+    return $finalResult;
   }
 
   public function transformAllInPair(): array
