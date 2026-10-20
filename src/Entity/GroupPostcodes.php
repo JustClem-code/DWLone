@@ -24,6 +24,9 @@ class GroupPostcodes
     #[ORM\OneToMany(targetEntity: Postcodes::class, mappedBy: 'groupPostcodes')]
     private Collection $postcodes;
 
+    #[ORM\ManyToOne(inversedBy: 'groupPostcodes')]
+    private ?Aisle $Aisle = null;
+
     public function __construct()
     {
         $this->postcodes = new ArrayCollection();
@@ -72,6 +75,18 @@ class GroupPostcodes
                 $postcode->setGroupPostcodes(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAisle(): ?Aisle
+    {
+        return $this->Aisle;
+    }
+
+    public function setAisle(?Aisle $Aisle): static
+    {
+        $this->Aisle = $Aisle;
 
         return $this;
     }

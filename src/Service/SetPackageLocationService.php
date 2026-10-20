@@ -27,8 +27,14 @@ class SetPackageLocationService
       $location = $this->packageRepository->findLocationBySamePostcode($package);
 
       if (!$location) {
-        $location = $this->locationRepository->findRandomWithoutPackage();
+        // $location = $this->locationRepository->findRandomWithoutPackage();
+        $groupPostcode = $this->packageRepository->findGroupPostcodes($package);
+        $aisle = $groupPostcode->getAisle();
         // TODO: snake path
+        // -> si le groupPostcode n'est pas lier à une aisle, trouver une aisle sans groupPostcode et lier le groupPostcode à cette aisle
+        // -> si le gpc n'est pas lier à une aisle mais qu'il n'y en a plus de dispo, autoriser plusieurs gpc par aisle
+        // -> prioriser les loc proches du DROP A > B > C etc...
+        // -> si plus de loc dispo, arrêter l'induction créer une alerte
       }
 
       if (!$location->getBag()) {
@@ -48,7 +54,7 @@ class SetPackageLocationService
   public function setPackageUserStow(Package $package): Package
   {
     $package->setUserStow($this->security->getUser());
-    
+
     $this->entityManager->flush();
 
     return $package;

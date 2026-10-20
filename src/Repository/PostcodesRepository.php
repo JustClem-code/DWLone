@@ -21,12 +21,22 @@ class PostcodesRepository extends ServiceEntityRepository
     parent::__construct($registry, Postcodes::class);
   }
 
-   public function toArray(Postcodes $postcodes): array
+  public function toArray(Postcodes $postcodes): array
   {
     return [
       'id' => $postcodes->getId(),
       'name' => $postcodes->getName(),
     ];
+  }
+
+  public function findOneByName(string $value): ?Postcodes
+  {
+    return $this->createQueryBuilder('p')
+      ->andWhere('p.name = :val')
+      ->setParameter('val', $value)
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
   }
 
   public function transformAll(): array

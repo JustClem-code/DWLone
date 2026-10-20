@@ -27,9 +27,16 @@ class Aisle
     #[ORM\OneToMany(targetEntity: Location::class, mappedBy: 'aisle', orphanRemoval: true)]
     private Collection $locations;
 
+    /**
+     * @var Collection<int, GroupPostcodes>
+     */
+    #[ORM\OneToMany(targetEntity: GroupPostcodes::class, mappedBy: 'Aisle')]
+    private Collection $groupPostcodes;
+
     public function __construct()
     {
         $this->locations = new ArrayCollection();
+        $this->groupPostcodes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -85,6 +92,36 @@ class Aisle
             // set the owning side to null (unless already changed)
             if ($location->getAisle() === $this) {
                 $location->setAisle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GroupPostcodes>
+     */
+    public function getGroupPostcodes(): Collection
+    {
+        return $this->groupPostcodes;
+    }
+
+    public function addGroupPostcode(GroupPostcodes $groupPostcode): static
+    {
+        if (!$this->groupPostcodes->contains($groupPostcode)) {
+            $this->groupPostcodes->add($groupPostcode);
+            $groupPostcode->setAisle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupPostcode(GroupPostcodes $groupPostcode): static
+    {
+        if ($this->groupPostcodes->removeElement($groupPostcode)) {
+            // set the owning side to null (unless already changed)
+            if ($groupPostcode->getAisle() === $this) {
+                $groupPostcode->setAisle(null);
             }
         }
 
