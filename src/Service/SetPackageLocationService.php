@@ -2,9 +2,12 @@
 
 namespace App\Service;
 
+use App\Exception\NoAvailableLocationException;
+
 use App\Entity\Package;
 use App\Repository\BagRepository;
 use App\Repository\LocationRepository;
+use App\Repository\AisleRepository;
 use App\Repository\PackageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -15,6 +18,7 @@ class SetPackageLocationService
     private EntityManagerInterface $entityManager,
     private PackageRepository $packageRepository,
     private LocationRepository $locationRepository,
+    private AisleRepository $aisleRepository,
     private BagRepository $bagRepository,
     private Security $security
   ) {}
@@ -27,14 +31,20 @@ class SetPackageLocationService
       $location = $this->packageRepository->findLocationBySamePostcode($package);
 
       if (!$location) {
-        // $location = $this->locationRepository->findRandomWithoutPackage();
         $groupPostcode = $this->packageRepository->findGroupPostcodes($package);
         $aisle = $groupPostcode->getAisle();
+
+        if (!$aisle) {
+          $aisle = $this->aisleRepository->findByRandomAisleWithoutGroupPostcode();
+          $groupPostcode->setAisle($aisle);
+        }
         // TODO: snake path
-        // -> si le groupPostcode n'est pas lier à une aisle, trouver une aisle sans groupPostcode et lier le groupPostcode à cette aisle
-        // -> si le gpc n'est pas lier à une aisle mais qu'il n'y en a plus de dispo, autoriser plusieurs gpc par aisle
-        // -> prioriser les loc proches du DROP A > B > C etc...
-        // -> si plus de loc dispo, arrêter l'induction créer une alerte
+
+        $location = $this->locationRepository->findOneByAisle($aisle);
+        if (!$location) {
+          throw new NoAvailableLocationException('No location available');
+        }
+                                              
       }
 
       if (!$location->getBag()) {

@@ -13,6 +13,7 @@ use App\Repository\PackageRepository;
 use App\Repository\PalletRepository;
 
 use App\Service\SetPackageLocationService;
+use App\Exception\NoAvailableLocationException;
 
 final class InductionController extends AbstractController
 {
@@ -49,8 +50,13 @@ final class InductionController extends AbstractController
       return $this->json(['error' => 'No package found for id ' . $id], 404);
     }
 
-    $data = $this->setPackageLocationService->setPackageLocation($package);
-
-    return $this->json($this->packageRepository->toArray($data));
+    try {
+      $data = $this->setPackageLocationService->setPackageLocation($package);
+      return $this->json($this->packageRepository->toArray($data));
+    } catch (NoAvailableLocationException $exception) {
+      return $this->json([
+        'error' => $exception->getMessage(),
+      ], 404);
+    }
   }
 }

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Repository\Trait\RepositoryTrait;
 
 use App\Entity\Location;
+use App\Entity\Aisle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,30 +24,18 @@ class LocationRepository extends ServiceEntityRepository
     parent::__construct($registry, Location::class);
   }
 
-  /**
-   * @return Location|null
-   */
-  public function findRandomWithoutPackage(): ?Location
+  public function findOneByAisle(Aisle $aisle): ?Location
   {
-    $qb = $this->createQueryBuilder('l');
-
-    $total = $qb->select('COUNT(l.id)')
+    return $this->createQueryBuilder('l')
+      ->andWhere('l.aisle = :aisle')
       ->andWhere('l.packages IS EMPTY')
-      ->getQuery()
-      ->getSingleScalarResult();
-
-    if ($total === 0) {
-      return null;
-    }
-
-    $offset = random_int(0, $total - 1);
-
-    return $qb->select('l')
-      ->andWhere('l.packages IS EMPTY')
+      ->orderBy('l.name', 'ASC')
+      ->addOrderBy('l.name', 'ASC')
+      ->setParameter('aisle', $aisle)
       ->setMaxResults(1)
-      ->setFirstResult($offset)
       ->getQuery()
-      ->getOneOrNullResult();
+      ->getOneOrNullResult()
+    ;
   }
 
   public function toArray(Location $location): array

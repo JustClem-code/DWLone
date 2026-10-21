@@ -13,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\OrderRepository;
 use App\Repository\BagRepository;
 use App\Repository\LocationRepository;
-use App\Repository\PostCodesRepository;
+use App\Repository\PostcodesRepository;
 
 /**
  * @extends ServiceEntityRepository<Package>
@@ -28,7 +28,7 @@ class PackageRepository extends ServiceEntityRepository
     private OrderRepository $orderRepository,
     private BagRepository $bagRepository,
     private LocationRepository $locationRepository,
-    private PostCodesRepository $postcodesRepository,
+    private PostcodesRepository $postcodesRepository,
   ) {
     parent::__construct($registry, Package::class);
   }
@@ -89,7 +89,7 @@ class PackageRepository extends ServiceEntityRepository
     return $package->getOrderId()->getAddress()->getPostcode();
   }
 
-  private function findGroupPostcodes(Package $package): ?GroupPostcodes
+  public function findGroupPostcodes(Package $package): ?GroupPostcodes
   {
     return $this->postcodesRepository->findOneByName($this->findPostcode($package))->getGroupPostcodes();
   }
