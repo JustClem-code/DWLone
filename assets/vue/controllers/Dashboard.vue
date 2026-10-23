@@ -45,19 +45,11 @@
 // dans le proccessSetting -> gérer les groupPostcodes, l'ouverture des allée et la gestion du snake path
 
 // -> attribuer un groupPostCode à une allée qui peut être ouverte
-// -> ajouter un champs boolean open à l'entité location
-// -> trouver un moyen de lier groupPostcode et location
-// -> créer une entité Alley > location->getAlley() > groupPostcode->getAlley() pour lier les deux
+// -> ajouter un champs boolean enabled à l'entité location
 
-// creation d'un snake path côté Symfony pour trier les bag dans roadPart en fonction du snake path
-
-//  -> lier les codes postaux en fonction de la localisation
 // dans le dashboard, touver un moyen d'étider les groupPostcodes
 
-
-//  -> revoir l'attribution des emplacements des sacs et touver le groupe des postcodes de livraison
-//      pour les mettres dans la même aislepair
-
+// Mettre à joir les infos des bags après le sequencing et le stagging
 
 // Afficher le plan des stagging avec les emplacements occupés
 
@@ -68,22 +60,6 @@
 
 // mettre un sous-menu avec #id sur les partis pour éviter de scroller ?
 // -> https://headlessui.com/v1/react/tabs
-
-
-/* GÉRER CE PROBLÈME
-
-[WARNING] You have 6 previously executed migrations in the database that are
-          not registered migrations.
-
-
->> 2026-03-20 15:59:45 (DoctrineMigrations\Version20260320155942)
->> 2026-03-20 16:02:58 (DoctrineMigrations\Version20260320160251)
->> 2026-03-20 16:04:22 (DoctrineMigrations\Version20260320160419)
->> 2026-03-20 16:08:40 (DoctrineMigrations\Version20260320160836)
->> 2026-03-20 16:09:47 (DoctrineMigrations\Version20260320160945)
->> 2026-03-20 16:11:36 (DoctrineMigrations\Version20260320161133)
-
-*/
 
 
 // WIP : Revoir les method de repository to array pour limiter les données inutiles ou dupliquée

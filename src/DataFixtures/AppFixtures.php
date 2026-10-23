@@ -59,7 +59,7 @@ class AppFixtures extends Fixture
     $dockNumber = 1;
     for ($i = 0; $i < 11; $i++) {
       $dock = new Dock();
-      $dock->setName('OB_' . $dockNumber);
+      $dock->setName('IB_' . $dockNumber);
       $manager->persist($dock);
       $dockNumber++;
     }
@@ -476,11 +476,11 @@ class AppFixtures extends Fixture
     // $this->generateDeliveryCompany($manager);
     // $this->generateStaggings($manager);
     // $this->generateAisles($manager);
-    // $this->generateLocations($manager);
     // $this->generateBags($manager);
     // $this->generateGroupPostcodes($manager);
     // $this->generatePostcodes($manager);
     // $this->generateCarts($manager);
+    // $this->generateLocations($manager);
 
     $manager->flush();
   }
