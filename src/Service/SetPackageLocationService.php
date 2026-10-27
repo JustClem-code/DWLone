@@ -38,7 +38,6 @@ class SetPackageLocationService
           $aisle = $this->aisleRepository->findByRandomAisleWithoutGroupPostcode();
           $groupPostcode->setAisle($aisle);
         }
-        // TODO: snake path
 
         $location = $this->locationRepository->findOneByAisle($aisle);
         if (!$location) {

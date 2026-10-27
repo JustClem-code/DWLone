@@ -29,6 +29,7 @@ class GroupPostcodesRepository extends ServiceEntityRepository
             'id' => $groupPostcodes->getId(),
             'name' => $groupPostcodes->getName(),
             'postcodes' => $this->transFormEntities($groupPostcodes->getPostcodes(), [$this->postcodesRepository, 'toArray']),
+            'aisle' => $groupPostcodes->getAisle()?->getName(),
         ];
     }
 

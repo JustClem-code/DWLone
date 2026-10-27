@@ -13,6 +13,7 @@
           <div class="border-b border-gray-300 dark:border-gray-700/90 p-4">
             <div class="flex justify-between">
               <h3 class="text-sm font-semibold">{{ group?.name || 'Group name' }}</h3>
+              <h4 class="text-sm">{{ group?.aisle || 'Aisle name' }}</h4>
             </div>
           </div>
 
@@ -38,8 +39,6 @@
       </div>
     </SidePanel>
 
-
-
   </div>
 </template>
 
@@ -57,6 +56,8 @@ const { notifier } = useNotification()
 const { setDraggedItem, getDraggedItem } = useDragStore();
 
 const { data: allGroupPostcodes, error: errorGroupPostcodes } = useFetch('/getgrouppostcodes')
+
+const { data: allAisles, error: errorAisles } = useFetch('/getaisles')
 
 const sidePanelRef = ref(null)
 
@@ -163,6 +164,14 @@ watch(
   () => allGroupPostcodes.value,
   (val) => {
     console.log('allGroupPostcodes watch:', val);
+  },
+  { immediate: true, deep: true }
+);
+
+watch(
+  () => allAisles.value,
+  (val) => {
+    console.log('allAisles watch:', val);
   },
   { immediate: true, deep: true }
 );

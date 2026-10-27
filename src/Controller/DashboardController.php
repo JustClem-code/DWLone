@@ -17,6 +17,7 @@ use App\Repository\PackageRepository;
 use App\Repository\RoadRepository;
 use App\Repository\PostcodesRepository;
 use App\Repository\GroupPostcodesRepository;
+use App\Repository\AisleRepository;
 use App\Repository\RoadPartRepository;
 use App\Repository\CartRepository;
 use App\Repository\BagRepository;
@@ -43,6 +44,7 @@ final class DashboardController extends AbstractController
     private PackageRepository $packageRepository,
     private RoadRepository $roadRepository,
     private GroupPostcodesRepository $groupPostcodesRepository,
+    private AisleRepository $aisleRepository,
     private PostcodesRepository $postcodesRepository,
     private RoadPartRepository $roadPartRepository,
     private CartRepository $cartRepository,
@@ -78,6 +80,12 @@ final class DashboardController extends AbstractController
   public function getGroupPostcodes(): Response
   {
     return $this->json($this->groupPostcodesRepository->transformAll());
+  }
+
+  #[Route('/getaisles', name: 'get_aisles', methods: ['GET'])]
+  public function getAisles(): Response
+  {
+    return $this->json($this->aisleRepository->transformAll());
   }
 
   #[Route('/movePostCode/{id}', name: 'move_postcode')]

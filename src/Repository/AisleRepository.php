@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Repository\Trait\RepositoryTrait;
+
 use App\Entity\Aisle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,18 +13,31 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AisleRepository extends ServiceEntityRepository
 {
+
+    use RepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Aisle::class);
     }
 
+    public function toArray(Aisle $aisle): array
+    {
+        return [
+            'id' => $aisle->getId(),
+            'name' => $aisle->getName(),
+        ];
+    }
+    
     /**
      * @return Aisle|null
      */
     public function findByRandomAisleWithoutGroupPostcode(): ?Aisle
     {
         $qb = $this->createQueryBuilder('a')
-            ->andWhere('a.groupPostcodes IS EMPTY');
+            ->andWhere('a.groupPostcodes IS EMPTY')
+            ->andWhere('a.enabled = :enabled')
+            ->setParameter('enabled', true);
 
         $total = (int) (clone $qb)
             ->select('COUNT(a.id)')
@@ -44,12 +59,19 @@ class AisleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->select('a', 'COUNT(g.id) AS HIDDEN groupCount')
             ->leftJoin('a.groupPostcodes', 'g')
+            ->andWhere('a.enabled = :enabled')
+            ->setParameter('enabled', true)
             ->groupBy('a.id')
             ->orderBy('groupCount', 'ASC')
             ->addOrderBy('a.id', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function transformAll(): array
+    {
+        return $this->transFormEntities($this->findAll(), [$this, 'toArray']);
     }
 
     //    /**
