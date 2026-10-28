@@ -26,6 +26,8 @@ class AisleRepository extends ServiceEntityRepository
         return [
             'id' => $aisle->getId(),
             'name' => $aisle->getName(),
+            'enabled' => $aisle->isEnabled(),
+            'hasGroupPostcodes' => $aisle->getGroupPostcodes()->isEmpty() ? null : true ,
         ];
     }
     

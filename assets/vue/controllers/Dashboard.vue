@@ -50,6 +50,7 @@
 // dans le dashboard, touver un moyen d'étider les groupPostcodes
 
 // Mettre à joir les infos des bags après le sequencing et le stagging
+// Remplacer le code svg dans SearchComponent par un component
 
 // Afficher le plan des stagging avec les emplacements occupés
 

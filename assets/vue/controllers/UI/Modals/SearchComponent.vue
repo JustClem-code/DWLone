@@ -137,11 +137,11 @@ const itemColorClass = (item) => {
   return item.color + ' text-white'
 }
 
-/* watch(
+watch(
   () => props.items,
   (val) => {
     console.log('items search watch:', val)
   },
   { immediate: true, deep: true }
-) */
+)
 </script>

@@ -13,7 +13,10 @@
           <div class="border-b border-gray-300 dark:border-gray-700/90 p-4">
             <div class="flex justify-between">
               <h3 class="text-sm font-semibold">{{ group?.name || 'Group name' }}</h3>
-              <h4 class="text-sm">{{ group?.aisle || 'Aisle name' }}</h4>
+
+              <BaseButton :title="group?.aisle || 'Aisle name'" styleColor="empty" size="sm" :isDisabled="!group.aisle"
+                @click="SelectOptionRef?.openDialog()" />
+
             </div>
           </div>
 
@@ -39,6 +42,15 @@
       </div>
     </SidePanel>
 
+
+    <DialogComponentSlot ref="SelectOptionRef">
+
+      <SearchComponent :items="filteredAllAislesItems" v-model="searchQuery" @click="val => setAisle(val)" />
+
+      <!-- <SelectOptionComponent :options="notDepartedTrucks" :isLoading="dockingIsLoading"
+        @submitOption="val => dockingTruck(val.selected, dock)" @closeDialog="SelectOptionRef?.closeDialog()" /> -->
+    </DialogComponentSlot>
+
   </div>
 </template>
 
@@ -51,6 +63,9 @@ import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
+import BaseButton from '../UI/Buttons/BaseButton.vue';
+import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
+import SearchComponent from '../UI/Modals/SearchComponent.vue';
 
 const { notifier } = useNotification()
 const { setDraggedItem, getDraggedItem } = useDragStore();
@@ -59,11 +74,54 @@ const { data: allGroupPostcodes, error: errorGroupPostcodes } = useFetch('/getgr
 
 const { data: allAisles, error: errorAisles } = useFetch('/getaisles')
 
+const SelectOptionRef = ref(null)
+
+const searchQuery = ref('')
+
 const sidePanelRef = ref(null)
 
-const isDragging = ref(false)
-
 const synchronized = ref(true)
+
+/* Aisle selection */
+
+const allAislesItems = computed(() => {
+  return allAisles.value
+    ? allAisles.value
+      .filter(aisle => !aisle.hasGroupPostcodes  && aisle.enabled)
+      .map(aisle => ({
+        label: aisle.name,
+        color: aisle.enabled ? 'bg-green-500' : 'bg-gray-500',
+        ...aisle
+      }))
+    : []
+})
+
+const filteredAllAislesItems = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+
+  if (!query) {
+    return allAislesItems.value
+  }
+
+  return allAislesItems.value.filter(aisle => {
+    return (
+      aisle.label?.toLowerCase().includes(query) ||
+      aisle.name?.toLowerCase().includes(query)
+    )
+  })
+})
+
+const setAisle = (aisle) => {
+  if (!aisle) {
+    return
+  }
+  console.log('Selected Aisle:', aisle);
+  SelectOptionRef.value?.closeDialog()
+}
+
+/* Drag and Drop */
+
+const isDragging = ref(false)
 
 const cursorType = computed(() => {
   return isDragging.value ? 'cursor-grabbing' : 'cursor-grab'
@@ -117,7 +175,7 @@ const movePostcodeToGroup = async (postcodeId, targetGroupId) => {
   targetGroup.postcodes.push(postcode);
 
   try {
-    const {data, error} = await movePostCode(postcode, targetGroup);
+    const { data, error } = await movePostCode(postcode, targetGroup);
 
     console.log('Result of movePostCode:', data.value);
 
