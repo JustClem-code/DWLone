@@ -13,9 +13,10 @@
           <div class="border-b border-gray-300 dark:border-gray-700/90 p-4">
             <div class="flex justify-between">
               <h3 class="text-sm font-semibold">{{ group?.name || 'Group name' }}</h3>
-
-              <BaseButton :title="group?.aisle || 'Aisle name'" styleColor="empty" size="sm" :isDisabled="!group.aisle"
-                @click="SelectOptionRef?.openDialog()" />
+              <div>
+                <BaseButton :title="group?.aisle || 'Aisle name'" styleColor="empty" size="sm"
+                  :isDisabled="!group.aisle" @click="SelectOptionRef?.openDialog()" />
+              </div>
 
             </div>
           </div>
@@ -43,12 +44,10 @@
     </SidePanel>
 
 
-    <DialogComponentSlot ref="SelectOptionRef">
+    <DialogComponentSlot ref="SelectOptionRef" :light="true">
 
       <SearchComponent :items="filteredAllAislesItems" v-model="searchQuery" @click="val => setAisle(val)" />
 
-      <!-- <SelectOptionComponent :options="notDepartedTrucks" :isLoading="dockingIsLoading"
-        @submitOption="val => dockingTruck(val.selected, dock)" @closeDialog="SelectOptionRef?.closeDialog()" /> -->
     </DialogComponentSlot>
 
   </div>
@@ -84,10 +83,12 @@ const synchronized = ref(true)
 
 /* Aisle selection */
 
+// TODO: Rendre l'overlay opaque à l'ouverture du dialog
+
 const allAislesItems = computed(() => {
   return allAisles.value
     ? allAisles.value
-      .filter(aisle => !aisle.hasGroupPostcodes  && aisle.enabled)
+      .filter(aisle => !aisle.hasGroupPostcodes && aisle.enabled)
       .map(aisle => ({
         label: aisle.name,
         color: aisle.enabled ? 'bg-green-500' : 'bg-gray-500',

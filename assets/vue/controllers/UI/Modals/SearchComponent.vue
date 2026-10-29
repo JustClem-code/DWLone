@@ -1,7 +1,7 @@
 <template>
-  <div class="relative min-h-[3rem] mx-auto block max-w-2xl">
+  <div class="relative w-screen min-h-[3rem] mx-auto block max-w-2xl text-gray-200 dark:text-gray-500">
 
-    <div class="absolute z-10 mx-auto w-full overflow-hidden shadow-xl bg-white dark:bg-gray-900
+    <div class="absolute z-20 mx-auto w-full overflow-hidden shadow-xl bg-white dark:bg-gray-900
       outline outline-offset-2 outline-gray-300 dark:outline-gray-700/90 hover:outline-gray-500
       rounded-lg shadow-xs dark:shadow-none transition-all">
       <div>
