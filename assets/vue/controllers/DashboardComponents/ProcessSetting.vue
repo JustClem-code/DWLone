@@ -44,7 +44,7 @@
     </SidePanel>
 
 
-    <DialogComponentSlot ref="SelectOptionRef" :light="true">
+    <DialogComponentSlot ref="SelectOptionRef" :light="true" :darkerOverlay="true" @closeDialog="searchQuery = ''">
 
       <SearchComponent :items="filteredAllAislesItems" v-model="searchQuery" @click="val => setAisle(val)" />
 

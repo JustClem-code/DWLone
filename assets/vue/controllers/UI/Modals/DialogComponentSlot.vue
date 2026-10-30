@@ -1,6 +1,6 @@
 <template>
   <dialog ref="myDialog" @click.self="closeDialog">
-    <OverlayInvisible @click="closeDialog" />
+    <OverlayInvisible @click="closeDialog" :darker="darkerOverlay" />
     <div
       class=" w-full md:w-max max-w-[95vw] max-h-[95vh] fixed left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
       :class="darkerBackground ? 'bg-white dark:bg-gray-900' : 'bg-white dark:bg-gray-800',
@@ -24,6 +24,10 @@ import CrossIcon from '../Icons/CrossIcon.vue';
 const props = defineProps({
   hasCloseCross: Boolean,
   darkerBackground: Boolean,
+  darkerOverlay: {
+    type: Boolean,
+    default: false,
+  },
   light: {
     type: Boolean,
     default: false,
