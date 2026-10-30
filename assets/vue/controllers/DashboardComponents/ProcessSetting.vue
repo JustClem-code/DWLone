@@ -15,7 +15,7 @@
               <h3 class="text-sm font-semibold">{{ group?.name || 'Group name' }}</h3>
               <div>
                 <BaseButton :title="group?.aisle || 'Aisle name'" styleColor="empty" size="sm"
-                  :isDisabled="!group.aisle" @click="SelectOptionRef?.openDialog()" />
+                  :isDisabled="!group.aisle" @click="openAisleSelectionDialog(group)" />
               </div>
 
             </div>
@@ -43,12 +43,12 @@
       </div>
     </SidePanel>
 
+    <DialogComponentSlot ref="SelectOptionRef" :light="true" :darkerOverlay="true" @closeDialog="closeAisleSelectionDialog">
 
-    <DialogComponentSlot ref="SelectOptionRef" :light="true" :darkerOverlay="true" @closeDialog="searchQuery = ''">
-
-      <SearchComponent :items="filteredAllAislesItems" v-model="searchQuery" @click="val => setAisle(val)" />
+      <SearchComponent :items="filteredAllAislesItems" v-model="searchQuery" @click="val => setAisle(val, currentGroupPostcodes)" />
 
     </DialogComponentSlot>
+
 
   </div>
 </template>
@@ -77,6 +77,8 @@ const SelectOptionRef = ref(null)
 
 const searchQuery = ref('')
 
+const currentGroupPostcodes = ref(null)
+
 const sidePanelRef = ref(null)
 
 const synchronized = ref(true)
@@ -84,6 +86,17 @@ const synchronized = ref(true)
 /* Aisle selection */
 
 // TODO: Rendre l'overlay opaque à l'ouverture du dialog
+
+const openAisleSelectionDialog = (group) => {
+  currentGroupPostcodes.value = group
+  SelectOptionRef.value?.openDialog()
+}
+
+const closeAisleSelectionDialog = () => {
+  searchQuery.value = ''
+  currentGroupPostcodes.value = null
+  SelectOptionRef.value?.closeDialog()
+}
 
 const allAislesItems = computed(() => {
   return allAisles.value
@@ -112,12 +125,32 @@ const filteredAllAislesItems = computed(() => {
   })
 })
 
-const setAisle = (aisle) => {
+const setAisle = async (aisle, group) => {
   if (!aisle) {
     return
   }
+
+  synchronized.value = false
+
+  const { data, error } = await usePostFetch(`/setAisleToGroup/${aisle.id}`, { id: group.id })
+
+  if (error.value) {
+    setTimeout(() => {
+      notifier('error', 'Group  ', `${error.value}`)
+      synchronized.value = true
+      return { error }
+    }, 1000);
+  }
+
+  if (data.value) {
+    console.log(data.value)
+    synchronized.value = true
+    allGroupPostcodes.value = data.value
+  }
+
+
   console.log('Selected Aisle:', aisle);
-  SelectOptionRef.value?.closeDialog()
+  closeAisleSelectionDialog();
 }
 
 /* Drag and Drop */

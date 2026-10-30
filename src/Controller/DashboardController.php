@@ -88,6 +88,30 @@ final class DashboardController extends AbstractController
     return $this->json($this->aisleRepository->transformAll());
   }
 
+  #[Route('/setAisleToGroup/{id}', name: 'set_aisle_to_group')]
+  public function setAisleToGroup(int $id, Request $request): Response
+  {
+    $formData = $request->getPayload()->get('id');
+
+    $aisle = $this->findOrNull($this->aisleRepository, $id);
+    
+    if (!$aisle) {
+      return $this->json(['error' => 'No aisle available'], 404);
+      }
+      
+      $groupPostcodes = $this->findOrNull($this->groupPostcodesRepository, $formData);
+
+    if (!$groupPostcodes) {
+      return $this->json(['error' => 'No group postcodes available'], 404);
+    }
+
+    $groupPostcodes->setAisle($aisle);
+
+    $this->entityManager->flush();
+
+    return $this->getGroupPostcodes();
+  }
+
   #[Route('/movePostCode/{id}', name: 'move_postcode')]
   public function movePostCode(int $id, Request $request): Response
   {

@@ -41,6 +41,9 @@
 //TODO:
 
 // TailWind plus n'est plus accessible => https://headlessui.com
+// mettre à jour les aisles après la sélection de la new aisle -> vériifier toutes les MAJ du dashbord en général
+
+// la searchbar en mode lightmode n'est pas bien aligner avec les contours
 
 // dans le proccessSetting -> gérer les groupPostcodes, l'ouverture des allée et la gestion du snake path
 
