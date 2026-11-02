@@ -41,7 +41,10 @@
 //TODO:
 
 // TailWind plus n'est plus accessible => https://headlessui.com
-// mettre à jour les aisles après la sélection de la new aisle -> vériifier toutes les MAJ du dashbord en général
+
+
+// Revoir les mises à jour des dashboard pour éviter de recharger toutes les données à chaque fois (ex: updateListElements)
+// Mettre à joir les infos des bags après le sequencing et le stagging
 
 // la searchbar en mode lightmode n'est pas bien aligner avec les contours
 
@@ -52,7 +55,6 @@
 
 // dans le dashboard, touver un moyen d'étider les groupPostcodes
 
-// Mettre à joir les infos des bags après le sequencing et le stagging
 // Remplacer le code svg dans SearchComponent par un component
 
 // Afficher le plan des stagging avec les emplacements occupés

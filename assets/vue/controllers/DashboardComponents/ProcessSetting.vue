@@ -85,8 +85,6 @@ const synchronized = ref(true)
 
 /* Aisle selection */
 
-// TODO: Rendre l'overlay opaque à l'ouverture du dialog
-
 const openAisleSelectionDialog = (group) => {
   currentGroupPostcodes.value = group
   SelectOptionRef.value?.openDialog()
@@ -145,9 +143,9 @@ const setAisle = async (aisle, group) => {
   if (data.value) {
     console.log(data.value)
     synchronized.value = true
-    allGroupPostcodes.value = data.value
+    allGroupPostcodes.value = data.value.groupPostcodes
+    allAisles.value = data.value.aisles
   }
-
 
   console.log('Selected Aisle:', aisle);
   closeAisleSelectionDialog();
