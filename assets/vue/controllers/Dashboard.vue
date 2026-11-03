@@ -42,7 +42,6 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
-
 // Revoir les mises à jour des dashboard pour éviter de recharger toutes les données à chaque fois (ex: updateListElements)
 // Mettre à joir les infos des bags après le sequencing et le stagging
 
@@ -51,9 +50,7 @@
 // dans le proccessSetting -> gérer les groupPostcodes, l'ouverture des allée et la gestion du snake path
 
 // -> attribuer un groupPostCode à une allée qui peut être ouverte
-// -> ajouter un champs boolean enabled à l'entité location
 
-// dans le dashboard, touver un moyen d'étider les groupPostcodes
 
 // Remplacer le code svg dans SearchComponent par un component
 

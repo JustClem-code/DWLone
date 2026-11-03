@@ -10,7 +10,7 @@
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <BaseButton :title="actionTitle" @click="emit('actionClick')" styleColor="empty" />
+        <BaseButton :title="actionTitle" @click="emit('actionClick')" styleColor="empty" :isDisabled="isDisabled" />
       </div>
     </div>
 
@@ -33,6 +33,7 @@ const props = defineProps({
   notice: String,
   actionTitle: String,
   statistics: Array,
+  isDisabled: Boolean
 });
 
 const emit = defineEmits(['actionClick'])

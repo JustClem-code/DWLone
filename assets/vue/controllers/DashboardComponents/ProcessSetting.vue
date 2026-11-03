@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col">
 
-    <StatsHeader title="Postcodes group" notice="Choose group for each postcode" actionTitle="Choose"
-      @actionClick="sidePanelRef?.toggleSidePanel()" />
+    <StatsHeader title="Postcodes group" :notice="processIsRunning ? 'Process is running. Please wait.' : 'Choose group for each postcode'" :actionTitle="processIsRunning ? 'Wait' : 'Choose'"
+      @actionClick="sidePanelRef?.toggleSidePanel()" :isDisabled="processIsRunning" />
 
     <SidePanel ref="sidePanelRef" title="Choose group" :synchronized=synchronized width="md:w-5/6">
 
@@ -43,9 +43,11 @@
       </div>
     </SidePanel>
 
-    <DialogComponentSlot ref="SelectOptionRef" :light="true" :darkerOverlay="true" @closeDialog="closeAisleSelectionDialog">
+    <DialogComponentSlot ref="SelectOptionRef" :light="true" :darkerOverlay="true"
+      @closeDialog="closeAisleSelectionDialog">
 
-      <SearchComponent :items="filteredAllAislesItems" v-model="searchQuery" @click="val => setAisle(val, currentGroupPostcodes)" />
+      <SearchComponent :items="filteredAllAislesItems" v-model="searchQuery"
+        @click="val => setAisle(val, currentGroupPostcodes)" />
 
     </DialogComponentSlot>
 
@@ -57,6 +59,7 @@
 import { ref, computed, watch } from 'vue';
 import { useDragStore } from '../../composables/useDragStore.js';
 import { useNotification } from '../../composables/eventBus.js'
+import { dashboardStore } from '../../composables/dashboardStore.js';
 
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
@@ -68,6 +71,7 @@ import SearchComponent from '../UI/Modals/SearchComponent.vue';
 
 const { notifier } = useNotification()
 const { setDraggedItem, getDraggedItem } = useDragStore();
+const { allPackagesStats } = dashboardStore();
 
 const { data: allGroupPostcodes, error: errorGroupPostcodes } = useFetch('/getgrouppostcodes')
 
@@ -82,6 +86,16 @@ const currentGroupPostcodes = ref(null)
 const sidePanelRef = ref(null)
 
 const synchronized = ref(true)
+
+const isDragging = ref(false)
+
+const cursorType = computed(() => {
+  return isDragging.value ? 'cursor-grabbing' : 'cursor-grab'
+})
+
+const processIsRunning = computed(() => {
+  return allPackagesStats.value?.packagesWithLocationNumber !== 0;
+});
 
 /* Aisle selection */
 
@@ -152,12 +166,6 @@ const setAisle = async (aisle, group) => {
 }
 
 /* Drag and Drop */
-
-const isDragging = ref(false)
-
-const cursorType = computed(() => {
-  return isDragging.value ? 'cursor-grabbing' : 'cursor-grab'
-})
 
 const onDragStart = (event, postcodeId) => {
   isDragging.value = true;

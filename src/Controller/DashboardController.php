@@ -76,6 +76,13 @@ final class DashboardController extends AbstractController
 
   // Setting process
 
+  private function processIsRunning(): Bool
+  {
+    return count(
+      $this->packageRepository->findAllHasLocation()
+    ) > 0;
+  }
+
   private function groupPostcodes(): array
   {
     return $this->groupPostcodesRepository->transformAll();
@@ -101,6 +108,11 @@ final class DashboardController extends AbstractController
   #[Route('/setAisleToGroup/{id}', name: 'set_aisle_to_group')]
   public function setAisleToGroup(int $id, Request $request): Response
   {
+
+    if ($this->processIsRunning()) {
+      return $this->json(['error' => 'Process is running. Please wait.'], 404);
+    }
+
     $formData = $request->getPayload()->get('id');
 
     $aisle = $this->findOrNull($this->aisleRepository, $id);
@@ -128,6 +140,11 @@ final class DashboardController extends AbstractController
   #[Route('/movePostCode/{id}', name: 'move_postcode')]
   public function movePostCode(int $id, Request $request): Response
   {
+    
+    if ($this->processIsRunning()) {
+      return $this->json(['error' => 'Process is running. Please wait.'], 404);
+    }
+
     $formData = $request->getPayload()->get('id');
     $postCodes = $this->postcodesRepository->find($id);
 
