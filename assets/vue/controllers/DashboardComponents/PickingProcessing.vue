@@ -26,6 +26,7 @@ import { ref, computed, provide, watch, watchEffect } from 'vue';
 
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
+import { dashboardStore } from '../../composables/dashboardStore.js';
 
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
@@ -34,7 +35,8 @@ import RadioForm from '../UI/RadioForm.vue';
 
 const { notifier } = useNotification()
 
-const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
+//const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
+const { allRoadParts, errorGetAllRoadParts, updateDashboardData } = dashboardStore();
 
 const selected = ref(null)
 
@@ -107,7 +109,9 @@ const generateAllRoads = async () => {
       globalLoading.value = false;
     }, 500);
     setTimeout(() => {
-      allRoadParts.value = data.value
+      // TODO: use dashboard
+      //allRoadParts.value = data.value
+      updateDashboardData(data);
       notifier('success', 'Picking', `${allRoadPartsNumber.value} generated`)
       sidePanelRef.value?.toggleSidePanel()
     }, 1000);

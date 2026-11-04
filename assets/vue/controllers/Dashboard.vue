@@ -42,6 +42,7 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
+// Revoir le updateDasborb ppour mettre à jour seulment les données nécessaires
 // Revoir les mises à jour des dashboard pour éviter de recharger toutes les données à chaque fois (ex: updateListElements)
 // Mettre à joir les infos des bags après le sequencing et le stagging
 

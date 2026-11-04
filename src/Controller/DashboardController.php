@@ -520,7 +520,7 @@ final class DashboardController extends AbstractController
       $this->entityManager->flush();
     }
 
-    return $this->getAllRoadParts();
+    return $this->buildDashboardResponse();
   }
 
   private function setUserToRoadPart(RoadPart $roadPart): void
