@@ -8,11 +8,21 @@ const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoa
 export function dashboardStore() {
 
   const updateDashboardData = (data) => {
-    locations.value = data.value.locations
-    allPackagesStats.value = data.value.allPackagesStats
-    yardTruckStats.value = data.value.yardTruckStats
-    allRoadParts.value = data.value.allRoadParts
-    errorGetAllRoadParts.value = data.value.errorGetAllRoadParts
+    if ('locations' in data.value) {
+      locations.value = data.value.locations
+    }
+
+    if ('allPackagesStats' in data.value) {
+      allPackagesStats.value = data.value.allPackagesStats
+    }
+
+    if ('yardTruckStats' in data.value) {
+      yardTruckStats.value = data.value.yardTruckStats
+    }
+
+    if ('allRoadParts' in data.value) {
+      allRoadParts.value = data.value.allRoadParts
+    }
   }
 
   return { locations, allPackagesStats, yardTruckStats, allRoadParts, errorGetAllRoadParts, updateDashboardData }

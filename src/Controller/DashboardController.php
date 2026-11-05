@@ -65,14 +65,37 @@ final class DashboardController extends AbstractController
 
   // Dashboard Response
 
-  private function buildDashboardResponse(): Response
+  private function buildDashboardResponse(array $sections = [
+    'locations',
+    'allPackagesStats',
+    'yardTruckStats',
+    'allRoadParts',
+  ]): Response
   {
-    return $this->json(
-      ['locations' => $this->locationArrayTransformerService->transformAllBagOriented()] +
-        ['allPackagesStats' => $this->packagesStats()] +
-        ['yardTruckStats' => $this->yardTruckStats()]
-    );
+    $data = [];
+
+    if (in_array('locations', $sections, true)) {
+      $data['locations'] = $this->locationArrayTransformerService
+        ->transformAllBagOriented();
+    }
+
+    if (in_array('allPackagesStats', $sections, true)) {
+      $data['allPackagesStats'] = $this->packagesStats();
+    }
+
+    if (in_array('yardTruckStats', $sections, true)) {
+      $data['yardTruckStats'] = $this->yardTruckStats();
+    }
+
+    if (in_array('allRoadParts', $sections, true)) {
+      $data['allRoadParts'] = $this->allRoadParts();
+    }
+
+    return $this->json($data);
   }
+  
+  // TODO: return $this->buildDashboardResponse(['locations']);
+
 
   // Setting process
 
@@ -140,7 +163,7 @@ final class DashboardController extends AbstractController
   #[Route('/movePostCode/{id}', name: 'move_postcode')]
   public function movePostCode(int $id, Request $request): Response
   {
-    
+
     if ($this->processIsRunning()) {
       return $this->json(['error' => 'Process is running. Please wait.'], 404);
     }
@@ -392,10 +415,15 @@ final class DashboardController extends AbstractController
     );
   }
 
+  private function allRoadParts(): array
+  {
+    return $this->roadPartRepository->transformAllOrderedByName();
+  }
+
   #[Route('/getAllRoadParts', name: 'get_all_road_parts', methods: ['GET'])]
   public function getAllRoadParts(): Response
   {
-    return $this->json($this->roadPartRepository->transformAllOrderedByName());
+    return $this->json($this->allRoadParts());
   }
 
   #[Route('/resetRoadPart/{id}', name: 'reset_road_part')]
