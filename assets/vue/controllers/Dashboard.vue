@@ -44,7 +44,6 @@
 
 // Revoir le updateDasborb ppour mettre à jour seulment les données nécessaires
 // Revoir les mises à jour des dashboard pour éviter de recharger toutes les données à chaque fois (ex: updateListElements)
-// Mettre à joir les infos des bags après le sequencing et le stagging
 
 // la searchbar en mode lightmode n'est pas bien aligner avec les contours
 

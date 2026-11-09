@@ -67,8 +67,9 @@ final class DashboardController extends AbstractController
 
   private function buildDashboardResponse(array $sections = [
     'locations',
-    'allPackagesStats',
+    'processDatas',
     'yardTruckStats',
+    'allPackagesStats',
     'allRoadParts',
   ]): Response
   {
@@ -79,12 +80,16 @@ final class DashboardController extends AbstractController
         ->transformAllBagOriented();
     }
 
-    if (in_array('allPackagesStats', $sections, true)) {
-      $data['allPackagesStats'] = $this->packagesStats();
+    if (in_array('processDatas', $sections, true)) {
+      $data['processDatas'] = $this->processDatas();
     }
 
     if (in_array('yardTruckStats', $sections, true)) {
       $data['yardTruckStats'] = $this->yardTruckStats();
+    }
+
+    if (in_array('allPackagesStats', $sections, true)) {
+      $data['allPackagesStats'] = $this->packagesStats();
     }
 
     if (in_array('allRoadParts', $sections, true)) {
@@ -93,11 +98,16 @@ final class DashboardController extends AbstractController
 
     return $this->json($data);
   }
-  
-  // TODO: return $this->buildDashboardResponse(['locations']);
-
 
   // Setting process
+
+  private function processDatas(): array
+  {
+    return [
+      'allGroupPostcodes' => $this->groupPostcodes(),
+      'allAisles' => $this->aisles(),
+    ];
+  }
 
   private function processIsRunning(): Bool
   {
@@ -116,7 +126,7 @@ final class DashboardController extends AbstractController
     return $this->aisleRepository->transformAll();
   }
 
-  #[Route('/getgrouppostcodes', name: 'get_group_postcodes', methods: ['GET'])]
+  /* #[Route('/getgrouppostcodes', name: 'get_group_postcodes', methods: ['GET'])]
   public function getGroupPostcodes(): Response
   {
     return $this->json($this->groupPostcodes());
@@ -126,6 +136,12 @@ final class DashboardController extends AbstractController
   public function getAisles(): Response
   {
     return $this->json($this->aisles());
+  } */
+
+  #[Route('/getprocessdatas', name: 'get_process_datas', methods: ['GET'])]
+  public function getProcessDatas(): Response
+  {
+    return $this->json($this->processDatas());
   }
 
   #[Route('/setAisleToGroup/{id}', name: 'set_aisle_to_group')]
@@ -154,10 +170,7 @@ final class DashboardController extends AbstractController
 
     $this->entityManager->flush();
 
-    return $this->json([
-      'groupPostcodes' => $this->groupPostcodes(),
-      'aisles' => $this->aisles(),
-    ]);
+    return $this->buildDashboardResponse(['processDatas']);
   }
 
   #[Route('/movePostCode/{id}', name: 'move_postcode')]
@@ -253,7 +266,7 @@ final class DashboardController extends AbstractController
   {
     $this->dockingAllTrucks();
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['yardTruckStats']);
   }
 
   #[Route('/automaticunloadingpallets', name: 'automatic_unloading_pallets', methods: ['POST'])]
@@ -261,7 +274,7 @@ final class DashboardController extends AbstractController
   {
     $this->unloadingAllPallets();
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['yardTruckStats']);
   }
 
   #[Route('/autodockingandunloading', name: 'auto_docking_and_unloading', methods: ['POST'])]
@@ -270,7 +283,7 @@ final class DashboardController extends AbstractController
     $this->dockingAllTrucks();
     $this->unloadingAllPallets();
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['yardTruckStats']);
   }
 
   #[Route('/resetdockingandunloading', name: 'reset_docking_and_unloading', methods: ['POST'])]
@@ -307,7 +320,7 @@ final class DashboardController extends AbstractController
       $this->entityManager->flush();
     }
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['yardTruckStats']);
   }
 
   // Induct and Stow
@@ -368,7 +381,7 @@ final class DashboardController extends AbstractController
   {
     $this->inductAllPackages();
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['packagesStats', 'locations']);
   }
 
   #[Route('/automaticstow', name: 'automatic_stow', methods: ['POST'])]
@@ -376,7 +389,7 @@ final class DashboardController extends AbstractController
   {
     $this->stowAllPackages();
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['packagesStats', 'locations']);
   }
 
   #[Route('/autoinductionandstow', name: 'auto_induction_and_stow', methods: ['POST'])]
@@ -385,7 +398,7 @@ final class DashboardController extends AbstractController
     $this->inductAllPackages();
     $this->stowAllPackages();
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['packagesStats', 'locations']);
   }
 
   #[Route('/hardResetLocationsBagsPackages', name: 'hard_reset_locations_bags_packages', methods: ['POST'])]
@@ -393,7 +406,7 @@ final class DashboardController extends AbstractController
   {
     $this->setPackageLocationService->resetLocationsBagsPackages();
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['packagesStats', 'locations']);
   }
 
   // Picking
@@ -457,7 +470,7 @@ final class DashboardController extends AbstractController
 
     $this->entityManager->flush();
 
-    return $this->getAllRoadParts();
+    return $this->buildDashboardResponse(['allRoadParts', 'locations']);
   }
 
   #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['POST'])]
@@ -475,7 +488,7 @@ final class DashboardController extends AbstractController
 
     $this->entityManager->flush();
 
-    return $this->getAllRoadParts();
+    return $this->buildDashboardResponse(['allRoadParts', 'locations']);
   }
 
   private function getAllBagsWithPackages(): array
@@ -548,7 +561,7 @@ final class DashboardController extends AbstractController
       $this->entityManager->flush();
     }
 
-    return $this->buildDashboardResponse();
+    return $this->buildDashboardResponse(['allRoadParts', 'locations']);
   }
 
   private function setUserToRoadPart(RoadPart $roadPart): void
@@ -594,6 +607,6 @@ final class DashboardController extends AbstractController
       $this->staggingCart($roadPart);
     }
 
-    return $this->getAllRoadParts();
+    return $this->buildDashboardResponse(['allRoadParts', 'locations']);
   }
 }

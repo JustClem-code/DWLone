@@ -1,8 +1,10 @@
 <template>
   <div class="flex flex-col">
 
-    <StatsHeader title="Postcodes group" :notice="processIsRunning ? 'Process is running. Please wait.' : 'Choose group for each postcode'" :actionTitle="processIsRunning ? 'Wait' : 'Choose'"
-      @actionClick="sidePanelRef?.toggleSidePanel()" :isDisabled="processIsRunning" />
+    <StatsHeader title="Postcodes group"
+      :notice="processIsRunning ? 'Process is running. Please wait.' : 'Choose group for each postcode'"
+      :actionTitle="processIsRunning ? 'Wait' : 'Choose'" @actionClick="sidePanelRef?.toggleSidePanel()"
+      :isDisabled="processIsRunning" />
 
     <SidePanel ref="sidePanelRef" title="Choose group" :synchronized=synchronized width="md:w-5/6">
 
@@ -71,11 +73,7 @@ import SearchComponent from '../UI/Modals/SearchComponent.vue';
 
 const { notifier } = useNotification()
 const { setDraggedItem, getDraggedItem } = useDragStore();
-const { allPackagesStats } = dashboardStore();
-
-const { data: allGroupPostcodes, error: errorGroupPostcodes } = useFetch('/getgrouppostcodes')
-
-const { data: allAisles, error: errorAisles } = useFetch('/getaisles')
+const { allPackagesStats, processDatas, updateDashboardData } = dashboardStore();
 
 const SelectOptionRef = ref(null)
 
@@ -88,6 +86,14 @@ const sidePanelRef = ref(null)
 const synchronized = ref(true)
 
 const isDragging = ref(false)
+
+const allGroupPostcodes = computed(() =>
+  processDatas.value ? processDatas.value.allGroupPostcodes : null
+);
+
+const allAisles = computed(() =>
+  processDatas.value ? processDatas.value.allAisles : null
+);
 
 const cursorType = computed(() => {
   return isDragging.value ? 'cursor-grabbing' : 'cursor-grab'
@@ -157,8 +163,7 @@ const setAisle = async (aisle, group) => {
   if (data.value) {
     console.log(data.value)
     synchronized.value = true
-    allGroupPostcodes.value = data.value.groupPostcodes
-    allAisles.value = data.value.aisles
+    updateDashboardData(data);
   }
 
   console.log('Selected Aisle:', aisle);
