@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { ref, computed, provide, watch, watchEffect } from 'vue';
+import { ref, computed, provide, watch } from 'vue';
 
 import { useFetch, usePostFetch } from '../../composables/fetch.js'
 import { useNotification } from '../../composables/eventBus.js'
@@ -35,7 +35,6 @@ import RadioForm from '../UI/RadioForm.vue';
 
 const { notifier } = useNotification()
 
-//const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
 const { allRoadParts, errorGetAllRoadParts, updateDashboardData } = dashboardStore();
 
 const selected = ref(null)
@@ -109,8 +108,6 @@ const generateAllRoads = async () => {
       globalLoading.value = false;
     }, 500);
     setTimeout(() => {
-      // TODO: use dashboard
-      //allRoadParts.value = data.value
       updateDashboardData(data);
       notifier('success', 'Picking', `${allRoadPartsNumber.value} generated`)
       sidePanelRef.value?.toggleSidePanel()
@@ -135,7 +132,7 @@ const deleteAllRoads = async () => {
       globalLoading.value = false;
     }, 500);
     setTimeout(() => {
-      allRoadParts.value = data.value
+      updateDashboardData(data);
       notifier('success', 'Picking', `All roads deleted`)
       sidePanelRef.value?.toggleSidePanel()
     }, 1000);
@@ -154,7 +151,7 @@ const automatingPicking = async () => {
   }
 
   if (data.value) {
-    allRoadParts.value = data.value
+    updateDashboardData(data);
     notifier('success', 'Automatic picking', 'Picking is finished!!!')
     globalLoading.value = false
     sidePanelRef.value?.toggleSidePanel()
@@ -178,7 +175,7 @@ const hardResetPicking = async () => {
       globalLoading.value = false;
     }, 500);
     setTimeout(() => {
-      allRoadParts.value = data.value
+      updateDashboardData(data);
       notifier('success', 'Picking', `All roads reseted`)
       sidePanelRef.value?.toggleSidePanel()
     }, 1000);

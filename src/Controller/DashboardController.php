@@ -126,18 +126,6 @@ final class DashboardController extends AbstractController
     return $this->aisleRepository->transformAll();
   }
 
-  /* #[Route('/getgrouppostcodes', name: 'get_group_postcodes', methods: ['GET'])]
-  public function getGroupPostcodes(): Response
-  {
-    return $this->json($this->groupPostcodes());
-  }
-
-  #[Route('/getaisles', name: 'get_aisles', methods: ['GET'])]
-  public function getAisles(): Response
-  {
-    return $this->json($this->aisles());
-  } */
-
   #[Route('/getprocessdatas', name: 'get_process_datas', methods: ['GET'])]
   public function getProcessDatas(): Response
   {
@@ -169,6 +157,8 @@ final class DashboardController extends AbstractController
     $groupPostcodes->setAisle($aisle);
 
     $this->entityManager->flush();
+
+    // TODO: Renvoyer le groupe seulement et l'aisle
 
     return $this->buildDashboardResponse(['processDatas']);
   }
