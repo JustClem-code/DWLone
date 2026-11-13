@@ -264,7 +264,7 @@ final class DashboardController extends AbstractController
   {
     $this->unloadingAllPallets();
 
-    return $this->buildDashboardResponse(['yardTruckStats']);
+    return $this->buildDashboardResponse(['yardTruckStats', 'allPackagesStats']);
   }
 
   #[Route('/autodockingandunloading', name: 'auto_docking_and_unloading', methods: ['POST'])]
@@ -273,7 +273,7 @@ final class DashboardController extends AbstractController
     $this->dockingAllTrucks();
     $this->unloadingAllPallets();
 
-    return $this->buildDashboardResponse(['yardTruckStats']);
+    return $this->buildDashboardResponse(['yardTruckStats', 'allPackagesStats']);
   }
 
   #[Route('/resetdockingandunloading', name: 'reset_docking_and_unloading', methods: ['POST'])]
@@ -310,7 +310,7 @@ final class DashboardController extends AbstractController
       $this->entityManager->flush();
     }
 
-    return $this->buildDashboardResponse(['yardTruckStats']);
+    return $this->buildDashboardResponse(['yardTruckStats', 'allPackagesStats']);
   }
 
   // Induct and Stow
@@ -371,7 +371,7 @@ final class DashboardController extends AbstractController
   {
     $this->inductAllPackages();
 
-    return $this->buildDashboardResponse(['packagesStats', 'locations']);
+    return $this->buildDashboardResponse(['allPackagesStats', 'locations', 'yardTruckStats']);
   }
 
   #[Route('/automaticstow', name: 'automatic_stow', methods: ['POST'])]
@@ -379,7 +379,7 @@ final class DashboardController extends AbstractController
   {
     $this->stowAllPackages();
 
-    return $this->buildDashboardResponse(['packagesStats', 'locations']);
+    return $this->buildDashboardResponse(['allPackagesStats', 'locations']);
   }
 
   #[Route('/autoinductionandstow', name: 'auto_induction_and_stow', methods: ['POST'])]
@@ -388,7 +388,7 @@ final class DashboardController extends AbstractController
     $this->inductAllPackages();
     $this->stowAllPackages();
 
-    return $this->buildDashboardResponse(['packagesStats', 'locations']);
+    return $this->buildDashboardResponse(['allPackagesStats', 'locations', 'yardTruckStats']);
   }
 
   #[Route('/hardResetLocationsBagsPackages', name: 'hard_reset_locations_bags_packages', methods: ['POST'])]
@@ -396,7 +396,7 @@ final class DashboardController extends AbstractController
   {
     $this->setPackageLocationService->resetLocationsBagsPackages();
 
-    return $this->buildDashboardResponse(['packagesStats', 'locations']);
+    return $this->buildDashboardResponse(['allPackagesStats', 'locations', 'yardTruckStats']);
   }
 
   // Picking
