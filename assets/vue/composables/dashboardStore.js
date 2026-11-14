@@ -1,4 +1,5 @@
 import { useFetch } from '../composables/fetch.js'
+import { useLogic } from '../composables/useLogic.js'
 
 const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
 const { data: processDatas, error: errorProcessDatas } = useFetch('/getprocessdatas')
@@ -6,7 +7,16 @@ const { data: yardTruckStats, error: errorYardTruckStats } = useFetch('/getyardt
 const { data: allPackagesStats, error: errorPackagesStats } = useFetch('/getPackagesStats')
 const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
 
+const { updateListElement } = useLogic()
+
 export function dashboardStore() {
+
+  const updateProcessData = (data) => {
+    console.log('Updating list element:', processDatas.value.allGroupPostcodes);
+    updateListElement(processDatas.value.allGroupPostcodes, data.value.groupPostcodes);
+    updateListElement(processDatas.value.allAisles, data.value.aisle);
+    updateListElement(processDatas.value.allAisles, data.value.previousAisle);
+  }
 
   const updateDashboardData = (data) => {
     if ('locations' in data.value) {
@@ -36,6 +46,7 @@ export function dashboardStore() {
     yardTruckStats, errorYardTruckStats,
     allPackagesStats, errorPackagesStats,
     allRoadParts, errorGetAllRoadParts,
-    updateDashboardData
+    updateDashboardData,
+    updateProcessData
   }
 }

@@ -30,5 +30,15 @@ export function useLogic() {
     return name.match(/^[^-]+/)[0];
   }
 
-  return { getNumberOfPackagesNotInducted, getPalletsNotUnloaded, handleMenuAction, formatInt, getColor };
+  const updateListElement = (dataToUpdate, element) => {
+
+    const currentElement = dataToUpdate.find(el => el.id === element.id)
+
+    if (!currentElement) return
+
+    Object.assign(currentElement, element)
+
+  }
+
+  return { getNumberOfPackagesNotInducted, getPalletsNotUnloaded, handleMenuAction, formatInt, getColor, updateListElement };
 }

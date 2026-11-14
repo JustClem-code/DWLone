@@ -42,6 +42,8 @@
 
 // TailWind plus n'est plus accessible => https://headlessui.com
 
+// revoir les exports et import de function js
+
 // Revoir le updateDasboard ppour mettre à jour seulment les données nécessaires et faire les update en filtrant
 // Revoir les mises à jour des dashboard pour éviter de recharger toutes les données à chaque fois (ex: updateListElements)
 

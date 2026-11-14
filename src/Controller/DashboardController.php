@@ -153,6 +153,7 @@ final class DashboardController extends AbstractController
     if (!$groupPostcodes) {
       return $this->json(['error' => 'No group postcodes available'], 404);
     }
+    $previousAisle = $groupPostcodes->getAisle() ? $groupPostcodes->getAisle() : null;
 
     $groupPostcodes->setAisle($aisle);
 
@@ -160,7 +161,14 @@ final class DashboardController extends AbstractController
 
     // TODO: Renvoyer le groupe seulement et l'aisle
 
-    return $this->buildDashboardResponse(['processDatas']);
+    // return $this->buildDashboardResponse(['processDatas']);
+
+    return $this->json([
+      'groupPostcodes' => $this->groupPostcodesRepository->toArray($groupPostcodes),
+      'aisle' => $aisle ? $this->aisleRepository->toArray($aisle) : null,
+      'previousAisle' => $previousAisle ? $this->aisleRepository->toArray($previousAisle) : null,
+    ]);
+
   }
 
   #[Route('/movePostCode/{id}', name: 'move_postcode')]

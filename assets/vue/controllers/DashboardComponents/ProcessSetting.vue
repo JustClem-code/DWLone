@@ -66,14 +66,14 @@ import { dashboardStore } from '../../composables/dashboardStore.js';
 import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 
-import { useFetch, usePostFetch } from '../../composables/fetch.js'
+import { usePostFetch } from '../../composables/fetch.js'
 import BaseButton from '../UI/Buttons/BaseButton.vue';
 import DialogComponentSlot from '../UI/Modals/DialogComponentSlot.vue';
 import SearchComponent from '../UI/Modals/SearchComponent.vue';
 
 const { notifier } = useNotification()
 const { setDraggedItem, getDraggedItem } = useDragStore();
-const { allPackagesStats, processDatas, updateDashboardData } = dashboardStore();
+const { allPackagesStats, processDatas, updateProcessData  } = dashboardStore();
 
 const SelectOptionRef = ref(null)
 
@@ -163,7 +163,7 @@ const setAisle = async (aisle, group) => {
   if (data.value) {
     console.log(data.value)
     synchronized.value = true
-    updateDashboardData(data);
+    updateProcessData(data);
   }
 
   console.log('Selected Aisle:', aisle);
