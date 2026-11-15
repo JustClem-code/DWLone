@@ -27,7 +27,7 @@ import SidePanel from '../UI/SidePanel.vue';
 import StatsHeader from './StatsHeader.vue';
 import RadioForm from '../UI/RadioForm.vue';
 
-const { yardTruckStats, updateDashboardData } = dashboardStore()
+const { yardTruckStats, unloadingStats, updateDashboardData } = dashboardStore()
 
 const { notifier } = useNotification()
 
@@ -53,19 +53,19 @@ const processedTrucksNumber = computed(() => {
 })
 
 const waitingPalletsNumber = computed(() => {
-  return yardTruckStats.value ? yardTruckStats.value.waitingPallets : 0
+  return unloadingStats.value ? unloadingStats.value.waitingPallets : 0
 })
 
 const waitingPalletsDockedNumber = computed(() => {
-  return yardTruckStats.value ? yardTruckStats.value.waitingPalletsDocked : 0
+  return unloadingStats.value ? unloadingStats.value.waitingPalletsDocked : 0
 })
 
 const unloadingPalletsNumber = computed(() => {
-  return yardTruckStats.value ? yardTruckStats.value.unloadingPallets : 0
+  return unloadingStats.value ? unloadingStats.value.unloadingPallets : 0
 })
 
 const unloadingPalletsCleanNumber = computed(() => {
-  return yardTruckStats.value ? yardTruckStats.value.unloadingPalletsClean : 0
+  return unloadingStats.value ? unloadingStats.value.unloadingPalletsClean : 0
 })
 
 const unloadingPercentage = computed(() => {

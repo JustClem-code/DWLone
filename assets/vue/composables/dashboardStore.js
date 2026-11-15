@@ -4,6 +4,7 @@ import { useLogic } from '../composables/useLogic.js'
 const { data: locations, error: errorLocations } = useFetch('/getBagsInLocations')
 const { data: processDatas, error: errorProcessDatas } = useFetch('/getprocessdatas')
 const { data: yardTruckStats, error: errorYardTruckStats } = useFetch('/getyardtruckstats')
+const { data: unloadingStats, error: errorUnloadingStats } = useFetch('/getunloadingstats')
 const { data: allPackagesStats, error: errorPackagesStats } = useFetch('/getPackagesStats')
 const { data: allRoadParts, error: errorGetAllRoadParts } = useFetch('/getAllRoadParts')
 
@@ -31,6 +32,10 @@ export function dashboardStore() {
       yardTruckStats.value = data.value.yardTruckStats
     }
 
+    if ('unloadingStats' in data.value) {
+      unloadingStats.value = data.value.unloadingStats
+    }
+
     if ('allPackagesStats' in data.value) {
       allPackagesStats.value = data.value.allPackagesStats
     }
@@ -44,6 +49,7 @@ export function dashboardStore() {
     locations, errorLocations,
     processDatas, errorProcessDatas,
     yardTruckStats, errorYardTruckStats,
+    unloadingStats, errorUnloadingStats,
     allPackagesStats, errorPackagesStats,
     allRoadParts, errorGetAllRoadParts,
     updateDashboardData,

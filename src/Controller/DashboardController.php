@@ -69,6 +69,7 @@ final class DashboardController extends AbstractController
     'locations',
     'processDatas',
     'yardTruckStats',
+    'unloadingStats',
     'allPackagesStats',
     'allRoadParts',
   ]): Response
@@ -86,6 +87,10 @@ final class DashboardController extends AbstractController
 
     if (in_array('yardTruckStats', $sections, true)) {
       $data['yardTruckStats'] = $this->yardTruckStats();
+    }
+
+    if (in_array('unloadingStats', $sections, true)) {
+      $data['unloadingStats'] = $this->unloadingStats();
     }
 
     if (in_array('allPackagesStats', $sections, true)) {
@@ -159,16 +164,11 @@ final class DashboardController extends AbstractController
 
     $this->entityManager->flush();
 
-    // TODO: Renvoyer le groupe seulement et l'aisle
-
-    // return $this->buildDashboardResponse(['processDatas']);
-
     return $this->json([
       'groupPostcodes' => $this->groupPostcodesRepository->toArray($groupPostcodes),
       'aisle' => $aisle ? $this->aisleRepository->toArray($aisle) : null,
       'previousAisle' => $previousAisle ? $this->aisleRepository->toArray($previousAisle) : null,
     ]);
-
   }
 
   #[Route('/movePostCode/{id}', name: 'move_postcode')]
@@ -214,6 +214,12 @@ final class DashboardController extends AbstractController
       ) + count(
         $this->truckRepository->findAllWithDock()
       ),
+    ];
+  }
+
+  private function unloadingStats(): array
+  {
+    return [
       'waitingPallets' => count(
         $this->palletRepository->findAllWithoutUser()
       ),
@@ -259,12 +265,18 @@ final class DashboardController extends AbstractController
     return $this->json($this->yardTruckStats());
   }
 
+  #[Route('/getunloadingstats', name: 'get_unloading_stats', methods: ['GET'])]
+  public function getUnloadingStats(): Response
+  {
+    return $this->json($this->unloadingStats());
+  }
+
   #[Route('/automaticdockingtrucks', name: 'automatic_docking_trucks', methods: ['POST'])]
   public function automaticDockingTrucks(): Response
   {
     $this->dockingAllTrucks();
 
-    return $this->buildDashboardResponse(['yardTruckStats']);
+    return $this->buildDashboardResponse(['yardTruckStats', 'unloadingStats']);
   }
 
   #[Route('/automaticunloadingpallets', name: 'automatic_unloading_pallets', methods: ['POST'])]
@@ -272,7 +284,7 @@ final class DashboardController extends AbstractController
   {
     $this->unloadingAllPallets();
 
-    return $this->buildDashboardResponse(['yardTruckStats', 'allPackagesStats']);
+    return $this->buildDashboardResponse(['unloadingStats', 'allPackagesStats']);
   }
 
   #[Route('/autodockingandunloading', name: 'auto_docking_and_unloading', methods: ['POST'])]
@@ -281,7 +293,7 @@ final class DashboardController extends AbstractController
     $this->dockingAllTrucks();
     $this->unloadingAllPallets();
 
-    return $this->buildDashboardResponse(['yardTruckStats', 'allPackagesStats']);
+    return $this->buildDashboardResponse(['yardTruckStats', 'unloadingStats', 'allPackagesStats']);
   }
 
   #[Route('/resetdockingandunloading', name: 'reset_docking_and_unloading', methods: ['POST'])]
@@ -318,7 +330,7 @@ final class DashboardController extends AbstractController
       $this->entityManager->flush();
     }
 
-    return $this->buildDashboardResponse(['yardTruckStats', 'allPackagesStats']);
+    return $this->buildDashboardResponse(['yardTruckStats', 'unloadingStats', 'allPackagesStats']);
   }
 
   // Induct and Stow
@@ -379,7 +391,7 @@ final class DashboardController extends AbstractController
   {
     $this->inductAllPackages();
 
-    return $this->buildDashboardResponse(['allPackagesStats', 'locations', 'yardTruckStats']);
+    return $this->buildDashboardResponse(['allPackagesStats', 'locations', 'unloadingStats']);
   }
 
   #[Route('/automaticstow', name: 'automatic_stow', methods: ['POST'])]
