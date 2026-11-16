@@ -24,6 +24,11 @@ export function dashboardStore() {
       locations.value = data.value.locations
     }
 
+    if ('impactedLocations' in data.value) {
+      locations.value = data.value.impactedLocations
+      console.log('Updating impacted locations:', locations.value);
+    }
+
     if ('processDatas' in data.value) {
       processDatas.value = data.value.processDatas
     }

@@ -51,8 +51,8 @@ final class InductionController extends AbstractController
     }
 
     try {
-      $data = $this->setPackageLocationService->setPackageLocation($package);
-      return $this->json($this->packageRepository->toArray($data));
+      ['package' => $package] = $this->setPackageLocationService->setPackageLocation($package);
+      return $this->json($this->packageRepository->toArray($package));
     } catch (NoAvailableLocationException $exception) {
       return $this->json([
         'error' => $exception->getMessage(),

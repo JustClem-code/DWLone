@@ -23,42 +23,44 @@ class SetPackageLocationService
     private Security $security
   ) {}
 
-  public function setPackageLocation(Package $package): Package
-  {
 
+public function setPackageLocation(Package $package): array
+{
     if (!$package->getLocation()) {
+        $location = $this->packageRepository->findLocationBySamePostcode($package);
 
-      $location = $this->packageRepository->findLocationBySamePostcode($package);
-
-      if (!$location) {
-        $groupPostcode = $this->packageRepository->findGroupPostcodes($package);
-        $aisle = $groupPostcode->getAisle();
-
-        if (!$aisle) {
-          $aisle = $this->aisleRepository->findByRandomAisleWithoutGroupPostcode();
-          $groupPostcode->setAisle($aisle);
-        }
-
-        $location = $this->locationRepository->findOneByAisle($aisle);
         if (!$location) {
-          throw new NoAvailableLocationException('No location available');
+            $groupPostcode = $this->packageRepository->findGroupPostcodes($package);
+            $aisle = $groupPostcode->getAisle();
+
+            if (!$aisle) {
+                $aisle = $this->aisleRepository->findByRandomAisleWithoutGroupPostcode();
+                $groupPostcode->setAisle($aisle);
+            }
+
+            $location = $this->locationRepository->findOneByAisle($aisle);
+
+            if (!$location) {
+                throw new NoAvailableLocationException('No location available');
+            }
         }
-                                              
-      }
 
-      if (!$location->getBag()) {
-        $randomBag = $this->bagRepository->findRandomWithoutLocation();
-        $location->setBag($randomBag);
-      }
+        if (!$location->getBag()) {
+            $randomBag = $this->bagRepository->findRandomWithoutLocation();
+            $location->setBag($randomBag);
+        }
 
-      $package->setLocation($location);
-      $package->setBag($location->getBag());
+        $package->setLocation($location);
+        $package->setBag($location->getBag());
 
-      $this->entityManager->flush();
+        $this->entityManager->flush();
     }
 
-    return $package;
-  }
+    return [
+        'package' => $package,
+        'location' => $package->getLocation(),
+    ];
+}
 
   public function setPackageUserStow(Package $package): Package
   {

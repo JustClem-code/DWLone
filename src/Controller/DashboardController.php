@@ -29,6 +29,7 @@ use App\Service\SetPackageLocationService;
 use App\Entity\Road;
 use App\Entity\RoadPart;
 use App\Entity\Bag;
+use App\Entity\Location;
 
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -65,20 +66,21 @@ final class DashboardController extends AbstractController
 
   // Dashboard Response
 
-  private function buildDashboardResponse(array $sections = [
-    'locations',
-    'processDatas',
-    'yardTruckStats',
-    'unloadingStats',
-    'allPackagesStats',
-    'allRoadParts',
-  ]): Response
-  {
+  private function buildDashboardResponse(
+    array $sections = [],
+    array $sectionData = []
+  ): Response {
     $data = [];
 
     if (in_array('locations', $sections, true)) {
       $data['locations'] = $this->locationArrayTransformerService
         ->transformAllBagOriented();
+    }
+
+    if (in_array('impactedLocations', $sections, true)) {
+      $data['impactedLocations'] = $this->locationArrayTransformerService
+        ->transformSomeBagOriented($sectionData['impactedLocations'] ?? []);
+        // TODO: transform juste in one array
     }
 
     if (in_array('processDatas', $sections, true)) {
@@ -356,13 +358,22 @@ final class DashboardController extends AbstractController
     ];
   }
 
-  private function inductAllPackages(): void
+  private function inductAllPackages(): array
   {
-    $packages = $this->packageRepository->findAllWithoutLocationFromPalletsWithUser();
+    $packages = $this->packageRepository
+      ->findAllWithoutLocationFromPalletsWithUser();
+
+    $impactedLocations = [];
 
     foreach ($packages as $package) {
-      $this->setPackageLocationService->setPackageLocation($package);
+      ['location' => $location] = $this->setPackageLocationService->setPackageLocation($package);
+
+      if ($location instanceof Location) {
+        $impactedLocations[$location->getId()] = $location;
+      }
     }
+
+    return array_values($impactedLocations);
   }
 
   private function stowAllPackages(): void
@@ -380,18 +391,15 @@ final class DashboardController extends AbstractController
     return $this->json($this->packagesStats());
   }
 
-  #[Route('/getBagsInLocations', name: 'get_bags_in_locations_list', methods: ['GET'])]
-  public function getBagsInLocations(): Response
-  {
-    return $this->json($this->locationArrayTransformerService->transformAllBagOriented());
-  }
-
   #[Route('/automaticinduction', name: 'automatic_induction', methods: ['POST'])]
   public function automaticInduction(): Response
   {
-    $this->inductAllPackages();
+    $impactedLocations = $this->inductAllPackages();
 
-    return $this->buildDashboardResponse(['allPackagesStats', 'locations', 'unloadingStats']);
+    return $this->buildDashboardResponse(
+      ['allPackagesStats', 'impactedLocations', 'unloadingStats'],
+      ['impactedLocations' => $impactedLocations]
+    );
   }
 
   #[Route('/automaticstow', name: 'automatic_stow', methods: ['POST'])]
@@ -417,6 +425,14 @@ final class DashboardController extends AbstractController
     $this->setPackageLocationService->resetLocationsBagsPackages();
 
     return $this->buildDashboardResponse(['allPackagesStats', 'locations', 'yardTruckStats']);
+  }
+
+  // Bags processing
+
+  #[Route('/getBagsInLocations', name: 'get_bags_in_locations_list', methods: ['GET'])]
+  public function getBagsInLocations(): Response
+  {
+    return $this->json($this->locationArrayTransformerService->transformAllBagOriented());
   }
 
   // Picking
