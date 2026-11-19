@@ -80,7 +80,6 @@ final class DashboardController extends AbstractController
     if (in_array('impactedLocations', $sections, true)) {
       $data['impactedLocations'] = $this->locationArrayTransformerService
         ->transformSomeBagOriented($sectionData['impactedLocations'] ?? []);
-        // TODO: transform juste in one array
     }
 
     if (in_array('processDatas', $sections, true)) {
@@ -405,6 +404,7 @@ final class DashboardController extends AbstractController
   #[Route('/automaticstow', name: 'automatic_stow', methods: ['POST'])]
   public function automaticStow(): Response
   {
+    // TODO: faire comme pour l'induction
     $this->stowAllPackages();
 
     return $this->buildDashboardResponse(['allPackagesStats', 'locations']);
@@ -413,6 +413,8 @@ final class DashboardController extends AbstractController
   #[Route('/autoinductionandstow', name: 'auto_induction_and_stow', methods: ['POST'])]
   public function autoInductionAndStow(): Response
   {
+    // TODO: additionner les deux tableaux d'impactés pour ne pas avoir de doublons
+
     $this->inductAllPackages();
     $this->stowAllPackages();
 

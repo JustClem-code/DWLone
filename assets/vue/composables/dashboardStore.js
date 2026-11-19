@@ -19,13 +19,21 @@ export function dashboardStore() {
     updateListElement(processDatas.value.allAisles, data.value.previousAisle);
   }
 
+  const updateLocationsData = (data) => {
+    data.value.impactedLocations.forEach((impactedLocation) => {
+      locations.value.forEach((group) => {
+        updateListElement(group, impactedLocation)
+      })
+    })
+  }
+
   const updateDashboardData = (data) => {
     if ('locations' in data.value) {
       locations.value = data.value.locations
     }
 
     if ('impactedLocations' in data.value) {
-      locations.value = data.value.impactedLocations
+      updateLocationsData(data)
       console.log('Updating impacted locations:', locations.value);
     }
 

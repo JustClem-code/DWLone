@@ -232,6 +232,6 @@ class LocationArrayTransformerService
 
   public function transformSomeBagOriented(array $locations): array
   {
-    return $this->floorOrdered($this->transFormEntities($locations, [$this, 'toArrayBagOriented']));
+    return $this->transFormEntities($locations, [$this, 'toArrayBagOriented']);
   }
 }
