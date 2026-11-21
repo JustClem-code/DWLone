@@ -375,13 +375,21 @@ final class DashboardController extends AbstractController
     return array_values($impactedLocations);
   }
 
-  private function stowAllPackages(): void
+  private function stowAllPackages(): array
   {
     $packages = $this->packageRepository->findAllWithLocationAndNotStowed();
 
+    $impactedLocations = [];
+
     foreach ($packages as $package) {
-      $this->setPackageLocationService->setPackageUserStow($package);
+      ['location' => $location] = $this->setPackageLocationService->setPackageUserStow($package);
+
+      if ($location instanceof Location) {
+        $impactedLocations[$location->getId()] = $location;
+      }
     }
+
+    return array_values($impactedLocations);
   }
 
   #[Route('/getPackagesStats', name: 'get_packages_stats', methods: ['GET'])]
@@ -404,21 +412,32 @@ final class DashboardController extends AbstractController
   #[Route('/automaticstow', name: 'automatic_stow', methods: ['POST'])]
   public function automaticStow(): Response
   {
-    // TODO: faire comme pour l'induction
-    $this->stowAllPackages();
+    $impactedLocations = $this->stowAllPackages();
 
-    return $this->buildDashboardResponse(['allPackagesStats', 'locations']);
+    return $this->buildDashboardResponse(
+      ['allPackagesStats', 'impactedLocations'],
+      ['impactedLocations' => $impactedLocations]
+    );
   }
 
   #[Route('/autoinductionandstow', name: 'auto_induction_and_stow', methods: ['POST'])]
   public function autoInductionAndStow(): Response
   {
-    // TODO: additionner les deux tableaux d'impactés pour ne pas avoir de doublons
 
-    $this->inductAllPackages();
-    $this->stowAllPackages();
+  // TODO: Problème de doublon: 
+    $impactedLocations = array_values(array_column(
+      array_merge(
+        $this->inductAllPackages(),
+        $this->stowAllPackages()
+      ),
+      null,
+      'id'
+    ));
 
-    return $this->buildDashboardResponse(['allPackagesStats', 'locations', 'yardTruckStats']);
+    return $this->buildDashboardResponse(
+      ['allPackagesStats', 'impactedLocations', 'yardTruckStats'],
+      ['impactedLocations' => $impactedLocations]
+    );
   }
 
   #[Route('/hardResetLocationsBagsPackages', name: 'hard_reset_locations_bags_packages', methods: ['POST'])]
