@@ -424,15 +424,18 @@ final class DashboardController extends AbstractController
   public function autoInductionAndStow(): Response
   {
 
-  // TODO: Problème de doublon: 
-    $impactedLocations = array_values(array_column(
+    $impactedLocations = [];
+
+    foreach (
       array_merge(
         $this->inductAllPackages(),
         $this->stowAllPackages()
-      ),
-      null,
-      'id'
-    ));
+      ) as $location
+    ) {
+      $impactedLocations[$location->getId()] = $location;
+    }
+
+    $impactedLocations = array_values($impactedLocations);
 
     return $this->buildDashboardResponse(
       ['allPackagesStats', 'impactedLocations', 'yardTruckStats'],

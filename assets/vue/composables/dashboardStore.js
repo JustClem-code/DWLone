@@ -13,7 +13,6 @@ const { updateListElement } = useLogic()
 export function dashboardStore() {
 
   const updateProcessData = (data) => {
-    console.log('Updating list element:', processDatas.value.allGroupPostcodes);
     updateListElement(processDatas.value.allGroupPostcodes, data.value.groupPostcodes);
     updateListElement(processDatas.value.allAisles, data.value.aisle);
     updateListElement(processDatas.value.allAisles, data.value.previousAisle);
@@ -34,7 +33,6 @@ export function dashboardStore() {
 
     if ('impactedLocations' in data.value) {
       updateLocationsData(data)
-      console.log('Updating impacted locations:', data.value);
     }
 
     if ('processDatas' in data.value) {
