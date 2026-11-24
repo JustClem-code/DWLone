@@ -161,12 +161,10 @@ const setAisle = async (aisle, group) => {
   }
 
   if (data.value) {
-    console.log(data.value)
     synchronized.value = true
     updateProcessData(data);
   }
 
-  console.log('Selected Aisle:', aisle);
   closeAisleSelectionDialog();
 }
 
@@ -222,8 +220,6 @@ const movePostcodeToGroup = async (postcodeId, targetGroupId) => {
   try {
     const { data, error } = await movePostCode(postcode, targetGroup);
 
-    console.log('Result of movePostCode:', data.value);
-
     if (error) {
       throw new Error(error.value);
     }
@@ -257,13 +253,12 @@ const movePostCode = async (postCodes, group) => {
   }
 
   if (data.value) {
-    console.log(data.value)
     synchronized.value = true
     return { data };
   }
 }
 
-watch(
+/* watch(
   () => allGroupPostcodes.value,
   (val) => {
     console.log('allGroupPostcodes watch:', val);
@@ -277,7 +272,7 @@ watch(
     console.log('allAisles watch:', val);
   },
   { immediate: true, deep: true }
-);
+); */
 
 </script>
 

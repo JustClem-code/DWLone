@@ -602,6 +602,8 @@ final class DashboardController extends AbstractController
   {
     $bags = $this->getAllBagsWithPackages();
 
+    $impactedLocations = [];
+
     foreach ($bags as $bag) {
       $road = $this->getOrCreateRoad($bag);
 
@@ -609,9 +611,14 @@ final class DashboardController extends AbstractController
       $roadPart->addBag($bag);
 
       $this->entityManager->flush();
+
+      $impactedLocations[$bag->getLocation()->getId()] = $bag->getLocation();
     }
 
-    return $this->buildDashboardResponse(['allRoadParts', 'locations']);
+    return $this->buildDashboardResponse(
+      ['allRoadParts', 'impactedLocations'],
+      ['impactedLocations' => $impactedLocations]
+    );
   }
 
   private function setUserToRoadPart(RoadPart $roadPart): void

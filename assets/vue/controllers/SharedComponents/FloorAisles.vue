@@ -44,11 +44,11 @@ const focusedPairs = computed(() => {
   return set
 })
 
-watch(
+/* watch(
   () => props.locations,
   (val) => {
     console.log('locations watch:', val)
   },
   { immediate: true, deep: true }
-)
+) */
 </script>

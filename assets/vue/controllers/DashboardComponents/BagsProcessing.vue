@@ -178,12 +178,12 @@ const bagColorClass = computed(() => {
   }
 })
 
-watch(
+/* watch(
   () => searchQuery.value,
   (val) => {
     console.log('searchQuery watch:', val)
   },
   { immediate: true, deep: true }
-)
+) */
 
 </script>

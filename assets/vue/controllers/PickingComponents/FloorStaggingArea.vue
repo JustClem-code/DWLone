@@ -41,8 +41,6 @@ const focusedPairs = computed(() => {
 
       if (isFocused) {
         set.add(staggingArea.id)
-        console.log('staggingArea.id', staggingArea.id);
-
       }
     }
   }

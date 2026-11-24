@@ -98,7 +98,6 @@ const onKeydown = (event) => {
     scrollToActiveItem()
   } else if (event.key === 'Enter' && activeIndex.value >= 0) {
     const item = props.items[activeIndex.value]
-    console.log('Selected item:', item)
     isFocused.value = false
     setTimeout(() => {
       emit('click', item)
@@ -125,7 +124,6 @@ const onMouseEnter = (index) => {
 }
 
 const onClickItem = (item) => {
-  console.log('Selected item:', item)
   isFocused.value = false
   setTimeout(() => {
     emit('click', item)
@@ -137,11 +135,11 @@ const itemColorClass = (item) => {
   return item.color + ' text-white'
 }
 
-watch(
+/* watch(
   () => props.items,
   (val) => {
     console.log('items search watch:', val)
   },
   { immediate: true, deep: true }
-)
+) */
 </script>

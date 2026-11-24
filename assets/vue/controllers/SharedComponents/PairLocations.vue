@@ -58,12 +58,12 @@ const getBagColor = computed(() => {
   return `outline-2 outline-offset-2 ${colors[prefix]}` ?? '';
 })
 
-watch(
+/* watch(
   () => props.orderedLocations,
   (val) => {
     console.log('orderedLocations watch:', val);
   },
   { immediate: true, deep: true }
-);
+); */
 
 </script>

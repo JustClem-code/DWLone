@@ -32,7 +32,8 @@ export function dashboardStore() {
     }
 
     if ('impactedLocations' in data.value) {
-      updateLocationsData(data)
+      updateLocationsData(data);
+      console.log('impactedLocations', data.value.impactedLocations)
     }
 
     if ('processDatas' in data.value) {
