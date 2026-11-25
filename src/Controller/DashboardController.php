@@ -478,6 +478,17 @@ final class DashboardController extends AbstractController
     );
   }
 
+  private function getImpactedLocationsFromBags(array $bags): array
+  {
+    $impactedLocations = [];
+
+    foreach ($bags as $bag) {
+      $impactedLocations[$bag->getLocation()->getId()] = $bag->getLocation();
+    }
+
+    return $impactedLocations;
+  }
+
   private function allRoadParts(): array
   {
     return $this->roadPartRepository->transformAllOrderedByName();
@@ -507,38 +518,6 @@ final class DashboardController extends AbstractController
     $this->entityManager->flush();
 
     return $this->json($this->roadPartRepository->toArray($roadPart));
-  }
-
-  #[Route('/hardResetPicking', name: 'hard_reset_picking', methods: ['POST'])]
-  public function hardResetPicking(): Response
-  {
-    $roadParts = $this->roadPartRepository->findAllWithUser();
-
-    foreach ($roadParts as $roadPart) {
-      $this->resetPicking($roadPart);
-    }
-
-    $this->entityManager->flush();
-
-    return $this->buildDashboardResponse(['allRoadParts', 'locations']);
-  }
-
-  #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['POST'])]
-  public function deleteAllRoads(): Response
-  {
-    $allRoads = $this->roadRepository->findAll();
-
-    foreach ($allRoads as $road) {
-      foreach ($road->getRoadParts() as $roadPart) {
-        $this->resetPicking($roadPart);
-        $this->entityManager->remove($roadPart);
-      }
-      $this->entityManager->remove($road);
-    }
-
-    $this->entityManager->flush();
-
-    return $this->buildDashboardResponse(['allRoadParts', 'locations']);
   }
 
   private function getAllBagsWithPackages(): array
@@ -602,8 +581,6 @@ final class DashboardController extends AbstractController
   {
     $bags = $this->getAllBagsWithPackages();
 
-    $impactedLocations = [];
-
     foreach ($bags as $bag) {
       $road = $this->getOrCreateRoad($bag);
 
@@ -611,9 +588,68 @@ final class DashboardController extends AbstractController
       $roadPart->addBag($bag);
 
       $this->entityManager->flush();
-
-      $impactedLocations[$bag->getLocation()->getId()] = $bag->getLocation();
     }
+
+    return $this->buildDashboardResponse(
+      ['allRoadParts', 'impactedLocations'],
+      ['impactedLocations' => $this->getImpactedLocationsFromBags($bags)]
+    );
+  }
+
+  #[Route('/deleteAllRoads', name: 'delete_all_roads', methods: ['POST'])]
+  public function deleteAllRoads(): Response
+  {
+    $allRoads = $this->roadRepository->findAll();
+    $bagIds = [];
+
+    foreach ($allRoads as $road) {
+      foreach ($road->getRoadParts() as $roadPart) {
+        foreach ($roadPart->getBags()->toArray() as $bag) {
+          $bagIds[(string) $bag->getId()] = $bag->getId();
+        }
+
+        $this->resetPicking($roadPart);
+        $this->entityManager->remove($roadPart);
+      }
+
+      $this->entityManager->remove($road);
+    }
+
+    $this->entityManager->flush();
+
+    $this->entityManager->clear();
+
+    $bags = $bagIds === []
+      ? []
+      : $this->bagRepository->findBy([
+        'id' => array_values($bagIds),
+      ]);
+
+    $impactedLocations = $this->getImpactedLocationsFromBags($bags);
+
+    return $this->buildDashboardResponse(
+      ['allRoadParts', 'impactedLocations'],
+      ['impactedLocations' => $impactedLocations]
+    );
+  }
+
+  #[Route('/hardResetPicking', name: 'hard_reset_picking', methods: ['POST'])]
+  public function hardResetPicking(): Response
+  {
+    $roadParts = $this->roadPartRepository->findAllWithUser();
+
+    $impactedLocations = [];
+
+    foreach ($roadParts as $roadPart) {
+      $this->resetPicking($roadPart);
+
+      $impactedLocations = array_merge(
+        $impactedLocations,
+        $this->getImpactedLocationsFromBags($roadPart->getBags()->toArray())
+      );
+    }
+
+    $this->entityManager->flush();
 
     return $this->buildDashboardResponse(
       ['allRoadParts', 'impactedLocations'],
@@ -664,6 +700,7 @@ final class DashboardController extends AbstractController
       $this->staggingCart($roadPart);
     }
 
+    //TODO: Add impacted locations to the response  
     return $this->buildDashboardResponse(['allRoadParts', 'locations']);
   }
 }
