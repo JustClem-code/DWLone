@@ -119,17 +119,16 @@ class RoadPartRepository extends ServiceEntityRepository
       ->getOneOrNullResult();
   }
 
-  // Not used
-  public function transformSome(array $entities): array
-  {
-    return $this->transFormEntities($entities, [$this, 'toArray']);
-  }
 
   public function transformAllOrderedByName(): array
   {
     return $this->transformEntitiesNoSorting($this->findAllOrderedByName(), [$this, 'toArray']);
   }
 
+  public function transformSomeOrderedByName(array $entities): array
+  {
+    return $this->transformEntitiesNoSorting($entities, [$this, 'toArray']);
+  }
   //    /**
   //     * @return RoadPart[] Returns an array of RoadPart objects
   //     */

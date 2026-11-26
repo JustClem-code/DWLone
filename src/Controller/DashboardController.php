@@ -102,6 +102,11 @@ final class DashboardController extends AbstractController
       $data['allRoadParts'] = $this->allRoadParts();
     }
 
+    if (in_array('impactedRoadParts', $sections, true)) {
+      $data['impactedRoadParts'] = $this->roadPartRepository
+        ->transformSomeOrderedByName($sectionData['impactedRoadParts'] ?? []);
+    }
+
     return $this->json($data);
   }
 
@@ -652,8 +657,11 @@ final class DashboardController extends AbstractController
     $this->entityManager->flush();
 
     return $this->buildDashboardResponse(
-      ['allRoadParts', 'impactedLocations'],
-      ['impactedLocations' => $impactedLocations]
+      ['impactedRoadParts', 'impactedLocations'],
+      [
+        'impactedRoadParts' => $roadParts,
+        'impactedLocations' => $impactedLocations
+      ]
     );
   }
 
@@ -693,14 +701,26 @@ final class DashboardController extends AbstractController
   {
     $roadParts = $this->roadPartRepository->findAllWithNoUser();
 
+    $impactedLocations = [];
+
     foreach ($roadParts as $roadPart) {
       $this->setUserToRoadPart($roadPart);
       $this->setCartToRoadPart($roadPart);
       $this->pickingAllBags($roadPart);
       $this->staggingCart($roadPart);
+
+      $impactedLocations = array_merge(
+        $impactedLocations,
+        $this->getImpactedLocationsFromBags($roadPart->getBags()->toArray())
+      );
     }
 
-    //TODO: Add impacted locations to the response  
-    return $this->buildDashboardResponse(['allRoadParts', 'locations']);
+    return $this->buildDashboardResponse(
+      ['impactedRoadParts', 'impactedLocations'],
+      [
+        'impactedRoadParts' => $roadParts,
+        'impactedLocations' => $impactedLocations
+      ]
+    );
   }
 }

@@ -26,6 +26,12 @@ export function dashboardStore() {
     })
   }
 
+  const updateRoadPartsData = (data) => {
+    data.value.impactedRoadParts.forEach((impactedRoadPart) => {
+      updateListElement(allRoadParts.value, impactedRoadPart)
+    })
+  }
+
   const updateDashboardData = (data) => {
     if ('locations' in data.value) {
       locations.value = data.value.locations
@@ -54,6 +60,11 @@ export function dashboardStore() {
 
     if ('allRoadParts' in data.value) {
       allRoadParts.value = data.value.allRoadParts
+    }
+
+    if ('impactedRoadParts' in data.value) {
+      updateRoadPartsData(data);
+      console.log('impactedRoadParts', data.value.impactedRoadParts)
     }
   }
 
